@@ -61,6 +61,7 @@ Host: i-on.pt
     ],
     "links": [
         { "rel": [ "self" ], "href": "/v0/courses/daw/classes/1920v/events/1234" },
+        { "rel": [ "about" ], "href": "/v0/courses/daw/classes/1920v" }
     ]
 } 
 ```
@@ -215,7 +216,8 @@ Host: i-on.pt
     ],
     "links": [
         { "rel": [ "self" ], "href": "/v0/courses/daw/classes/1920v/events/123490" },
-        { "rel": [ "service-doc" ], "href": "/v0/courses/daw/classes/1920v/docs/primeira-serie" }
+        { "rel": [ "service-doc" ], "href": "/v0/courses/daw/classes/1920v/docs/primeira-serie" },
+        { "rel": [ "about" ], "href": "/v0/courses/daw/classes/1920v" }
     ]
 } 
 ```
