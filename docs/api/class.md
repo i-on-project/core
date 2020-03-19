@@ -7,6 +7,7 @@ Parameter size of properties indicates the total number of calendar semesters th
 DAW was taught. 
 
 Request:
+
 `GET v0/courses/daw/classes`
 
 Response:
@@ -20,13 +21,13 @@ Response:
     "entities" : [
         {
             "class": ["classDetails"],
-            "rel": ["https://example.com/rels/class"],
+            "rel": ["item"],
             "title": "DAW Class of calendar term 1920v",
             "href": "https://example.com/v0/courses/DAW/classes/1920v"
         },
         {
             "class": ["classDetails"],
-            "rel": ["https://example.com/rels/class"],
+            "rel": ["item"],
             "title": "DAW Class of calendar term 1920v",
             "href": "https://example.com/v0/courses/DAW/classes/1920i"
         },
@@ -45,6 +46,7 @@ Given the diferent Classes a client may want to consume the details of a class a
 The response links follow's the graph path, from this point you can check the events of that class or go back and choose a different class.
 
 Request:
+
 `GET v0/courses/daw/classes/1920v`
 
 Response:
@@ -54,7 +56,6 @@ Response:
     "properties": {
         "Course": "DAW",
         "Coordinator": "Pedro Miguel Henriques dos Santos Félix",
-        "ClassSection Teachers": ["Pedro Miguel Henriques dos Santos Félix", "Paulo Pereira"]
         "Calendar term": "1920v",
         "Mandatory": "No",
         "ECTS": "6",
