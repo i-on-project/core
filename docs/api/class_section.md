@@ -22,7 +22,7 @@ A class section representation:
 ## Actions
 A `class section` representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
-* `follow`: subscribe to the class section's events
+* `enroll`: subscribe to the class section's events
   - unsafe
   - not templated
 
@@ -60,10 +60,10 @@ A class section representation:
   ],
   "actions": [
     {
-      "name": "follow",
-      "title": "Follow class section",
+      "name": "enroll",
+      "title": "Enroll class section",
       "method": "POST",
-      "href": "/v0/courses/dwa/classes/s1920v/1d/follow",
+      "href": "/v0/courses/dwa/classes/s1920v/1d/enroll",
       "type": "application/x-www-form-urlencoded",
       "fields": [ ]
     }

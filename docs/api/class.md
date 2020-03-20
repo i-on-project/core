@@ -1,33 +1,32 @@
 # `Class`
 
-The `Class` endpoint returns all classes of all calendar terms of given `Course`, the following example returns all classes of course "DWA". The full representation of a `Class`, in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
+The `Class` endpoint returns all classes of all calendar terms of given `Course`, the following example returns all classes of course "WAD". The full representation of a `Class`, in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
 
-Parameter size of properties indicates the total number of calendar semesters that the course DWA was taught. 
-
+Parameter size of properties indicates the total number of calendar semesters that the course WAD was taught. 
 
 ## Properties
 * `course`: the course's unique acronym
   - type: **text**
-  - e.g. "DWA"
+  - e.g. "WAD"
 
 * `coordinator`: the `lecturer` responsible for managing the `class`
   - type: **text**
-  - e.g. "DWA"
+  - e.g. "WAD"
 
 * `calendar term`:
   - type: **text**
-  - e.g. "DWA"
+  - e.g. "WAD"
 
 * `mandatory`:
   - type: **bool**
   - e.g. true
 
 * `credits`:
-  - type: **integer**
+  - type: **number**
   - e.g. 6
 
 * `hours of work`:
-  - type: **integer**
+  - type: **number**
   - e.g. 123
 
 * `programme`:
@@ -42,7 +41,7 @@ The response links follows the graph path, from this point you can check the eve
 {
   "class" : [ "classDetails" ],
   "properties": {
-    "course": "DWA",
+    "course": "WAD",
     "coordinator": "Pedro Félix",
     "calendar term": "1920v",
     "mandatory": "No",
@@ -56,15 +55,15 @@ The response links follows the graph path, from this point you can check the eve
     {
       "class": [ "classSection", "collection" ],
       "rel": [ "/rels/classDetails" ],
-      "title": "ClassSections of Course DWA at Calendar Term 1920v",
-      "href": "/v0/courses/DWA/classes/1920v/classSection"
+      "title": "ClassSections of Course WAD at Calendar Term 1920v",
+      "href": "/v0/courses/wad/classes/1920v/classSection"
     }
   ],
   "actions": [],
   "links": [
-    { "rel" : [ "self" ], "href": "/v0/courses/DWA/classes/1920v" },
-    { "rel" : [ "class" ], "href": "/v0/courses/DWA/classes/" },
-    { "rel" : [ "events" ], "href": "/v0/courses/DWA/classes/1920v/events" }
+    { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v" },
+    { "rel" : [ "class" ], "href": "/v0/courses/wad/classes/" },
+    { "rel" : [ "events" ], "href": "/v0/courses/wad/classes/1920v/events" }
   ]
 }
 ```
@@ -76,7 +75,7 @@ For instance, each `lecturer` can be in charge of `events` like lectures or assi
 
 ## Properties
 * `size`: the total number of `course`s available.
-  - type: **integer**
+  - type: **number**
   - e.g. 22
   
 ## Example representation
@@ -84,27 +83,27 @@ For instance, each `lecturer` can be in charge of `events` like lectures or assi
 {
   "class" : [ "collection", "class" ],
   "properties": {
-    "course": "DWA",
+    "course": "WAD",
     "size": 5
   },
   "entities" : [
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "DWA Class during the 1920v semester",
-      "href": "/v0/courses/dwa/classes/1920v"
+      "title": "WAD Class during the 1920v semester",
+      "href": "/v0/courses/wad/classes/1920v"
     },
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "DWA Class during the 1920i semester",
-      "href": "/v0/courses/dwa/classes/1920i"
+      "title": "WAD Class during the 1920i semester",
+      "href": "/v0/courses/wad/classes/1920i"
     },
     ...
   ],
   "actions": [],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes" },
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes" },
     { "rel": [ "courses" ], "href": "/v0/courses/" }
   ]
 }

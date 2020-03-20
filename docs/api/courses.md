@@ -4,11 +4,11 @@ A `Course`, also known as `Curricular Unit`, is an academic endeavor composed by
 ## Properties
 * `acronym`: the course's unique acronym; an abbreviation of its name
   - type: **text**
-  - e.g. "DWA"
+  - e.g. "WAD"
 
 * `name`: the course's name
   - type: **text**
-  - e.g. "Development of Web Applications"
+  - e.g. "Web Application Development"
 
 ## Link relations
 A course representation:
@@ -16,51 +16,36 @@ A course representation:
 * *may* include links to its classes, using the `/rel/class` link relation
 * *may* include links to its events, using the `/rel/event` link relation
 
-## Actions
-A course representation includes a description of the available actions the client may want to apply. The procedure of each action (payload, media types, method, location) is described in the same section.
-
-The available actions are:
-* `follow`: subscribe to the course's events
-  - unsafe
-  - not templated
-
 ## Example representation
 ```json
 {
   "class": [ "course" ],
   "properties": { 
-      "acronym": "DWA"
+      "acronym": "WAD",
+	  "name": "Web Application Development"
   },
   "entities": [
     {
       "class": [ "class", "collection" ],
       "rel": [ "/rel/class" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/courses/dwa/classes" },
-        { "rel": [ "course" ], "href": "/courses/dwa" }
+        { "rel": [ "self" ], "href": "/courses/wad/classes" },
+        { "rel": [ "course" ], "href": "/courses/wad" }
       ]
     },
     {
       "class": [ "event", "collection" ],
       "rel": [ "/rel/event" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/courses/dwa/events" },
-        { "rel": [ "course" ], "href": "/courses/dwa" }  
+        { "rel": [ "self" ], "href": "/courses/wad/events" },
+        { "rel": [ "course" ], "href": "/courses/wad" }  
       ]
     }
   ],
   "actions": [
-    {
-      "name": "follow",
-      "title": "Follow",
-      "method": "POST",
-      "href": "/courses/dwa/follow",
-      "type": "application/x-www-form-urlencoded",
-      "fields": [ ]
-    }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/courses/dwa" }
+    { "rel": [ "self" ], "href": "/courses/wad" }
   ]
 }
 ```
@@ -72,7 +57,7 @@ A simplified representation of a `course`. This is how `course`s are represented
 ## Properties
 * `acronym`: the course's unique acronym; an abbreviation of its name
   - type: **text**
-  - e.g. "DWA"
+  - e.g. "WAD"
 
 ## Link relations
 A course item representation:
@@ -80,23 +65,6 @@ A course item representation:
 * *may* include a link to the `course collection` it belongs to, using the `collection` link relation
 
 # `Course Collection`
-
-## Properties
-* `size`: the total number of `course`s available.
-  - type: **integer**
-  - e.g. 22
-
-## Query parameters
-This resource is templated, meaning tokens can add detail to the request. All of these are optional.
-
-The following tokens are available:
-* `limit`: the preferred maximum number of items, between 1 and 100, 10 included in the response
-  - type: **integer**
-  - default: 15
-
-* `page`: multiplies with `limit` to specify what block of the whole collection to return
-  - type: **integer**
-  - default: 0
 
 ## Link relations
 A course collection representation:
@@ -107,26 +75,39 @@ A course collection representation:
 A course collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
 The available actions are:
-* `add`: adding a new course to the collection.
+* `add-item`: adding a new course to the collection.
   - unsafe
   - not templated
+
+* `search`:  search for the collection's items.
+  - safe
+  - templated
+
+## Fields
+The following fields are parameters of the action `search`:
+* `limit`: the preferred maximum number of items, between 1 and 100, 10 included in the response
+  - type: **number**
+  - default: 15
+
+* `page`: multiplies with `limit` to specify what block of the whole collection to return
+  - type: **number**
+  - default: 0
 
 ## Example representation
 ```json
 {
   "class": [ "course", "collection" ],
-  "properties": { 
-      "size": 20
-  },
+  "properties": { },
   "entities": [
     {
       "class": [ "course" ],
       "rel": [ "item" ], 
       "properties": { 
-        "acronym": "DWA"
+        "acronym": "WAD"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/courses/dwa" }
+        { "rel": [ "self" ], "href": "/courses/wad" },
+        { "rel": [ "collection" ], "href": "/courses" }
       ]
     },
     {
@@ -136,11 +117,33 @@ The available actions are:
         "acronym": "SL"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/courses/sl" }
+        { "rel": [ "self" ], "href": "/courses/sl" },
+        { "rel": [ "collection" ], "href": "/courses" }
       ]
     }
   ],
   "actions": [
+    {
+      "name": "add-item",
+      "title": "Add a new Course",
+      "method": "POST",
+      "href": "/v0/courses",
+      "isTemplated": false,
+      "type": "application/json",
+      "fields": [ ]
+    },
+    {
+      "name": "search",
+      "title": "Search items",
+      "method": "GET",
+      "href": "/v0/courses{?limit,page}",
+      "isTemplated": true,
+      "type": "application/x-www-form-urlencoded",
+      "fields": [
+        { "name": "limit", "type": "number", "class": "param/limit" },
+        { "name": "page", "type": "number", "class": "param/page" }
+      ]
+    }
   ],
   "links": [
     { "rel": [ "self" ], "href": "/courses?page=1&limit=2" },

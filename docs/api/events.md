@@ -3,16 +3,16 @@ An `Event` describes an occurrence within a given time frame, such as an exam, a
 
 ## Properties
 * `id`: the unique identifier of this `Event`
-  - type: **integer**
+  - type: **number**
   - e.g. 38427
 
 * `title`: title of the `Event`
   - type: **text**
-  - e.g. "DWA 1st Exam"
+  - e.g. "WAD 1st Exam"
 
 * `description`: description of the `Event`
   - type: **text**
-  - e.g. "First exam for the DWA-s1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
+  - e.g. "First exam for the WAD-s1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
 
 * `start_date`: starting date of the `Event`
   - type: **date**
@@ -23,7 +23,7 @@ An `Event` describes an occurrence within a given time frame, such as an exam, a
   - type: **date**
   - e.g. 30/04/2020
 
-## Link Relations:
+## Link Relations
 An event representation:
 * *must* include a link to its context, using the `self` link relation
 
@@ -33,8 +33,8 @@ An event representation:
   "class": [ "event" ],
   "properties": { 
     "id": 1234,
-    "title": "DWA 1st Exam",
-    "description": "First exam of the DWA course during the semester 1920v",
+    "title": "WAD 1st Exam",
+    "description": "First exam of the WAD course during the semester 1920v",
     "start_date": "19-06-2020 14:00",
     "end_date": "19-06-2020 16:30"
   },
@@ -43,19 +43,19 @@ An event representation:
       "class": [ "class" ],
       "rel": [ "/rel/class" ],
       "properties": {
-        "class_id": "dwa-s1920v",
+        "class_id": "wad-s1920v",
         "term_id": "s1920v"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v" },
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
         { "rel": [ "term" ], "href": "/v0/terms/s1920v" },
-        { "rel": [ "course"], "href": "/v0/courses/dwa" }
+        { "rel": [ "course"], "href": "/v0/courses/wad" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/1920v/events/1234" },
-    { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/1234" },
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" }
   ]
 } 
 ```
@@ -65,18 +65,18 @@ A schedule represents a time frame, in which a set of `Period`s repeat on a week
 Most common example would be of a school subject schedule. The start date and end date would be the start and end, respectively, of the school term, and the periods would describe on which weekdays and at what time there is class.
 By definition a `Schedule` is not an `Event`, however it will be treated as such.
 
-## Properties:
+## Properties
 * `id`: the unique identifier of this `Schedule`
-  - type: **integer**
+  - type: **number**
   - e.g. 332
 
 * `title`: title of the `Schedule`
   - type: **text**
-  - e.g. "DWA-s1920v Schedule"
+  - e.g. "WAD-s1920v Schedule"
 
 * `description`: description of the `Schedule`
   - type: **text**
-  - e.g. "Lecture schedule of the DWA-s1920v class."
+  - e.g. "Lecture schedule of the WAD-s1920v class."
 
 * `start_date`: starting date of the schedule
   - type: **date**
@@ -99,7 +99,7 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
     - e.g. 13:00
   - `title`: title of the `Period`
 
-## Link Relations:
+## Link Relations
 * `self`: the context of the schedule
 
 ## Example representation
@@ -108,8 +108,8 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
   "class": [ "schedule" ],
   "properties": {
     "id": 45678,
-    "title": "DWA-s1920v Schedule",
-    "description": "Lecture schedule of the DWA-s1920v class.",
+    "title": "WAD-s1920v Schedule",
+    "description": "Lecture schedule of the WAD-s1920v class.",
     "start_date": "26/02/2020",
     "end_date": "15/06/2020",
     "periods": [
@@ -138,15 +138,15 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
         "lecturer": 1010
       },
       "links": [
-        { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/s1920v" },
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
         { "rel": [ "related" ], "href": "/v0/lecturers/1010" }
       ]
     }
   ],
   "actions": [],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/sections/61D/events/45678" },
-    { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/s1920v/sections/61D" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D/events/45678" },
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
   ]
 } 
 ```
@@ -155,23 +155,23 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
 
 An `Event` that lacks a `start_date` and is coupled with some sort of delivery. For example, a work assignment at school.
 
-## Properties:
+## Properties
 * `id`: the unique identifier of this `Task`
-  - type: **integer**
+  - type: **number**
 
 * `title`: title of the `Task`
   - type: **text**
-  - e.g. "DWA 1st Exercise Series"
+  - e.g. "WAD 1st Exercise Series"
 
 * `description`: description of the `Task`
   - type: **text**
-  - e.g. "DWA 1st Exercise Series"
+  - e.g. "WAD 1st Exercise Series"
 
 * `end_date`: deadline for the `Task`
   - type: **date**
   - e.g. 30/04/2020
 
-## Link Relations:
+## Link Relations
 A task representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include links to documents that describe what has to be done and what to deliver to complete the `Task`, using the `/rel/service-doc` link relation
@@ -182,8 +182,8 @@ A task representation:
   "class": [ "task" ],
   "properties": { 
     "id": 123490,
-    "title": "DWA 1st Series of Exercises",
-    "description": "DWA-s1920v 1st Series of Exercises",
+    "title": "WAD 1st Series of Exercises",
+    "description": "WAD-s1920v 1st Series of Exercises",
     "end_date": "30-04-2020 23:59"
   },
   "entities": [
@@ -191,20 +191,20 @@ A task representation:
       "class": [ "class" ],
       "rel": [ "/rels/class" ],
       "properties": {
-        "class_id": "dwa-s1920v",
+        "class_id": "wad-s1920v",
         "term_id": "s1920v"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v" },
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
         { "rel": [ "term" ], "href": "/v0/terms/s1920v" },
-        { "rel": [ "course"], "href": "/v0/courses/dwa" }
+        { "rel": [ "course"], "href": "/v0/courses/wad" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/1920v/events/123490" },
-    { "rel": [ "service-doc" ], "href": "/v0/courses/dwa/classes/1920v/docs/first-series" },
-    { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/123490" },
+    { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/1920v/docs/first-series" },
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" }
   ]
 } 
 ```
@@ -212,23 +212,34 @@ A task representation:
 # `Event Collection`
 A collection of `Event`s.
 
-## Properties:
+## Properties
 * size: the size of the collection.
-  - type: **integer**
+  - type: **number**
   - e.g. 2
 
 ## Link relations
 An event collection's representation:
 * *must* include a link to its context, using the `self` link relation
 
+## Actions
+An event collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
-## Actions:
-Search the collection using the query parameters:
-- `startBefore`: filters `Event`s that have a `start_date` later than specified
-- `startAfter`: filters `Event`s that have a `start_date` earlier than specified
-- `endBefore`: filters `Event`s that have a `end_date` later than specified
-- `endAfter`: filters `Event`s that have a `end_date` earlier than specified
-- `title`: filters `Event`s that do not have a matching title
+The available actions are:
+* `search`: search for the collection's items.
+  - safe
+  - templated
+
+## Fields
+The `search` action allows the following parameters:
+* `startBefore`: filters `Event`s that have a `start_date` later than specified
+
+* `startAfter`: filters `Event`s that have a `start_date` earlier than specified
+
+* `endBefore`: filters `Event`s that have a `end_date` later than specified
+
+* `endAfter`: filters `Event`s that have a `end_date` earlier than specified
+
+* `title`: filters `Event`s that do not have a matching title
 
 ## Example representation
 ```json
@@ -243,13 +254,13 @@ Search the collection using the query parameters:
       "rel": [ "item" ],
       "properties": {
         "id": 123490,
-        "title": "DWA 1st Series of Exercises",
-        "description": "DWA-s1920v 1st Series of Exercises",
+        "title": "WAD 1st Series of Exercises",
+        "description": "WAD-s1920v 1st Series of Exercises",
         "end_date": "30-04-2020 23:59"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/1920v/events/123490" },
-        { "rel": [ "service-doc" ], "href": "/v0/courses/dwa/classes/1920v/docs/primeira-serie" }
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/123490" },
+        { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/1920v/docs/primeira-serie" }
       ]
     },
     {
@@ -257,14 +268,14 @@ Search the collection using the query parameters:
       "rel": [ "item" ],
       "properties": {
         "event_id": 1235,
-        "title": "DWA 2nd Exam",
-        "description": "Second exam of the DWA course during the semester 1920v",
+        "title": "WAD 2nd Exam",
+        "description": "Second exam of the WAD course during the semester 1920v",
         "start_date": "30-06-2020 14:00",
         "end_date": "30-06-2020 16:30"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/events/1235" },
-        { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/s1920v" }
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events/1235" },
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" }
       ]
     },
     {
@@ -272,8 +283,8 @@ Search the collection using the query parameters:
       "rel": [ "item" ],
       "properties": {
         "id": 45678,
-        "title": "DWA-s1920v Schedule",
-        "description": "Lecture schedule of the DWA-s1920v class.",
+        "title": "WAD-s1920v Schedule",
+        "description": "Lecture schedule of the WAD-s1920v class.",
         "start_date": "26/02/2020",
         "end_date": "15/06/2020",
         "periods": [
@@ -294,8 +305,8 @@ Search the collection using the query parameters:
         ]
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/sections/61D/events/45678" },
-        { "rel": [ "about" ], "href": "/v0/courses/dwa/classes/s1920v/sections/61D" }
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D/events/45678" },
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
       ]
     }
   ],
@@ -304,7 +315,7 @@ Search the collection using the query parameters:
       "name": "search",
       "title": "Procurar",
       "method": "GET",
-      "href": "/v0/courses/dwa/classes/s1920v/events{?startBefore,startAfter,endBefore,endAfter,title}",
+      "href": "/v0/courses/wad/classes/s1920v/events{?startBefore,startAfter,endBefore,endAfter,title}",
       "isTemplated": true,
       "type": "application/x-www-form-urlencoded",
       "fields": [
@@ -317,9 +328,9 @@ Search the collection using the query parameters:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/events?page=1" },
-    { "rel": [ "next" ], "href": "/v0/courses/dwa/classes/s1920v/events?page=2" },
-    { "rel": [ "previous" ], "href": "/v0/courses/dwa/classes/s1920v/events?page=0" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events?page=1" },
+    { "rel": [ "next" ], "href": "/v0/courses/wad/classes/s1920v/events?page=2" },
+    { "rel": [ "previous" ], "href": "/v0/courses/wad/classes/s1920v/events?page=0" }
   ]
 } 
 ```
