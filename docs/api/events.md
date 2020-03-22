@@ -1,3 +1,6 @@
+# Date Format
+Date formatting is done according to [RFC3339](https://tools.ietf.org/html/rfc3339) which is an Internet profile of the [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html).
+
 # `Event`
 An `Event` describes an occurrence within a given time frame, such as an exam, a meeting or an appointment. 
 
@@ -14,18 +17,20 @@ An `Event` describes an occurrence within a given time frame, such as an exam, a
   - type: **text**
   - e.g. "First exam for the WAD-s1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
 
-* `start_date`: starting date of the `Event`
+* `startDate`: starting date of the `Event`
   - type: **date**
-  - e.g. 19/03/2020
+  - e.g. 2020-03-19T14:00:00Z
 
-* `end_date`: ending date of the `Event`
-  - the `end_date` should be after `start_date`
+* `endDate`: ending date of the `Event`
+  - the `endDate` should be after `startDate`
   - type: **date**
-  - e.g. 30/04/2020
+  - e.g. 2020-03-19T16:30:00Z
 
 ## Link Relations
 An event representation:
 * *must* include a link to its context, using the `self` link relation
+* *must* include a link to its creation context, using the `about` link relation
+  - e.g. if an `Event` is created for a specific `Class` then the `about` link relation would refer to that same `Class`
 
 ## Example representation
 ```json
@@ -35,16 +40,16 @@ An event representation:
     "id": 1234,
     "title": "WAD 1st Exam",
     "description": "First exam of the WAD course during the semester 1920v",
-    "start_date": "19-06-2020 14:00",
-    "end_date": "19-06-2020 16:30"
+    "startDate": "2020-03-19T14:00:00Z",
+    "endDate": "2020-03-19T16:30:00Z"
   },
   "entities": [
     {
       "class": [ "class" ],
       "rel": [ "/rel/class" ],
       "properties": {
-        "class_id": "wad-s1920v",
-        "term_id": "s1920v"
+        "classId": "wad-s1920v",
+        "termId": "s1920v"
       },
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
@@ -54,8 +59,8 @@ An event representation:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/1234" },
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events/1234" },
+    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
   ]
 } 
 ```
@@ -78,29 +83,32 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
   - type: **text**
   - e.g. "Lecture schedule of the WAD-s1920v class."
 
-* `start_date`: starting date of the schedule
+* `startDate`: starting date of the schedule
   - type: **date**
-  - e.g. 19/03/2020
+  - e.g. 2020-03-19T00:00:00Z
 
-* `end_date`: ending date of the schedule
-  - the `end_date` should be after `start_date`
-  - the gap between `start_date` and `end_date` does not need to be longer than a week
+* `endDate`: ending date of the schedule
+  - the `endDate` should be after `startDate`
+  - the gap between `startDate` and `endDate` does not need to be longer than a week
   - type: **date**
-  - e.g. 15/06/2020
+  - e.g. 2020-06-15T00:00:00Z
 
 * periods: collection of the different periods of the `Schedule`
   - a `Period` object is comprised of:
   - type: [weekly | monthly] - whether it repeats on a monthly or weekly basis
   - day: the day of the week(1-7) or month(1-31) the period takes place in
     - e.g. weekly: 6, monthly: 25
-  - `start_time`: the starting time of the period in hh:mm
+  - `startTime`: the starting time of the period in hh:mm
     - e.g. 10:30
-  - `end_time`: the ending time of the period in hh:mm
+  - `endTime`: the ending time of the period in hh:mm
     - e.g. 13:00
   - `title`: title of the `Period`
 
 ## Link Relations
-* `self`: the context of the schedule
+A `Schedule` representation:
+* *must* include a link to its context, using the `self` link relation
+* *must* include a link to its creation context, using the `about` link relation
+  - e.g. if a `Schedule` is created for a specific `ClassSection` then the `about` link relation would refer to that same `ClassSection`
 
 ## Example representation
 ```json
@@ -110,21 +118,21 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
     "id": 45678,
     "title": "WAD-s1920v Schedule",
     "description": "Lecture schedule of the WAD-s1920v class.",
-    "start_date": "26/02/2020",
-    "end_date": "15/06/2020",
+    "startDate": "2020-03-19T00:00:00Z",
+    "endDate": "2020-06-15T00:00:00Z",
     "periods": [
       {
         "type": "weekly",
         "day": "2",
-        "start_time": "11:00",
-        "end_time": "12:30",
+        "startTime": "11:00",
+        "endTime": "12:30",
         "title": "Lab"
       },
       {
         "type": "weekly",
         "weekday": "5",
-        "start_time": "11:00",
-        "end_time": "14:00",
+        "startTime": "11:00",
+        "endTime": "14:00",
         "title": "Lab"
       }
     ]
@@ -146,14 +154,14 @@ By definition a `Schedule` is not an `Event`, however it will be treated as such
   "actions": [],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D/events/45678" },
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
+    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
   ]
 } 
 ```
 
 # `Task`
 
-An `Event` that lacks a `start_date` and is coupled with some sort of delivery. For example, a work assignment at school.
+An `Event` that lacks a `startDate` and is coupled with some sort of delivery. For example, a work assignment at school.
 
 ## Properties
 * `id`: the unique identifier of this `Task`
@@ -167,13 +175,15 @@ An `Event` that lacks a `start_date` and is coupled with some sort of delivery. 
   - type: **text**
   - e.g. "WAD 1st Exercise Series"
 
-* `end_date`: deadline for the `Task`
+* `endDate`: deadline for the `Task`
   - type: **date**
-  - e.g. 30/04/2020
+  - e.g. 2020-04-30T23:59:59Z
 
 ## Link Relations
 A task representation:
 * *must* include a link to its context, using the `self` link relation
+* *must* include a link to its creation context, using the `about` link relation
+  - e.g. if a `Task` is created for a specific `ClassSection` then the `about` link relation would refer to that same `ClassSection`
 * *may* include links to documents that describe what has to be done and what to deliver to complete the `Task`, using the `/rel/service-doc` link relation
 
 ## Example representation
@@ -184,15 +194,15 @@ A task representation:
     "id": 123490,
     "title": "WAD 1st Series of Exercises",
     "description": "WAD-s1920v 1st Series of Exercises",
-    "end_date": "30-04-2020 23:59"
+    "endDate": "2020-04-30T23:59:59Z"
   },
   "entities": [
     {
       "class": [ "class" ],
       "rel": [ "/rels/class" ],
       "properties": {
-        "class_id": "wad-s1920v",
-        "term_id": "s1920v"
+        "classId": "wad-s1920v",
+        "termId": "s1920v"
       },
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
@@ -202,9 +212,9 @@ A task representation:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/123490" },
-    { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/1920v/docs/first-series" },
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events/123490" },
+    { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/s1920v/docs/first-series" },
+    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
   ]
 } 
 ```
@@ -231,13 +241,13 @@ The available actions are:
 
 ## Fields
 The `search` action allows the following parameters:
-* `startBefore`: filters `Event`s that have a `start_date` later than specified
+* `startBefore`: filters `Event`s that have a `startDate` later than specified
 
-* `startAfter`: filters `Event`s that have a `start_date` earlier than specified
+* `startAfter`: filters `Event`s that have a `startDate` earlier than specified
 
-* `endBefore`: filters `Event`s that have a `end_date` later than specified
+* `endBefore`: filters `Event`s that have a `endDate` later than specified
 
-* `endAfter`: filters `Event`s that have a `end_date` earlier than specified
+* `endAfter`: filters `Event`s that have a `endDate` earlier than specified
 
 * `title`: filters `Event`s that do not have a matching title
 
@@ -256,26 +266,27 @@ The `search` action allows the following parameters:
         "id": 123490,
         "title": "WAD 1st Series of Exercises",
         "description": "WAD-s1920v 1st Series of Exercises",
-        "end_date": "30-04-2020 23:59"
+        "endDate": "2020-04-30T23:59:59Z"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v/events/123490" },
-        { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/1920v/docs/primeira-serie" }
+        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events/123490" },
+        { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/s1920v/docs/primeira-serie" },
+        { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
       ]
     },
     {
       "class": [ "event" ],
       "rel": [ "item" ],
       "properties": {
-        "event_id": 1235,
+        "id": 1235,
         "title": "WAD 2nd Exam",
         "description": "Second exam of the WAD course during the semester 1920v",
-        "start_date": "30-06-2020 14:00",
-        "end_date": "30-06-2020 16:30"
+        "startDate": "2020-06-30T14:00:00Z",
+        "endDate": "2020-06-30T16:30:00Z"
       },
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/events/1235" },
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" }
+        { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
       ]
     },
     {
@@ -285,28 +296,28 @@ The `search` action allows the following parameters:
         "id": 45678,
         "title": "WAD-s1920v Schedule",
         "description": "Lecture schedule of the WAD-s1920v class.",
-        "start_date": "26/02/2020",
-        "end_date": "15/06/2020",
+        "startDate": "2020-02-26T00:00:00Z",
+        "endDate": "2020-06-15T23:59:59Z",
         "periods": [
           {
             "type": "weekly",
             "day": "2",
-            "start_time": "11:00",
-            "end_time": "12:30",
+            "startTime": "11:00",
+            "endTime": "12:30",
             "title": "Aula teórica"
           },
           {
             "type": "weekly",
             "weekday": "5",
-            "start_time": "11:00",
-            "end_time": "14:00",
+            "startTime": "11:00",
+            "endTime": "14:00",
             "title": "Aula prática"
           }
         ]
       },
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D/events/45678" },
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
+        { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
       ]
     }
   ],
