@@ -1,12 +1,19 @@
-insert into dbo.Term(value) values
-	( '1718v' ),
-	( '1718i' ),
-	( '1819v' ),
-	( '1819i' ),
-	( '1920v' ),
-	( '1920i' ),
-	( '2021v' ),
-	( '2021i' );
+insert into dbo.CalendarTerm(id, start_date, end_date) values
+	( '1718v', null, null ),
+	( '1718i', null, null ),
+	( '1819v', null, null ),
+	( '1819i', null, null ),
+	( '1920v', null, null ),
+	( '1920i', null, null ),
+	( '2021v', null, null ),
+	( '2021i', null, null );
+
+insert into dbo.Calendar values (default);
+insert into dbo.Calendar values (default);
+insert into dbo.Calendar values (default);
+insert into dbo.Calendar values (default);
+insert into dbo.Calendar values (default);
+insert into dbo.Calendar values (default);
 
 insert into dbo.Course(acronym, name) values
 	( 'SL', 'Software Laboratory' ),

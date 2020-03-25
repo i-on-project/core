@@ -7,6 +7,6 @@ set -e
 [ -z "$3" ] && role="bob" || role="$3"
 
 cat create.sql insert.sql |\
-	psql -p "$port" "$db" "$role"
+	psql -1 -p "$port" "$db" "$role"
 
 
