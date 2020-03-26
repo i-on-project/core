@@ -21,7 +21,7 @@ A course representation:
 {
   "class": [ "course" ],
   "properties": { 
-      "acronym": "WAD",
+    "acronym": "WAD",
 	  "name": "Web Application Development"
   },
   "entities": [
@@ -138,7 +138,7 @@ The following fields are parameters of the action `search`:
       "method": "GET",
       "href": "/v0/courses{?limit,page}",
       "isTemplated": true,
-      "type": "application/x-www-form-urlencoded",
+      "type": "application/vnd.siren+json",
       "fields": [
         { "name": "limit", "type": "number", "class": "param/limit" },
         { "name": "page", "type": "number", "class": "param/page" }

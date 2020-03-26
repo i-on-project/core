@@ -9,29 +9,9 @@ Parameter size of properties indicates the total number of calendar semesters th
   - type: **text**
   - e.g. "WAD"
 
-* `coordinator`: the `lecturer` responsible for managing the `class`
-  - type: **text**
-  - e.g. "WAD"
-
 * `calendar term`:
   - type: **text**
   - e.g. "WAD"
-
-* `mandatory`:
-  - type: **bool**
-  - e.g. true
-
-* `credits`:
-  - type: **number**
-  - e.g. 6
-
-* `hours of work`:
-  - type: **number**
-  - e.g. 123
-
-* `programme`:
-  - type: **text**
-  - e.g. "CSCE"
 
 ## Example representation
 Given the different Classes a client may want to consume the details of a class at a certain calendar semester, the response indicates all the details like the coordinator, hours, designation...
@@ -42,14 +22,7 @@ The response links follows the graph path, from this point you can check the eve
   "class" : [ "classDetails" ],
   "properties": {
     "course": "WAD",
-    "coordinator": "Pedro Félix",
-    "calendar term": "1920v",
-    "mandatory": "No",
-    "credits": "6",
-    "year": "3",
-    "curricularTerm": "6",
-    "hours of work": "162",
-    "programme": "CSCE"
+    "calendar term": "1920v"
   },
   "entities": [
     {
@@ -59,7 +32,25 @@ The response links follows the graph path, from this point you can check the eve
       "href": "/v0/courses/wad/classes/1920v/classSection"
     }
   ],
-  "actions": [],
+  "actions": [
+    {
+      "name": "delete",
+      "title": "Delete class",
+      "method": "DELETE",
+      "isTemplated": false,
+      "href": "/v0/courses/wad/classes/1920v",
+      "fields": [ ]
+    },
+    {
+      "name": "edit",
+      "title": "Edit class",
+      "method": "PATCH",
+      "isTemplated": false,
+      "type": "application/json",
+      "href": "/v0/courses/wad/classes/1920v",
+      "fields": [ ]
+    } 
+  ],
   "links": [
     { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v" },
     { "rel" : [ "class" ], "href": "/v0/courses/wad/classes/" },
@@ -77,6 +68,32 @@ For instance, each `lecturer` can be in charge of `events` like lectures or assi
 * `size`: the total number of `course`s available.
   - type: **number**
   - e.g. 22
+
+## Actions
+* `add-item`: add a new class
+  - unsafe
+  - not templated
+
+* `batch-delete`: delete multiple items of the collection using the query string
+  - unsafe
+  - templated
+  
+## Fields
+The following fields are parameters of the action `search`:
+* `limit`: the preferred maximum number of items, between 1 and 100, 10 included in the response
+  - type: **number**
+  - default: 15
+
+* `page`: multiplies with `limit` to specify what block of the whole collection to return
+  - type: **number**
+  - default: 0
+
+The following fields are parameters of the action `batch-delete`:
+* `course`: delete all classes of the specified course
+  - type: **text**
+
+* `term`: delete all classes of the specified term
+  - type: **text**
   
 ## Example representation
 ```json
@@ -101,7 +118,40 @@ For instance, each `lecturer` can be in charge of `events` like lectures or assi
     },
     ...
   ],
-  "actions": [],
+  "actions": [
+    {
+      "name": "search",
+      "title": "Search items",
+      "method": "GET",
+      "href": "/v0/courses/wad/classes{?limit,page}",
+      "isTemplated": true,
+      "type": "application/vnd.siren+json",
+      "fields": [
+        { "name": "limit", "type": "number", "class": "param/limit" },
+        { "name": "page", "type": "number", "class": "param/page" }
+      ]
+    },
+    {
+      "name": "add-item",
+      "title": "Add Item",
+      "method": "POST",
+      "href": "/v0/courses/wad/classes",
+      "isTemplated": false,
+      "type": "application/json",
+      "fields": [ ]
+    },
+    {
+      "name": "batch-delete",
+      "title": "Delete multiple items",
+      "method": "DELETE",
+      "isTemplated": true,
+      "href": "/v0/courses/wad/classes{?term,course}",
+      "fields": [
+        { "name": "term", "type": "text" },
+        { "name": "course", "type": "text" }
+      ]
+    }
+  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/wad/classes" },
     { "rel": [ "courses" ], "href": "/v0/courses/" }
