@@ -120,6 +120,10 @@ The `search` action allows the following parameters:
 
 * `summary`: filters **components** that do not have a matching `summary`
 
+The `batch-delete` action allows the following parameters:
+* `type`: delete all components whose `type` matches the one indicated
+  - e.g. /v0/courses/wad/classes/s1920v/sections/61D/calendar?type=event, will delete all events
+
 ## Link Relations
 A `Calendar` representation:
 * *must* include a link to its context, using the `self` link relation
@@ -243,7 +247,7 @@ A `Calendar` representation:
   "actions": [
     {
       "name": "search",
-      "summary": "Procurar",
+      "summary": "Search components",
       "method": "GET",
       "href": "/v0/courses/wad/classes/s1920v/components{?type,startBefore,startAfter,endBefore,endAfter,summary}",
       "isTemplated": true,
@@ -255,6 +259,25 @@ A `Calendar` representation:
         { "name": "endBefore", "type": "date", "class": "https://example.org/param/date-query" },
         { "name": "endAfter", "type": "date", "class": "https://example.org/param/date-query" },
         { "name": "summary", "type": "text", "class": "https://example.org/param/free-text-query" }
+      ]
+    },
+    {
+      "name": "add-item",
+      "title": "Add Item",
+      "method": "POST",
+      "href": "/v0/courses/wad/classes/s1920v/components",
+      "isTemplated": false,
+      "type": "application/json",
+      "fields": [ ]
+    },
+    {
+      "name": "batch-delete",
+      "title": "Delete multiple items",
+      "method": "DELETE",
+      "isTemplated": true,
+      "href": "/v0/courses/wad/classes/s1920v/components{?type}",
+      "fields": [
+        { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" }
       ]
     }
   ],

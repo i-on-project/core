@@ -13,6 +13,21 @@ Parameter size of properties indicates the total number of calendar semesters th
   - type: **text**
   - e.g. "WAD"
 
+## Link relations
+A class representation:
+* *must* include a link to its context, using the `self` link relation
+* *may* include a link to the collection it belongs, using the `collection` link relation
+* *may* include links to its events, using the `/rel/event` link relation
+
+## Actions
+* `delete`: delete the course
+  - unsafe
+  - not templated
+
+* `edit`: edit or add a new course
+  - unsafe
+  - not templated
+  
 ## Example representation
 Given the different Classes a client may want to consume the details of a class at a certain calendar semester, the response indicates all the details like the coordinator, hours, designation...
 The response links follows the graph path, from this point you can check the events of that class or go back and choose a different class.
@@ -53,7 +68,7 @@ The response links follows the graph path, from this point you can check the eve
   ],
   "links": [
     { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v" },
-    { "rel" : [ "class" ], "href": "/v0/courses/wad/classes/" },
+    { "rel" : [ "collection" ], "href": "/v0/courses/wad/classes/" },
     { "rel" : [ "events" ], "href": "/v0/courses/wad/classes/1920v/events" }
   ]
 }
@@ -68,6 +83,11 @@ For instance, each `lecturer` can be in charge of `events` like lectures or assi
 * `size`: the total number of `course`s available.
   - type: **number**
   - e.g. 22
+
+## Link relations
+A class representation:
+* *must* include a link to its context, using the `self` link relation
+* *may* include a link to the course that contains these classes, using the `about` link relation
 
 ## Actions
 * `add-item`: add a new class
@@ -154,7 +174,7 @@ The following fields are parameters of the action `batch-delete`:
   ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/wad/classes" },
-    { "rel": [ "courses" ], "href": "/v0/courses/" }
+    { "rel": [ "about" ], "href": "/v0/courses/wad" }
   ]
 }
 ```

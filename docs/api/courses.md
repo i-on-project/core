@@ -13,8 +13,18 @@ A `Course`, also known as `Curricular Unit`, is an academic endeavor composed by
 ## Link relations
 A course representation:
 * *must* include a link to its context, using the `self` link relation
+* *may* include a link to the collection it belongs, using the `collection` link relation
 * *may* include links to its classes, using the `/rel/class` link relation
 * *may* include links to its events, using the `/rel/event` link relation
+
+## Actions
+* `delete`: delete the course
+  - unsafe
+  - not templated
+
+* `edit`: edit or add a new course
+  - unsafe
+  - not templated
 
 ## Example representation
 ```json
@@ -43,9 +53,27 @@ A course representation:
     }
   ],
   "actions": [
+    {
+      "name": "delete",
+      "title": "Delete course",
+      "method": "DELETE",
+      "isTemplated": false,
+      "href": "/v0/courses/wad",
+      "fields": [ ]
+    },
+    {
+      "name": "edit",
+      "title": "Edit course",
+      "method": "PATCH",
+      "isTemplated": false,
+      "type": "application/json",
+      "href": "/v0/courses/wad",
+      "fields": [ ]
+    }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/courses/wad" }
+    { "rel": [ "self" ], "href": "/courses/wad" },
+    { "rel": [ "collection" ], "href": "/courses" }
   ]
 }
 ```
