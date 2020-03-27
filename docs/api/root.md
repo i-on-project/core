@@ -35,6 +35,16 @@ Available resources:
             "hints": {
                 "allow": ["GET", "POST", "PATCH"]  
             }
+        },
+        "terms": {
+            "href": "/v0/terms{?limit,page}",
+            "hrefVars": {
+                "limit": "/api-docs/params/limit",
+                "page": "/api-docs/params/page"
+            },
+            "hints": {
+                "allow": ["GET"]  
+            }
         }
     }
 }

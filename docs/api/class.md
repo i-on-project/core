@@ -20,11 +20,11 @@ A class representation:
 * *may* include links to its events, using the `/rel/event` link relation
 
 ## Actions
-* `delete`: delete the course
+* `delete`: delete the class
   - unsafe
   - not templated
 
-* `edit`: edit or add a new course
+* `edit`: edit or add a new class
   - unsafe
   - not templated
   
@@ -34,7 +34,7 @@ The response links follows the graph path, from this point you can check the eve
 
 ```json
 {
-  "class" : [ "classDetails" ],
+  "class" : [ "class" ],
   "properties": {
     "course": "WAD",
     "calendar term": "1920v"
@@ -42,7 +42,7 @@ The response links follows the graph path, from this point you can check the eve
   "entities": [
     {
       "class": [ "classSection", "collection" ],
-      "rel": [ "/rels/classDetails" ],
+      "rel": [ "/rel/section" ],
       "title": "ClassSections of Course WAD at Calendar Term 1920v",
       "href": "/v0/courses/wad/classes/1920v/classSection"
     }
@@ -135,8 +135,7 @@ The following fields are parameters of the action `batch-delete`:
       "rel": [ "item" ],
       "title": "WAD Class during the 1920i semester",
       "href": "/v0/courses/wad/classes/1920i"
-    },
-    ...
+    }
   ],
   "actions": [
     {
