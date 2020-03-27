@@ -13,27 +13,30 @@ create table dbo.CalendarTerm (
 	unique(start_date, end_date)
 );
 
+create table dbo.Calendar (
+	id   int generated always as identity primary key
+);
+
 create table dbo.Course (
-	acronym varchar(10) primary key,
-	name    varchar(100) unique not null
+	acronym  varchar(10) primary key,
+	name     varchar(100) unique not null,
+	calendar int references dbo.Calendar(id)
 );
 
 create table dbo.Class (
-	course varchar(10) references dbo.Course(acronym),
-	term   varchar(10) references dbo.CalendarTerm(id),
+	course   varchar(10) references dbo.Course(acronym),
+	term     varchar(10) references dbo.CalendarTerm(id),
+	calendar int references dbo.Calendar(id),
 	primary key(course, term)
 );
 
 create table dbo.ClassSection (
-	id     varchar(10),
-	course varchar(10),
-	term   varchar(10),
+	id       varchar(10),
+	course   varchar(10),
+	term     varchar(10),
+	calendar int references dbo.Calendar(id),
 	foreign key(course, term) references dbo.Class(course, term),
 	primary key(id, course, term)
-);
-
-create table dbo.Calendar (
-	id   int generated always as identity primary key
 );
 
 create table dbo.CalendarComponent (
