@@ -1,8 +1,13 @@
-# `Term`
-A `Term` is a period during which an educational institution holds academic `Events`. The full representation of a `Term`, in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
+# `Calendar Term`
+A `calendar term` is a period during which an educational institution holds academic `events`.
+
+The `calendar term` resource has three possible representations: a detailed (or full) representation, a reduced one (to be used as `item`s of calendar term collections) and a `collection` representation. The different representations of a `calendar term` are in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
 
 ## Properties
-* `name`: the term's name
+All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
+* `name`: the calendar term's name
+  - mandatory
   - type: **text**
   - e.g. "1819v"
 
@@ -10,13 +15,13 @@ A `Term` is a period during which an educational institution holds academic `Eve
 A term representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include a link to the collection it belongs, using the `collection` link relation
-* *may* include links to a number of classes that were available during said term, using the `/rel/class` link relation
+* *may* include links to a number of classes that were available during said calendar term, using the `/rel/class` link relation
 
 ## Actions
-A term collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
+A calendar term collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
 The available actions are:
-* `search`: search for classes available during this term.
+* `search`: search for classes available during this calendar term.
   - safe
   - templated
 
@@ -33,7 +38,7 @@ The following fields are parameters of the action `search`:
 ## Example representation
 ```json
 {
-  "class": [ "term" ],
+  "class": [ "calendar-term" ],
   "properties": {
       "name": "1920v"
   },
@@ -58,9 +63,9 @@ The following fields are parameters of the action `search`:
   "actions": [
     {
       "name": "search",
-      "title": "Search classes in a term",
+      "title": "Search classes in a calendar term",
       "method": "GET",
-      "href": "/v0/terms/1920v{?limit,page}",
+      "href": "/v0/calendar-terms/1920v{?limit,page}",
       "isTemplated": true,
       "type": "application/vnd.siren+json",
       "fields": [
@@ -70,36 +75,39 @@ The following fields are parameters of the action `search`:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/terms/1920v?limit=2" },
-    { "rel": [ "next" ], "href": "/v0/terms?page=1&limit=2" },
-    { "rel": [ "collection" ], "href": "/v0/terms" }
+    { "rel": [ "self" ], "href": "/v0/calendar-terms/1920v?limit=2" },
+    { "rel": [ "next" ], "href": "/v0/calendar-terms?page=1&limit=2" },
+    { "rel": [ "collection" ], "href": "/v0/calendar-terms" }
   ]
 }
 ```
 
-# `Term Item`
+# `Calendar Term Item`
 
-A simplified representation of a `term`. This is how `term`s are represented as individual `collection` items.
+A simplified representation of a `calendar term`. This is how `calendar term`s are represented as individual `collection` items.
 
 ## Properties
-* `name`: the term's unique acronym; an abbreviation of its name
+All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
+* `name`: the calendar term's unique acronym; an abbreviation of its name
+  - mandatory
   - type: **text**
   - e.g. "1920v"
 
 ## Link relations
-A term item representation:
+A calendar term item representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include a link to the `term collection` it belongs to, using the `collection` link relation
 
-# `Term Collection`
+# `Calendar Term Collection`
 
 ## Link relations
-A term collection representation:
+A calendar term collection representation:
 * *must* include a link to itself, using the `self` link relation
-* *may* include links to a number of its terms, using the `item` link relation
+* *may* include links to a number of its calendar term, using the `item` link relation
 
 ## Actions
-A term collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
+A calendar term collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
 The available actions are:
 * `search`: search for the collection's items.
@@ -129,8 +137,8 @@ The following fields are parameters of the action `search`:
         "name": "1920v"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/terms/1920v" },
-        { "rel": [ "collection" ], "href": "/v0/terms" }
+        { "rel": [ "self" ], "href": "/v0/calendar-terms/1920v" },
+        { "rel": [ "collection" ], "href": "/v0/calendar-terms" }
       ]
     },
     {
@@ -140,8 +148,8 @@ The following fields are parameters of the action `search`:
         "name": "1920i"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/terms/1920i" },
-        { "rel": [ "collection" ], "href": "/v0/terms" }
+        { "rel": [ "self" ], "href": "/v0/calendar-terms/1920i" },
+        { "rel": [ "collection" ], "href": "/v0/calendar-terms" }
       ]
     }
   ],
@@ -150,7 +158,7 @@ The following fields are parameters of the action `search`:
       "name": "search",
       "title": "Search items",
       "method": "GET",
-      "href": "/v0/terms{?limit,page}",
+      "href": "/v0/calendar-terms{?limit,page}",
       "isTemplated": true,
       "type": "application/vnd.siren+json",
       "fields": [
@@ -160,9 +168,9 @@ The following fields are parameters of the action `search`:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/terms?page=1&limit=2" },
-    { "rel": [ "next" ], "href": "/v0/terms?page=2&limit=2" },
-    { "rel": [ "previous" ], "href": "/v0/terms?page=0&limit=2" }
+    { "rel": [ "self" ], "href": "/v0/calendar-terms?page=1&limit=2" },
+    { "rel": [ "next" ], "href": "/v0/calendar-terms?page=2&limit=2" },
+    { "rel": [ "previous" ], "href": "/v0/calendar-terms?page=0&limit=2" }
   ]
 }
 ```

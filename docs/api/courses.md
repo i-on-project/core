@@ -1,8 +1,13 @@
 # `Course`
-A `Course`, also known as `Curricular Unit`, is an academic endeavor composed by classes, lecturers, etc. The full representation of a `Course`, in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
+A `course`, also known as `curricular unit`, is an academic endeavor composed by `classes`, academic `events`, etc.
+
+The `course` resource has three possible representations: a detailed (or full) representation, a reduced one (to be used as `item`s of course collections) and a `collection` representation. The following examples demonstrate the different representations of `course`s. The different representations of a `course` are in the [application/vnd.siren+json](https://github.com/kevinswiber/siren) media type.
 
 ## Properties
+All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
 * `acronym`: the course's unique acronym; an abbreviation of its name
+  - mandatory
   - type: **text**
   - e.g. "WAD"
 
@@ -14,8 +19,9 @@ A `Course`, also known as `Curricular Unit`, is an academic endeavor composed by
 A course representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include a link to the collection it belongs, using the `collection` link relation
+* *may* include a link to the currently active class (current semester), using the `/rel/current` link relation
 * *may* include links to its classes, using the `/rel/class` link relation
-* *may* include links to its events, using the `/rel/event` link relation
+* *may* include a link to its calendar, using the `/rel/calendar` link relation
 
 ## Actions
 * `delete`: delete the course
@@ -73,6 +79,7 @@ A course representation:
   ],
   "links": [
     { "rel": [ "self" ], "href": "/courses/wad" },
+    { "rel": [ "current" ], "href": "/v0/courses/wad/classes/1920v" },
     { "rel": [ "collection" ], "href": "/courses" }
   ]
 }
@@ -83,7 +90,10 @@ A course representation:
 A simplified representation of a `course`. This is how `course`s are represented as individual `collection` items.
 
 ## Properties
+All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
 * `acronym`: the course's unique acronym; an abbreviation of its name
+  - mandatory
   - type: **text**
   - e.g. "WAD"
 
@@ -91,6 +101,7 @@ A simplified representation of a `course`. This is how `course`s are represented
 A course item representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include a link to the `course collection` it belongs to, using the `collection` link relation
+* *may* include a link to the currently active class (current semester), using the `/rel/current` link relation
 
 # `Course Collection`
 
@@ -107,9 +118,9 @@ The available actions are:
   - unsafe
   - not templated
 
-* `search`:  search for the collection's items.
+* `search`: find groups of courses matching the specified parameters
   - safe
-  - templated
+  - not templated
 
 ## Fields
 The following fields are parameters of the action `search`:
@@ -135,6 +146,7 @@ The following fields are parameters of the action `search`:
       },
       "links": [
         { "rel": [ "self" ], "href": "/courses/wad" },
+		{ "rel": [ "current" ], "href": "/v0/courses/wad/classes/1920v" },
         { "rel": [ "collection" ], "href": "/courses" }
       ]
     },
@@ -146,6 +158,7 @@ The following fields are parameters of the action `search`:
       },
       "links": [
         { "rel": [ "self" ], "href": "/courses/sl" },
+		{ "rel": [ "current" ], "href": "/v0/courses/sl/classes/1920v" },
         { "rel": [ "collection" ], "href": "/courses" }
       ]
     }

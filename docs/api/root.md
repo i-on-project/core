@@ -13,7 +13,8 @@ Contains information about the API.
 An object containing some resources, aswell as some of the available operations for said resources.
 
 Available resources:
-* `Courses` 
+* `courses`
+* `calendar-terms`
 
 ## Example
 ```javascript
@@ -37,7 +38,7 @@ Available resources:
             }
         },
         "terms": {
-            "href": "/v0/terms{?limit,page}",
+            "href": "/v0/calendar-terms{?limit,page}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
                 "page": "/api-docs/params/page"
