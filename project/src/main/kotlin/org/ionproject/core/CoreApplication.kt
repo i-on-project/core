@@ -1,4 +1,4 @@
-package pt.isel.core
+package org.ionproject.core
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

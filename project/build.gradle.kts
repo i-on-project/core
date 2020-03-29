@@ -7,7 +7,7 @@ plugins {
 	kotlin("plugin.spring") version "1.3.71"
 }
 
-group = "pt.isel"
+group = "org.ionproject"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
