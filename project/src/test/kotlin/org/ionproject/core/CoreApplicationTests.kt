@@ -1,4 +1,4 @@
-package edu.isel.ion.core
+package org.ionproject.core
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
