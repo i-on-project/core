@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ClassSectionController(private val repo: ClassSectionRepo) {
-
-    private val CLASS = arrayOf("class", "section")
+    companion object {
+        private val CLASS = arrayOf("class", "section")
+    }
 
     @GetMapping("/v0/courses/{acr}/classes/{term}/{id}")
     fun get(@PathVariable acr: String, @PathVariable term: String, @PathVariable id: String): Siren {
@@ -18,6 +19,7 @@ class ClassSectionController(private val repo: ClassSectionRepo) {
         return SirenBuilder(cs)
             .klass(*CLASS)
             .link("self", "/v0/courses/${cs.course}/classes/${cs.calendarTerm}/${cs.id}")
+            .link("collection", "/v0/courses/${cs.course}/classes/${cs.calendarTerm}")
             .toSiren()
     }
 }

@@ -6,9 +6,17 @@ class Relation(
     val rel: String,
     val href: String)
 
+class Field(
+    val name: String,
+    val type: String,
+    @JsonProperty("class") val klass: String)
+
 class Action(
     val name: String,
-    val method: String)
+    val method: String,
+    val type: String,
+    val isTemplated: Boolean,
+    val fields: List<Field>)
 
 class Embed(
     @JsonProperty("class") val klass: List<String>,
@@ -31,6 +39,8 @@ class SirenBuilder(
     private val actions: MutableList<Action> = mutableListOf(),
     private val links: MutableList<Relation> = mutableListOf()) {
 
+    constructor() : this(Unit) // unit has empty properties
+
     fun klass(vararg klasses: String): SirenBuilder {
         klass.addAll(klasses)
         return this
@@ -46,8 +56,9 @@ class SirenBuilder(
         return this
     }
 
-    fun action(vararg acts: Action): SirenBuilder {
-        actions.addAll(acts)
+    fun action(name: String, method: String, type: String, isTemplated: Boolean, vararg fields: Field): SirenBuilder {
+        actions.add(
+            Action(name, method, type, isTemplated, fields.toList()))
         return this
     }
 

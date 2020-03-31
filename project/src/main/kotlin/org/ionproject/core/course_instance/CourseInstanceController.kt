@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class CourseInstanceController(private val repo: CourseInstanceRepo) {
-
-    private val CLASS = arrayOf("class")
+    companion object {
+        private val CLASS = arrayOf("class")
+    }
 
     @GetMapping("/v0/courses/{acr}/classes/{term}")
     fun get(@PathVariable acr: String, @PathVariable term: String): Siren {
@@ -18,12 +19,16 @@ class CourseInstanceController(private val repo: CourseInstanceRepo) {
         return SirenBuilder(ci)
             .klass(*CLASS)
             .link("self", "/v0/courses/${ci.course}/classes/${ci.calendarTerm}")
+            .link("collection", "/v0/courses/${ci.course}/classes")
+            .action("delete", "GET", "*/*", false)
+            .action("edit", "PATCH", "application/json", false)
             .toSiren()
     }
 
     @GetMapping("/v0/courses/{acr}/classes")
     fun getCollection(@PathVariable acr: String): Siren {
-        val ci = repo.getMany(acr)
+        // TODO: for now page and size don't do anything
+        val ci = repo.getPage(acr, 0, 3)
 
         // transforms all CourseInstances into Siren embeds
         val embeds = ci.map {
@@ -34,10 +39,11 @@ class CourseInstanceController(private val repo: CourseInstanceRepo) {
                 .toEmbed()
         }.toTypedArray()
 
-        return SirenBuilder(Unit) // unit has empty properties
+        return SirenBuilder()
             .klass(*CLASS, "collection")
             .entities(*embeds)
             .link("self", "/v0/courses/${acr}/classes")
+            .link("about", "/v0/courses/${acr}")
             .toSiren()
     }
 }

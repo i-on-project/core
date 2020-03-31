@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class CourseInstanceRepo {
-    fun get(acr: String, calendarTerm: String): CourseInstance =
-        CourseInstance(acr, calendarTerm) // for now
+    fun get(acr: String, calendarTerm: String): FullCourseInstance =
+        FullCourseInstance(acr, calendarTerm, "hey there") // for now
 
-    fun getMany(acr: String): List<CourseInstance> =
+    fun getPage(acr: String, page: Int, size: Int): List<CourseInstance> =
         listOf(
             CourseInstance(acr, "1920v"),
             CourseInstance(acr, "1920i"),
