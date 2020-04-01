@@ -1,34 +1,36 @@
-#Programme
+# Programme
+
 A programme represents a type of graduation such as LEIC or MEIC. 
 A programme is composed by a set of _offers_. 
 
-#Properties
-*Name
-    * mandatory: the programme's name
-    * type: text
-    * e.g. "Licenciatura em Engenharia Informática e de Computadores"
-*Acronym: programme's acronym
-    * mandatory
-    * type: text
-    * e.g. "LEIC"
+## Properties
+   * Name
+      -  mandatory: the programme's name
+      -  type: text
+      -  e.g. "Licenciatura em Engenharia Informática e de Computadores"
+    
+   * Acronym: programme's acronym
+      - mandatory
+      - type: text
+      - e.g. "LEIC"
 
-*Term Size: Duration in terms
-    * mandatory
-    * type: Integer
-    * e.g. 6 terms for LEIC, 4 terms for MEIC
+   * Term Size: Duration in terms
+      - mandatory
+      - type: Integer
+      - e.g. 6 terms for LEIC, 4 terms for MEIC
 
 
-#Link Relations
-A programme representation:
-    * must include a link to its context, using the self link relation.
-    * may include a link to the collection it belongs, using the collection link relation.
-    * must include a link to its _offers_.
+## Link Relations
+   * A programme representation
+      - must include a link to its context, using the self link relation.
+      - may include a link to the collection it belongs, using the collection link relation.
+      - must include a link to its _offers_.
 
-#Actions
-    *edit: edit's a programme
-    *add Offer: add's a curricular unit offer to the programme
+## Actions
+    * edit: edit's a programme
+    * add Offer: add's a curricular unit offer to the programme
 
-#Example representation
+## Example representation
 ```json
 {
     "class": [ "programme" ],
@@ -90,27 +92,28 @@ A programme representation:
     ]
 }
 ```
-Notes: The type List of field Precedents on action "add-offer",
-is not a well defined html type but one adopted for this representation.
-In the context of its use it represents a collection of precedent 
-curricular units to the current offer.
-Example: LS has as precedent SI1 and POO, the same can be represented
-with a list like "SI1,POO".
-Same for type boolean, even thought its not a defined html input type it suits better this case.
+## Notes: 
+   The type List of field Precedents on action "add-offer",
+   is not a well defined html type but one adopted for this representation.
+   In the context of its use it represents a collection of precedent 
+   curricular units to the current offer.
+   Example: LS has as precedent SI1 and POO, the same can be represented
+   with a list like "SI1,POO".
+   Same for type boolean, even thought its not a defined html input type it suits better this case.
 
 ---------------------------------------------------------------------
-#Programme Collection
+# Programme Collection
 A collection of the possible programmes.
 
-#Link Relations
-A programme representation:
-    * must include a link to its context, using the self link relation.
-    * may include links to the details of a programme, using the item link relation.
+## Link Relations
+   * A programme representation
+    - must include a link to its context, using the self link relation.
+    - may include links to the details of a programme, using the item link relation.
 
-#Actions
-    *add: add's a programme
+## Actions
+    * add: add's a programme
 
-#Example representation
+## Example representation
 ```json
 {
     "class": [ "collection", "programme" ],
@@ -149,45 +152,45 @@ A programme representation:
 
 ---------------------------------------------------------------------
 
-#ProgrammeOffer
-A ProgrammeOffer defines a CurricularUnit/Course that can be taken, in the context of a ProgrammeOffer.
-A ProgrammeOffer may have a sex of pre-conditions, for example the curricularTerm set where the offer is available or the curricularUnits that precede it.
+# ProgrammeOffer
+   A ProgrammeOffer defines a CurricularUnit/Course that can be taken, in the context of a ProgrammeOffer.
+   A ProgrammeOffer may have a set of pre-conditions, for example the curricularTerm set where the offer is available or the curricularUnits that precede it.
 
-#Properties
-*Acronym
-    * mandatory: the curricular unit acronym offered
-    * type: text
-    * e.g. "LS"
+# Properties
+   * Acronym
+      - mandatory: the curricular unit acronym offered
+      - type: text
+      - e.g. "LS"
 
-*Term Number: the starting term when the curricular unit can be taken.
-    * mandatory
-    * type: integer
+   * Term Number: the starting term when the curricular unit can be taken.
+      - mandatory
+      - type: integer
 
-*Credits: Duration in terms
-    * mandatory
-    * type: Integer
+   * Credits: Duration in terms
+      - mandatory
+      - type: Integer
 
-*Optional: If the curricular unit is optional or not
-    * mandatory
-    * type: boolean
+   * Optional: If the curricular unit is optional or not
+      - mandatory
+      - type: boolean  
 
-*Precedents: The curricular units that must be taken before it.
-    * mandatory
-    * type: List (check Programme notes)
+   * Precedents: The curricular units that must be taken before it.
+      - mandatory
+      - type: List (check Programme notes)
      e.g. "POO, SI1"
      Note: The precedent list gets the next depth of dependencies
      and not the full dependencies tree. (e.g. LS is dependent of POO but POO is dependant of PG)
 
-#Link Relations
-A programme representation:
-    * must include a link to its context, using the self link relation.
-    * must include a link to the programme it belongs, using the up link relation.
-    * must include a link to the curricular unit details.
+## Link Relations
+   A programme representation:
+       * must include a link to its context, using the self link relation.
+       * must include a link to the programme it belongs, using the up link relation.
+       * must include a link to the curricular unit details.
 
-#Actions
-    *edit: edit's the offer
+## Actions
+    * edit: edit's the offer
 
-#Example representation
+## Example representation
 ```json
 {
     "class": [ "offer" ],
