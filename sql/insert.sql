@@ -1,3 +1,7 @@
+insert into dbo.Programme(acronym, name, termSize) values
+	('LEIC', 'licenciatura eng. inf.', 6),
+	('MEIC', 'mestrado eng. inf.', 4);
+
 insert into dbo.CalendarTerm(id, start_date, end_date) values
 	( '1718v', null, null ),
 	( '1718i', null, null ),
@@ -19,6 +23,17 @@ insert into dbo.Course(acronym, name) values
 	( 'SL', 'Software Laboratory' ),
 	( 'WAD', 'Web Applications Development' ),
 	( 'DM', 'Discrete Mathematics' );
+	
+insert into dbo.ProgrammeOffer(programmeAcronym, courseAcronym, optional, termNumber, credits) VALUES 
+	('LEIC', 'WAD', TRUE, 3, 5),
+	('LEIC', 'SL', FALSE, 4,6),
+	('LEIC', 'DM', FALSE, 1, 5);
+
+--Significado: offerId 1 (WAD) é dependente de SL e DM
+insert into dbo.OfferDependencies(offerId, courseAcronym) VALUES --WAD 1, SL 2, DM 3
+	(1, 'SL'),
+	(1, 'DM');
+
 
 insert into dbo.Class(term, course) values
 	( '1718v', 'SL'  ),
