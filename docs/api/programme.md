@@ -76,7 +76,7 @@ A programme is composed by a set of _offers_.
             "name": "add-offer",
             "title": "Add Offer",
             "method": "POST",
-            "href": "/v0/programmes/LEIC",
+            "href": "/v0/programmes/LEIC/offer",
             "type": "application/json",
             "fields": [
                 { "name": "CourseAcronym", "type": "text"},
