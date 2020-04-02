@@ -44,19 +44,19 @@ A programme is composed by a set of _offers_.
             "class": [ "ProgrammeOffer" ],
             "title": "LS Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/LS"
+            "href": "/v0/programmes/LEIC/offers/1"
         },
         {
             "class": [ "ProgrammeOffer" ],
             "title": "AED Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/AED"
+            "href": "/v0/programmes/LEIC/offers/2"
         },
         {
             "class": [ "ProgrammeOffer" ],
             "title": "POO Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/POO"
+            "href": "/v0/programmes/LEIC/offers/3"
         }
     ],
     "actions": [
@@ -76,7 +76,7 @@ A programme is composed by a set of _offers_.
             "name": "add-offer",
             "title": "Add Offer",
             "method": "POST",
-            "href": "/v0/programmes/LEIC/offer",
+            "href": "/v0/programmes/LEIC/offers",
             "type": "application/json",
             "fields": [
                 { "name": "CourseAcronym", "type": "text"},
@@ -231,7 +231,7 @@ A collection of the possible programmes.
         }
     ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offer/1" }
+        { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/1" }
         { "rel": [ "related" ], "href": "/v0/programmes/LEIC" }
     ]
 }
