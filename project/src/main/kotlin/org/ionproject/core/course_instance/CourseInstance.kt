@@ -1,5 +1,8 @@
 package org.ionproject.core.course_instance
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import org.ionproject.core.class_section.ClassSection
+
 /**
  * Reduced representation of a Class.
  * This contains only enough information to uniquely identify the Class
@@ -14,4 +17,4 @@ open class CourseInstance(
 class FullCourseInstance(
     course: String,
     calendarTerm: String,
-    val name: String) : CourseInstance(course, calendarTerm)
+    @JsonIgnore val sections: List<ClassSection>) : CourseInstance(course, calendarTerm)
