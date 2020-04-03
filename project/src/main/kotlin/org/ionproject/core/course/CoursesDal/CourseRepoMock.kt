@@ -1,10 +1,12 @@
 package org.ionproject.core.course.CoursesDal
 
+import org.ionproject.core.common.MockMode
 import org.ionproject.core.common.model.Course
 import org.ionproject.core.course.CoursesDal.ICourseRepo
 import org.springframework.stereotype.Component
 
-@Component("repoMock")
+@Component
+@MockMode(true)
 class CourseRepoMock : ICourseRepo {
     override fun readCourses(): List<Course> {
         return listOf(

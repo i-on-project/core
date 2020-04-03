@@ -1,10 +1,13 @@
 package org.ionproject.core.common
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import java.net.URI
 
 class Relation(
         val rel: String,
-        val href: String,
+        val href: URI,
         val type: String? = null,
         val title: String? = null,
         @JsonProperty("class") val klass: List<String>? = null)
@@ -17,47 +20,47 @@ class Field(
 
 class Action(
         val name: String,
-        val href: String,
+        val href: URI,
         val title: String? = null,
-        val method: String? = null,
+        val method: HttpMethod? = null,
         val type: String? = null,
         val isTemplated: Boolean? = null,
         val fields: List<Field>? = null) {
 
     // Some actions that will be used constantly
     companion object {
-        fun genAddItemAction(href: String) = Action(
+        fun genAddItemAction(href: URI) = Action(
                 name = "add-item",
                 title = "Add Item",
-                method = "POST",
+                method = HttpMethod.POST,
                 href = href,
                 isTemplated = false,
-                type = "application/json")
+                type = JSON_MEDIA_TYPE)
 
-        fun genSearchAction(href: String) = Action(
+        fun genSearchAction(href: URI) = Action(
                 name = "search",
                 title = "Search items",
-                method = "GET",
+                method = HttpMethod.GET,
                 href = href,
                 isTemplated = true,
-                type = "application/vnd.siren+json",
+                type = JSON_MEDIA_TYPE,
                 fields = listOf(
                         Field(name = "limit", type = "number", klass = "param/limit"),
                         Field(name = "page", type = "number", klass = "param/page")
                 ))
 
-        fun genDeleteAction(href: String) = Action(
+        fun genDeleteAction(href: URI) = Action(
                 name = "delete",
                 href = href,
-                method = "GET",
+                method = HttpMethod.GET,
                 type = "*/*",
                 isTemplated = false)
 
-        fun genEditAction(href: String) = Action(
+        fun genEditAction(href: URI) = Action(
                 name = "edit",
                 href = href,
-                method = "PATCH",
-                type = "application/json",
+                method = HttpMethod.PATCH,
+                type = JSON_MEDIA_TYPE,
                 isTemplated = false)
     }
 }
@@ -104,11 +107,14 @@ class SirenBuilder(
         return this
     }
 
-    fun entities(ents: Iterable<EmbeddedRepresentation>): SirenBuilder {
+    fun entities(ents: Iterable<EmbeddedRepresentation>?): SirenBuilder {
         if (entities == null) {
             entities = mutableListOf()
         }
-        entities?.addAll(ents)
+
+        if (ents != null) {
+            entities?.addAll(ents)
+        }
         return this
     }
 
@@ -125,7 +131,7 @@ class SirenBuilder(
         return this
     }
 
-    fun link(r: String, href: String): SirenBuilder {
+    fun link(r: String, href: URI): SirenBuilder {
         if (links == null) {
             links = mutableListOf()
         }

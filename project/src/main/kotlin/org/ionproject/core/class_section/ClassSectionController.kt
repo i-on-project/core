@@ -7,6 +7,7 @@ import org.ionproject.core.course_instance.CourseInstanceController
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 @RestController
 class ClassSectionController(private val repo: ClassSectionRepo) {
@@ -24,9 +25,9 @@ class ClassSectionController(private val repo: ClassSectionRepo) {
         val selfHref = buildHref(cs.course, cs.calendarTerm, cs.id)
         return SirenBuilder(cs)
                 .klass(*CLASS)
-                .link("self", selfHref)
-                .link("collection", CourseInstanceController.buildHref(cs.course, cs.calendarTerm))
-                .action(Action.genDeleteAction(selfHref))
+                .link("self", URI(selfHref))
+                .link("collection", URI(CourseInstanceController.buildHref(cs.course, cs.calendarTerm)))
+                .action(Action.genDeleteAction(URI(selfHref)))
                 .toSiren()
     }
 }

@@ -1,5 +1,7 @@
 package org.ionproject.core.common
 
+import org.springframework.http.MediaType
+
 const val APPLICATION_TYPE = "application"
 const val SIREN_SUBTYPE = "vnd.siren+json"
 const val JSON_SUBTYPE = "json"

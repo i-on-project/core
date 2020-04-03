@@ -1,8 +1,8 @@
 package org.ionproject.core.course.CoursesDal
 
-import org.ionproject.core.common.model.Course
+import org.ionproject.core.common.modelInterfaces.ICourse
 
 interface ICourseRepo {
-    fun readCourses(): List<Course>
-    fun readCourse(acr: String): Course
+    fun readCourses(): List<ICourse>
+    fun readCourse(acr: String): ICourse
 }

@@ -1,9 +1,8 @@
 package org.ionproject.core.course
 
 import edu.isel.daw.project.common.SirenEntity
-import org.ionproject.core.common.V0_COURSES
-import org.ionproject.core.common.V0_COURSES_ACR
-import org.ionproject.core.common.authentication.RequiresAuth
+import org.ionproject.core.common.*
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 /*
@@ -12,19 +11,19 @@ import org.springframework.web.bind.annotation.*
  * representation?
  */
 @RestController
-@RequestMapping(V0_COURSES, headers =
-            [ "Accept=application/json", "Accept=application/vnd.siren+json"])
-class CourseSpringController(private val courseController: CourseController){
+class CourseSpringController(private val courseServices: CourseServices){
 
-    @GetMapping
-    fun getCourses() : SirenEntity<Nothing> {
-        val courses = courseController.getCourses()
+    @GetMapping(COURSES_PATH)
+    @ResponseStatus(HttpStatus.OK)
+    fun getCourses() : Siren {
+        val courses = courseServices.getCourses()
         return CoursesOutputModel(courses).toSirenObject()
     }
 
-    @GetMapping(V0_COURSES_ACR)
-    fun getCourse(@PathVariable acr: String) : SirenEntity<CourseOutputModel> {
-        val course = courseController.getCourse(acr)
+    @GetMapping(COURSES_PATH_ACR)
+    @ResponseStatus(HttpStatus.OK)
+    fun getCourse(@PathVariable acr: String) : Siren {
+        val course = courseServices.getCourse(acr)
         return CourseOutputModel(course.acronym,
                 course.name,
                 course.calendarId).toSirenObject()
@@ -35,17 +34,19 @@ class CourseSpringController(private val courseController: CourseController){
      * that to use this endpoint credentials must be
      * provided.
      */
-    @DeleteMapping(V0_COURSES_ACR)
-    @RequiresAuth
+    @DeleteMapping(COURSES_PATH_ACR)
+    @RequiresAuthentication
     fun deleteCourse(@PathVariable acr: String) {
         TODO("Waiting write API")
     }
 
-    @PatchMapping(V0_COURSES_ACR)
-    @RequiresAuth
+    @PatchMapping(COURSES_PATH_ACR)
+    @RequiresAuthentication
     fun editCourse(@PathVariable acr: String) {
         TODO("Waiting write API")
     }
 
     //TODO: Siren Action search items implementation com query params
+
+    //Em caso de status code 406 retornar problem json com body
 }
