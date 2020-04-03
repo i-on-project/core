@@ -16,7 +16,7 @@ A programme is composed by a set of _offers_.
 
    * Term Size: Duration in terms
       - mandatory
-      - type: Integer
+      - type: number
       - e.g. 6 terms for LEIC, 4 terms for MEIC
 
 
@@ -41,35 +41,41 @@ A programme is composed by a set of _offers_.
     },
     "entities": [
         {
-            "class": [ "ProgrammeOffer" ],
+            "class": [ "offer" ],
             "title": "LS Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/1"
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/1"}
+            ]
         },
         {
-            "class": [ "ProgrammeOffer" ],
+            "class": [ "offer" ],
             "title": "AED Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/2"
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/2"}
+            ]
         },
         {
-            "class": [ "ProgrammeOffer" ],
+            "class": [ "offer" ],
             "title": "POO Offer",
             "rel": [ "/rel/programmeOffer" ],
-            "href": "/v0/programmes/LEIC/offers/3"
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/3"}
+            ]
         }
     ],
     "actions": [
         {
             "name": "edit-programme",
-            "title": "edits a programme",
+            "title": "Edit Programme",
             "method": "PUT",
             "href": "/v0/programmes/LEIC",
             "type": "application/json",
             "fields": [
                 { "name": "ProgrammeName", "type": "text"},
-                { "name": "acronym", "type": "text"},
-                { "name": "termSize", "type": "number"}
+                { "name": "Acronym", "type": "text"},
+                { "name": "TermSize", "type": "number"}
             ]
         },
                 {
@@ -80,7 +86,7 @@ A programme is composed by a set of _offers_.
             "type": "application/json",
             "fields": [
                 { "name": "CourseAcronym", "type": "text"},
-                { "name": "CurricularTerm", "type": "Integer" },
+                { "name": "CurricularTerm", "type": "number" },
                 { "name": "Precedents", "type": "List" }
                 { "name": "Optional", "type": "boolean"}
             ]
@@ -119,27 +125,31 @@ A collection of the possible programmes.
     "class": [ "collection", "programme" ],
     "entities": [
         {
-            "class": [ "Programme" ],
-            "rel": [ "item" ],
-            "href": "/v0/programmes/LEIC"
+            "class": [ "programme" ],
+            "rel": [ "item" ],      
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/programmes/LEIC" }
+            ]
         },
         {
             "class": [ "Programme" ],
             "rel": [ "item" ],
-            "href": "/v0/programmes/MEIC"
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/programmes/MEIC" }
+            ]
         }
     ],
     "actions": [
         {
             "name": "add-programme",
-            "title": "add's a programme",
+            "title": "Add Programme",
             "method": "POST",
             "href": "/v0/programmes/",
             "type": "application/json",
             "fields": [
                 { "name": "ProgrammeName", "type": "text"},
-                { "name": "acronym", "type": "text"},
-                { "name": "termSize", "type": "number"}
+                { "name": "Acronym", "type": "text"},
+                { "name": "TermSize", "type": "number"}
             ]
         }
     ],
@@ -164,11 +174,11 @@ A collection of the possible programmes.
 
    * Term Number: the starting term when the curricular unit can be taken.
       - mandatory
-      - type: integer
+      - type: number
 
    * Credits: Duration in terms
       - mandatory
-      - type: Integer
+      - type: number
 
    * Optional: If the curricular unit is optional or not
       - mandatory
@@ -205,13 +215,17 @@ A collection of the possible programmes.
     "entities": [
         {
             "class": [ "course" ],
-            "rel": [ "/rels/course" ],
-            "href": "/v0/courses/SI1"
+            "rel": [ "/rel/course" ],
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/courses/SI1" }
+            ]
         },
         {
             "class": [ "course" ],
-            "rel": [ "/rels/course" ],
-            "href": "/v0/courses/POO"
+            "rel": [ "/rel/course" ],
+            "links" : [
+                { "rel": [ "self" ], "href": "/v0/courses/POO" }
+            ]
         }
     ],
     "actions": [
@@ -222,11 +236,11 @@ A collection of the possible programmes.
             "type": "application/json",
             "href": "/v0/courses/SI1",
             "fields": [
-                { "name": "acronym", "type": "text"},
-                { "name": "termNumber", "type": "integer"},
-                { "name": "credits", "type": "integer"},
-                { "name": "optional", "type": "boolean"},
-                { "name": "precedents", "type": "list"},
+                { "name": "Acronym", "type": "text"},
+                { "name": "TermNumber", "type": "number"},
+                { "name": "Credits", "type": "number"},
+                { "name": "Optional", "type": "boolean"},
+                { "name": "Precedents", "type": "list"},
             ]
         }
     ],
