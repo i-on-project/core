@@ -18,7 +18,7 @@ class Journal(
     dateTimeStart: DateTimeStart,
     created: DateTimeCreated,
     categories: Categories
-) : CalendarComponent() {
+) : CalendarComponent(uniqueIdentifier, summary, description, attachment, dateTimeStamp, dateTimeStart, created, categories) {
 
     override val componentName: String
         get() = iCalName

@@ -14,24 +14,17 @@ class Attachment private constructor(
     formatType: FormatType?
 ) : Property(value, inlineEncoding, valueDataType, formatType) {
 
+    constructor(uri: Uri) : this(uri, null, null, null)
+
+    constructor(binary: Binary, formatType: FormatType? = null) : this(binary,
+    InlineEncoding(InlineEncoding.Type.BASE64),
+    ValueDataType(binary),
+    formatType)
+
     override val name: String
         get() = iCalName
 
     companion object {
         private const val iCalName = "ATTACH"
-
-        operator fun invoke(uri: Uri?, binary: Binary?, formatType: FormatType?) : Attachment {
-            if (uri != null) {
-                if (binary != null) throw IllegalArgumentException("Can't specify both uri and binary.")
-                return Attachment(uri, null, null, null)
-            }
-            if (binary == null) throw IllegalArgumentException("Need to specify both uri or binary. Both can not be null.")
-            return Attachment(
-                binary,
-                InlineEncoding(InlineEncoding.Type.BASE64),
-                ValueDataType(binary),
-                formatType
-            )
-        }
     }
 }
