@@ -1,56 +1,28 @@
 package org.ionproject.core.calendar.icalendar.properties
 
-import org.ionproject.core.calendar.icalendar.iCalendarVersion
-import org.ionproject.core.calendar.icalendar.properties.params.PropertyParameter
-import org.ionproject.core.calendar.icalendar.types.DateTime
-import org.ionproject.core.calendar.icalendar.types.DurationType
-import org.ionproject.core.calendar.icalendar.types.Recur
-import org.ionproject.core.calendar.icalendar.types.Text
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 
 abstract class Property(
-    val name: String,
     val values: List<Any>,
     val parameters: List<PropertyParameter> = emptyList()
 ) {
     constructor(
-        name: String,
+        value: List<Any>,
+        vararg parameters: PropertyParameter?
+    ) : this(value, listOfNotNull(*parameters))
+
+    constructor(
         value: Any,
-        parameters: List<PropertyParameter> = emptyList()
-    ) : this(name, listOf(value), parameters)
+        vararg parameters: PropertyParameter?
+    ) : this(listOf(value), listOfNotNull(*parameters))
+
+    abstract val name: String
 
     override fun toString(): String {
-        val parameters = StringBuilder()
-        this.parameters.forEach {
-            parameters.append(";$it")
-        }
-        val values = this.values.map{
-            it.toString()
-        }.reduceRight { acc, str ->
-            return "$str,$acc"
-        }
+        val parameters = this.parameters.joinToString(";")
+        val values = this.values.joinToString(",")
 
-        return "$name$parameters:$values"
+        return "$name$parameters:$values\r\n"
     }
 }
-class ProdId(text: Text) : Property("PRODID", text)
-class Version(text: Text = Text(iCalendarVersion)) : Property("VERSION", text)
-
-class UID(value: Int) : Property("UID", value)
-
-class DtStart(value: DateTime) : Property("DTSTART", value)
-class DtStamp(value: DateTime) : Property("DTSTAMP", value)
-class DtEnd(value: DateTime) : Property("DTEND", value)
-class DtCreated(value: DateTime) : Property("CREATED", value)
-
-class Summary(text: Text) : Property("SUMMARY", text)
-
-class Description(text: Text) : Property("DESCRIPTION", text)
-
-class Categories(categories: List<String>) : Property("CATEGORY", categories) {
-    constructor(vararg categories: String) : this(categories.toList())
-}
-
-class Duration(duration: DurationType) : Property("DURATION", duration)
-
-class RecurrenceRule(recur: Recur) : Property("RRULE", recur)
 

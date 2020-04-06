@@ -16,17 +16,23 @@ class Recur(
     val bySetPos: List<YearDay>? = null,
     val weekStart: WeekDay.Weekday = WeekDay.Weekday.SU
 ) {
+    init {
+        if (until != null && count != null) throw IllegalArgumentException("UNTIL and COUNT can't both be specified.")
+    }
+
     override fun toString(): String {
         val builder = StringBuilder()
-        builder.appendIfNotNull(frequency, until, count, interval, bySecond, byMinute, byHour, byDay, byMonthDay,
+        builder.appendIfNotNull(
+            frequency, until, count, interval, bySecond, byMinute, byHour, byDay, byMonthDay,
             byYearDay,
-            byWeekNo, byMonth, bySetPos, weekStart)
+            byWeekNo, byMonth, bySetPos, weekStart
+        )
         return builder.toString()
     }
 }
 
 private fun StringBuilder.appendIfNotNull(vararg objs: Any?) {
-    for(obj in objs) {
+    for (obj in objs) {
         if (obj != null) this.append(obj.toString())
     }
 }
@@ -38,29 +44,27 @@ class Week(
     val positive: Boolean = true
 ) {
     init {
-        if (number < 1 || number > MAX_WEEK_NUMBER) throw IllegalWeekException(
-            "A week must be between 1 and " +
-                    "$MAX_WEEK_NUMBER"
-        )
+        if (number < 1 || number > MAX_WEEK_NUMBER) throw IllegalWeekException("A week must be between 1 and $MAX_WEEK_NUMBER")
     }
 }
+
 class IllegalWeekException(s: String) : Exception(s)
 
 private const val MAX_MONTH_NUMBER = 12
+
 class MonthNumber(
     val number: Int,
     val positive: Boolean = true
 ) {
     init {
-        if (number < 1 || number > MAX_MONTH_NUMBER) throw IllegalMonthException(
-            "A week must be between 1 and " +
-                    "$MAX_MONTH_NUMBER"
-        )
+        if (number < 1 || number > MAX_MONTH_NUMBER) throw IllegalMonthException("A week must be between 1 and $MAX_MONTH_NUMBER")
     }
 }
+
 class IllegalMonthException(s: String) : Exception(s)
 
 private const val MAX_YEAR_DAY = 366
+
 class YearDay(
     val value: Int,
     val positive: Boolean = true

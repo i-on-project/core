@@ -1,30 +1,32 @@
 package org.ionproject.core.calendar.icalendar
 
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.twoPhaseReduce
 
 abstract class CalendarComponent(
-    val properties: List<Property>,
-    val components: MutableList<CalendarComponent>? = null
+    vararg properties: Property?,
+    private val subComponents: MutableList<CalendarComponent>? = null
 ) {
+    val properties = listOfNotNull(*properties)
+
     abstract val componentName: String
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        builder.appendln("BEGIN:V$componentName")
-        properties.forEach {
-            builder.appendln(it.toString().iCalendarFold())
-        }
-        components?.forEach {
-            builder.appendln(it)
-        }
-        builder.append("END:V$componentName")
-        return builder.toString()
+        val properties = this.properties.twoPhaseReduce({ it.toString().iCalendarFold() },{ acc, it ->
+            "$acc$it"
+        })
+
+        val subComponents = this.subComponents?.twoPhaseReduce({ it.toString() },{ acc, it ->
+            "$acc$it"
+        }) ?: ""
+
+        return "BEGIN:$componentName\r\n$properties${subComponents}END:$componentName\r\n"
     }
 }
 
 private const val ICALENDAR_MAX_CONTENT_LINE_LENGTH = 75
 
-private fun String.iCalendarFold(): String =
-    this.chunkedSequence(ICALENDAR_MAX_CONTENT_LINE_LENGTH).reduce { acc, s ->
-        return "$acc\r\n $s"
-    }
+private fun String.iCalendarFold(): String {
+    val chunks = chunkedSequence(ICALENDAR_MAX_CONTENT_LINE_LENGTH)
+    return chunks.joinToString("\r\n ")
+}
