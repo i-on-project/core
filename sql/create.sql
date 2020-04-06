@@ -1,7 +1,7 @@
 CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
 create table dbo.Programme(
-	id   		INT generated always as identity primary key
+	id   		INT generated always as identity primary key,
 	acronym 	VARCHAR(10),				
 	name		VARCHAR(100) UNIQUE,			-- It may be null in this phase
 	termSize	INT					
@@ -12,18 +12,18 @@ create table dbo.Calendar (
 );
 
 create table dbo.Course (
-	id   		INT generated always as identity primary key
+	id   	 INT generated always as identity primary key,
 	acronym  varchar(10),	
-	name     varchar(100) unique,				-- It may be null in this phase
+	name     varchar(100) unique				-- It may be null in this phase
 );
 
 
 create table dbo.ProgrammeOffer(
-	programmeAcronym	VARCHAR(10) REFERENCES dbo.Programme(acronym),
-	courseAcronym 		VARCHAR(10) REFERENCES dbo.Course(acronym),
+	programmeId 		INT REFERENCES dbo.Programme(id),
+	courseId 		INT REFERENCES dbo.Course(id),
 	termNumber		INT, 
 	optional		BOOLEAN,
-	PRIMARY KEY(programmeAcronym, courseAcronym, termNumber)
+	PRIMARY KEY(programmeId, courseId, termNumber)
 );
 
 create table dbo.CalendarTerm (
@@ -34,19 +34,19 @@ create table dbo.CalendarTerm (
 );
 
 create table dbo.Class (
-	course   varchar(10) references dbo.Course(acronym),
+	courseId INT references dbo.Course(id),
 	term     varchar(10) references dbo.CalendarTerm(id),
 	calendar int references dbo.Calendar(id),
-	primary key(course, term)
+	primary key(courseId, term)
 );
 
 create table dbo.ClassSection (
 	id       varchar(10),
-	course   varchar(10),
+	courseId   INT,
 	term     varchar(10),
 	calendar int references dbo.Calendar(id),
-	foreign key(course, term) references dbo.Class(course, term),
-	primary key(id, course, term)
+	foreign key(courseId, term) references dbo.Class(courseId, term),
+	primary key(id, courseId, term)
 );
 
 create table dbo.CalendarComponent (
