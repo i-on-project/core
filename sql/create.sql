@@ -1,13 +1,10 @@
-CREATE SCHEMA dbo; 
---Tive que criar um schema para poder usar o dbo,
---no entanto isso era desnecessário, postgres ja usa o
---schema 'public' por default sem ter que dar ao trabalho de 
---indexar. https://www.postgresql.org/docs/8.1/ddl-schemas.html 5.7.2
+CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
 create table dbo.Programme(
-	acronym 	VARCHAR(10) PRIMARY KEY,
-	name		VARCHAR(100) UNIQUE NOT NULL,
-	termSize	INT					--qual é um range aceitavel de termSizes?
+	id   		INT generated always as identity primary key
+	acronym 	VARCHAR(10),				
+	name		VARCHAR(100) UNIQUE,			-- It may be null in this phase
+	termSize	INT					
 );
 
 create table dbo.Calendar (
@@ -15,32 +12,18 @@ create table dbo.Calendar (
 );
 
 create table dbo.Course (
-	acronym  varchar(10) primary key,
-	name     varchar(100) unique not null,
-	calendar int references dbo.Calendar(id)
+	id   		INT generated always as identity primary key
+	acronym  varchar(10),	
+	name     varchar(100) unique,				-- It may be null in this phase
 );
 
---No caso em que exista alguma regra que diz que a UC apenas
---pode ser oferecida APENAS no semestre 4 e 6 isso vai ficar mais complexo
---porque n existe a entidade curricularTerm,
---é um atributo single-value da tabela. 
+
 create table dbo.ProgrammeOffer(
-	id					INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	programmeAcronym	VARCHAR(10) REFERENCES dbo.Programme(acronym),
 	courseAcronym 		VARCHAR(10) REFERENCES dbo.Course(acronym),
-	optional			BOOLEAN,
-	termNumber			INT, 				--INSTEAD OF trigger deve verificar se termNumber é >0 e <termSize de programme
-	credits				INT					--qual é um range aceitavel de credits?
-);
-
---Eu continuo a achar que a relação de precedencias/dependencias
---devia ser entre programmeOffer<->programmeOffer de N para N
---sem obrigatoriedade. é menos chaves compostas e a tabela offers
---tem que ter de qualquer maneira as UC's oferecidas...
-create table dbo.OfferDependencies(			--Assumi que cada grafo de dependencias depende do programme
-	id				INT GENERATED ALWAYS AS IDENTITY,
-	offerId			INT REFERENCES dbo.ProgrammeOffer(id),
-	courseAcronym 	VARCHAR(10) REFERENCES dbo.Course(acronym)
+	termNumber		INT, 
+	optional		BOOLEAN,
+	PRIMARY KEY(programmeAcronym, courseAcronym, termNumber)
 );
 
 create table dbo.CalendarTerm (
