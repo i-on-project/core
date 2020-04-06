@@ -5,11 +5,10 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 class GeographicPosition(
     f1: Float,
     f2: Float
-) : Property("$f1;$f2") {
-    override val name: String
-        get() = iCalName
+) : Property {
 
-    companion object {
-        private const val iCalName = "GEO"
-    }
+    override val value: String = "$f1;$f2"
+
+    override val name: String
+        get() = "GEO"
 }

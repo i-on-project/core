@@ -1,17 +1,17 @@
 package org.ionproject.core.calendar.icalendar.properties.components.datetime
 
+import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.FreeBusyTimeType
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.types.PeriodOfTime
 
 class FreeBusyTime(
-    value: PeriodOfTime,
-    freeBusyTimeType: FreeBusyTimeType?
-) : Property(value, freeBusyTimeType) {
+    override val value: PeriodOfTime,
+    val freeBusyTimeType: FreeBusyTimeType? = null
+) : ParameterizedProperty {
+    override val parameters: List<PropertyParameter?>
+        get() = listOf(freeBusyTimeType)
     override val name: String
-        get() = iCalName
-
-    companion object {
-        private const val iCalName = "FREEBUSY"
-    }
+        get() = "FREEBUSY"
 }

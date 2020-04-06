@@ -1,17 +1,22 @@
 package org.ionproject.core.calendar.icalendar.properties.components.timezone
 
+import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
+import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 import org.ionproject.core.calendar.icalendar.types.Text
+import org.ionproject.core.calendar.toText
 
 class TimeZoneName(
-    value: Text,
-    language: Language?
-) : Property(value, language) {
-    override val name: String
-        get() = iCalName
+    value: String,
+    val language: Language? = null
+) : ParameterizedProperty {
+    override val parameters: List<PropertyParameter?>
+        get() = listOf(language)
 
-    companion object {
-        private const val iCalName = "TZNAME"
-    }
+    override val name: String
+        get() = "TZNAME"
+
+    override val value: Text = value.toText()
 }

@@ -23,51 +23,52 @@ import org.ionproject.core.calendar.icalendar.types.Duration as DurationType
 
 class CalendarRepository {
 
-    operator fun get(id: Int): Calendar? = calendars[id]
+    operator fun get(entity: Int): HashMap<Int, Calendar>? = calendars[entity]
 
-    private val calendars = HashMap<Int, Calendar>()
+    private val calendars = mapOf<Int, HashMap<Int, Calendar>>(
+        CLASS to HashMap<Int, Calendar>(),
+        CLASS_SECTION to HashMap<Int, Calendar>(),
+        PROGRAMME to HashMap<Int, Calendar>()
+    )
+
+    companion object {
+        const val CLASS = 1
+        const val CLASS_SECTION = 2
+        const val PROGRAMME = 3
+    }
 
     init {
-        val productIdentifier = "class/1"
-
-        val eventUid = "event/1234"
-        val summary = "Exame de DAW"
         val language = Language("pt/PT")
-        val description = "Exame de Época normal de DAW"
-        val stamp = DateTime.parse("20200226T143423Z")
-        val categories = listOf("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON")
-        val start = DateTime.parse("20200620T140000Z")
-        val duration = DurationType(hours = 2, minutes = 30)
 
-        calendars[1] = Calendar(
-            ProductIdentifier(productIdentifier),
+        calendars[CLASS]?.set(1, Calendar(
+            ProductIdentifier("class/1"),
             Version(),
             null,
             null,
             Event(
-                UniqueIdentifier(eventUid),
+                UniqueIdentifier("event/1234"),
                 Summary(
-                    summary,
+                    "Exame de DAW",
                     language = language
                 ),
-                Description(description, language = language),
-                DateTimeStamp(stamp),
-                DateTimeCreated(stamp),
-                Categories(categories, Language("en")),
-                DateTimeStart(start),
-                Duration(duration)
+                Description("Exame de Época normal de DAW", language = language),
+                DateTimeStamp(DateTime.parse("20200226T143423Z")),
+                DateTimeCreated(DateTime.parse("20200226T143423Z")),
+                Categories(listOf("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON"), Language("en")),
+                DateTimeStart(DateTime.parse("20200620T140000Z")),
+                Duration(DurationType(hours = 2, minutes = 30))
             ),
             Todo(
                 UniqueIdentifier("todo/1324"),
                 Summary("Primeira fase de exercícios de DAW", language = language),
                 Description("Web API para suportar projetos, issues, labels, state e comments", language = language),
-                Attachment(Uri("https://github.com/isel-leic-daw/1920v-public/wiki/phase-1)")),
+                Attachment(Uri("https://github.com/isel-leic-daw/1920v-public/wiki/phase-1")),
                 DateTimeStamp(DateTime.parse("20200302T100545Z")),
                 DateTimeCreated(DateTime.parse("20200302T100545Z")),
                 DateTimeDue(Date(2020, 4, 20)),
                 Categories(listOf("DAW", "EVALUATION", "ASSIGNMENT"))
             )
-        )
+        ))
     }
 
 }

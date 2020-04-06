@@ -1,23 +1,20 @@
 package org.ionproject.core.calendar.icalendar.properties.components.relationship
 
-import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.calendar.icalendar.properties.parameters.CommonName
-import org.ionproject.core.calendar.icalendar.properties.parameters.DirectoryEntryReference
-import org.ionproject.core.calendar.icalendar.properties.parameters.Language
-import org.ionproject.core.calendar.icalendar.properties.parameters.SentBy
+import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
+import org.ionproject.core.calendar.icalendar.properties.parameters.*
 import org.ionproject.core.calendar.icalendar.types.CalendarUserAddress
 
 class Organizer(
-    value: CalendarUserAddress,
-    language: Language?,
-    commonName: CommonName?,
-    directoryEntryReference: DirectoryEntryReference?,
-    sentBy: SentBy?
-) : Property(value, language, commonName, directoryEntryReference, sentBy) {
-    override val name: String
-        get() = iCalName
+    override val value: CalendarUserAddress,
+    val language: Language? = null,
+    val commonName: CommonName? = null,
+    val directoryEntryReference: DirectoryEntryReference? = null,
+    val sentBy: SentBy? = null
+) : ParameterizedProperty {
 
-    companion object {
-        private const val iCalName = "ORGANIZER"
-    }
+    override val parameters: List<PropertyParameter?>
+        get() = listOf(language, commonName, directoryEntryReference, sentBy)
+
+    override val name: String
+        get() = "ORGANIZER"
 }

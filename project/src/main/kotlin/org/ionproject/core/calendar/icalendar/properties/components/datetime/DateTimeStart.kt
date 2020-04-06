@@ -1,25 +1,26 @@
 package org.ionproject.core.calendar.icalendar.properties.components.datetime
 
+import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.properties.parameters.TimeZoneIdentifier
 import org.ionproject.core.calendar.icalendar.properties.parameters.ValueDataType
 import org.ionproject.core.calendar.icalendar.types.Date
 import org.ionproject.core.calendar.icalendar.types.DateTime
+import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 
 class DateTimeStart private constructor(
-    value: Any,
-    valueDataType: ValueDataType?,
-    timeZoneIdentifier: TimeZoneIdentifier?
-) : Property(value, valueDataType, timeZoneIdentifier) {
+    override val value: ICalendarDataType,
+    val valueDataType: ValueDataType?,
+    val timeZoneIdentifier: TimeZoneIdentifier?
+) : ParameterizedProperty {
 
     constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(dateTime, null, timeZoneIdentifier)
     constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(date, ValueDataType(date), timeZoneIdentifier)
 
+    override val parameters: List<PropertyParameter?>
+        get() = listOf(valueDataType, timeZoneIdentifier)
+
     override val name: String
-        get() = iCalName
-
-    companion object {
-        private const val iCalName = "DTSTART"
-
-    }
+        get() = "DTSTART"
 }

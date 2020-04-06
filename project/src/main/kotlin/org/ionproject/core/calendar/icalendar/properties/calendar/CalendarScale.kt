@@ -1,9 +1,15 @@
 package org.ionproject.core.calendar.icalendar.properties.calendar
 
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.types.Text
+import org.ionproject.core.calendar.toText
 
-class CalendarScale(value: Text = Text("GREGORIAN")) : Property(value) {
+class CalendarScale(
+    text: String = "GREGORIAN"
+) : Property {
+
+    override val value: Text = text.toText()
 
     override val name: String
         get() = iCalName

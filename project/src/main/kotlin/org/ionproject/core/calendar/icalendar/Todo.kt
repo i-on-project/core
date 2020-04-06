@@ -18,7 +18,7 @@ class Todo(
     created: DateTimeCreated,
     due: DateTimeDue,
     categories: Categories
-) : CalendarComponent(uniqueIdentifier, summary, description, attachment, dateTimeStamp, created, due, categories) {
+) : CalendarComponent(uniqueIdentifier, dateTimeStamp, summary, description, attachment, created, due, categories) {
     override val componentName: String
         get() = iCalName
 

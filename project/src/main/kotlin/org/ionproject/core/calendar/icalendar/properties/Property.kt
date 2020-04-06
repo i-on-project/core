@@ -1,28 +1,14 @@
 package org.ionproject.core.calendar.icalendar.properties
 
-import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
+import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 
-abstract class Property(
-    val values: List<Any>,
-    val parameters: List<PropertyParameter> = emptyList()
-) {
-    constructor(
-        value: List<Any>,
-        vararg parameters: PropertyParameter?
-    ) : this(value, listOfNotNull(*parameters))
+interface Property {
 
-    constructor(
-        value: Any,
-        vararg parameters: PropertyParameter?
-    ) : this(listOf(value), listOfNotNull(*parameters))
+    val name: String
+    val value: ICalendarDataType
 
-    abstract val name: String
-
-    override fun toString(): String {
-        val parameters = this.parameters.joinToString(";")
-        val values = this.values.joinToString(",")
-
-        return "$name$parameters:$values\r\n"
+    fun toiCalendar(): String {
+        return "$name:$value\r\n"
     }
 }
 

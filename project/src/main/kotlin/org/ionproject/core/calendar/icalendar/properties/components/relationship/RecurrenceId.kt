@@ -1,18 +1,21 @@
 package org.ionproject.core.calendar.icalendar.properties.components.relationship
 
+import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.properties.parameters.RecurrenceIdentifierRange
 import org.ionproject.core.calendar.icalendar.properties.parameters.TimeZoneIdentifier
 import org.ionproject.core.calendar.icalendar.properties.parameters.ValueDataType
 import org.ionproject.core.calendar.icalendar.types.Date
 import org.ionproject.core.calendar.icalendar.types.DateTime
+import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 
 class RecurrenceId private constructor(
-    value: Any,
-    valueDataType: ValueDataType?,
-    timeZoneIdentifier: TimeZoneIdentifier?,
-    recurrenceIdentifierRange: RecurrenceIdentifierRange?
-) : Property(value, valueDataType, timeZoneIdentifier, recurrenceIdentifierRange) {
+    override val value: ICalendarDataType,
+    val valueDataType: ValueDataType? = null,
+    val timeZoneIdentifier: TimeZoneIdentifier? = null,
+    val recurrenceIdentifierRange: RecurrenceIdentifierRange? = null
+) : ParameterizedProperty {
 
     constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier?, recurrenceIdentifierRange: RecurrenceIdentifierRange?) : this(
         dateTime,
@@ -28,10 +31,9 @@ class RecurrenceId private constructor(
         recurrenceIdentifierRange
     )
 
-    override val name: String
-        get() = iCalName
+    override val parameters: List<PropertyParameter?>
+        get() = listOf(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
 
-    companion object {
-        private const val iCalName = "RECURRENCE-ID"
-    }
+    override val name: String
+        get() = "RECURRENCE-ID"
 }

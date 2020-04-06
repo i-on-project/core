@@ -22,7 +22,7 @@ class Event private constructor(
     end: DateTimeEnd?,
     duration: Duration?,
     recurrenceRule: RecurrenceRule?
-) : CalendarComponent(uid, summary, description, stamp, created, categories, start, end, duration, recurrenceRule) {
+) : CalendarComponent(uid, stamp, summary, description, created, categories, start, end, duration, recurrenceRule) {
 
     constructor(
         uid: UniqueIdentifier,
@@ -49,9 +49,5 @@ class Event private constructor(
     ) : this(uid, summary, description, stamp, created, categories, start, end, null, recurrenceRule)
 
     override val componentName: String
-        get() = iCalName
-
-    companion object {
-        private const val iCalName = "VEVENT"
-    }
+        get() = "VEVENT"
 }
