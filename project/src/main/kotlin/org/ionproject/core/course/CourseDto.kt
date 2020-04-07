@@ -1,16 +1,10 @@
 package org.ionproject.core.course
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import edu.isel.daw.project.common.EmbeddedEntity
-import edu.isel.daw.project.common.SirenAction
-import edu.isel.daw.project.common.SirenEntity
-import edu.isel.daw.project.common.SirenLink
 import org.ionproject.core.common.*
 import org.ionproject.core.common.model.Course
 import org.ionproject.core.common.modelInterfaces.ICourse
-import org.ionproject.core.course_instance.IClass
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import java.lang.Exception
 import java.net.URI
 
