@@ -54,7 +54,7 @@ A programme is composed by a set of _offers_.
                 "TermNumber": 3
             },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/1"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1"}
             ]
         },
         {
@@ -66,7 +66,7 @@ A programme is composed by a set of _offers_.
                 "TermNumber": 3
             },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/2"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/2"}
             ]
         },
         {
@@ -78,7 +78,7 @@ A programme is composed by a set of _offers_.
                 "TermNumber": 1
             },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/3"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/3"}
             ]
         }
     ],
@@ -137,8 +137,7 @@ A collection of the possible programmes.
             "rel": [ "item" ],
             "properties": {
                 "id": 1,
-                "acronym": "LEIC",
-                "termSize": 6
+                "acronym": "LEIC"
             },
             "links" : [
                 { "rel": [ "self" ], "href": "/v0/programmes/1" }
@@ -149,8 +148,7 @@ A collection of the possible programmes.
             "rel": [ "item" ],
             "properties": {
                 "id": 2,
-                "acronym": "MEIC",
-                "termSize": 4
+                "acronym": "MEIC"
             },
             "links" : [
                 { "rel": [ "self" ], "href": "/v0/programmes/2" }
@@ -222,11 +220,13 @@ A collection of the possible programmes.
         "optional": "true"
     },
     "entities": [
-        "class": [ "course" ],
-        "rel": [ "/rel/course/" ],
-        "links": [
-            {"rel": [ "self" ], "href": "/v0/courses/1"}
-        ]
+      {
+          "class": [ "course" ],
+          "rel": [ "/rel/course/" ],
+          "links": [
+              {"rel": [ "self" ], "href": "/v0/courses/1"}
+          ]
+       }
     ],
     "actions": [
         {
