@@ -4,22 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.ionproject.core.common.modelInterfaces.IProgramme
 import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
 
-class Programme(override val name: String,
+class Programme(override val id: Int,
+                override val name: String,
                 override val acronym: String,
                 override val termSize: Int,
-                @JsonIgnore override val offers: List<IProgrammeOffer>) : IProgramme {
-    /*
-     * Added the annotation `@JsonIgnore` to the field `offers` to avoid jackson from serializing
-     * the field, and follow the documentation.
-     * Also on the deserialization is not needed to create a programme.
-     * TODO: É UMA MÁ PRÁTICA FAZER ISTO?
-     *  @JsonProperty para o setter se for necessário
-     */
+                override val offers: List<IProgrammeOffer>) : IProgramme {
+
 
     /*
     * Programme constructor with validations
     */
-    private fun of(name : String,
+    private fun of(id: Int,
+                   name : String,
                    acronym : String,
                    termSize : Int,
                    offers : List<IProgrammeOffer>) {
@@ -29,8 +25,9 @@ class Programme(override val name: String,
 
     }
 
-    operator fun invoke(name : String,
+    operator fun invoke(id: Int,
+                        name : String,
                         acronym : String,
                         termSize : Int,
-                        offers : List<IProgrammeOffer>) = of(name, acronym, termSize, offers)
+                        offers : List<IProgrammeOffer>) = of(id, name, acronym, termSize, offers)
 }

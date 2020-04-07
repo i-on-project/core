@@ -1,22 +1,20 @@
-package org.ionproject.core.programme.CoursesDal
+package org.ionproject.core.programme.programmeDb
 
-import org.ionproject.core.common.MockMode
 import org.ionproject.core.common.modelInterfaces.IProgramme
 import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
-@MockMode(false)
 class ProgrammeRepo : IProgrammeRepo {
-    override fun readProgrammes(): List<IProgramme> {
+    override fun getProgrammes(): List<IProgramme> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun readProgramme(acr: String): IProgramme {
+    override fun getProgrammeByAcr(acr: String): IProgramme? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun readOffer(id: Int): IProgrammeOffer {
+    override fun getOfferById(id: Int): IProgrammeOffer? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

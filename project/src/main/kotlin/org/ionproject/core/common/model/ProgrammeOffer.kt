@@ -5,28 +5,21 @@ import org.ionproject.core.common.modelInterfaces.ICourse
 import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
 
 class ProgrammeOffer(override val id: Int,
-                     override val acronym: String,
+                     override val courseAcr: String,
+                     override val programmeId: Int,
+                     override val courseId: Int,
                      override val termNumber: Int,
-                     override val credits: Double,
-                     override val optional: Boolean,
-                     @JsonIgnore override val precedents: List<ICourse>? = null) : IProgrammeOffer {
-    /*
-     * Added the annotation `@JsonIgnore` to the field `precedents` to avoid jackson from serializing
-     * the field, and follow the documentation.
-     * Also on the deserialization is not needed to create a programme.
-     * TODO: É UMA MÁ PRÁTICA FAZER ISTO?
-     *  @JsonProperty para o setter se for necessário
-     */
+                     override val optional: Boolean) : IProgrammeOffer {
+
 
     /*
      * Programme Offer constructor with validations
      */
     private fun of(id : Int,
-                   acronym : String,
+                   courseAcr : String,
+                   courseId : Int,
                    termNumber : Int,
-                   credits : List<IProgrammeOffer>,
-                   optional : Boolean,
-                   precedents : List<String>) {
+                   optional : Boolean) {
         /*
         * Validations
         */
@@ -34,9 +27,8 @@ class ProgrammeOffer(override val id: Int,
     }
 
     operator fun invoke(id : Int,
-                        acronym : String,
+                        courseAcr : String,
+                        courseId : Int,
                         termNumber : Int,
-                        credits : List<IProgrammeOffer>,
-                        optional : Boolean,
-                        precedents : List<String>) = of(id, acronym, termNumber, credits, optional, precedents)
+                        optional : Boolean) = of(id, courseAcr, courseId, termNumber,optional)
 }
