@@ -12,17 +12,19 @@ import org.springframework.stereotype.Component
 class CourseRepo(private val tm : ITransactionManager) : ICourseRepo {
     val courseMapper : CourseMapper = CourseMapper()
 
+    //TODO: UNABLE TO SET ISOLATION LEVEL TO 0 ERROR
+
     override fun getCourses(): List<ICourse> {
-        return tm.run(TransactionIsolationLevel.NONE) {
-            handle -> handle.createQuery("SELECT * FROM Course")
+        return tm.run(TransactionIsolationLevel.READ_COMMITTED) {
+            handle -> handle.createQuery("SELECT * FROM dbo.Course")
                 .map(courseMapper)
                 .list()
         }
     }
 
     override fun getCourseByAcr(acr: String): ICourse? {
-        return tm.run(TransactionIsolationLevel.NONE) {
-            handle -> handle.createQuery("SELECT * FROM Course WHERE acronym= :acr")
+        return tm.run(TransactionIsolationLevel.READ_COMMITTED) {
+            handle -> handle.createQuery("SELECT * FROM dbo.Course WHERE acronym= :acr")
                 .bind("acr", acr)
                 .map(courseMapper)
                 .one()

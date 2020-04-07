@@ -20,6 +20,7 @@ class TransactionManager(dsh : DataSourceHolder)  : ITransactionManager {
      * to the database.
      */
 
+    //TODO: EXCEPTIONS HANDLING?
     override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         var handle: Handle? = null
         try {
@@ -31,8 +32,10 @@ class TransactionManager(dsh : DataSourceHolder)  : ITransactionManager {
 
             handle.commit()
             return result
-        } finally {
+        } catch (e : Exception) {
             handle?.rollback()
+            throw e
+        } finally {
             handle?.close()
         }
     }
