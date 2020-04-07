@@ -2,6 +2,7 @@ package org.ionproject.core.klass
 
 import org.ionproject.core.common.*
 import org.springframework.http.HttpMethod
+import java.net.URI
 
 val klassClasses = arrayOf("class")
 
@@ -29,12 +30,12 @@ class KlassCollectionOutputModel(
             .link("self", selfHref)
             .link("about", Uri.forCourseByAcr(acr))
             .action(Action.genAddItemAction(selfHref))
-            .action(Action.genSearchAction(selfHref))
+            .action(Action.genSearchAction(URI("$selfHref?term,course")))
             .action(Action(
                 name = "batch-delete",
                 title = "Delete multiple items",
                 method = HttpMethod.DELETE,
-                href = selfHref,//"{?term,course}",
+                href = URI("$selfHref?term,course"),
                 isTemplated = true,
                 type = "application/vnd.siren+json",
                 fields = listOf(
