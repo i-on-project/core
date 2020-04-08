@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/v0/**/calendar", produces = ["text/calendar", "application/vdn.siren+json"])
+@RequestMapping()
 class CalendarController {
     private val service = CalendarService()
 
-    @GetMapping("**/class/{id}/calendar", produces = [ "text/calendar" ])
-    fun getFromClass(@PathVariable("id") id: Int, servlet: HttpServletRequest): ResponseEntity<Any> {
-        val calendar = service.getClassCalendar(id)
-        return if (calendar != null) ResponseEntity.ok(calendar.toString())
+    @GetMapping("/v0/course/{course_id}/class/{class_id}/calendar", produces = [ "text/calendar" ])
+    fun getFromClass(@PathVariable("class_id") classId: String, @PathVariable("course_id") courseId: String): ResponseEntity<Any> {
+        val calendar = service.getClassCalendar(classId)
+        return if (calendar != null) ResponseEntity.ok(calendar)
         else {
-            val path = servlet.requestURI
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .header("Content-Type", "application/problem+json")
@@ -27,8 +26,8 @@ class CalendarController {
                     "https://pt.wikipedia.org/wiki/HTTP_404",
                     "Non existent class",
                     404,
-                    "The class whose calendar was trying to be obtained does not seem to exist. Try finding a valid class in ${path.removeSuffix("$id/calendar")}",
-                    path
+                    "The class whose calendar was trying to be obtained does not seem to exist. Try finding a valid class in /v0/course/$courseId/class",
+                    "/v0/course/$courseId/class/$classId/calendar"
                 )
             )
         }

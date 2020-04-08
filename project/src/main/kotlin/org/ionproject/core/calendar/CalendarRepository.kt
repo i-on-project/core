@@ -23,12 +23,12 @@ import org.ionproject.core.calendar.icalendar.types.Duration as DurationType
 
 class CalendarRepository {
 
-    operator fun get(entity: Int): HashMap<Int, Calendar>? = calendars[entity]
+    operator fun get(entity: Int): HashMap<String, Calendar>? = calendars[entity]
 
-    private val calendars = mapOf<Int, HashMap<Int, Calendar>>(
-        CLASS to HashMap<Int, Calendar>(),
-        CLASS_SECTION to HashMap<Int, Calendar>(),
-        PROGRAMME to HashMap<Int, Calendar>()
+    private val calendars = mapOf<Int,HashMap<String, Calendar>>(
+        CLASS to HashMap(),
+        CLASS_SECTION to HashMap(),
+        PROGRAMME to HashMap()
     )
 
     companion object {
@@ -40,7 +40,7 @@ class CalendarRepository {
     init {
         val language = Language("pt/PT")
 
-        calendars[CLASS]?.set(1, Calendar(
+        calendars[CLASS]?.set("1920v", Calendar(
             ProductIdentifier("class/1"),
             Version(),
             null,
@@ -54,7 +54,7 @@ class CalendarRepository {
                 Description("Exame de Época normal de DAW", language = language),
                 DateTimeStamp(DateTime.parse("20200226T143423Z")),
                 DateTimeCreated(DateTime.parse("20200226T143423Z")),
-                Categories(listOf("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON"), Language("en")),
+                Categories("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON", language = Language("en")),
                 DateTimeStart(DateTime.parse("20200620T140000Z")),
                 Duration(DurationType(hours = 2, minutes = 30))
             ),
@@ -66,7 +66,7 @@ class CalendarRepository {
                 DateTimeStamp(DateTime.parse("20200302T100545Z")),
                 DateTimeCreated(DateTime.parse("20200302T100545Z")),
                 DateTimeDue(Date(2020, 4, 20)),
-                Categories(listOf("DAW", "EVALUATION", "ASSIGNMENT"))
+                Categories("DAW", "EVALUATION", "ASSIGNMENT")
             )
         ))
     }
