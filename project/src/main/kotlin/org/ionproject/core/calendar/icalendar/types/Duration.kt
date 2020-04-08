@@ -34,7 +34,7 @@ abstract class Duration private constructor(
         }
 
         override fun toString(): String {
-            return if (time != null) "$day$time"
+            return super.toString() + if (time != null) "$day$time"
             else "$day"
         }
 
@@ -118,10 +118,10 @@ abstract class Duration private constructor(
             operator fun invoke(hours: Int, minutes: Int, seconds: Int, adding: Boolean): DurationTime = DurationTime(DurationSubTime(hours, minutes, seconds), adding)
         }
 
-        override fun toString(): String = "T$subTime"
+        override fun toString(): String = super.toString() + "T$subTime"
     }
 
     private class DurationWeek(val value: Int, adding: Boolean) : Duration(adding) {
-        override fun toString(): String = "${value}W"
+        override fun toString(): String = super.toString() + "${value}W"
     }
 }
