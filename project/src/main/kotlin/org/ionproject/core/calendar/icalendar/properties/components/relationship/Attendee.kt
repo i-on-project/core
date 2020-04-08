@@ -20,20 +20,19 @@ class Attendee(
     val directoryEntryReference: DirectoryEntryReference? = null
 ) : ParameterizedProperty {
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(
-            language,
-            calendarUserType,
-            groupListMembership,
-            participationRole,
-            participationStatus,
-            rsvpExpectation,
-            delegatee,
-            delegators,
-            sentBy,
-            commonName,
-            directoryEntryReference
-        )
+    override val parameters: List<PropertyParameter> = listOfNotNull(
+        language,
+        calendarUserType,
+        groupListMembership,
+        participationRole,
+        participationStatus,
+        rsvpExpectation,
+        delegatee,
+        delegators,
+        sentBy,
+        commonName,
+        directoryEntryReference
+    )
 
     override val name: String
         get() = "ATTENDEE"

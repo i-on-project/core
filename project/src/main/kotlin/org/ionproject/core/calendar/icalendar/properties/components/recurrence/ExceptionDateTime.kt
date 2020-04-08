@@ -8,16 +8,17 @@ import org.ionproject.core.calendar.icalendar.properties.parameters.ValueDataTyp
 import org.ionproject.core.calendar.icalendar.types.Date
 import org.ionproject.core.calendar.icalendar.types.DateTime
 import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
+import org.ionproject.core.calendar.icalendar.types.MultiValue
 
 class ExceptionDateTime(
-    override val values: List<ICalendarDataType>,
+    vararg values: ICalendarDataType,
     val timeZoneIdentifier: TimeZoneIdentifier? = null
-) : MultiValuedProperty, ParameterizedProperty {
+) : MultiValuedProperty<ICalendarDataType>, ParameterizedProperty {
 
     val valueDataType: ValueDataType?
 
     init {
-        var type: ICalendarDataType? = null
+        val type: ICalendarDataType?
         if (values.isNotEmpty()) {
             type = values[0]
             val klass = type::class.java
@@ -33,9 +34,11 @@ class ExceptionDateTime(
         }
     }
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(valueDataType, timeZoneIdentifier)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(valueDataType, timeZoneIdentifier)
 
     override val name: String
         get() = "EXDATE"
+
+    override val value: MultiValue<ICalendarDataType> = MultiValue(*values)
 }

@@ -12,8 +12,7 @@ class TimeZoneName(
     value: String,
     val language: Language? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(language)
+    override val parameters: List<PropertyParameter> = listOfNotNull(language)
 
     override val name: String
         get() = "TZNAME"

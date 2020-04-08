@@ -18,8 +18,8 @@ class DateTimeStart private constructor(
     constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(dateTime, null, timeZoneIdentifier)
     constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(date, ValueDataType(date), timeZoneIdentifier)
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(valueDataType, timeZoneIdentifier)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(valueDataType, timeZoneIdentifier)
 
     override val name: String
         get() = "DTSTART"

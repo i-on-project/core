@@ -15,8 +15,7 @@ class RelatedTo(
 
     override val value: Text = value.toText()
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(relationshipType)
+    override val parameters: List<PropertyParameter> = listOfNotNull(relationshipType)
 
     override val name: String
         get() = "RELATED-TO"

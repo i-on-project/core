@@ -31,8 +31,7 @@ class RecurrenceId private constructor(
         recurrenceIdentifierRange
     )
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
+    override val parameters: List<PropertyParameter> = listOfNotNull(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
 
     override val name: String
         get() = "RECURRENCE-ID"

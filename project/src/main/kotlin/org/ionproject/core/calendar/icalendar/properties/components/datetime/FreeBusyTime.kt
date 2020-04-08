@@ -10,8 +10,8 @@ class FreeBusyTime(
     override val value: PeriodOfTime,
     val freeBusyTimeType: FreeBusyTimeType? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(freeBusyTimeType)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(freeBusyTimeType)
     override val name: String
         get() = "FREEBUSY"
 }

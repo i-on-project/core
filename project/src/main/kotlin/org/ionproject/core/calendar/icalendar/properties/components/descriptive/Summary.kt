@@ -12,8 +12,8 @@ class Summary(
     val alternateTextRepresentation: AlternateTextRepresentation? = null,
     val language: Language? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(alternateTextRepresentation, language)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(alternateTextRepresentation, language)
 
     override val name: String
         get() = "SUMMARY"

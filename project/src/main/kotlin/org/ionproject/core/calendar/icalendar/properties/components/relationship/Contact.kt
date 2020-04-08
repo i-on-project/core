@@ -17,8 +17,7 @@ class Contact(
 
     override val value: Text = value.toText()
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(alternateTextRepresentation, language)
+    override val parameters: List<PropertyParameter> = listOfNotNull(alternateTextRepresentation, language)
 
     override val name: String
         get() = iCalName

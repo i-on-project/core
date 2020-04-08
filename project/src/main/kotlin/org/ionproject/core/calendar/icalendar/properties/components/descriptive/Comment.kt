@@ -14,8 +14,8 @@ class Comment(
 
     override val value = value.toText()
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(alternateTextRepresentation, language)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(alternateTextRepresentation, language)
     override val name: String
         get() = "COMMENT"
 }

@@ -7,19 +7,21 @@ import org.ionproject.core.calendar.icalendar.properties.parameters.AlternateTex
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
+import org.ionproject.core.calendar.icalendar.types.MultiValue
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Resources(
-    value: List<String>,
+    vararg value: String,
     val alternateTextRepresentation: AlternateTextRepresentation? = null,
     val language: Language? = null
-) : MultiValuedProperty, ParameterizedProperty {
-    override val values: List<ICalendarDataType> = value.toText()
+) : MultiValuedProperty<Text>, ParameterizedProperty {
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(alternateTextRepresentation, language)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(alternateTextRepresentation, language)
 
     override val name: String
         get() = "RESOURCES"
+
+    override val value: MultiValue<Text> = MultiValue(*value.toText())
 }

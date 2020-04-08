@@ -17,8 +17,8 @@ class DateTimeEnd private constructor(
     constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier?) : this(dateTime, null, timeZoneIdentifier)
     constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier?) : this(date, ValueDataType(date), timeZoneIdentifier)
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(valueDataType, timeZoneIdentifier)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(valueDataType, timeZoneIdentifier)
 
     override val name: String
         get() = "DTEND"

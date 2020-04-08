@@ -24,8 +24,8 @@ class Attachment private constructor(
         formatType
     )
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(inlineEncoding, valueDataType, formatType)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(inlineEncoding, valueDataType, formatType)
 
     override val name: String
         get() = "ATTACH"

@@ -21,6 +21,6 @@ class DateTimeDue private constructor(
     override val name: String
         get() = "DUE"
 
-    override val parameters: List<PropertyParameter?>
-        get() = listOf(valueDataType, timeZoneIdentifier)
+    override val parameters: List<PropertyParameter>
+        get() = listOfNotNull(valueDataType, timeZoneIdentifier)
 }

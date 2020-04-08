@@ -1,10 +1,13 @@
 package org.ionproject.core.calendar.icalendar.properties.components.descriptive
 
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.calendar.icalendar.types.Integer
 
 class PercentComplete(
-    override val value: Integer
+    value: Int
 ) : Property {
+
+    override val value: Integer = Integer(value)
 
     init {
         if (value < 0 || value > 100) throw IllegalArgumentException("Percentage values must be between 0 and 100.")
