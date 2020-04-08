@@ -5,6 +5,7 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.common.TEXT_CALENDAR_MEDIA_TYPE
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
@@ -23,11 +24,7 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
     override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Calendar = throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        // if (type != null && type != Calendar::class.java) throw IllegalArgumentException("This message converter can only convert Calendar instances.")
-
-        val contentType = outputMessage.headers.contentType
-
-        when(contentType) {
+        when(outputMessage.headers.contentType) {
             null -> {
                 outputMessage.headers.contentType = TEXT_CALENDAR_MEDIA_TYPE
                 PrintWriter(outputMessage.body).apply {
@@ -90,9 +87,5 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
 
             output.writeICalendar("$name$parameters:$value")
         }
-    }
-
-    companion object {
-        private val TEXT_CALENDAR_MEDIA_TYPE = MediaType("text", "calendar")
     }
 }

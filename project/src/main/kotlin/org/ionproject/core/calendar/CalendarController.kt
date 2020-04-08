@@ -1,6 +1,8 @@
 package org.ionproject.core.calendar
 
 import org.ionproject.core.ProblemJson
+import org.ionproject.core.common.PROBLEM_JSON
+import org.ionproject.core.common.TEXT_CALENDAR
 import org.ionproject.core.common.Uri
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController
 class CalendarController {
     private val service = CalendarService()
 
-    @GetMapping(Uri.calendarByClass, produces = [ "text/calendar" ])
+    @GetMapping(Uri.calendarByClass, produces = [ TEXT_CALENDAR ])
     fun getFromClass(@PathVariable("calterm") calendarTerm: String, @PathVariable("acr") courseAcronym: String): ResponseEntity<Any> {
         val calendar = service.getClassCalendar(calendarTerm)
         return if (calendar != null) ResponseEntity.ok(calendar)
         else {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .header("Content-Type", "application/problem+json")
+                .header("Content-Type", PROBLEM_JSON)
                 .body(ProblemJson(
                     "https://pt.wikipedia.org/wiki/HTTP_404",
                     "Non existent class",
