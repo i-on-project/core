@@ -1,17 +1,19 @@
 package org.ionproject.core.course.representations
 
 import org.ionproject.core.common.*
-import org.ionproject.core.common.modelInterfaces.ICourse
+import org.ionproject.core.common.model.Course
 import org.springframework.http.HttpMethod
-import java.net.URI
 
-fun courseToDetailRepr(course : ICourse) = SirenBuilder(course)
+fun courseToDetailRepr(course : Course) = SirenBuilder(courseSmallDetails(course.acronym, course.name))
         .klass("course")
         .entities(listOf(buildSubentities(course.id, course.acronym, course.name)))
         .action(Action(name = "delete", title = "delete course", method = HttpMethod.DELETE,
-                href = URI("${COURSES_PATH}/${course.id}"), isTemplated = true))
+                href = Uri.forCourseById(course.id), isTemplated = true))
         .action(Action(name = "edit", title = "edit course", method = HttpMethod.PATCH,
-                href = URI("${COURSES_PATH}/${course.id}"), isTemplated = false))
+                href = Uri.forCourseById(course.id), isTemplated = false))
+        .link("self", Uri.forCourseById(course.id))
+        .link("current", Uri.forKlassByTerm(course.acronym, course.term))
+        .link("collection", Uri.forCourses())
         .toSiren()
 
 
@@ -19,7 +21,9 @@ private fun buildSubentities(courseId: Int,
                              acronym : String,
                              name : String) : EmbeddedRepresentation = SirenBuilder()
         .klass("class", "collection")
-        .rel(REL_CLASS)
-        .link("self", URI("${COURSES_PATH}/${courseId}/${CLASS_ENTITY}"))
-        .link("course", URI("${COURSES_PATH}/${courseId}/"))
+        .rel(Uri.REL_CLASS)
+        .link("self", Uri.forKlasses(acronym))
+        .link("course", Uri.forCourseById(courseId))
         .toEmbed()
+
+private data class courseSmallDetails(val acronym: String, val name: String)

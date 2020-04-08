@@ -1,17 +1,17 @@
 package org.ionproject.core.course
 
-import org.ionproject.core.common.modelInterfaces.ICourse
-import org.ionproject.core.course.coursesDb.ICourseRepo
+import org.ionproject.core.common.model.Course
+import org.ionproject.core.course.coursesDb.CourseRepo
 import org.springframework.stereotype.Component
 
 @Component
-class CourseServices(private val repo : ICourseRepo) {
-    fun getCourses(): List<ICourse> {
+class CourseServices(private val repo : CourseRepo) {
+    fun getCourses(): List<Course> {
         return repo.getCourses()
     }
 
-    fun getCourseByAcr(acr: String): ICourse? {
-        return repo.getCourseByAcr(acr)
+    fun getCourseById(id: Int): Course? {
+        return repo.getCourseById(id)
     }
 
 

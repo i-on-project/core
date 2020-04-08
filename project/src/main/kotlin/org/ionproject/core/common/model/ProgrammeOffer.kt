@@ -1,15 +1,11 @@
 package org.ionproject.core.common.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import org.ionproject.core.common.modelInterfaces.ICourse
-import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
-
-class ProgrammeOffer(override val id: Int,
-                     override val courseAcr: String,
-                     override val programmeId: Int,
-                     override val courseId: Int,
-                     override val termNumber: Int,
-                     override val optional: Boolean) : IProgrammeOffer {
+class ProgrammeOffer(val id: Int,
+                     val courseAcr: String,
+                     val programmeId: Int,
+                     val courseId: Int,
+                     val termNumber: Int,
+                     val optional: Boolean) {
 
 
     /*
@@ -17,6 +13,7 @@ class ProgrammeOffer(override val id: Int,
      */
     private fun of(id : Int,
                    courseAcr : String,
+                   programmeId: Int,
                    courseId : Int,
                    termNumber : Int,
                    optional : Boolean) {
@@ -28,7 +25,8 @@ class ProgrammeOffer(override val id: Int,
 
     operator fun invoke(id : Int,
                         courseAcr : String,
+                        programmeId: Int,
                         courseId : Int,
                         termNumber : Int,
-                        optional : Boolean) = of(id, courseAcr, courseId, termNumber,optional)
+                        optional : Boolean) = of(id, courseAcr, programmeId,  courseId, termNumber,optional)
 }

@@ -1,14 +1,10 @@
 package org.ionproject.core.common.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import org.ionproject.core.common.modelInterfaces.IProgramme
-import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
-
-class Programme(override val id: Int,
-                override val name: String,
-                override val acronym: String,
-                override val termSize: Int,
-                override val offers: List<IProgrammeOffer>) : IProgramme {
+class Programme(val id: Int,
+                val name: String,
+                val acronym: String,
+                val termSize: Int,
+                val offers: MutableList<ProgrammeOffer>) {
 
 
     /*
@@ -18,7 +14,7 @@ class Programme(override val id: Int,
                    name : String,
                    acronym : String,
                    termSize : Int,
-                   offers : List<IProgrammeOffer>) {
+                   offers : List<ProgrammeOffer>) {
         /*
          * Validations
          */
@@ -29,5 +25,5 @@ class Programme(override val id: Int,
                         name : String,
                         acronym : String,
                         termSize : Int,
-                        offers : List<IProgrammeOffer>) = of(id, name, acronym, termSize, offers)
+                        offers : List<ProgrammeOffer>) = of(id, name, acronym, termSize, offers)
 }

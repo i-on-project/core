@@ -2,7 +2,7 @@ CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
 create table dbo.Programme(
 	id   		INT generated always as identity primary key,
-	acronym 	VARCHAR(10),				
+	acronym 	VARCHAR(10) unique,				
 	name		VARCHAR(100) UNIQUE,			-- It may be null in this phase
 	termSize	INT					
 );
@@ -13,12 +13,13 @@ create table dbo.Calendar (
 
 create table dbo.Course (
 	id   	 INT generated always as identity primary key,
-	acronym  varchar(10),	
+	acronym  varchar(10) unique,	
 	name     varchar(100) unique				-- It may be null in this phase
 );
 
 
 create table dbo.ProgrammeOffer(
+	id   	 		INT generated always as identity,
 	programmeId 		INT REFERENCES dbo.Programme(id),
 	courseId 		INT REFERENCES dbo.Course(id),
 	termNumber		INT, 

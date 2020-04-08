@@ -7,11 +7,16 @@ import javax.sql.DataSource
 /**
  *  Singleton object, holder of the dataSource, giver of connections
  */
+
+const val URL_VAR = "DBHOST_ION_TEST"   //To choose between test Db or Production db, choose the correct URL var
+const val HOST_VAR = "DBUSER"
+const val PASSWORD_VAR = "DBPASSWORD"
+
 @Component
 object DataSourceHolder {
    val dataSource : DataSource = PGSimpleDataSource().apply {
-        setUrl(System.getenv("DBHOST_ION"))
-        user = System.getenv("DBUSER_ION")
-        password = System.getenv("DBPASSWORD_ION")
+        setUrl(System.getenv(URL_VAR)) 
+        user = System.getenv(HOST_VAR)
+        password = System.getenv(PASSWORD_VAR)
     }
 }

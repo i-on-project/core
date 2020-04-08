@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*
 class CourseSpringController(private val courseServices: CourseServices){
 
 
-    @GetMapping(Uri.courses)
+    @GetMapping(Uri.courses)    //TODO LACKS TEMPLATING AND QUERY PARAMS
     fun getCourses() : Siren = courseToListRepr(
             courseServices.getCourses()
     )
 
-    @GetMapping(Uri.courseByAcr)
-    fun getCourse(@PathVariable acr: String) : ResponseEntity<Siren> =
-            courseServices.getCourseByAcr(acr)
+    @GetMapping(Uri.courseById)
+    fun getCourse(@PathVariable id: Int) : ResponseEntity<Siren> =
+            courseServices.getCourseById(id)
                     ?.let { ResponseEntity.ok(courseToDetailRepr(it))}
                     ?: ResponseEntity.notFound().build()
 
@@ -31,19 +31,16 @@ class CourseSpringController(private val courseServices: CourseServices){
      * that to use this endpoint credentials must be
      * provided.
      */
-    @DeleteMapping(Uri.courseByAcr)
+    @DeleteMapping(Uri.courseById)
     @RequiresAuthentication
-    fun deleteCourse(@PathVariable acr: String) {
+    fun deleteCourse(@PathVariable id: Int) {
         TODO("Waiting write API")
     }
 
-    @PatchMapping(Uri.courseByAcr)
+    @PatchMapping(Uri.courseById)
     @RequiresAuthentication
-    fun editCourse(@PathVariable acr: String) {
+    fun editCourse(@PathVariable id: Int) {
         TODO("Waiting write API")
     }
 
-    //TODO: Siren Action search items implementation com query params
-
-    //Em caso de status code 406 retornar problem json com body
 }

@@ -6,8 +6,13 @@ import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet
 
 class ProgrammeMapper : RowMapper<Programme> {
-    override fun map(rs: ResultSet?, ctx: StatementContext?): Programme {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    /**
+     *OfferList is not always needed, in such cases it uses an empty list,
+     * in others the same method fills the list that was initialized here accordingly.
+     */
+    override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
+        return Programme(rs.getInt("id"), rs.getString("acronym"),
+                rs.getString("name"), rs.getInt("termSize"), mutableListOf())
     }
 
 }

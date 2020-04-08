@@ -1,20 +1,23 @@
 package org.ionproject.core.programme.representations
 
 import org.ionproject.core.common.*
-import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
+import org.ionproject.core.common.model.ProgrammeOffer
 import org.springframework.http.HttpMethod
-import java.net.URI
 
 
-fun offerToDetailRepr(offer: IProgrammeOffer) = SirenBuilder(offer)
+fun offerToDetailRepr(offer: ProgrammeOffer) =
+        SirenBuilder(shortOfferForOfferRepr(offer.id, offer.courseAcr, offer.termNumber, offer.optional))
         .klass("offer")
         .entities(
                 listOf(buildSubentities(offer.courseId))
         )
         .action(
                 Action(
-                        name = "edit", title = "edit offer", method = HttpMethod.PUT, type = JSON_MEDIA_TYPE,
-                        href = URI("${Uri.programmes}/${offer.programmeId}/offers/${offer.id}"),
+                        name = "edit",
+                        title = "edit offer",
+                        method = HttpMethod.PUT,
+                        type = JSON_MEDIA_TYPE,
+                        href = Uri.forProgrammeOfferById(offer.programmeId, offer.id),
                         fields = listOf(
                                 Field(name = "Acronym", type = "text"),
                                 Field(name = "TermNumber", type = "number"),
@@ -24,13 +27,14 @@ fun offerToDetailRepr(offer: IProgrammeOffer) = SirenBuilder(offer)
                         )
                 )
         )
-        .link("self", URI("${Uri.programmes}/${offer.programmeId}/offers/${offer.id}"))
-        .link("related", URI("${Uri.programmes}/${offer.programmeId}"))
+        .link("self", Uri.forProgrammeOfferById(offer.programmeId, offer.id))
+        .link("related", Uri.forProgrammesById(offer.id))
         .toSiren()
 
 private fun buildSubentities(courseId : Int) = SirenBuilder()
         .klass("course")
-        .rel(REL_COURSE)
-        .link("self", URI("${Uri.courses}/${courseId}"))
+        .rel(Uri.REL_COURSE)
+        .link("self", Uri.forCourseById(courseId))
         .toEmbed()
 
+data class shortOfferForOfferRepr(val id : Int, val acronym: String, val termNumber: Int, val optional: Boolean)

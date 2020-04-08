@@ -1,11 +1,11 @@
 package org.ionproject.core
 
 import org.ionproject.core.common.model.Course
-import org.ionproject.core.course.coursesDb.ICourseRepo
+import org.ionproject.core.course.coursesDb.CourseRepo
 import org.springframework.stereotype.Component
 
 @Component
-class CourseRepoMock : ICourseRepo {
+class CourseRepoMock : CourseRepo {
     override fun getCourses(): List<Course> {
         return listOf(
                 Course.of(

@@ -1,15 +1,12 @@
 package org.ionproject.core
 
-import org.ionproject.core.common.model.Course
 import org.ionproject.core.common.model.Programme
 import org.ionproject.core.common.model.ProgrammeOffer
-import org.ionproject.core.common.modelInterfaces.IProgramme
-import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
-import org.ionproject.core.programme.programmeDb.IProgrammeRepo
+import org.ionproject.core.programme.programmeDb.ProgrammeRepo
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeRepoMock : IProgrammeRepo {
+class ProgrammeRepoMock : ProgrammeRepo {
     override fun getProgrammes(): List<IProgramme> {
         return listOf(
                 Programme(

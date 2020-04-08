@@ -12,19 +12,19 @@ class KlassController(private val repo: KlassRepo) {
     fun handleClassNotInDbException(exception: ClassNotInDbException) =
         ResponseEntity.notFound().build<Any>()
 
-    @GetMapping(Uri.klassByTerm)
+/*    @GetMapping(Uri.klassByTerm)
     fun get(@PathVariable acr: String, @PathVariable calterm: String): Siren {
-        val klass: FullKlass = repo.get(acr, calterm)
+    *//*    val klass: FullKlass? = repo.get(acr, calterm)
 
-        return KlassToSiren.toSiren(klass)
+        return klass?.let { KlassToSiren.toSiren(it) }*//*
     }
 
     @GetMapping(Uri.klasses)
     fun getCollection(@PathVariable acr: String,
                       @RequestParam(defaultValue = "0") page: Int,
                       @RequestParam(defaultValue = "5") size: Int): Siren {
-        val klass = repo.getPage(acr, page, size)
+ *//*       val klass = repo.getPage(acr, page, size)
 
-        return KlassToSiren.toSiren(acr, klass, page, size)
-    }
+        return KlassToSiren.toSiren(acr, klass, page, size)*//*
+    }*/
 }

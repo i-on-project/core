@@ -1,33 +1,37 @@
 package org.ionproject.core.programme
 
-import org.ionproject.core.common.modelInterfaces.IProgramme
-import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
-import org.ionproject.core.programme.programmeDb.IProgrammeRepo
+import org.ionproject.core.common.model.Programme
+import org.ionproject.core.common.model.ProgrammeOffer
+import org.ionproject.core.programme.programmeDb.ProgrammeRepo
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeServices(private val repo : IProgrammeRepo) {
-    fun getProgrammes() : List<IProgramme> {
+class ProgrammeServices(private val repo : ProgrammeRepo) {
+    /*
+     * Should `ProgrammeSpringController` class hold a reference
+     * to repo to avoid making this ""proxy"" useless call's?
+     */
+    fun getProgrammes() : List<Programme> {
         return repo.getProgrammes()
     }
 
-    fun getProgrammeByAcr(acr : String) : IProgramme? {
-        return repo.getProgrammeByAcr(acr)
+    fun getProgrammeById(id : Int) : Programme? {
+        return repo.getProgrammeById(id)
     }
 
-    fun getOfferById(id: Int): IProgrammeOffer? {
+    fun getOfferById(id: Int): ProgrammeOffer? {
         return repo.getOfferById(id)
     }
 
-    fun editProgramme(programme : IProgramme) {
+    fun editProgramme(programme : Programme) {
         TODO()
     }
 
-    fun addProgramme(programme : IProgramme) {
+    fun addProgramme(programme : Programme) {
         TODO()
     }
 
-    fun addOffer(acr : String, offer : IProgrammeOffer) {
+    fun addOffer(acr : String, offer : ProgrammeOffer) {
         TODO()
     }
 }

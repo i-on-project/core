@@ -1,7 +1,7 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSection
-import org.ionproject.core.common.transaction.ITransactionManager
+import org.ionproject.core.common.transaction.TransactionManager
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
 
@@ -14,17 +14,18 @@ import org.springframework.stereotype.Component
 class ClassNotInDbException : Exception()
 
 interface KlassRepo {
-    fun get(acr: String, calendarTerm: String): FullKlass
-    fun getPage(acr: String, page: Int, size: Int): List<Klass>
+    fun get(acr: String, calendarTerm: String): FullKlass?
+    fun getPage(acr: String, page: Int, size: Int): List<Klass>?
 }
 
 @Component
-class KlassRepoImplementation(private val tm: ITransactionManager) : KlassRepo {
+class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
 
     /**
      * Retrieve the target [Class] resource from the database, with all its details.
      */
-    override fun get(acr: String, calendarTerm: String): FullKlass = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
+    override fun get(acr: String, calendarTerm: String): FullKlass? =
+            tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
         val acrUpper = acr.toUpperCase()
 
         val klass = handle
@@ -57,7 +58,7 @@ class KlassRepoImplementation(private val tm: ITransactionManager) : KlassRepo {
     /**
      * Retrieve a list of [Class]es, with only the essential information i.e. IDs, name, etc.
      */
-    override fun getPage(acr: String, page: Int, size: Int): List<Klass> = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
+    override fun getPage(acr: String, page: Int, size: Int): List<Klass>? = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
         val acrUpper = acr.toUpperCase()
 
         handle

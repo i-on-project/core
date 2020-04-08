@@ -7,7 +7,7 @@ import java.sql.ResultSet
 
 class CourseMapper : RowMapper<Course> {
     override fun map(rs: ResultSet, ctx: StatementContext?): Course {
-        return Course(rs.getInt("id"), rs.getString("acronym"), rs.getString("name"))
+        return Course(rs.getInt("id"), rs.getString("acronym"), rs.getString("name"), rs.getString("term"))
     }
 
 }
