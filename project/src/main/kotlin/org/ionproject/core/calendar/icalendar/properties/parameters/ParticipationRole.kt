@@ -1,6 +1,6 @@
 package org.ionproject.core.calendar.icalendar.properties.parameters
 
-class ParticipationRole(value: Role = Role.REQ_PARTICIPANT) : PropertyParameter("ROLE", value) {
+class ParticipationRole(value: Role = Role.REQ_PARTICIPANT) : PropertyParameter {
     enum class Role(private val altName: String? = null) {
         CHAIR,
         REQ_PARTICIPANT("REQ-PARTICIPANT"),
@@ -9,4 +9,7 @@ class ParticipationRole(value: Role = Role.REQ_PARTICIPANT) : PropertyParameter(
 
         override fun toString(): String = altName ?: name
     }
+
+    override val name: String = "ROLE"
+    override val values: List<Any> = listOf(value)
 }

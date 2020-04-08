@@ -1,6 +1,7 @@
 package org.ionproject.core.calendar.icalendar.properties.parameters
 
-class ParticipationStatus(status: Status) : PropertyParameter("PARTSTAT", status) {
+class ParticipationStatus(status: Status) : PropertyParameter {
+
     enum class Status(private val altName: String? = null) {
         NEEDS_ACTION("NEEDS-ACTION"),
         ACCEPTED,
@@ -12,4 +13,7 @@ class ParticipationStatus(status: Status) : PropertyParameter("PARTSTAT", status
 
         override fun toString(): String = altName ?: name
     }
+
+    override val name: String = "PARTSTAT"
+    override val values: List<Any> = listOf(status)
 }

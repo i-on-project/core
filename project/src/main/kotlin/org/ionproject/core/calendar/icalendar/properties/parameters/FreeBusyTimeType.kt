@@ -1,6 +1,6 @@
 package org.ionproject.core.calendar.icalendar.properties.parameters
 
-class FreeBusyTimeType(type: Type = Type.BUSY) : PropertyParameter("FBTYPE", type) {
+class FreeBusyTimeType(type: Type = Type.BUSY) : PropertyParameter {
     enum class Type(private val altName: String? = null) {
         FREE,
         BUSY,
@@ -9,4 +9,7 @@ class FreeBusyTimeType(type: Type = Type.BUSY) : PropertyParameter("FBTYPE", typ
 
         override fun toString(): String = altName ?: name
     }
+
+    override val name: String = "FBTYPE"
+    override val values: List<Any> = listOf(type)
 }
