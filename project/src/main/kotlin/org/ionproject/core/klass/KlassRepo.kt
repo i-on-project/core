@@ -1,27 +1,37 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSection
-import org.jdbi.v3.core.Jdbi
-import org.jdbi.v3.sqlobject.SqlObjectPlugin
-import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.postgresql.ds.PGSimpleDataSource
+import org.ionproject.core.common.transaction.ITransactionManager
+import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
-import java.lang.Exception
 
+/**
+ * When the target resource [Class] does not exist, this exception will be thrown.
+ *
+ * This exception <b>shall</b> not be thrown if the [Class] resource does exist, but one or more of
+ * its properties don't (e.g. WAD, 1920v [Class] exists, but has no [ClassSections]).
+ */
 class ClassNotInDbException : Exception()
 
-@Component
-class KlassRepo {
-    fun get(acr: String, calendarTerm: String): FullKlass {
-        val dataSource = PGSimpleDataSource()
-        dataSource.databaseName = System.getenv("CORE_DB_NAME")
-        dataSource.user = System.getenv("CORE_DB_ROLE")
-        //dataSource.password = System.getenv("CORE_DB_PASS")
-        val j = Jdbi.create(dataSource).installPlugin(SqlObjectPlugin()).open()
+interface KlassRepo {
+    fun get(acr: String, calendarTerm: String): FullKlass
+    fun getPage(acr: String, page: Int, size: Int): List<Klass>
+}
 
+@Component
+class KlassRepoImplementation(private val tm: ITransactionManager) : KlassRepo {
+
+    /**
+     * Retrieve the target [Class] resource from the database, with all its details.
+     */
+    override fun get(acr: String, calendarTerm: String): FullKlass = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
         val acrUpper = acr.toUpperCase()
 
-        val klass = j.createQuery("select CR.acronym, C.term from dbo.Class as C join dbo.Course as CR on C.courseid=CR.id where CR.acronym=:acr and C.term=:term")
+        val klass = handle
+            .createQuery(
+                """select CR.acronym, C.term from dbo.Class as C
+                join dbo.Course as CR on C.courseid=CR.id
+                where CR.acronym=:acr and C.term=:term""".trimIndent())
             .bind("acr", acrUpper)
             .bind("term", calendarTerm)
             .map { ro, _ -> Klass(ro.getString("acronym"), ro.getString("term")) }
@@ -31,26 +41,33 @@ class KlassRepo {
             throw ClassNotInDbException()
         }
 
-        val sections = j.createQuery("select CR.acronym, C.term, CS.id from dbo.Class as C join dbo.ClassSection as CS on C.courseid=CS.courseid and C.term=CS.term join dbo.Course as CR on CR.id=C.courseid where CR.acronym=:acr and C.term=:term;")
+        val sections = handle
+            .createQuery(
+                """select CR.acronym, C.term, CS.id from dbo.Class as C
+                join dbo.ClassSection as CS on C.courseid=CS.courseid and C.term=CS.term
+                join dbo.Course as CR on CR.id=C.courseid where CR.acronym=:acr and C.term=:term;""".trimIndent())
             .bind("acr", acrUpper)
             .bind("term", calendarTerm)
             .map { ro, _ -> ClassSection(ro.getString("acronym"), ro.getString("term"), ro.getString("id")) }
             .list()
 
-        return FullKlass(klass.get().course, klass.get().calendarTerm, sections)
+        FullKlass(klass.get().course, klass.get().calendarTerm, sections)
     }
 
-    fun getPage(acr: String, page: Int, size: Int): List<Klass> {
-        val dataSource = PGSimpleDataSource()
-        dataSource.databaseName = "core" //System.getenv("CORE_DB_NAME")
-        dataSource.user = "bob" //System.getenv("CORE_DB_ROLE")
-        //dataSource.password = //System.getenv("CORE_DB_PASS")
-        val j = Jdbi.create(dataSource).installPlugin(SqlObjectPlugin()).open()
-
+    /**
+     * Retrieve a list of [Class]es, with only the essential information i.e. IDs, name, etc.
+     */
+    override fun getPage(acr: String, page: Int, size: Int): List<Klass> = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
         val acrUpper = acr.toUpperCase()
 
-        return j.createQuery("select CR.acronym, C.term from dbo.Class as C join dbo.Course as CR on C.courseid=CR.id where CR.acronym=:acr;")
+        handle
+            .createQuery(
+                """select CR.acronym, C.term from dbo.Class as C
+                join dbo.Course as CR on C.courseid=CR.id
+                where CR.acronym=:acr order by C.term offset :page limit :size;""".trimIndent())
             .bind("acr", acrUpper)
+            .bind("page", page)
+            .bind("size", size)
             .map { ro, _ -> Klass(ro.getString("acronym"), ro.getString("term")) }
             .list()
     }

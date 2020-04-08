@@ -6,28 +6,21 @@ import java.net.URI
 
 val klassClasses = arrayOf("class")
 
-open class KlassItemOutputModel(
-    val klass: Klass) {
-
-    fun toSiren(): EmbeddedRepresentation {
+object KlassToSiren {
+    fun toSiren(klass: Klass): EmbeddedRepresentation {
         return SirenBuilder(klass)
             .klass(*klassClasses)
             .rel("item")
             .link("self", Uri.forKlassByTerm(klass.course, klass.calendarTerm))
             .toEmbed()
     }
-}
 
-class KlassCollectionOutputModel(
-    val acr: String,
-    val klasses: List<Klass>) {
-
-    fun toSiren(): Siren {
+    fun toSiren(acr: String, klasses: List<Klass>, page: Int, size: Int): Siren {
         val selfHref = Uri.forKlasses(acr)
         return SirenBuilder()
             .klass(*klassClasses, "collection")
-            .entities(klasses.map { KlassItemOutputModel(it).toSiren() })
-            .link("self", selfHref)
+            .entities(klasses.map { toSiren(it) })
+            .link("self", URI("$selfHref?page=$page&size=$size"))
             .link("about", Uri.forCourseByAcr(acr))
             .action(Action.genAddItemAction(selfHref))
             .action(Action.genSearchAction(URI("$selfHref?term,course")))
@@ -45,12 +38,7 @@ class KlassCollectionOutputModel(
             .toSiren()
     }
 
-}
-
-class FullKlassOutputModel(
-    val klass: FullKlass) {
-
-    fun toSiren(): Siren {
+    fun toSiren(klass: FullKlass): Siren {
         val selfHref = Uri.forKlassByTerm(klass.course, klass.calendarTerm)
 
         val sections = klass.sections.map {
