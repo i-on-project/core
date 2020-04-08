@@ -1,11 +1,10 @@
 package org.ionproject.core.calendar.icalendar.properties
 
 import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
-import org.ionproject.core.calendar.toText
+import org.ionproject.core.calendar.icalendar.types.MultiValue
 
-interface MultiValuedProperty : Property {
-    val values: List<ICalendarDataType>
-
-    override val value: ICalendarDataType
-        get() = values.joinToString(",").toText()
+interface MultiValuedProperty<out T> : Property
+    where T : ICalendarDataType
+{
+    override val value: MultiValue<T>
 }
