@@ -2,7 +2,6 @@ package org.ionproject.core
 
 import org.ionproject.core.common.model.Programme
 import org.ionproject.core.common.model.ProgrammeOffer
-import org.ionproject.core.programme.programmeDb.ProgrammeRepo
 import org.springframework.stereotype.Component
 
 @Component

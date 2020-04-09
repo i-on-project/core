@@ -23,7 +23,7 @@ class Action(
         val href: URI,
         val title: String? = null,
         val method: HttpMethod? = null,
-        val type: String? = null,
+        val type: MediaType? = null,
         val isTemplated: Boolean? = null,
         val fields: List<Field>? = null) {
 
@@ -35,7 +35,7 @@ class Action(
                 method = HttpMethod.POST,
                 href = href,
                 isTemplated = false,
-                type = JSON_MEDIA_TYPE)
+                type = MediaType.APPLICATION_JSON)
 
         fun genSearchAction(href: URI) = Action(
                 name = "search",
@@ -43,7 +43,7 @@ class Action(
                 method = HttpMethod.GET,
                 href = href,
                 isTemplated = true,
-                type = JSON_MEDIA_TYPE,
+                type = MediaType.APPLICATION_JSON,
                 fields = listOf(
                         Field(name = "limit", type = "number", klass = "param/limit"),
                         Field(name = "page", type = "number", klass = "param/page")
@@ -53,14 +53,14 @@ class Action(
                 name = "delete",
                 href = href,
                 method = HttpMethod.GET,
-                type = "*/*",
+                type = MediaType.ALL,
                 isTemplated = false)
 
         fun genEditAction(href: URI) = Action(
                 name = "edit",
                 href = href,
                 method = HttpMethod.PATCH,
-                type = JSON_MEDIA_TYPE,
+                type = MediaType.APPLICATION_JSON,
                 isTemplated = false)
     }
 }

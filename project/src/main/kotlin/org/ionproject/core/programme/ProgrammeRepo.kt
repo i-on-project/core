@@ -1,4 +1,4 @@
-package org.ionproject.core.programme.programmeDb
+package org.ionproject.core.programme
 
 import org.ionproject.core.common.mappers.ProgrammeMapper
 import org.ionproject.core.common.mappers.ProgrammeOfferMapper
@@ -8,11 +8,11 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeRepoImpl(private val tm : TransactionManager) : ProgrammeRepo {
+class ProgrammeRepo(private val tm : TransactionManager) {
     val programmeMapper : ProgrammeMapper = ProgrammeMapper()
     val offerMapper : ProgrammeOfferMapper = ProgrammeOfferMapper()
 
-    override fun getProgrammes(): List<Programme> {
+    fun getProgrammes(): List<Programme> {
         val result = tm.run {
             handle -> handle.createQuery("SELECT * FROM dbo.programme")
                 .map(programmeMapper)
@@ -22,7 +22,7 @@ class ProgrammeRepoImpl(private val tm : TransactionManager) : ProgrammeRepo {
         return result ?: listOf()
      }
 
-    override fun getProgrammeById(id: Int): Programme? {
+    fun getProgrammeById(id: Int): Programme? {
         val result = tm.run {
             handle ->
             {
@@ -50,7 +50,7 @@ class ProgrammeRepoImpl(private val tm : TransactionManager) : ProgrammeRepo {
         return result
     }
 
-    override fun getOfferById(id: Int): ProgrammeOffer? {
+    fun getOfferById(id: Int): ProgrammeOffer? {
         val result = tm.run {
             handle ->  handle.createQuery("SELECT * FROM dbo.programmeOffer WHERE id = :id")
                 .bind("id", id)

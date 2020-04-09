@@ -4,13 +4,7 @@ import org.ionproject.core.common.*
 import org.ionproject.core.common.model.Course
 import org.springframework.http.HttpMethod
 
-/*
- * TODO: TODOYEAR
- *  OBJETO URI EXPLODE COM "/v0/courses{?limit,page}"
- */
-
-
-fun courseToListRepr(courses : List<Course>) = SirenBuilder()
+fun courseToListRepr(courses : List<Course>, page : Int, limit : Int) = SirenBuilder()
         .klass("course", "collection")
         .entities(
                 courses.map {
@@ -24,7 +18,7 @@ fun courseToListRepr(courses : List<Course>) = SirenBuilder()
                         method = HttpMethod.POST,
                         href = Uri.forCourses(),
                         isTemplated = false,
-                        type = JSON_MEDIA_TYPE
+                        type = Media.APPLICATION_JSON
                 )
         )
         .action(
@@ -32,14 +26,24 @@ fun courseToListRepr(courses : List<Course>) = SirenBuilder()
                         name = "search",
                         title = "Search Items",
                         method = HttpMethod.GET,
-                        href = Uri.forCourses(),        //TODO TEMPLATING
+                        href = Uri.forCoursesTemplated(),
                         isTemplated = true,
-                        type = SIREN_MEDIA_TYPE,
-                fields = listOf(
-                        Field(name = "limit", type = "number", klass = "param/limit"),
-                        Field(name = "page", type = "number", klass = "param/page")
-                )
-        )).toSiren()
+                        type = Media.SIREN_TYPE,
+                        fields = listOf(
+                            Field(name = "limit", type = "number", klass = "param/limit"),
+                            Field(name = "page", type = "number", klass = "param/page")
+                        )
+        ))
+        .link("self", Uri.forCoursesWithParameters(page, limit))
+        .link("next", Uri.forCoursesWithParameters(page+1,limit)).
+                let {
+                        {
+                        if(page > 0)
+                            it.link("previous", Uri.forCoursesWithParameters(page-1,limit))
+                        it
+                    }()
+                }
+        .toSiren()
 
 private fun buildSubentities(course : Course) : EmbeddedRepresentation =
         SirenBuilder(smallCourseRepr(course.acronym))

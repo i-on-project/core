@@ -20,7 +20,11 @@ class ProgrammeSpringController(private val programmeServices: ProgrammeServices
     @GetMapping(Uri.programmesById)
     fun getProgramme(@PathVariable id : Int) : ResponseEntity<Siren> =
             programmeServices.getProgrammeById(id)
-                    ?.let { ResponseEntity.ok(programmeToDetailRepr((it))) }
+                    ?.let {
+                        ResponseEntity.ok()
+                                .header("Content-Type", Media.SIREN_TYPE.toString())
+                                .body(programmeToDetailRepr((it)))
+                    }
                     ?: ResponseEntity.notFound().build()
 
     @GetMapping(Uri.programmeOfferById)

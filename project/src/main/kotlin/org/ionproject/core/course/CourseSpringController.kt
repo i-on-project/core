@@ -5,6 +5,7 @@ import org.ionproject.core.course.representations.courseToDetailRepr
 import org.ionproject.core.course.representations.courseToListRepr
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 /*
  * Course controller, accepts only application/json and vnd.siren+json,
@@ -15,15 +16,28 @@ import org.springframework.web.bind.annotation.*
 class CourseSpringController(private val courseServices: CourseServices){
 
 
-    @GetMapping(Uri.courses)    //TODO LACKS TEMPLATING AND QUERY PARAMS
-    fun getCourses() : Siren = courseToListRepr(
-            courseServices.getCourses()
-    )
+    @GetMapping(Uri.courses)
+    fun getCourses(@RequestParam page : Optional<Int>, @RequestParam limit : Optional<Int>) : ResponseEntity<Siren> {
+        val page = page.orElseGet { 0 }
+        val limit = limit.orElseGet { 5 }           //Default limit is 5 records
+
+        return courseServices.getCourses(page, limit)
+                ?.let {
+                    ResponseEntity.ok()
+                            .header("Content-Type", Media.SIREN_TYPE.toString())
+                            .body(courseToListRepr(it, page, limit))
+                }
+                ?: ResponseEntity.notFound().build()
+    }
 
     @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable id: Int) : ResponseEntity<Siren> =
             courseServices.getCourseById(id)
-                    ?.let { ResponseEntity.ok(courseToDetailRepr(it))}
+                    ?.let {
+                        ResponseEntity.ok()
+                                .header("Content-Type", Media.SIREN_TYPE.toString())
+                                .body(courseToDetailRepr(it))
+                    }
                     ?: ResponseEntity.notFound().build()
 
     /*

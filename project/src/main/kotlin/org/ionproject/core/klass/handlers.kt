@@ -15,13 +15,15 @@ object KlassToSiren {
             .toEmbed()
     }
 
+    /*
     fun toSiren(acr: String, klasses: List<Klass>, page: Int, size: Int): Siren {
+        /*
         val selfHref = Uri.forKlasses(acr)
         return SirenBuilder()
             .klass(*klassClasses, "collection")
             .entities(klasses.map { toSiren(it) })
             .link("self", URI("$selfHref?page=$page&size=$size"))
-            .link("about", Uri.forCourseByAcr(acr))
+            .link("about", Uri.forCourseById(acr))
             .action(Action.genAddItemAction(selfHref))
             .action(Action.genSearchAction(URI("$selfHref?term,course")))
             .action(Action(
@@ -36,7 +38,11 @@ object KlassToSiren {
                     Field(name = "page", type = "number")
                 )))
             .toSiren()
+
+         */
     }
+    */
+
 
     fun toSiren(klass: FullKlass): Siren {
         val selfHref = Uri.forKlassByTerm(klass.course, klass.calendarTerm)
