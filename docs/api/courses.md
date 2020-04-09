@@ -51,15 +51,14 @@ A course representation:
       "rel": [ "/rel/class" ], 
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/1/classes" },
-        { "rel": [ "course" ], "href": "/v0/courses/1" }
+        { "rel": [ "about" ], "href": "/v0/courses/1" }
       ]
     },
     {
-      "class": [ "event", "collection" ],
-      "rel": [ "/rel/event" ], 
+      "class": [ "calendar" ],
+      "rel": [ "/rel/calendar" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/events" },
-        { "rel": [ "course" ], "href": "/v0/courses/1" }  
+        { "rel": [ "self" ], "href": "/v0/courses/1/calendar" }
       ]
     }
   ],
