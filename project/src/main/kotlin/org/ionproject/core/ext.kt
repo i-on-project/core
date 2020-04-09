@@ -44,3 +44,9 @@ fun CharSequence.toInt() : Int {
 
     return if (signal) acc else acc * -1
 }
+
+fun StringBuilder.appendIfNotNull(vararg objs: Any?) {
+    for (obj in objs) {
+        if (obj != null) this.append(obj.toString())
+    }
+}

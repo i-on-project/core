@@ -1,28 +1,21 @@
 package org.ionproject.core.common
 
 import org.springframework.web.util.UriTemplate
-import java.net.URI
 
 object Uri {
     private const val version = "/v0"
 
     const val courses = "${version}/courses"
-    const val courseByAcr = "${version}/courses/{acr}"
+    const val courseByAcr = "$courses/{course_id}"
     const val klasses = "$courseByAcr/classes"
-    const val klassByTerm = "$klasses/{calterm}"
-    const val classSectionById = "$klassByTerm/{id}"
+    const val klassByTerm = "$klasses/{class_id}"
+    const val classSectionById = "$klassByTerm/{classSection_id}"
     const val calendarByClass = "$klassByTerm/calendar"
+    const val calendarByClassSection = "$classSectionById/calendar"
 
-    val courseByAcrTemplate = UriTemplate(courseByAcr)
-    val klassesTemplate = UriTemplate(klasses)
-    val klassByTermTemplate = UriTemplate(klassByTerm)
-    val classSectionByIdTemplate = UriTemplate(classSectionById)
     val calendarByClassTemplate = UriTemplate(calendarByClass)
+    val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
 
-    fun forCourses() = URI(courses)
-    fun forCourseByAcr(acr: String) = courseByAcrTemplate.expand(acr)
-    fun forKlasses(acr: String) = klassesTemplate.expand(acr)
-    fun forKlassByTerm(acr: String, calterm: String) = klassByTermTemplate.expand(acr, calterm)
-    fun forClassSectionById(acr: String, calterm: String, id: String) = classSectionByIdTemplate.expand(acr, calterm, id)
-    fun forCalendarByClass(acr: String, calterm: String) = calendarByClassTemplate.expand(acr, calterm)
+    fun forCalendarByClass(courseId: Int, classId: Int) = calendarByClassTemplate.expand(courseId, classId)
+    fun forCalendarByClassSection(courseId: Int, classId: Int, classSectionId: Int) = calendarByClassSectionTemplate.expand(courseId, classId, classSectionId)
 }

@@ -14,14 +14,5 @@ class Calendar (
     val method: Method? = null,
     val components: MutableList<CalendarComponent> = mutableListOf()
 ) : Iterable<CalendarComponent> {
-
-    constructor(
-        prod: ProductIdentifier,
-        version: Version = Version(),
-        scale: CalendarScale? = null,
-        method: Method? = null,
-        vararg components: CalendarComponent
-    ) : this(prod, version, scale, method, mutableListOf(*components))
-
     override fun iterator(): Iterator<CalendarComponent> = components.iterator()
 }

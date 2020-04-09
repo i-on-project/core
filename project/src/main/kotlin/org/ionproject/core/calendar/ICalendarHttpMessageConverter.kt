@@ -89,3 +89,10 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
         }
     }
 }
+
+private fun Writer.writeln(obj: Any) {
+    write(obj.toString() + "\r\n")
+}
+private fun Writer.writeICalendar(string: String) {
+    writeln(string.iCalendarFold())
+}
