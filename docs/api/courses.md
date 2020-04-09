@@ -25,7 +25,6 @@ A course representation:
 * *may* include a link to the collection it belongs, using the `collection` link relation
 * *may* include a link to the currently active class (current semester), using the `/rel/current` link relation
 * *may* include links to its classes, using the `/rel/class` link relation
-* *may* include a link to its calendar, using the `/rel/calendar` link relation
 
 ## Actions
 * `delete`: delete the course
@@ -52,13 +51,6 @@ A course representation:
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/1/classes" },
         { "rel": [ "about" ], "href": "/v0/courses/1" }
-      ]
-    },
-    {
-      "class": [ "calendar" ],
-      "rel": [ "/rel/calendar" ], 
-      "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/calendar" }
       ]
     }
   ],

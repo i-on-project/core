@@ -89,7 +89,7 @@ Since the number of class sections is thought to be very reduced, all of them wi
       "class": [ "calendar" ],
       "rel": [ "/rel/calendar" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/calendar" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/s1920v/calendar" }
       ]
     }
   ],
