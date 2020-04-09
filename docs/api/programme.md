@@ -4,8 +4,12 @@ A programme represents a type of graduation such as LEIC or MEIC.
 A programme is composed by a set of _offers_. 
 
 ## Properties
-   * Name
-      -  mandatory: the programme's name
+   * Id
+      - MANDATORY
+      - type: number
+      - Identifies uniquely a Programme
+   * Name   
+      -  OPTIONAL (it may not appear in this phase)
       -  type: text
       -  e.g. "Licenciatura em Engenharia Informática e de Computadores"
     
@@ -35,33 +39,46 @@ A programme is composed by a set of _offers_.
 {
     "class": [ "programme" ],
     "properties": {
-        "name": "Licenciatura em Engenharia Informática e de Computadores",
+        "id": 1,
+        "name": "Licenciatura em Engenharia Informática e de Computadores", //It may not appear
         "acronym": "LEIC",
-        "termSize": 4
+        "termSize": 6
     },
     "entities": [
         {
             "class": [ "offer" ],
             "title": "LS Offer",
             "rel": [ "/rel/programmeOffer" ],
+            "properties": {
+                "CourseId": 2,
+                "TermNumber": 3
+            },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/1"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1"}
             ]
         },
         {
             "class": [ "offer" ],
             "title": "AED Offer",
             "rel": [ "/rel/programmeOffer" ],
+            "properties": {
+                "CourseId": 5,
+                "TermNumber": 3
+            },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/2"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/2"}
             ]
         },
         {
             "class": [ "offer" ],
             "title": "POO Offer",
             "rel": [ "/rel/programmeOffer" ],
+            "properties": {
+                "CourseId": 4,
+                "TermNumber": 1
+            },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/3"}
+                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/3"}
             ]
         }
     ],
@@ -70,10 +87,10 @@ A programme is composed by a set of _offers_.
             "name": "edit-programme",
             "title": "Edit Programme",
             "method": "PUT",
-            "href": "/v0/programmes/LEIC",
+            "href": "/v0/programmes/1",
             "type": "application/json",
             "fields": [
-                { "name": "ProgrammeName", "type": "text"},
+                { "name": "ProgrammeName", "type": "text"}, //the name may be NULL, you can edit it
                 { "name": "Acronym", "type": "text"},
                 { "name": "TermSize", "type": "number"}
             ]
@@ -82,30 +99,21 @@ A programme is composed by a set of _offers_.
             "name": "add-offer",
             "title": "Add Offer",
             "method": "POST",
-            "href": "/v0/programmes/LEIC/offers",
+            "href": "/v0/programmes/1/offers",
             "type": "application/json",
             "fields": [
-                { "name": "CourseAcronym", "type": "text"},
+                { "name": "CourseId", "type": "number"},
                 { "name": "CurricularTerm", "type": "number" },
-                { "name": "Precedents", "type": "List" }
                 { "name": "Optional", "type": "boolean"}
             ]
         }
     ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/LEIC" },
+        { "rel": [ "self" ], "href": "/v0/programmes/1" },
         { "rel": [ "up" ], "href": "/v0/programmes/" }
     ]
 }
 ```
-## Notes: 
-   The type List of field Precedents on action "add-offer",
-   is not a well defined html type but one adopted for this representation.
-   In the context of its use it represents a collection of precedent 
-   curricular units to the current offer.
-   Example: LS has as precedent SI1 and POO, the same can be represented
-   with a list like "SI1,POO".
-   Same for type boolean, even thought its not a defined html input type it suits better this case.
 
 ---------------------------------------------------------------------
 # Programme Collection
@@ -126,16 +134,24 @@ A collection of the possible programmes.
     "entities": [
         {
             "class": [ "programme" ],
-            "rel": [ "item" ],      
+            "rel": [ "item" ],
+            "properties": {
+                "id": 1,
+                "acronym": "LEIC"
+            },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/LEIC" }
+                { "rel": [ "self" ], "href": "/v0/programmes/1" }
             ]
         },
         {
             "class": [ "Programme" ],
             "rel": [ "item" ],
+            "properties": {
+                "id": 2,
+                "acronym": "MEIC"
+            },
             "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/MEIC" }
+                { "rel": [ "self" ], "href": "/v0/programmes/2" }
             ]
         }
     ],
@@ -147,8 +163,7 @@ A collection of the possible programmes.
             "href": "/v0/programmes/",
             "type": "application/json",
             "fields": [
-                { "name": "ProgrammeName", "type": "text"},
-                { "name": "Acronym", "type": "text"},
+                { "name": "ProgrammeAcr", "type": "text"},
                 { "name": "TermSize", "type": "number"}
             ]
         }
@@ -167,29 +182,23 @@ A collection of the possible programmes.
    A ProgrammeOffer may have a set of pre-conditions, for example the curricularTerm set where the offer is available or the curricularUnits that precede it.
 
 # Properties
-   * Acronym
-      - mandatory: the curricular unit acronym offered
+   * Id
+      - MANDATORY
+      - type: number
+      - Uniquely identifies a ProgrammeOffer
+      
+   * Acronym: the curricular unit acronym
+      - mandatory
       - type: text
       - e.g. "LS"
 
-   * Term Number: the starting term when the curricular unit can be taken.
-      - mandatory
-      - type: number
-
-   * Credits: Duration in terms
+   * Term Number: the term that this offer is available
       - mandatory
       - type: number
 
    * Optional: If the curricular unit is optional or not
       - mandatory
       - type: boolean  
-
-   * Precedents: The curricular units that must be taken before it.
-      - mandatory
-      - type: List (check Programme notes)
-     e.g. "POO, SI1"
-     Note: The precedent list gets the next depth of dependencies
-     and not the full dependencies tree. (e.g. LS is dependent of POO but POO is dependant of PG)
 
 ## Link Relations
    A programme representation:
@@ -208,25 +217,16 @@ A collection of the possible programmes.
         "id": 1,
         "acronym": "LS",
         "termNumber": 2,
-        "credits": 6,
-        "optional": "true",
-        "precedents": "SI1,POO"
+        "optional": "true"
     },
     "entities": [
-        {
-            "class": [ "course" ],
-            "rel": [ "/rel/course" ],
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/courses/SI1" }
-            ]
-        },
-        {
-            "class": [ "course" ],
-            "rel": [ "/rel/course" ],
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/courses/POO" }
-            ]
-        }
+      {
+          "class": [ "course" ],
+          "rel": [ "/rel/course/" ],
+          "links": [
+              {"rel": [ "self" ], "href": "/v0/courses/1"}
+          ]
+       }
     ],
     "actions": [
         {
@@ -234,19 +234,17 @@ A collection of the possible programmes.
             "title": "Edit Offer",
             "method": "PUT",
             "type": "application/json",
-            "href": "/v0/courses/SI1",
+            "href": "/v0/programmes/1/offers/1",
             "fields": [
                 { "name": "Acronym", "type": "text"},
                 { "name": "TermNumber", "type": "number"},
-                { "name": "Credits", "type": "number"},
-                { "name": "Optional", "type": "boolean"},
-                { "name": "Precedents", "type": "list"},
+                { "name": "Optional", "type": "boolean"}
             ]
         }
     ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/LEIC/offers/1" }
-        { "rel": [ "related" ], "href": "/v0/programmes/LEIC" }
+        { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1" }
+        { "rel": [ "related" ], "href": "/v0/programmes/1" }
     ]
 }
 ```
