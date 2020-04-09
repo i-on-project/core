@@ -8,19 +8,8 @@ import org.ionproject.core.common.Uri
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
-import java.net.URI
 
 internal class KlassControllerTest : ControllerTester() {
-
-    fun isValidSiren(uri: URI) = mocker.get(uri) {
-        accept = MediaType(APPLICATION_TYPE, SIREN_SUBTYPE)
-    }.andExpect {
-        status { isOk }
-        content { contentType(SIREN_MEDIA_TYPE) }
-        jsonPath("$.links") { exists() }
-        jsonPath("$.actions") { exists() }
-    }.andReturn()
-
     @Test
     fun getClassResource_shouldRespondWithTheSirenRepresentationOfClass() {
         isValidSiren(Uri.forKlassByTerm(1, "1920v"))

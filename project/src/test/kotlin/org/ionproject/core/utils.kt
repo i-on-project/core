@@ -1,5 +1,8 @@
 package org.ionproject.core
 
+import org.ionproject.core.common.APPLICATION_TYPE
+import org.ionproject.core.common.SIREN_MEDIA_TYPE
+import org.ionproject.core.common.SIREN_SUBTYPE
 import org.ionproject.core.common.transaction.ITransactionManager
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -9,13 +12,25 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Primary
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
+import java.net.URI
 
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class ControllerTester {
     @Autowired
     lateinit var mocker: MockMvc
+
+    fun isValidSiren(uri: URI) = mocker.get(uri) {
+        accept = MediaType(APPLICATION_TYPE, SIREN_SUBTYPE)
+    }.andExpect {
+        status { isOk }
+        content { contentType(SIREN_MEDIA_TYPE) }
+        jsonPath("$.links") { exists() }
+        jsonPath("$.actions") { exists() }
+    }.andReturn()
 }
 
 @Primary
