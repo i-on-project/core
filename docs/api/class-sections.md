@@ -6,8 +6,12 @@ The `class section` resource has two possible representations: a detailed (or fu
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `course`: the course's unique acronym
+* `courseId`: the course's unique identifier
   - mandatory
+  - type: **number**
+  - e.g. 1
+
+* `courseAcr`: the course's unique acronym
   - type: **text**
   - e.g. "WAD"
 
@@ -39,7 +43,8 @@ A `class section` representation includes a description of the available actions
 {
   "class": [ "class", "section" ],
   "properties": { 
-    "course": "WAD",
+    "courseAcr": "WAD",
+    "courseId": 1,
     "class": "s1920v",
     "id": "1D"
   },
@@ -48,7 +53,7 @@ A `class section` representation includes a description of the available actions
       "class": [ "calendar" ],
       "rel": [ "/rel/calendar" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/1d/calendar" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/s1920v/1d/calendar" }
       ]
     }
   ],
@@ -57,14 +62,14 @@ A `class section` representation includes a description of the available actions
       "name": "enroll",
       "title": "Enroll class section",
       "method": "POST",
-      "href": "/v0/courses/dwa/classes/s1920v/1d/enroll",
+      "href": "/v0/courses/1/classes/s1920v/1d/enroll",
       "type": "application/x-www-form-urlencoded",
       "fields": [ ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/1d" },
-    { "rel": [ "collection" ], "href": "/v0/courses/dwa/classes/s1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/s1920v/1d" },
+    { "rel": [ "collection" ], "href": "/v0/courses/1/classes/s1920v" }
   ]
 }
 ```
