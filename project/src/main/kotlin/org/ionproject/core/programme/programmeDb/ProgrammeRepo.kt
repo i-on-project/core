@@ -3,8 +3,9 @@ package org.ionproject.core.programme.programmeDb
 import org.ionproject.core.common.modelInterfaces.IProgramme
 import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class ProgrammeRepo : IProgrammeRepo {
     override fun getProgrammes(): List<IProgramme> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

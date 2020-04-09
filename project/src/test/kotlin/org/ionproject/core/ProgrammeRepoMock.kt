@@ -6,9 +6,10 @@ import org.ionproject.core.common.model.ProgrammeOffer
 import org.ionproject.core.common.modelInterfaces.IProgramme
 import org.ionproject.core.common.modelInterfaces.IProgrammeOffer
 import org.ionproject.core.programme.programmeDb.IProgrammeRepo
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
-@Component
+@Primary
 class ProgrammeRepoMock : IProgrammeRepo {
     override fun getProgrammes(): List<IProgramme> {
         return listOf(

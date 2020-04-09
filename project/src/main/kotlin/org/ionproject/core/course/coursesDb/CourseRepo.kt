@@ -7,8 +7,9 @@ import org.ionproject.core.common.transaction.ITransactionManager
 import org.ionproject.core.common.transaction.TransactionManager
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class CourseRepo(private val tm : ITransactionManager) : ICourseRepo {
     val courseMapper : CourseMapper = CourseMapper()
 

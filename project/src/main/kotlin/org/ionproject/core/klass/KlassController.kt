@@ -1,5 +1,6 @@
 package org.ionproject.core.klass
 
+import org.ionproject.core.common.SIREN_MEDIA_TYPE
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
@@ -12,14 +13,14 @@ class KlassController(private val repo: KlassRepo) {
     fun handleClassNotInDbException(exception: ClassNotInDbException) =
         ResponseEntity.notFound().build<Any>()
 
-    @GetMapping(Uri.klassByTerm)
+    @GetMapping(Uri.klassByTerm, produces = [SIREN_MEDIA_TYPE])
     fun get(@PathVariable cid: Int, @PathVariable calterm: String): Siren {
         val klass: FullKlass = repo.get(cid, calterm)
 
         return KlassToSiren.toSiren(klass)
     }
 
-    @GetMapping(Uri.klasses)
+    @GetMapping(Uri.klasses, produces = [SIREN_MEDIA_TYPE])
     fun getCollection(@PathVariable cid: Int,
                       @RequestParam(defaultValue = "0") page: Int,
                       @RequestParam(defaultValue = "5") size: Int): Siren {

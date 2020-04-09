@@ -2,9 +2,10 @@ package org.ionproject.core
 
 import org.ionproject.core.common.model.Course
 import org.ionproject.core.course.coursesDb.ICourseRepo
+import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
 
-@Component
+@Primary
 class CourseRepoMock : ICourseRepo {
     override fun getCourses(): List<Course> {
         return listOf(

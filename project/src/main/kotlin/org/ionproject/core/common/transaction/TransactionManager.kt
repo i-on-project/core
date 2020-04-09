@@ -6,11 +6,11 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
 
 @Component
-class TransactionManager(dsh : DataSourceHolder)  : ITransactionManager {
+class TransactionManager(dsh: DataSourceHolder) : ITransactionManager {
     /**
      * Jdbi instance wraps a JDBC DataSource
      */
-    private val jdbi : Jdbi = Jdbi.create(dsh.dataSource)
+    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
 
     /**
      * Executes the transaction passed as parameter with the
@@ -32,7 +32,7 @@ class TransactionManager(dsh : DataSourceHolder)  : ITransactionManager {
 
             handle.commit()
             return result
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             handle?.rollback()
             throw e
         } finally {
@@ -40,4 +40,5 @@ class TransactionManager(dsh : DataSourceHolder)  : ITransactionManager {
         }
     }
 
+    override fun <R> run(transaction: (Handle) -> R): R = run(TransactionIsolationLevel.NONE, transaction)
 }

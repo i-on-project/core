@@ -35,7 +35,7 @@ class KlassRepoImplementation(private val tm: ITransactionManager) : KlassRepo {
             .map { ro, _ -> Klass(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term")) }
             .findOne()
 
-        if (klass.isEmpty) {
+        if (!klass.isPresent) {
             throw ClassNotInDbException()
         }
 

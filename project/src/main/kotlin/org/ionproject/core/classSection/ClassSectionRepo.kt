@@ -28,7 +28,7 @@ class ClassSectionRepoImplementation(private val tm: ITransactionManager) : Clas
             .map { ro, _ -> ClassSection(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term"), ro.getString("sid")) }
             .findOne()
 
-        if (match.isEmpty) {
+        if (!match.isPresent) {
             throw ClassSectionNotInDbException()
         }
 
