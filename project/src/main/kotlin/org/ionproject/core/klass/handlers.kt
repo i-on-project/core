@@ -11,17 +11,17 @@ object KlassToSiren {
         return SirenBuilder(klass)
             .klass(*klassClasses)
             .rel("item")
-            .link("self", Uri.forKlassByTerm(klass.course, klass.calendarTerm))
+            .link("self", Uri.forKlassByTerm(klass.courseId, klass.calendarTerm))
             .toEmbed()
     }
 
-    fun toSiren(acr: String, klasses: List<Klass>, page: Int, size: Int): Siren {
-        val selfHref = Uri.forKlasses(acr)
+    fun toSiren(cid: Int, klasses: List<Klass>, page: Int, size: Int): Siren {
+        val selfHref = Uri.forKlasses(cid)
         return SirenBuilder()
             .klass(*klassClasses, "collection")
             .entities(klasses.map { toSiren(it) })
             .link("self", URI("$selfHref?page=$page&size=$size"))
-            .link("about", Uri.forCourseByAcr(acr))
+            .link("about", Uri.forCourseByAcr(cid))
             .action(Action.genAddItemAction(selfHref))
             .action(Action.genSearchAction(URI("$selfHref?term,course")))
             .action(Action(
@@ -39,13 +39,13 @@ object KlassToSiren {
     }
 
     fun toSiren(klass: FullKlass): Siren {
-        val selfHref = Uri.forKlassByTerm(klass.course, klass.calendarTerm)
+        val selfHref = Uri.forKlassByTerm(klass.courseId, klass.calendarTerm)
 
         val sections = klass.sections.map {
             SirenBuilder(it)
                 .klass("class", "section")
                 .rel("item")
-                .link("self", Uri.forClassSectionById(klass.course, klass.calendarTerm, it.id))
+                .link("self", Uri.forClassSectionById(klass.courseId, klass.calendarTerm, it.id))
                 .toEmbed()
         }
 
@@ -53,7 +53,7 @@ object KlassToSiren {
             .klass(*klassClasses)
             .entities(sections)
             .link("self", selfHref)
-            .link("collection", Uri.forKlasses(klass.course))
+            .link("collection", Uri.forKlasses(klass.courseId))
             .action(Action.genDeleteAction(selfHref))
             .action(Action.genEditAction(selfHref))
             .toSiren()

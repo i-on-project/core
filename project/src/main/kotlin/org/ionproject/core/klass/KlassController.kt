@@ -13,18 +13,18 @@ class KlassController(private val repo: KlassRepo) {
         ResponseEntity.notFound().build<Any>()
 
     @GetMapping(Uri.klassByTerm)
-    fun get(@PathVariable acr: String, @PathVariable calterm: String): Siren {
-        val klass: FullKlass = repo.get(acr, calterm)
+    fun get(@PathVariable cid: Int, @PathVariable calterm: String): Siren {
+        val klass: FullKlass = repo.get(cid, calterm)
 
         return KlassToSiren.toSiren(klass)
     }
 
     @GetMapping(Uri.klasses)
-    fun getCollection(@PathVariable acr: String,
+    fun getCollection(@PathVariable cid: Int,
                       @RequestParam(defaultValue = "0") page: Int,
                       @RequestParam(defaultValue = "5") size: Int): Siren {
-        val klass = repo.getPage(acr, page, size)
+        val klass = repo.getPage(cid, page, size)
 
-        return KlassToSiren.toSiren(acr, klass, page, size)
+        return KlassToSiren.toSiren(cid, klass, page, size)
     }
 }

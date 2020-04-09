@@ -7,12 +7,12 @@ object Uri {
     private const val version = "/v0"
 
     const val courses = "${version}/courses"
-    const val courseByAcr = "${version}/courses/{acr}"
+    const val courseByAcr = "${version}/courses/{cid}"
     const val programmes = "${version}/programmes"
     const val programmesById = "${version}/programmes/{id}"
-    const val klasses = "${version}/courses/{acr}/classes"
-    const val klassByTerm = "${version}/courses/{acr}/classes/{calterm}"
-    const val classSectionById = "${version}/courses/{acr}/classes/{calterm}/{id}"
+    const val klasses = "${version}/courses/{cid}/classes"
+    const val klassByTerm = "${version}/courses/{cid}/classes/{calterm}"
+    const val classSectionById = "${version}/courses/{cid}/classes/{calterm}/{sid}"
 
     val courseByAcrTemplate = UriTemplate(courseByAcr)
     val programmesByIdTemplate = UriTemplate(programmesById)
@@ -22,8 +22,8 @@ object Uri {
 
     fun forCourses() = URI(courses)
     fun forProgrammesById(id : Int) = programmesByIdTemplate.expand(id)
-    fun forCourseByAcr(acr: String) = courseByAcrTemplate.expand(acr)
-    fun forKlasses(acr: String) = klassesTemplate.expand(acr)
-    fun forKlassByTerm(acr: String, calterm: String) = klassByTermTemplate.expand(acr, calterm)
-    fun forClassSectionById(acr: String, calterm: String, id: String) = classSectionByIdTemplate.expand(acr, calterm, id)
+    fun forCourseByAcr(cid: Int) = courseByAcrTemplate.expand(cid)
+    fun forKlasses(cid: Int) = klassesTemplate.expand(cid)
+    fun forKlassByTerm(cid: Int, calterm: String) = klassByTermTemplate.expand(cid, calterm)
+    fun forClassSectionById(cid: Int, calterm: String, sid: String) = classSectionByIdTemplate.expand(cid, calterm, sid)
 }
