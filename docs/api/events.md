@@ -28,7 +28,7 @@ The `categories` property of the `Event` in the example demonstrates a reoccurin
   "properties": {
     "prodid": {
       "parameters": {},
-      "value": "/v0/courses/wad/classes/s1920v/sections/61D"
+      "value": "/v0/courses/1/classes/1/sections/1"
     },
     "version": {
       "parameters": {},
@@ -45,11 +45,11 @@ The `categories` property of the `Event` in the example demonstrates a reoccurin
         },
         "summary": {
           "parameters": {},
-          "value": "Theory Class WAD-s1920v"
+          "value": "Theory Class WAD-1920v"
         },
         "description": {
           "parameters": {},
-          "value": "Theory Class of the WAD-s1920v class."
+          "value": "Theory Class of the WAD-1920v class."
         },
         "categories": [
           {
@@ -97,7 +97,7 @@ A calendar, as described [here](https://icalendar.org/iCalendar-RFC-5545/3-4-ica
 
 * `prodid`: id of the creator of the calendar. In this domain it could be the identifier of a `Class`, `ClassSection`, etc.
   - type: **text**
-  - e.g. "/v0/courses/wad/classes/s1920v/sections/61D"
+  - e.g. "/v0/courses/1/classes/1/sections/1"
 ## Actions
 An event collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
@@ -122,7 +122,7 @@ The `search` action allows the following parameters:
 
 The `batch-delete` action allows the following parameters:
 * `type`: delete all components whose `type` matches the one indicated
-  - e.g. /v0/courses/wad/classes/s1920v/sections/61D/calendar?type=event, will delete all events
+  - e.g. /v0/courses/1/classes/1/sections/1/calendar?type=event, will delete all events
 
 ## Link Relations
 A `Calendar` representation:
@@ -139,7 +139,7 @@ A `Calendar` representation:
     "properties": {
       "prodid": {
         "parameters": {},
-        "value": "/v0/courses/wad/classes/s1920v/sections/61D"
+        "value": "/v0/courses/1/classes/1/sections/61D"
       },
       "version": {
         "parameters": {},
@@ -156,11 +156,11 @@ A `Calendar` representation:
           },
           "summary": {
             "parameters": {},
-            "value": "Theory Class WAD-s1920v"
+            "value": "Theory Class WAD-1920v"
           },
           "description": {
             "parameters": {},
-            "value": "Theory Class of the WAD-s1920v class."
+            "value": "Theory Class of the WAD-1920v class."
           },
           "categories": {
             "parameters": {},
@@ -197,11 +197,11 @@ A `Calendar` representation:
           },
           "summary": {
             "parameters": {},
-            "value": "Theory Class WAD-s1920v"
+            "value": "Theory Class WAD-1920v"
           },
           "description": {
             "parameters": {},
-            "value": "Theory Class of the WAD-s1920v class."
+            "value": "Theory Class of the WAD-1920v class."
           },
           "categories": {
             "parameters": {},
@@ -240,7 +240,7 @@ A `Calendar` representation:
         "lecturer": 1010
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" }
       ]
     }
   ],
@@ -249,7 +249,7 @@ A `Calendar` representation:
       "name": "search",
       "summary": "Search components",
       "method": "GET",
-      "href": "/v0/courses/wad/classes/s1920v/components{?type,startBefore,startAfter,endBefore,endAfter,summary}",
+      "href": "/v0/courses/1/classes/1/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}",
       "isTemplated": true,
       "type": "application/x-www-form-urlencoded",
       "fields": [
@@ -265,7 +265,7 @@ A `Calendar` representation:
       "name": "add-item",
       "title": "Add Item",
       "method": "POST",
-      "href": "/v0/courses/wad/classes/s1920v/components",
+      "href": "/v0/courses/1/classes/1/calendar",
       "isTemplated": false,
       "type": "application/json",
       "fields": [ ]
@@ -275,15 +275,15 @@ A `Calendar` representation:
       "title": "Delete multiple items",
       "method": "DELETE",
       "isTemplated": true,
-      "href": "/v0/courses/wad/classes/s1920v/components{?type}",
+      "href": "/v0/courses/1/classes/1/calendar{?type}",
       "fields": [
         { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D/calendar" },
-    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v/sections/61D" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/sections/61D/calendar" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1/sections/61D" }
   ]
 } 
 ```
@@ -305,7 +305,7 @@ An `Event`, as described [here](https://tools.ietf.org/html/rfc5545#section-3.6.
 * `description`: description of the `Event`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
   - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First exam for the WAD-s1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
+  - e.g. "First exam for the WAD-1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
 
 * `dtstamp`: date of the last modification of the `Event`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
@@ -374,7 +374,7 @@ MIME type: __application/vdn.siren+json__
       },
       "description": {
         "parameters": {},
-        "value": "First exam of the WAD course during the semester 1920v"
+        "value": "First exam of the WAD course during the 1920v semester"
       },
       "categories": {
         "parameters": {},
@@ -403,19 +403,19 @@ MIME type: __application/vdn.siren+json__
       "class": [ "class" ],
       "rel": [ "/rel/class" ],
       "properties": {
-        "classId": "wad-s1920v",
-        "termId": "s1920v"
+        "classId": "1-1",
+        "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/s1920v" },
-        { "rel": [ "course"], "href": "/v0/courses/wad" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "term" ], "href": "/v0/terms/1" },
+        { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/calendar/components/1234" },
-    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/1234" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
   ]
 }
 ```
@@ -437,13 +437,13 @@ A calendar component designed to represent an assignment or something that requi
 * `description`: description of the `Todo`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
   - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First series of exercises for the WAD course during the semester 1920v"
+  - e.g. "First series of exercises for the WAD course during the 1920v semester"
 
 * `attach`: attachment related that could, for example, be related to the requirements or objectives of the `Todo`
   - this property is optional
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
   - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-  - e.g. "https://i-on.pt/v0/courses/wad/classes/1920v/documents/primeira-serie.pdf"
+  - e.g. "https://i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
 
 * `dtstamp`: date of the last modification of the `Todo`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
@@ -490,11 +490,11 @@ A Todo representation:
     },
     "description": {
       "parameters": {},
-      "value": "First series of exercises for the WAD course during the semester 1920v"
+      "value": "First series of exercises for the WAD course during the 1920v semester"
     },
     "attachment": {
       "parameters": {},
-      "value": "https://api.i-on.pt/v0/courses/wad/classes/1920v/documents/primeira-serie.pdf"
+      "value": "https://api.i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
     },
     "categories": {
       "parameters": {},
@@ -518,20 +518,20 @@ A Todo representation:
       "class": [ "class" ],
       "rel": [ "/rels/class" ],
       "properties": {
-        "classId": "wad-s1920v",
-        "termId": "s1920v"
+        "classId": "1-1",
+        "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/s1920v" },
-        { "rel": [ "course"], "href": "/v0/courses/wad" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "term" ], "href": "/v0/terms/1" },
+        { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/calendar/components/123490" },
-    { "rel": [ "service-doc" ], "href": "/v0/courses/wad/classes/s1920v/docs/first-series" },
-    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/123490" },
+    { "rel": [ "service-doc" ], "href": "/v0/courses/1/classes/1/docs/first-series" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
   ]
 } 
 ```
@@ -554,13 +554,13 @@ For example, a synopsis of a lecture.
 * `description`: description of the `Journal`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
   - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First series of exercises for the WAD course during the semester 1920v"
+  - e.g. "First series of exercises for the WAD course during the 1920v semester"
 
 * `attach`: attachment that related to the content of the `Journal`
   - this property is optional
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
   - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-  - e.g. "https://i-on.pt/v0/courses/wad/classes/1920v/documents/primeira-serie.pdf"
+  - e.g. "https://i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
 
 * `dtstamp`: date of the last modification of the `Journal`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
@@ -632,13 +632,13 @@ A Todo representation:
     "relatedTo": [
       {
         "parameters": {},
-        "value": "/v0/courses/wad/classes/s1920v/calendar/components/1234"
+        "value": "/v0/courses/1/classes/1/calendar/components/1234"
       },
       {
         "parameters": {
           "reltype": "SIBLING"
         },
-        "value": "/v0/courses/wad/classes/s1920v/calendar/components/123485"
+        "value": "/v0/courses/1/classes/1/calendar/components/123485"
       }
     ],
   },
@@ -647,20 +647,20 @@ A Todo representation:
       "class": [ "class" ],
       "rel": [ "/rels/class" ],
       "properties": {
-        "classId": "wad-s1920v",
-        "termId": "s1920v"
+        "classId": "1",
+        "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/s1920v" },
-        { "rel": [ "course"], "href": "/v0/courses/wad" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "term" ], "href": "/v0/terms/1" },
+        { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes/s1920v/calendar/components/123497" },
-    { "rel": [ "about" ], "href": "/v0/courses/wad/classes/s1920v" },
-    { "rel": [ "related" ], "href": [ "/v0/courses/wad/classes/s1920v/calendar/components/1234", "/v0/courses/wad/classes/s1920v/calendar/components/123485" ] }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/123497" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" },
+    { "rel": [ "related" ], "href": [ "/v0/courses/1/classes/1/calendar/components/1234", "/v0/courses/1/classes/1/calendar/components/123485" ] }
   ]
 } 
 ```
