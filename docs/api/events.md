@@ -403,7 +403,7 @@ MIME type: __application/vdn.siren+json__
       "class": [ "class" ],
       "rel": [ "/rel/class" ],
       "properties": {
-        "classId": "1-1",
+        "classId": "1",
         "termId": "1"
       },
       "links": [
@@ -414,7 +414,7 @@ MIME type: __application/vdn.siren+json__
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/1234" },
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/1234" },
     { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
   ]
 }
@@ -518,7 +518,7 @@ A Todo representation:
       "class": [ "class" ],
       "rel": [ "/rels/class" ],
       "properties": {
-        "classId": "1-1",
+        "classId": "1",
         "termId": "1"
       },
       "links": [
@@ -529,7 +529,7 @@ A Todo representation:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/123490" },
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/123490" },
     { "rel": [ "service-doc" ], "href": "/v0/courses/1/classes/1/docs/first-series" },
     { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
   ]
@@ -632,13 +632,13 @@ A Todo representation:
     "relatedTo": [
       {
         "parameters": {},
-        "value": "/v0/courses/1/classes/1/calendar/components/1234"
+        "value": "/v0/courses/1/classes/1/calendar/1234"
       },
       {
         "parameters": {
           "reltype": "SIBLING"
         },
-        "value": "/v0/courses/1/classes/1/calendar/components/123485"
+        "value": "/v0/courses/1/classes/1/calendar/123485"
       }
     ],
   },
@@ -658,9 +658,9 @@ A Todo representation:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/components/123497" },
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/123497" },
     { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" },
-    { "rel": [ "related" ], "href": [ "/v0/courses/1/classes/1/calendar/components/1234", "/v0/courses/1/classes/1/calendar/components/123485" ] }
+    { "rel": [ "related" ], "href": [ "/v0/courses/1/classes/1/calendar/1234", "/v0/courses/1/classes/1/calendar/123485" ] }
   ]
 } 
 ```
