@@ -1,6 +1,6 @@
 package org.ionproject.core.calendar.icalendar.types
 
-class DateTime (
+class DateTime(
     private val date: Date,
     private val time: Time
 ) : ICalendarDataType {

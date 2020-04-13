@@ -1,7 +1,6 @@
 package org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.*
 import org.ionproject.core.calendar.icalendar.types.CalendarUserAddress
 

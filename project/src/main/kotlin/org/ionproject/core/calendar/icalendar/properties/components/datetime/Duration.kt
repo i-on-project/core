@@ -7,7 +7,7 @@ class Duration(
     override val value: DurationDataType
 ) : Property {
     init {
-        if(!value.adding) throw IllegalArgumentException("Duration value for DURATION property must be positive.")
+        if (!value.adding) throw IllegalArgumentException("Duration value for DURATION property must be positive.")
     }
 
     override val name: String

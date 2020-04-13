@@ -4,12 +4,11 @@ import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
-import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 import org.ionproject.core.calendar.icalendar.types.MultiValue
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
-class Categories (
+class Categories(
     vararg categories: String,
     val language: Language? = null
 ) : ParameterizedProperty, MultiValuedProperty<Text> {

@@ -1,7 +1,6 @@
 package org.ionproject.core.calendar.icalendar.properties.components.datetime
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.FreeBusyTimeType
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.types.PeriodOfTime

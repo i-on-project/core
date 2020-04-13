@@ -39,7 +39,7 @@ abstract class Duration private constructor(
         }
 
         companion object {
-            operator fun invoke(days: Int, hours: Int, minutes: Int, seconds: Int, adding: Boolean) : DurationDate {
+            operator fun invoke(days: Int, hours: Int, minutes: Int, seconds: Int, adding: Boolean): DurationDate {
                 return DurationDate(
                     DurationDay(days),
                     if (hours > 0 || minutes > 0 || seconds > 0) {
@@ -115,7 +115,8 @@ abstract class Duration private constructor(
         }
 
         companion object {
-            operator fun invoke(hours: Int, minutes: Int, seconds: Int, adding: Boolean): DurationTime = DurationTime(DurationSubTime(hours, minutes, seconds), adding)
+            operator fun invoke(hours: Int, minutes: Int, seconds: Int, adding: Boolean): DurationTime =
+                DurationTime(DurationSubTime(hours, minutes, seconds), adding)
         }
 
         override fun toString(): String = super.toString() + "T$subTime"

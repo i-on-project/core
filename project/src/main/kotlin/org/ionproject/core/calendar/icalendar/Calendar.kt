@@ -7,7 +7,7 @@ import org.ionproject.core.calendar.icalendar.properties.calendar.Version
 
 const val iCalendarVersion = "2.0"
 
-class Calendar (
+class Calendar(
     val prod: ProductIdentifier,
     val version: Version = Version(),
     val scale: CalendarScale? = null,

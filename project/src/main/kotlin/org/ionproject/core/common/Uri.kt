@@ -17,5 +17,6 @@ object Uri {
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
 
     fun forCalendarByClass(courseId: Int, classId: Int) = calendarByClassTemplate.expand(courseId, classId)
-    fun forCalendarByClassSection(courseId: Int, classId: Int, classSectionId: Int) = calendarByClassSectionTemplate.expand(courseId, classId, classSectionId)
+    fun forCalendarByClassSection(courseId: Int, classId: Int, classSectionId: Int) =
+        calendarByClassSectionTemplate.expand(courseId, classId, classSectionId)
 }

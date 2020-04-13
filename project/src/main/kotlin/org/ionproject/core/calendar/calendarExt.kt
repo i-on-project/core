@@ -9,6 +9,6 @@ fun String.iCalendarFold(): String {
 }
 
 fun Array<out String>.toText(): Array<Text> = Array(size) { Text(get(it)) }
-fun List<String>.toText() : List<Text> = map { Text(it) }
+fun List<String>.toText(): List<Text> = map { Text(it) }
 fun String.toText(): Text = Text(this)
 

@@ -12,7 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter
 import java.io.PrintWriter
 import java.io.Writer
-import java.lang.IllegalArgumentException
 import java.lang.reflect.Type
 
 class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(TEXT_CALENDAR_MEDIA_TYPE) {
@@ -21,10 +20,11 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
 
     override fun supports(clazz: Class<*>): Boolean = clazz == Calendar::class.java
 
-    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Calendar = throw UnsupportedOperationException("This message converter can't read.")
+    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Calendar =
+        throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        when(outputMessage.headers.contentType) {
+        when (outputMessage.headers.contentType) {
             null -> {
                 outputMessage.headers.contentType = TEXT_CALENDAR_MEDIA_TYPE
                 PrintWriter(outputMessage.body).apply {
@@ -39,7 +39,8 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
         }
     }
 
-    override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar = throw UnsupportedOperationException("This message converter can't read.")
+    override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar =
+        throw UnsupportedOperationException("This message converter can't read.")
 
     private fun toiCalendar(calendar: Calendar, output: Writer) {
         output.writeICalendar("BEGIN:VCALENDAR")
@@ -93,6 +94,7 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
 private fun Writer.writeln(obj: Any) {
     write(obj.toString() + "\r\n")
 }
+
 private fun Writer.writeICalendar(string: String) {
     writeln(string.iCalendarFold())
 }

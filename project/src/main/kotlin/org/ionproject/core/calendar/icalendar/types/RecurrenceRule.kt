@@ -9,7 +9,13 @@ class Recur private constructor(
 ) : ICalendarDataType {
 
     constructor(until: Date, interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, until = until, interval = interval, byDay = byDay)
-    constructor(until: DateTime, interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, until = until, interval = interval, byDay = byDay)
+    constructor(until: DateTime, interval: Int? = null, byDay: List<WeekDay>?) : this(
+        Frequency.WEEKLY,
+        until = until,
+        interval = interval,
+        byDay = byDay
+    )
+
     constructor(count: Int, interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, count = count, interval = interval, byDay = byDay)
 
     override val name: String = "RECUR"

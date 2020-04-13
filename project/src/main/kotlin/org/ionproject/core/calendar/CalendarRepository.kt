@@ -18,8 +18,10 @@ import org.ionproject.core.calendar.icalendar.properties.components.recurrence.R
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.icalendar.types.*
+import org.springframework.stereotype.Repository
 import org.ionproject.core.calendar.icalendar.types.Duration as DurationType
 
+@Repository
 class CalendarRepository {
 
     // course -> class -> calendar
@@ -32,38 +34,40 @@ class CalendarRepository {
     init {
         val language = Language("pt/PT")
 
-        classCalendars[1]?.set(1, Calendar(
-            ProductIdentifier("class/1"),
-            Version(),
-            null,
-            null,
-            mutableListOf(
-                Event(
-                    UniqueIdentifier("event/1234"),
-                    Summary(
-                        "Exame de DAW",
-                        language = language
+        classCalendars[1]?.set(
+            1, Calendar(
+                ProductIdentifier("class/1"),
+                Version(),
+                null,
+                null,
+                mutableListOf(
+                    Event(
+                        UniqueIdentifier("event/1234"),
+                        Summary(
+                            "Exame de DAW",
+                            language = language
+                        ),
+                        Description("Exame de Época normal de DAW", language = language),
+                        DateTimeStamp(DateTime.parse("20200226T143423Z")),
+                        DateTimeCreated(DateTime.parse("20200226T143423Z")),
+                        Categories("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON", language = Language("en")),
+                        DateTimeStart(DateTime.parse("20200620T140000Z")),
+                        Duration(DurationType(hours = 2, minutes = 30))
                     ),
-                    Description("Exame de Época normal de DAW", language = language),
-                    DateTimeStamp(DateTime.parse("20200226T143423Z")),
-                    DateTimeCreated(DateTime.parse("20200226T143423Z")),
-                    Categories("EXAM", "DAW", "EVALUATION", "NORMAL-SEASON", language = Language("en")),
-                    DateTimeStart(DateTime.parse("20200620T140000Z")),
-                    Duration(DurationType(hours = 2, minutes = 30))
-                ),
-                Todo(
-                    UniqueIdentifier("todo/1324"),
-                    Summary("Primeira fase de exercícios de DAW", language = language),
-                    Description("Web API para suportar projetos, issues, labels, state e comments", language = language),
-                    Attachment(Uri("https://github.com/isel-leic-daw/1920v-public/wiki/phase-1")),
-                    DateTimeStamp(DateTime.parse("20200302T100545Z")),
-                    DateTimeCreated(DateTime.parse("20200302T100545Z")),
-                    DateTimeDue(Date(2020, 4, 20)),
-                    Categories("DAW", "EVALUATION", "ASSIGNMENT")
+                    Todo(
+                        UniqueIdentifier("todo/1324"),
+                        Summary("Primeira fase de exercícios de DAW", language = language),
+                        Description("Web API para suportar projetos, issues, labels, state e comments", language = language),
+                        Attachment(Uri("https://github.com/isel-leic-daw/1920v-public/wiki/phase-1")),
+                        DateTimeStamp(DateTime.parse("20200302T100545Z")),
+                        DateTimeCreated(DateTime.parse("20200302T100545Z")),
+                        DateTimeDue(Date(2020, 4, 20)),
+                        Categories("DAW", "EVALUATION", "ASSIGNMENT")
+                    )
                 )
-            )
 
-        ))
+            )
+        )
 
         classSectionCalendars[1] = hashMapOf(
             1 to hashMapOf(
@@ -90,8 +94,9 @@ class CalendarRepository {
         )
     }
 
-    fun getClassCalendar(courseId: Int, classId: Int) : Calendar? = classCalendars[courseId]?.get(classId)
+    fun getClassCalendar(courseId: Int, classId: Int): Calendar? = classCalendars[courseId]?.get(classId)
 
-    fun getClassSectionCalendar(courseId: Int, classId: Int, classSectionId: Int) : Calendar? = classSectionCalendars[courseId]?.get(classId)?.get(classSectionId)
+    fun getClassSectionCalendar(courseId: Int, classId: Int, classSectionId: Int): Calendar? =
+        classSectionCalendars[courseId]?.get(classId)?.get(classSectionId)
 
 }

@@ -1,10 +1,8 @@
 package org.ionproject.core.calendar.icalendar.properties.components.timezone
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
-import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 

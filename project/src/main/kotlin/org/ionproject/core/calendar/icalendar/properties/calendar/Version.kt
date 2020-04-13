@@ -2,11 +2,10 @@ package org.ionproject.core.calendar.icalendar.properties.calendar
 
 import org.ionproject.core.calendar.icalendar.iCalendarVersion
 import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
-class Version (
+class Version(
     value: String = iCalendarVersion
 ) : Property {
 

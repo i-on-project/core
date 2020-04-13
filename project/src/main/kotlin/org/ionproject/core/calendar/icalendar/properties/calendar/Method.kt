@@ -4,7 +4,7 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
-class Method (
+class Method(
     text: String
 ) : Property {
 

@@ -19,7 +19,7 @@ class Time private constructor(
                 utc
             )
 
-        operator fun invoke(hours: Int, minutes: Int, seconds: Int, utc: Boolean = true) : Time =
+        operator fun invoke(hours: Int, minutes: Int, seconds: Int, utc: Boolean = true): Time =
             of(hours, minutes, seconds, utc)
 
         fun parse(timeComp: CharSequence): Time =
@@ -27,7 +27,7 @@ class Time private constructor(
                 timeComp.subSequence(0, 2).toInt(),
                 timeComp.subSequence(2, 4).toInt(),
                 timeComp.subSequence(4, 6).toInt(),
-                timeComp.length == 7
+                timeComp.length == 7 && timeComp[6] == 'Z'
             )
     }
 

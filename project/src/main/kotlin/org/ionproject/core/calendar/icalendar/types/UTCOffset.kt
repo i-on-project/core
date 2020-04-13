@@ -13,5 +13,5 @@ class UTCOffset(
     override val name: String
         get() = Companion.name
 
-    override fun toString(): String = "${if(adding) '+' else '-'}$hours$minutes${seconds ?: ""}"
+    override fun toString(): String = "${if (adding) '+' else '-'}$hours$minutes${seconds ?: ""}"
 }

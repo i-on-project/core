@@ -1,7 +1,6 @@
 package org.ionproject.core.calendar.icalendar.properties.components.descriptive
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.AlternateTextRepresentation
 import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter

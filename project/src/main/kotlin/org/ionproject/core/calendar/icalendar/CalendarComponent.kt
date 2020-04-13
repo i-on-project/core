@@ -3,7 +3,6 @@ package org.ionproject.core.calendar.icalendar
 import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.components.change_management.DateTimeStamp
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
-import org.ionproject.core.twoPhaseReduce
 
 abstract class CalendarComponent(
     val uid: UniqueIdentifier,

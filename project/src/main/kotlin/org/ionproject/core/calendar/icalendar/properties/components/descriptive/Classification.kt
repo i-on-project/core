@@ -7,7 +7,7 @@ import org.ionproject.core.calendar.toText
 class Classification private constructor(
     value: String = "PUBLIC"
 ) : Property {
-    override val value : Text = value.toText()
+    override val value: Text = value.toText()
 
     override val name: String
         get() = "CLASS"

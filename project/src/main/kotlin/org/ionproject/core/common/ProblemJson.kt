@@ -1,4 +1,4 @@
-package org.ionproject.core
+package org.ionproject.core.common
 
 data class ProblemJson(
     /**
