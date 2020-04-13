@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod
 
 
 fun offerToDetailRepr(offer: ProgrammeOffer) =
-        SirenBuilder(shortOfferForOfferRepr(offer.id, offer.courseAcr, offer.termNumber, offer.optional))
+        SirenBuilder(ShortOfferForOfferRepr(offer.id, offer.courseAcr, offer.termNumber, offer.optional))
         .klass("offer")
         .entities(
                 listOf(buildSubentities(offer.courseId))
@@ -37,4 +37,4 @@ private fun buildSubentities(courseId : Int) = SirenBuilder()
         .link("self", Uri.forCourseById(courseId))
         .toEmbed()
 
-data class shortOfferForOfferRepr(val id : Int, val acronym: String, val termNumber: Int, val optional: Boolean)
+data class ShortOfferForOfferRepr(val id : Int, val acronym: String, val termNumber: Int, val optional: Boolean)

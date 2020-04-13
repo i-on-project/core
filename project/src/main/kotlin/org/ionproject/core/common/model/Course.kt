@@ -5,8 +5,8 @@ package org.ionproject.core.common.model
  */
 class Course(val id: Int,
              val acronym: String,
-             val name: String,
-             val term: String) {
+             val name: String? = "",
+             val term: String? = "") {
     //Term field is not part of the entity but is needed to represent the most recent term that is offered
 
     /**
@@ -26,10 +26,10 @@ class Course(val id: Int,
     companion object {
         fun of(id: Int,
                acronym: String,
-               name: String,
-               term: String) : Course? {
+               name: String?,
+               term: String?) : Course? {
 
-            if(acronym.trim() == "" || name.trim() == "")
+            if(acronym.trim() == "" || name?.trim() == "")
                 return null;
 
             return Course(id, acronym, name, term)
@@ -37,7 +37,7 @@ class Course(val id: Int,
 
         operator fun invoke(id: Int,
                             acronym : String,
-                            name: String,
-                            term: String) : Course? = of(id, acronym, name, term)
+                            name: String?,
+                            term: String?) : Course? = of(id, acronym, name, term)
     }
 }

@@ -14,23 +14,23 @@ class ProgrammeServices(private val repo : ProgrammeRepo) {
         return repo.getProgrammes()
     }
 
-    fun getProgrammeById(id : Int) : Programme? {
+    fun getProgrammeById(id : Int) : Programme {
         return repo.getProgrammeById(id)
     }
 
-    fun getOfferById(id: Int): ProgrammeOffer? {
+    fun getOfferById(id: Int): ProgrammeOffer {
         return repo.getOfferById(id)
     }
 
     fun editProgramme(programme : Programme) {
-        TODO()
+        TODO("Write API")
     }
 
     fun addProgramme(programme : Programme) {
-        TODO()
+        TODO("Write API")
     }
 
     fun addOffer(acr : String, offer : ProgrammeOffer) {
-        TODO()
+        TODO("Write API")
     }
 }

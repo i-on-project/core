@@ -2,7 +2,9 @@ package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.IncorrectParametersException
 import org.ionproject.core.common.customExceptions.ProhibitedUserException
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -25,6 +27,21 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
+    @ExceptionHandler(value = [ResourceNotFoundException::class])
+    private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request : HttpServletRequest) : ResponseEntity<*> {
+        val headers : HttpHeaders = HttpHeaders()
+        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+
+        return handleResponse("https://en.wikipedia.org/wiki/List_of_HTTP_status_codes",
+                "Resource not found",
+                404,
+                ex.localizedMessage,
+                request.requestURI,
+                headers
+        )
+    }
+
+
     /*
      * This exception can occur when a string is used instead
      * of a integer on a parameter. e.g. /v0/courses/BUG
@@ -32,11 +49,15 @@ class ExceptionHandler {
      */
     @ExceptionHandler(value = [NumberFormatException::class,IllegalArgumentException::class])
     private fun handleNumberFormatException(ex: NumberFormatException, request : HttpServletRequest) : ResponseEntity<*> {
+        val headers : HttpHeaders = HttpHeaders()
+        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+
         return handleResponse("https://en.wikipedia.org/wiki/List_of_HTTP_status_codes",
                 "Bad request",
                 400,
-                "Incorrect values passed to parameters. (Check Read API)",
-                request.requestURI
+                ex.localizedMessage,
+                request.requestURI,
+                headers
         )
     }
 
@@ -46,12 +67,16 @@ class ExceptionHandler {
      */
     @ExceptionHandler(value = [IncorrectParametersException::class])
     private fun handleIncorrectParametersException(ex : IncorrectParametersException, request: HttpServletRequest) : ResponseEntity<*> {
+        val headers : HttpHeaders = HttpHeaders()
+        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+
         return handleResponse(
                 "https://pt.wikipedia.org/wiki/HTTP_400",
                 "Incorrect Query Parameters",
                 400,
-                "The query parameters values passed are not correct (negative numbers).",
-                "${request.requestURI}${ex.message}"
+                ex.localizedMessage,
+                request.requestURI,
+                headers
         )
     }
     /*
@@ -68,9 +93,10 @@ class ExceptionHandler {
     @ExceptionHandler(value = [ProhibitedUserException::class])
     private fun handleProhibitedAccess(){}
 
-    private fun handleResponse(type: String, title: String, status: Int, detail: String, instance: String) : ResponseEntity<*> {
+    private fun handleResponse(type: String, title: String, status: Int, detail: String, instance: String, headers: HttpHeaders) : ResponseEntity<*> {
         return ResponseEntity
                 .status(status)
+                .headers(headers)
                 .header("Content-Type",Media.PROBLEM_JSON.toString())
                 .body(ProblemJson(type, title, status, detail, instance))
     }

@@ -5,7 +5,7 @@ import org.ionproject.core.common.model.Course
 import org.springframework.http.HttpMethod
 
 fun courseToDetailRepr(course : Course) =
-        SirenBuilder(courseSmallDetails(course.acronym, course.name))
+        SirenBuilder(CourseSmallDetails(course.acronym, course.name!!))
         .klass("course")
         .entities(listOf(buildSubentities(course.id, course.acronym, course.name)))
         .action(
@@ -23,7 +23,7 @@ fun courseToDetailRepr(course : Course) =
                         href = Uri.forCourseById(course.id),
                         isTemplated = false))
         .link("self", Uri.forCourseById(course.id))
-        .link("current", Uri.forKlassByTerm(course.acronym, course.term))
+        .link("current", Uri.forKlassByTerm(course.acronym, course.term!!))
         .link("collection", Uri.forCourses())
         .toSiren()
 
@@ -38,4 +38,4 @@ private fun buildSubentities(courseId: Int,
         .link("course", Uri.forCourseById(courseId))
         .toEmbed()
 
-private data class courseSmallDetails(val acronym: String, val name: String)
+private data class CourseSmallDetails(val acronym: String, val name: String)

@@ -1,7 +1,7 @@
 package org.ionproject.core.common.model
 
 class Programme(val id: Int,
-                val name: String,
+                val name: String? = "",
                 val acronym: String,
                 val termSize: Int,
                 val offers: MutableList<ProgrammeOffer>) {
@@ -11,7 +11,7 @@ class Programme(val id: Int,
     * Programme constructor with validations
     */
     private fun of(id: Int,
-                   name : String,
+                   name : String?,
                    acronym : String,
                    termSize : Int,
                    offers : List<ProgrammeOffer>) {
@@ -22,7 +22,7 @@ class Programme(val id: Int,
     }
 
     operator fun invoke(id: Int,
-                        name : String,
+                        name : String?,
                         acronym : String,
                         termSize : Int,
                         offers : List<ProgrammeOffer>) = of(id, name, acronym, termSize, offers)

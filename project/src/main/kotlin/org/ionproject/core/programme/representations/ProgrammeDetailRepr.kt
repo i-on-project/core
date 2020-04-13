@@ -10,7 +10,7 @@ import org.springframework.http.HttpMethod
  * Builds the output model representations
  */
 fun programmeToDetailRepr(programme : Programme) =
-        SirenBuilder(shortProgrammeReprWithoutOffer(programme.id, programme.name, programme.acronym, programme.termSize))
+        SirenBuilder(ShortProgrammeReprWithoutOffer(programme.id, programme.name!!, programme.acronym, programme.termSize))
         .entities(
                 programme.offers.map {
                     buildSubentities(programme, it)
@@ -49,7 +49,7 @@ fun programmeToDetailRepr(programme : Programme) =
         .toSiren()
 
 private fun buildSubentities(programme: Programme, offer: ProgrammeOffer) : EmbeddedRepresentation =
-        SirenBuilder(shortOfferRepr(offer.courseId, offer.termNumber))
+        SirenBuilder(ShortOfferRepr(offer.courseId, offer.termNumber))
             .klass("offer")
             .title("${offer.courseAcr} Offer")
             .rel(Uri.REL_PROGRAMME_OFFER)
@@ -58,7 +58,7 @@ private fun buildSubentities(programme: Programme, offer: ProgrammeOffer) : Embe
 
 
 //This or JsonIgnore?
-data class shortProgrammeReprWithoutOffer(val id: Int, val name: String, val acronym: String, val termSize: Int)
+data class ShortProgrammeReprWithoutOffer(val id: Int, val name: String, val acronym: String, val termSize: Int)
 
 //Is this the best way?
-data class shortOfferRepr(val courseId : Int, val termNumber: Int)
+data class ShortOfferRepr(val courseId : Int, val termNumber: Int)

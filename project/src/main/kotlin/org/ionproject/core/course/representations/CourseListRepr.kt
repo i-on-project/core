@@ -46,12 +46,12 @@ fun courseToListRepr(courses : List<Course>, page : Int, limit : Int) = SirenBui
         .toSiren()
 
 private fun buildSubentities(course : Course) : EmbeddedRepresentation =
-        SirenBuilder(smallCourseRepr(course.acronym))
+        SirenBuilder(SmallCourseRepr(course.acronym))
             .klass("course")
             .rel("item")
             .link("self", Uri.forCourseById(course.id))
-            .link("current", Uri.forKlassByTerm(course.acronym, course.term))
+            .link("current", Uri.forKlassByTerm(course.acronym, course.term!!))
             .link("collection", Uri.forCourses())
             .toEmbed()
 
-data class smallCourseRepr(val acronym : String)
+data class SmallCourseRepr(val acronym : String)

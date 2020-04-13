@@ -13,25 +13,33 @@ import org.springframework.web.bind.annotation.*
 class ProgrammeSpringController(private val programmeServices: ProgrammeServices) {
 
     @GetMapping(Uri.programmes)
-    fun getProgrammes() : Siren = programmesListRepr(
+    fun getProgrammes() : ResponseEntity<Siren> =
             programmeServices.getProgrammes()
-    )
+                    .let {
+                        ResponseEntity.ok()
+                                .header("Content-Type", Media.SIREN_TYPE.toString())
+                                .body(programmesListRepr(it))
+                    }
 
     @GetMapping(Uri.programmesById)
     fun getProgramme(@PathVariable id : Int) : ResponseEntity<Siren> =
             programmeServices.getProgrammeById(id)
-                    ?.let {
+                    .let {
                         ResponseEntity.ok()
                                 .header("Content-Type", Media.SIREN_TYPE.toString())
                                 .body(programmeToDetailRepr((it)))
                     }
-                    ?: ResponseEntity.notFound().build()
+
 
     @GetMapping(Uri.programmeOfferById)
     fun getOffer(@PathVariable id : Int) : ResponseEntity<Siren> =
             programmeServices.getOfferById(id)
-                    ?.let { ResponseEntity.ok(offerToDetailRepr(it)) }
-                    ?: ResponseEntity.notFound().build()
+                    .let {
+                        ResponseEntity.ok()
+                                .header("Content-Type", Media.SIREN_TYPE.toString())
+                                .body(offerToDetailRepr(it))
+                    }
+
 
     @PutMapping(Uri.programmesById)
     fun editProgramme(programme : Programme) {

@@ -1,5 +1,7 @@
 package org.ionproject.core.programme
 
+import org.ionproject.core.common.customExceptions.InternalServerErrorException
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.mappers.ProgrammeMapper
 import org.ionproject.core.common.mappers.ProgrammeOfferMapper
 import org.ionproject.core.common.model.Programme
@@ -22,14 +24,16 @@ class ProgrammeRepo(private val tm : TransactionManager) {
         return result ?: listOf()
      }
 
-    fun getProgrammeById(id: Int): Programme? {
+    fun getProgrammeById(id: Int): Programme {
         val result = tm.run {
             handle ->
             {
-                val programme = handle.createQuery("SELECT * FROM dbo.programme WHERE id= :id")
+                val res = handle.createQuery("SELECT * FROM dbo.programme WHERE id= :id")
                         .bind("id", id)
                         .map(programmeMapper)
-                        .one()
+                        .findOne()
+
+                val programme = res?.get() ?: throw ResourceNotFoundException("Project with id=$id was not found.")
 
                 val offers = handle.createQuery(
                         """
@@ -47,17 +51,23 @@ class ProgrammeRepo(private val tm : TransactionManager) {
             }()
         }
 
-        return result
+        if(result != null)
+            return result
+        else
+            throw InternalServerErrorException("Something weird happened after successfully reading project and while reading offers... Try again later.")
     }
 
-    fun getOfferById(id: Int): ProgrammeOffer? {
+    fun getOfferById(id: Int): ProgrammeOffer {
         val result = tm.run {
             handle ->  handle.createQuery("SELECT * FROM dbo.programmeOffer WHERE id = :id")
                 .bind("id", id)
                 .map(offerMapper)
-                .one()
+                .findOne()
         }
 
-        return result
+        if(result?.isEmpty == false)
+            return result.get()
+        else
+            throw ResourceNotFoundException("Offer by id:$id was not found.")
     }
 }

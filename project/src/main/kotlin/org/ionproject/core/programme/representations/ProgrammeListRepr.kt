@@ -27,11 +27,11 @@ fun programmesListRepr(programmes: List<Programme>) = SirenBuilder()
         .toSiren()
 
 private fun buildSubentities(programme : Programme) =
-        SirenBuilder(shortProgrammeRepr(programme.id, programme.acronym))
+        SirenBuilder(ShortProgrammeRepr(programme.id, programme.acronym))
             .klass("Programme")
             .rel("item")
             .link("self", Uri.forProgrammesById(programme.id))
             .toEmbed()
 
 
-data class shortProgrammeRepr(val programmeId: Int, val acr: String)
+data class ShortProgrammeRepr(val programmeId: Int, val acr: String)

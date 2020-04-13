@@ -17,28 +17,25 @@ class CourseSpringController(private val courseServices: CourseServices){
 
 
     @GetMapping(Uri.courses)
-    fun getCourses(@RequestParam page : Optional<Int>, @RequestParam limit : Optional<Int>) : ResponseEntity<Siren> {
-        val page = page.orElseGet { 0 }
-        val limit = limit.orElseGet { 5 }           //Default limit is 5 records
+    fun getCourses(@RequestParam(defaultValue = "0") page : Int, @RequestParam(defaultValue = "0") limit : Int) : ResponseEntity<Siren> {
+        val defaultFlag = page == 0 && limit == 0
 
-        return courseServices.getCourses(page, limit)
-                ?.let {
+        return courseServices.getCourses(page, limit, defaultFlag)
+                .let {
                     ResponseEntity.ok()
                             .header("Content-Type", Media.SIREN_TYPE.toString())
                             .body(courseToListRepr(it, page, limit))
                 }
-                ?: ResponseEntity.notFound().build()
     }
 
     @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable id: Int) : ResponseEntity<Siren> =
             courseServices.getCourseById(id)
-                    ?.let {
+                    .let {
                         ResponseEntity.ok()
                                 .header("Content-Type", Media.SIREN_TYPE.toString())
                                 .body(courseToDetailRepr(it))
                     }
-                    ?: ResponseEntity.notFound().build()
 
     /*
      * Annotation `RequiresAuth` serves as an indication
