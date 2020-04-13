@@ -7,4 +7,5 @@ CREATE VIEW courseWithTerm AS
 		(SELECT DISTINCT ON (clI.courseId) clI.courseId,clI.term, ctI.start_date FROM dbo.class AS clI
                         INNER JOIN dbo.CalendarTerm AS ctI ON clI.term=ctI.id 
 				ORDER BY clI.courseId,ctI.start_date DESC) AS cl
-		ON co.id=cl.courseId
+		ON co.id=cl.courseId;
+

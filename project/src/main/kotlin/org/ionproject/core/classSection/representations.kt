@@ -7,15 +7,13 @@ import org.ionproject.core.common.Uri
 
 val classSectionClasses = arrayOf("class", "section")
 
-class ClassSectionOutputModel(
-    val cs: ClassSection) {
-
-    fun toSiren(): Siren {
-        val selfHref = Uri.forClassSectionById(cs.course, cs.calendarTerm, cs.id)
+object ClassSectionToSiren {
+    fun toSiren(cs: ClassSection): Siren {
+        val selfHref = Uri.forClassSectionById(cs.courseId, cs.calendarTerm, cs.id)
         return SirenBuilder(cs)
             .klass(*classSectionClasses)
             .link("self", selfHref)
-            .link("collection", Uri.forKlassByTerm(cs.course, cs.calendarTerm))
+            .link("collection", Uri.forKlassByTerm(cs.courseId, cs.calendarTerm))
             .action(Action.genDeleteAction(selfHref))
             .toSiren()
     }

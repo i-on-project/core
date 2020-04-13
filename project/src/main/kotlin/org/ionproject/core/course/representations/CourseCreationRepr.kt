@@ -9,5 +9,5 @@ class CourseInputModel @JsonCreator constructor(val courseId: Int,
                                                 val acronym : String,
                                                 val name : String,
                                                 val term: String) {
-    fun toCourse() = Course(courseId, acronym, name, term) ?: throw InvalidCourseException()
+    fun toCourse() = Course(courseId, acronym, name, term)
 }

@@ -6,24 +6,35 @@ import java.net.URI
 
 val klassClasses = arrayOf("class")
 
+/**
+ * Produces the various siren representations of a Class resource.
+ */
 object KlassToSiren {
+
+    /**
+     * Class item representation.
+     * Is used as an embedded siren object in a Class Collection.
+     */
     fun toSiren(klass: Klass): EmbeddedRepresentation {
-        return SirenBuilder(klass)
+        return SirenBuilder()
             .klass(*klassClasses)
             .rel("item")
-            .link("self", Uri.forKlassByTerm(klass.course, klass.calendarTerm))
+            .link("self", Uri.forKlassByTerm(klass.courseId, klass.calendarTerm))
             .toEmbed()
     }
 
-    /*
-    fun toSiren(acr: String, klasses: List<Klass>, page: Int, size: Int): Siren {
-        /*
-        val selfHref = Uri.forKlasses(acr)
+    /**
+     * Class Collection resource's representation.
+     * Supports paging
+     */
+    fun toSiren(cid: Int, klasses: List<Klass>, page: Int, limit: Int): Siren {
+        val selfHref = Uri.forKlasses(cid)
+
         return SirenBuilder()
             .klass(*klassClasses, "collection")
             .entities(klasses.map { toSiren(it) })
-            .link("self", URI("$selfHref?page=$page&size=$size"))
-            .link("about", Uri.forCourseById(acr))
+            .link("self", URI("$selfHref?page=$page&limit=$limit"))
+            .link("about", Uri.forCourseById(cid))
             .action(Action.genAddItemAction(selfHref))
             .action(Action.genSearchAction(URI("$selfHref?term,course")))
             .action(Action(
@@ -32,26 +43,26 @@ object KlassToSiren {
                 method = HttpMethod.DELETE,
                 href = URI("$selfHref?term,course"),
                 isTemplated = true,
-                type = "application/vnd.siren+json",
+                type = Media.SIREN_TYPE,
                 fields = listOf(
                     Field(name = "term", type = "text"),
                     Field(name = "page", type = "number")
                 )))
             .toSiren()
-
-         */
     }
-    */
 
-
+    /**
+     * Fully detailed Class representation.
+     */
     fun toSiren(klass: FullKlass): Siren {
-        val selfHref = Uri.forKlassByTerm(klass.course, klass.calendarTerm)
+        val selfHref = Uri.forKlassByTerm(klass.courseId, klass.calendarTerm)
 
+        // class sections of this class
         val sections = klass.sections.map {
             SirenBuilder(it)
                 .klass("class", "section")
                 .rel("item")
-                .link("self", Uri.forClassSectionById(klass.course, klass.calendarTerm, it.id))
+                .link("self", Uri.forClassSectionById(klass.courseId, klass.calendarTerm, it.id))
                 .toEmbed()
         }
 
@@ -59,7 +70,7 @@ object KlassToSiren {
             .klass(*klassClasses)
             .entities(sections)
             .link("self", selfHref)
-            .link("collection", Uri.forKlasses(klass.course))
+            .link("collection", Uri.forKlasses(klass.courseId))
             .action(Action.genDeleteAction(selfHref))
             .action(Action.genEditAction(selfHref))
             .toSiren()

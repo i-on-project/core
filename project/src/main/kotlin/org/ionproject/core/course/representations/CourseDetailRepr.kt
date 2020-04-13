@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod
 fun courseToDetailRepr(course : Course) =
         SirenBuilder(CourseSmallDetails(course.acronym, course.name!!))
         .klass("course")
-        .entities(listOf(buildSubentities(course.id, course.acronym, course.name)))
+        .entities(listOf(buildSubentities(course.id)))
         .action(
                 Action(
                         name = "delete",
@@ -23,18 +23,16 @@ fun courseToDetailRepr(course : Course) =
                         href = Uri.forCourseById(course.id),
                         isTemplated = false))
         .link("self", Uri.forCourseById(course.id))
-        .link("current", Uri.forKlassByTerm(course.acronym, course.term!!))
+        .link("current", Uri.forKlassByTerm(course.id, course.term!!))
         .link("collection", Uri.forCourses())
         .toSiren()
 
 
-private fun buildSubentities(courseId: Int,
-                             acronym : String,
-                             name : String) =
+private fun buildSubentities(courseId: Int) =
         SirenBuilder()
         .klass("class", "collection")
         .rel(Uri.REL_CLASS)
-        .link("self", Uri.forKlasses(acronym))
+        .link("self", Uri.forKlasses(courseId))
         .link("course", Uri.forCourseById(courseId))
         .toEmbed()
 
