@@ -1,7 +1,7 @@
 package org.ionproject.core.common
 
 import org.springframework.http.MediaType
-
+//deprecated replace by Media
 const val APPLICATION_TYPE = "application"
 const val TEXT_TYPE = "text"
 const val CALENDAR_SUBTYPE = "calendar"
