@@ -86,7 +86,7 @@ class EmbeddedRepresentation(
         links: List<Relation>? = null) : Siren(klass, properties, entities, title, actions, links)
 
 class SirenBuilder(
-        private var properties: Any? = null,
+        private var properties: Any = Unit,
         private var rel: MutableList<String> = mutableListOf(),
         private var title: String? = null,
         private var klass: MutableList<String>? = null,

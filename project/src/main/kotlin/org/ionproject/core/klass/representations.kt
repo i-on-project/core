@@ -6,17 +6,30 @@ import java.net.URI
 
 val klassClasses = arrayOf("class")
 
+/**
+ * Produces the various siren representations of a Class resource.
+ */
 object KlassToSiren {
+
+    /**
+     * Class item representation.
+     * Is used as an embedded siren object in a Class Collection.
+     */
     fun toSiren(klass: Klass): EmbeddedRepresentation {
-        return SirenBuilder(klass)
+        return SirenBuilder()
             .klass(*klassClasses)
             .rel("item")
             .link("self", Uri.forKlassByTerm(klass.courseId, klass.calendarTerm))
             .toEmbed()
     }
 
+    /**
+     * Class Collection resource's representation.
+     * Supports paging
+     */
     fun toSiren(cid: Int, klasses: List<Klass>, page: Int, size: Int): Siren {
         val selfHref = Uri.forKlasses(cid)
+
         return SirenBuilder()
             .klass(*klassClasses, "collection")
             .entities(klasses.map { toSiren(it) })
@@ -38,9 +51,13 @@ object KlassToSiren {
             .toSiren()
     }
 
+    /**
+     * Fully detailed Class representation.
+     */
     fun toSiren(klass: FullKlass): Siren {
         val selfHref = Uri.forKlassByTerm(klass.courseId, klass.calendarTerm)
 
+        // class sections of this class
         val sections = klass.sections.map {
             SirenBuilder(it)
                 .klass("class", "section")

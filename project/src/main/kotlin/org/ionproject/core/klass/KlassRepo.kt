@@ -15,7 +15,7 @@ class ClassNotInDbException : Exception()
 
 interface KlassRepo {
     fun get(id: Int, calendarTerm: String): FullKlass
-    fun getPage(id: Int, page: Int, size: Int): List<Klass>
+    fun getPage(id: Int, page: Int, limit: Int): List<Klass>
 }
 
 @Component
@@ -50,21 +50,21 @@ class KlassRepoImplementation(private val tm: ITransactionManager) : KlassRepo {
             .map { ro, _ -> ClassSection(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term"), ro.getString("sid")) }
             .list()
 
-        FullKlass(klassObj.courseId, klassObj.calendarTerm, klassObj.calendarTerm, sections)
+        FullKlass(klassObj.courseId, klassObj.courseAcr, klassObj.calendarTerm, sections)
     }
 
     /**
      * Retrieve a list of [Class]es, with only the essential information i.e. IDs, name, etc.
      */
-    override fun getPage(id: Int, page: Int, size: Int): List<Klass> = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
+    override fun getPage(id: Int, page: Int, limit: Int): List<Klass> = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
         handle
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term from dbo.Class as C
                 join dbo.Course as CR on C.courseid=CR.id
-                where CR.id=:cid order by C.term offset :page limit :size;""".trimIndent())
+                where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent())
             .bind("cid", id)
             .bind("page", page)
-            .bind("size", size)
+            .bind("limit", limit)
             .map { ro, _ -> Klass(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term")) }
             .list()
     }

@@ -22,26 +22,26 @@ internal class KlassControllerTest : ControllerTester() {
 
     @Test
     fun getPage_shouldRespondWithTheCorrectNumberOfItems() {
-        var size = 1
-        mocker.get("${Uri.forKlasses(1)}?size=$size") {
+        var limit = 1
+        mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = MediaType(APPLICATION_TYPE, SIREN_SUBTYPE)
         }.andExpect {
             status { isOk }
             content { contentType(SIREN_MEDIA_TYPE) }
             jsonPath("$.links") { exists() }
             jsonPath("$.actions") { exists() }
-            jsonPath("$.entities.length()") { value(size) }
+            jsonPath("$.entities.length()") { value(limit) }
         }
 
-        size = 2
-        mocker.get("${Uri.forKlasses(1)}?size=$size") {
+        limit = 2
+        mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = MediaType(APPLICATION_TYPE, SIREN_SUBTYPE)
         }.andExpect {
             status { isOk }
             content { contentType(SIREN_MEDIA_TYPE) }
             jsonPath("$.links") { exists() }
             jsonPath("$.actions") { exists() }
-            jsonPath("$.entities.length()") { value(size) }
+            jsonPath("$.entities.length()") { value(limit) }
         }
     }
 
