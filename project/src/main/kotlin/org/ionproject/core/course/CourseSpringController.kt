@@ -16,24 +16,24 @@ import java.util.*
 class CourseSpringController(private val courseServices: CourseServices){
 
 
-    @GetMapping(Uri.courses)
+    @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])
     fun getCourses(@RequestParam(defaultValue = "0") page : Int, @RequestParam(defaultValue = "0") limit : Int) : ResponseEntity<Siren> {
         val defaultFlag = page == 0 && limit == 0
 
         return courseServices.getCourses(page, limit, defaultFlag)
                 .let {
                     ResponseEntity.ok()
-                            .header("Content-Type", Media.SIREN_TYPE.toString())
+                            .header("Content-Type", Media.SIREN_TYPE)
                             .body(courseToListRepr(it, page, limit))
                 }
     }
 
-    @GetMapping(Uri.courseById)
-    fun getCourse(@PathVariable id: Int) : ResponseEntity<Siren> =
-            courseServices.getCourseById(id)
+    @GetMapping(Uri.courseById, produces = [Media.SIREN_TYPE])
+    fun getCourse(@PathVariable cid: Int) : ResponseEntity<Siren> =
+            courseServices.getCourseById(cid)
                     .let {
                         ResponseEntity.ok()
-                                .header("Content-Type", Media.SIREN_TYPE.toString())
+                                .header("Content-Type", Media.SIREN_TYPE)
                                 .body(courseToDetailRepr(it))
                     }
 

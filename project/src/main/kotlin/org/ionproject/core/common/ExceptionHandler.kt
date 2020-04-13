@@ -32,7 +32,7 @@ class ExceptionHandler {
         val headers : HttpHeaders = HttpHeaders()
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
-        return handleResponse("https://en.wikipedia.org/wiki/List_of_HTTP_status_codes",
+        return handleResponse("",
                 "Resource not found",
                 404,
                 ex.localizedMessage,
@@ -52,7 +52,7 @@ class ExceptionHandler {
         val headers : HttpHeaders = HttpHeaders()
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
-        return handleResponse("https://en.wikipedia.org/wiki/List_of_HTTP_status_codes",
+        return handleResponse("",
                 "Bad request",
                 400,
                 ex.localizedMessage,
@@ -71,7 +71,7 @@ class ExceptionHandler {
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
         return handleResponse(
-                "https://pt.wikipedia.org/wiki/HTTP_400",
+                "",
                 "Incorrect Query Parameters",
                 400,
                 ex.localizedMessage,
