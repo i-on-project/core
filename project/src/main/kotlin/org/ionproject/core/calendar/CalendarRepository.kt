@@ -34,8 +34,8 @@ class CalendarRepository {
     init {
         val language = Language("pt/PT")
 
-        classCalendars[1]?.set(
-            1, Calendar(
+        classCalendars[1] = hashMapOf(
+            1 to Calendar(
                 ProductIdentifier("class/1"),
                 Version(),
                 null,
