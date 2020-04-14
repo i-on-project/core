@@ -8,27 +8,21 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class CalendarController(private val repository: CalendarRepository) {
+class CalendarController(private val repository: CalendarRepo) {
 
     @GetMapping(Uri.calendarByClass, produces = [Media.TEXT_CALENDAR])
     fun getFromClass(@PathVariable cid: Int, @PathVariable calterm: String): ResponseEntity<Any> {
         val calendar = repository.getClassCalendar(cid, calterm)
-        return if (calendar != null) ResponseEntity.ok(calendar)
-        else {
-            ResponseEntity.notFound().build()
-        }
+        return ResponseEntity.ok(calendar)
     }
 
     @GetMapping(Uri.calendarByClassSection, produces = [Media.TEXT_CALENDAR])
     fun getFromClassSection(
-        @PathVariable("classSection_id") sectionId: Int,
-        @PathVariable("class_id") classId: Int,
-        @PathVariable("course_id") courseId: Int
+        @PathVariable sid: Int,
+        @PathVariable calterm: String,
+        @PathVariable cid: Int
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassSectionCalendar(courseId, classId, sectionId)
-        return if (calendar != null) ResponseEntity.ok(calendar)
-        else {
-            ResponseEntity.notFound().build()
-        }
+        val calendar = repository.getClassSectionCalendar(cid, calterm, sid)
+        return ResponseEntity.ok(calendar)
     }
 }

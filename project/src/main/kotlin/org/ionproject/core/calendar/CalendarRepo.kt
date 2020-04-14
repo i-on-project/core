@@ -21,17 +21,16 @@ import org.ionproject.core.calendar.icalendar.types.*
 import org.springframework.stereotype.Repository
 import org.ionproject.core.calendar.icalendar.types.Duration as DurationType
 
+interface CalendarRepo {
+    fun getClassCalendar(courseId: Int, calendarTerm: String): Calendar
+    fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar
+}
+
 @Repository
-class CalendarRepository {
-
+class CalendarRepoImpl : CalendarRepo {
     private val language = Language("pt/PT")
-    // course -> class -> calendar
-    private val classCalendars = hashMapOf<Int, HashMap<Int, Calendar>>()
 
-    // course -> class -> classSection -> calendar
-    private val classSectionCalendars = hashMapOf<Int, HashMap<Int, HashMap<Int, Calendar>>>()
-
-    fun getClassCalendar(courseId: Int, classCalTerm: String): Calendar? = Calendar(
+    override fun getClassCalendar(courseId: Int, calendarTerm: String): Calendar = Calendar(
         ProductIdentifier("class/1"),
         Version(),
         null,
@@ -64,7 +63,7 @@ class CalendarRepository {
 
     )
 
-    fun getClassSectionCalendar(courseId: Int, classId: Int, classSectionId: Int): Calendar =
+    override fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar =
         Calendar(
             ProductIdentifier("course/1/class/1/1"),
             components = mutableListOf(

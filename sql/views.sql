@@ -10,15 +10,7 @@ CREATE VIEW courseWithTerm AS
 		ON co.id=cl.courseId;
 
 -- When creating a Class, give it a new Calendar 
-drop procedure if exists dbo.sp_classCalendarCreate;
-drop view if exists dbo.v_classCalendar;
---drop trigger if exists dbo.t_classCalendarCreate;
-
-create view dbo.v_classCalendar as
-	select Cl.courseid, Cl.term, Cal.id as calendarid from
-	dbo.Class as Cl join dbo.Calendar as Cal on Cl.calendar=Cal.id;
-
-create procedure dbo.sp_classCalendarCreate (courseid integer, calterm varchar(200))
+create or replace procedure dbo.sp_classCalendarCreate (calterm varchar(200), courseid integer)
 AS $$
 #print_strict_params on
 DECLARE
@@ -30,8 +22,15 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
---create trigger dbo.t_classCalendarCreate instead of insert
---	on dbo.v_classCalendar
---	execute procedure dbo.sp_classCalendarCreate ;
-
 -- When creating a ClassSection, give it a new Calendar 
+create or replace procedure dbo.sp_classSectionCalendarCreate (calterm varchar(200), courseid integer, sid varchar(200))
+AS $$
+#print_strict_params on
+DECLARE
+calid int;
+BEGIN
+	insert into dbo.Calendar values (default) returning id into calid;
+	insert into dbo.ClassSection(id, courseid, term, calendar) values
+		(sid, courseid, calterm, calid);
+END
+$$ LANGUAGE plpgsql;
