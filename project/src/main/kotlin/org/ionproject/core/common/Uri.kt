@@ -6,29 +6,52 @@ import java.net.URI
 object Uri {
     private const val version = "/v0"
 
+    const val cousesQueryTemplate = "${version}/courses?page,limit"
+    const val coursesWithParameters = "$version/courses?page={num}&limit={num2}"
+
+    const val REL_CLASS = "/rel/class"
+    const val REL_CLASS_SECTION = "/rel/class-section"
+    const val REL_PROGRAMME_OFFER = "/rel/programmeOffer"
+    const val REL_COURSE = "/rel/course"
+
     const val courses = "${version}/courses"
-    const val courseByAcr = "$courses/{course_id}"
-    const val klasses = "$courseByAcr/classes"
-    const val klassByTerm = "$klasses/{class_id}"
-    const val classSectionById = "$klassByTerm/{classSection_id}"
-    const val calendarByClass = "$klassByTerm/calendar"
-    const val calendarByClassSection = "$classSectionById/calendar"
+    const val courseById = "${version}/courses/{cid}"
+    const val programmes = "${version}/programmes"
+    const val programmesById = "${version}/programmes/{id}"
+    const val klasses = "${version}/courses/{cid}/classes"
+    const val klassByTerm = "${version}/courses/{cid}/classes/{calterm}"
+    const val classSectionById = "${version}/courses/{cid}/classes/{calterm}/{sid}"
+    const val programmeOfferById = "${version}/programmes/{idProgramme}/offers/{idOffer}"
+    const val programmeByIdOffer = "${version}/programmes/{idProgramme}/offers/"
+    const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
+    const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
 
-
-    val calendarByClassQueryParams = URI("$calendarByClass?type,startBefore,startAfter,endBefore,endAfter,summary")
-
-    val CLASS_SECTION_REL = "/rel/class-section"
-
+    val programmesByIdTemplate = UriTemplate(programmesById)
+    val klassesTemplate = UriTemplate(klasses)
+    val klassByTermTemplate = UriTemplate(klassByTerm)
     val classSectionByIdTemplate = UriTemplate(classSectionById)
+    val programmeOfferByIdTemplate = UriTemplate(programmeOfferById)
+    val programmeByIdOfferTemplate = UriTemplate(programmeByIdOffer)
+    val courseByIdTemplate = UriTemplate(courseById)
+    val coursesWithParametersTemplate = UriTemplate(coursesWithParameters)
     val calendarByClassTemplate = UriTemplate(calendarByClass)
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
-    val klassByTermTemplate = UriTemplate(klassByTerm)
 
-    fun forCalendarByClass(courseId: Int, classId: Int) = calendarByClassTemplate.expand(courseId, classId) //use withString class Id
-    fun forCalendarByClassSection(courseId: Int, classId: Int, classSectionId: Int) =
-        calendarByClassSectionTemplate.expand(courseId, classId, classSectionId)
+    fun forCoursesTemplated() = URI(cousesQueryTemplate)
 
-    fun forClassesById(courseId: Int, id: String) = klassByTermTemplate.expand(courseId, id)
-    fun forCalendarByClassWithString(courseId: Int, classId: String) = calendarByClassTemplate.expand(courseId, classId)
-    fun forClassSectionById(courseId: Int, classId: String, classSectionId: String) = classSectionByIdTemplate.expand(courseId,classId,classSectionId)
+    fun forCourses() = URI(courses)
+    fun forCourseById(courseId: Int) = courseByIdTemplate.expand(courseId)
+    fun forCoursesWithParameters(page: Int, limit: Int) = coursesWithParametersTemplate.expand(page, limit)
+
+    fun forKlasses(cid: Int) = klassesTemplate.expand(cid)
+    fun forKlassByTerm(cid: Int, calterm: String) = klassByTermTemplate.expand(cid, calterm)
+    fun forClassSectionById(cid: Int, calterm: String, sid: String) = classSectionByIdTemplate.expand(cid, calterm, sid)
+
+    fun forCalendarByClass(cid: Int, calterm: String) = calendarByClassTemplate.expand(cid, calterm)
+    fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) = calendarByClassSectionTemplate.expand(cid, calterm, sid)
+
+    fun forProgrammes() = URI(programmes)
+    fun forProgrammesById(id: Int) = programmesByIdTemplate.expand(id)
+    fun forProgrammeOfferById(idProgramme: Int, idOffer: Int) = programmeOfferByIdTemplate.expand(idProgramme, idOffer)
+    fun forProgrammesByIdOffer(id: Int) = programmeByIdOfferTemplate.expand(id)
 }

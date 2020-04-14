@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+[ -z "$1" ] && port=5432 || port="$1"
+[ -z "$2" ] && db="core" || db="$2"
+[ -z "$3" ] && role="bob" || role="$3"
+
+cat drop.sql create.sql views.sql insert.sql |\
+	psql -1 -p "$port" "$db" "$role"
+
+

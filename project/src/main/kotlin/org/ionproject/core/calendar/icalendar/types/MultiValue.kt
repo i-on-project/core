@@ -3,7 +3,7 @@ package org.ionproject.core.calendar.icalendar.types
 class MultiValue<out T>(
     vararg val values: T
 ) : ICalendarDataType, Iterable<ICalendarDataType>
-        where T : ICalendarDataType {
+    where T : ICalendarDataType {
 
     init {
         if (values.isEmpty()) throw IllegalArgumentException("Properties cannot be value-less.")

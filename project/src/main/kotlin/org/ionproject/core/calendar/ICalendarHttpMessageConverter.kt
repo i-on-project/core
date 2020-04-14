@@ -5,7 +5,7 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.common.TEXT_CALENDAR_MEDIA_TYPE
+import org.ionproject.core.common.Media.TEXT_CALENDAR_MEDIA_TYPE
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
