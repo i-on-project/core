@@ -16,7 +16,7 @@ private const val apiName = "i-on Core"
 @RestController
 class JsonHomeController {
 
-    @GetMapping("/")
+    @GetMapping("/", produces = [Media.JSON_HOME])
     fun getRoot(): JsonHome = JsonHomeBuilder(apiName)
         .link("describedBy", specUri)
         // course resource
