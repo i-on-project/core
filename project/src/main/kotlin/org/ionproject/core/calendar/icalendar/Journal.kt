@@ -11,13 +11,13 @@ import org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 class Journal(
     uniqueIdentifier: UniqueIdentifier,
-    summary: Summary,
-    description: Description,
-    attachment: Attachment?,
-    dateTimeStamp: DateTimeStamp,
-    dateTimeStart: DateTimeStart,
-    created: DateTimeCreated,
-    categories: Categories
+    val summary: Summary,
+    val description: Description,
+    val attachment: Attachment?,
+    val dateTimeStamp: DateTimeStamp,
+    val dateTimeStart: DateTimeStart,
+    val created: DateTimeCreated,
+    val categories: Categories
 ) : CalendarComponent(uniqueIdentifier, dateTimeStamp, summary, description, attachment, dateTimeStart, created, categories) {
 
     override val componentName: String

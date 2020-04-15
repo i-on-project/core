@@ -25,6 +25,9 @@ object Uri {
     const val programmeByIdOffer = "${version}/programmes/{idProgramme}/offers/"
     const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
     const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
+    const val componentByCalendar =  "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
+    const val terms = "$version/"
+    const val termByCal = "$version/{calId}"
 
     val programmesByIdTemplate = UriTemplate(programmesById)
     val klassesTemplate = UriTemplate(klasses)
@@ -36,6 +39,8 @@ object Uri {
     val coursesWithParametersTemplate = UriTemplate(coursesWithParameters)
     val calendarByClassTemplate = UriTemplate(calendarByClass)
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
+    val componentByCalendarTemplate = UriTemplate(componentByCalendar)
+    val termByCalTemplate = UriTemplate(termByCal)
 
     fun forCoursesTemplated() = URI(cousesQueryTemplate)
 
@@ -54,4 +59,7 @@ object Uri {
     fun forProgrammesById(id: Int) = programmesByIdTemplate.expand(id)
     fun forProgrammeOfferById(idProgramme: Int, idOffer: Int) = programmeOfferByIdTemplate.expand(idProgramme, idOffer)
     fun forProgrammesByIdOffer(id: Int) = programmeByIdOfferTemplate.expand(id)
+
+    fun forComponentByCalendar(courseId : Int,calTerm : String,componentId: String) = componentByCalendarTemplate.expand(courseId,calTerm,componentId)
+    fun forTermByCal(calendarTerm: String) = termByCalTemplate.expand(calendarTerm)
 }

@@ -35,7 +35,7 @@ fun calendarRepr(classSection: ClassSection, calendar: Calendar) =
                 name = "add-item",
                 title = "Add  Item",
                 method = HttpMethod.POST,
-                href = Uri.forCalendarByClass(classSection.courseId, classSection.id),
+                href = Uri.forCalendarByClass(classSection.courseId, classSection.calendarTerm),
                 isTemplated = false,
                 type = Media.APPLICATION_JSON,
                 fields = listOf()
@@ -46,24 +46,25 @@ fun calendarRepr(classSection: ClassSection, calendar: Calendar) =
                 title = "Delete multiple items",
                 method = HttpMethod.DELETE,
                 isTemplated = true,
-                href = Uri.forCalendarByClass(classSection.courseId, classSection.id),
+                href = Uri.forCalendarByClass(classSection.courseId, classSection.calendarTerm),
                 fields = listOf(
                     Field(name = "type", type = "text", klass = "https://example.org/param/free-text-query")
                 )
             )
         )
-        .link("self", Uri.forClassSectionById(classSection.courseId, classSection.id, classSection.id))
-        .link("about", Uri.forClassSectionById(classSection.courseId, classSection.id, classSection.id))
+            .link("self", Uri.forClassSectionById(classSection.courseId, classSection.calendarTerm, classSection.id))
+            .link("about", Uri.forClassSectionById(classSection.courseId, classSection.calendarTerm, classSection.id))
+            .toSiren()
 
-fun buildSubEntity(classSection: ClassSection) =
-    SirenBuilder(PropertiesClassSectionRepr(classSection.id, classSection.lecturer))
+private fun buildSubEntity(classSection: ClassSection) =
+    SirenBuilder(CalendarPropertiesClassSectionRepr(classSection.id, classSection.lecturer))
         .klass("class", "section")
         .rel(Uri.REL_CLASS_SECTION)
-        .link("self", Uri.forClassSectionById(classSection.courseId, classSection.calendarTerm, classSection.id))
+        .link("self", Uri.forKlassByTerm(classSection.courseId, classSection.calendarTerm))
         .toEmbed()
 
 
-data class PropertiesClassSectionRepr(val uid: String, val lecturer: Int)
+data class CalendarPropertiesClassSectionRepr(val uid: String, val lecturer: Int)
 
 data class PropertiesCalendarRepr(val type: String,
                                   val prodid: ProductIdentifier,
