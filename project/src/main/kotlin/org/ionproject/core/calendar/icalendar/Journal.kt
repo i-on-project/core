@@ -17,7 +17,7 @@ class Journal(
     dateTimeStamp: DateTimeStamp,
     dateTimeStart: DateTimeStart,
     created: DateTimeCreated,
-    categories: Categories
+    categories: Categories?
 ) : CalendarComponent(uniqueIdentifier, dateTimeStamp, summary, description, attachment, dateTimeStart, created, categories) {
 
     override val componentName: String

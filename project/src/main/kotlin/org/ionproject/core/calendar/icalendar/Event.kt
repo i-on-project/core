@@ -17,7 +17,7 @@ class Event private constructor(
     description: Description,
     stamp: DateTimeStamp,
     created: DateTimeCreated,
-    categories: Categories,
+    categories: Categories?,
     start: DateTimeStart,
     end: DateTimeEnd?,
     duration: Duration?,
@@ -30,7 +30,7 @@ class Event private constructor(
         description: Description,
         stamp: DateTimeStamp,
         created: DateTimeCreated,
-        categories: Categories,
+        categories: Categories?,
         start: DateTimeStart,
         duration: Duration,
         recurrenceRule: RecurrenceRule? = null
@@ -42,7 +42,7 @@ class Event private constructor(
         description: Description,
         stamp: DateTimeStamp,
         created: DateTimeCreated,
-        categories: Categories,
+        categories: Categories?,
         start: DateTimeStart,
         end: DateTimeEnd,
         recurrenceRule: RecurrenceRule? = null

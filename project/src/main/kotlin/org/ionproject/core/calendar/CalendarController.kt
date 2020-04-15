@@ -13,7 +13,10 @@ class CalendarController(private val repository: CalendarRepo) {
     @GetMapping(Uri.calendarByClass, produces = [Media.TEXT_CALENDAR])
     fun getFromClass(@PathVariable cid: Int, @PathVariable calterm: String): ResponseEntity<Any> {
         val calendar = repository.getClassCalendar(cid, calterm)
-        return ResponseEntity.ok(calendar)
+        return if (calendar != null)
+            ResponseEntity.ok(calendar)
+        else
+            ResponseEntity.notFound().build()
     }
 
     @GetMapping(Uri.calendarByClassSection, produces = [Media.TEXT_CALENDAR])
@@ -23,6 +26,9 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable cid: Int
     ): ResponseEntity<Any> {
         val calendar = repository.getClassSectionCalendar(cid, calterm, sid)
-        return ResponseEntity.ok(calendar)
+        return if (calendar != null)
+            ResponseEntity.ok(calendar)
+        else
+            ResponseEntity.notFound().build()
     }
 }
