@@ -19,6 +19,7 @@ import org.ionproject.core.calendar.icalendar.types.Time
 import org.ionproject.core.calendar.icalendar.types.WeekDay
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
+import org.springframework.stereotype.Component
 import java.sql.ResultSet
 import java.util.*
 import org.ionproject.core.calendar.icalendar.types.Date as DateType
@@ -57,7 +58,7 @@ object CalendarData {
     const val CALENDAR_FROM_CLASS_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_CALENDAR_ID
                     FROM $CLASS
-                    WHERE $CLASS_COURSE :courseId AND $CLASS_TERM :term
+                    WHERE $CLASS_COURSE = :courseId AND $CLASS_TERM = :term
                 )
             SELECT $CALENDAR_COMPONENT_ID,
                     $CALENDAR_COMPONENT_TYPE,
@@ -69,13 +70,13 @@ object CalendarData {
                     $RRULE_BYDAY
             FROM $CALENDAR_COMPONENT
             JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
-            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = calendar_id"""
+            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id)"""
 
     const val CALENDAR_FROM_CLASS_SECTION_QUERY =
         """WITH calendar_id AS (
                     SELECT $CLASS_SECTION_CALENDAR_ID
                     FROM $CLASS_SECTION
-                    WHERE $CLASS_SECTION_COURSE :courseId AND $CLASS_SECTION_TERM :term AND $CLASS_SECTION_ID :classSectionId
+                    WHERE $CLASS_SECTION_COURSE = :courseId AND $CLASS_SECTION_TERM = :term AND $CLASS_SECTION_ID = :classSectionId
                 )
             SELECT $CALENDAR_COMPONENT_ID,
                     $CALENDAR_COMPONENT_TYPE,
@@ -87,8 +88,9 @@ object CalendarData {
                     $RRULE_BYDAY
             FROM $CALENDAR_COMPONENT
             JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
-            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = calendar_id"""
+            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id)"""
 
+    @Component
     class CalendarComponentMapper : RowMapper<CalendarComponent> {
         override fun map(rs: ResultSet?, ctx: StatementContext?): CalendarComponent {
             if (rs != null) {

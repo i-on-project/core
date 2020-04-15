@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 class CalendarController(private val repository: CalendarRepo) {
 
     @GetMapping(Uri.calendarByClass, produces = [Media.TEXT_CALENDAR])
-    fun getFromClass(@PathVariable cid: Int, @PathVariable calterm: String): ResponseEntity<Any> {
+    fun getFromClass(
+        @PathVariable cid: Int,
+        @PathVariable calterm: String
+    ): ResponseEntity<Any> {
         val calendar = repository.getClassCalendar(cid, calterm)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
