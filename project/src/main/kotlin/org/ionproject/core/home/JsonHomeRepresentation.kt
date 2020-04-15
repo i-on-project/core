@@ -15,6 +15,12 @@ class ApiObject(
     val title: String,
     val links: Map<String, URI>? = null)
 
+/**
+ * This is the JsonHome object returned by the controller and then serialized to JSON format.
+ * A JSON home object is divided into two: the API object and the Resources object.
+ *
+ * The Resources object includes further embedded objects, each describing a resource.
+ */
 class JsonHome(
     val api: ApiObject,
     val resources: Map<String, ResourceObject>? = null)
@@ -43,6 +49,60 @@ class AuthenticationScheme(
     val realms: List<String>)
 
 // Mutables
+/**
+ * Provides a factory-like interfacing for adding the various fields of the JSON Home object.
+ *
+ * The terminal method [toJsonHome] will return an immutable [JsonHome] object which will
+ * include all the configurations provided to the builder via functions.
+ */
+class JsonHomeBuilder(
+    private val title: String,
+    private var links: MutableMap<String, URI>? = null,
+    private var resources: MutableMap<String, ResourceObject>? = null) {
+
+    fun link(name: String, href: URI): JsonHomeBuilder {
+        if (links == null) {
+            links = mutableMapOf()
+        }
+        links?.set(name, href)
+        return this
+    }
+
+    /**
+     * This method will start the building process of a resource object.
+     * The terminal function of said factory will return this [JsonHomeBuilder] back to
+     * continue the flow.
+     *
+     * e.g. JsonHomeBuilder("ion")
+     *        .newResource("myNewResourceObj") // returns ResourceBuilder
+     *        .toResourceObject()              // returns parent JsonHomeBuilder
+     *        .toJsonHome()                    // returns immutable JsonHome
+     *
+     * @return a Json Home Resource object factory.
+     */
+    fun newResource(name: String): ResourceBuilder =
+        ResourceBuilder(this, name)
+
+    /**
+     * Will be used by the Resource object factory before returning the [JsonHomeBuilder]
+     */
+    fun putResource(name: String, resource: ResourceObject): JsonHomeBuilder {
+        if (resources == null) {
+            resources = mutableMapOf()
+        }
+        resources?.put(name, resource)
+        return this
+    }
+
+    /**
+     * Terminal function.
+     * @return an immutable [JsonHome].
+     */
+    fun toJsonHome(): JsonHome = JsonHome(
+        ApiObject(title, links),
+        resources)
+}
+
 class ResourceBuilder(
     private val parent: JsonHomeBuilder,
     private val name: String,
@@ -61,6 +121,10 @@ class ResourceBuilder(
     private var authSchemes: MutableList<AuthenticationScheme>? = null,
     private var formats: MutableMap<MediaType, Unit>? = null) {
 
+    /**
+     * Configure the resource object with a static URI.
+     * You cannot call the [hrefTemplate] or [hrefVar] functions, from here on out.
+     */
     fun href(href: URI): ResourceBuilder {
         if (hrefTemplate != null || hrefVars != null) {
             throw JsonHomeBuilderException("In JSON Home, you can specify href for static URIs, or hrefTemplate+hrefVars for URI Templates, but not both.")
@@ -69,6 +133,10 @@ class ResourceBuilder(
         return this
     }
 
+    /**
+     * Configure the resource object with a templated URI.
+     * You cannot call the [href] function, from here on out.
+     */
     fun hrefTemplate(uri: String): ResourceBuilder {
         if (href != null) {
             throw JsonHomeBuilderException("In JSON Home, you can specify href for static URIs, or hrefTemplate+hrefVars for URI Templates, but not both.")
@@ -77,6 +145,10 @@ class ResourceBuilder(
         return this
     }
 
+    /**
+     * Describe the different variables of the templated URI configured with [hrefTemplate].
+     * You cannot call the [href] function, from here on out.
+     */
     fun hrefVar(varName: String, spec: URI): ResourceBuilder {
         if (href != null) {
             throw JsonHomeBuilderException("In JSON Home, you can specify href for static URIs, or hrefTemplate+hrefVars for URI Templates, but not both.")
@@ -144,13 +216,12 @@ class ResourceBuilder(
         return this
     }
 
-    /**
-     * From the JsonHome spec: "Content MUST be an object, whose keys are media types, and values are objects, currently empty."
-     */
     fun formats(vararg types: MediaType): ResourceBuilder {
         if (formats == null) {
             formats = mutableMapOf()
         }
+        // From the JsonHome spec: "Content MUST be an object, whose keys are media types, and values are objects, currently empty."
+        // Therefore, Unit is used
         types.forEach { formats?.put(it, Unit) }
         return this
     }
@@ -165,6 +236,13 @@ class ResourceBuilder(
         return this
     }
 
+    /**
+     * Terminal function of the resource object factory.
+     * Some constraints will be checked; an immutable [ResourceObject] will be created; the [ResourceObject] will
+     * be embedded into the parent [JsonHome] object.
+     *
+     * @return the JSON Home object factory, preserving the building flow.
+     */
     fun toResourceObject(): JsonHomeBuilder {
         if (hrefTemplate != null && hrefVars == null) {
             throw JsonHomeBuilderException("When using hrefTemplate, you must then specify its variables.")
@@ -186,33 +264,4 @@ class ResourceBuilder(
         }
         return parent.putResource(name, ResourceObject(href, hrefTemplate, hrefVars, authSchemes, hints))
     }
-}
-
-class JsonHomeBuilder(
-    private val title: String,
-    private var links: MutableMap<String, URI>? = null,
-    private var resources: MutableMap<String, ResourceObject>? = null) {
-
-    fun link(name: String, href: URI): JsonHomeBuilder {
-        if (links == null) {
-            links = mutableMapOf()
-        }
-        links?.set(name, href)
-        return this
-    }
-
-    fun newResource(name: String): ResourceBuilder =
-        ResourceBuilder(this, name)
-
-    fun putResource(name: String, resource: ResourceObject): JsonHomeBuilder {
-        if (resources == null) {
-            resources = mutableMapOf()
-        }
-        resources?.put(name, resource)
-        return this
-    }
-
-    fun toJsonHome(): JsonHome = JsonHome(
-        ApiObject(title, links),
-        resources)
 }
