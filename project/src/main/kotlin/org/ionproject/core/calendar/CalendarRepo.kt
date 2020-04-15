@@ -23,7 +23,7 @@ import org.ionproject.core.calendar.icalendar.types.Duration as DurationType
 
 interface CalendarRepo {
     fun getClassCalendar(courseId: Int, calendarTerm: String): Calendar
-    fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar
+    fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: String): Calendar
 }
 
 @Repository
@@ -63,7 +63,7 @@ class CalendarRepoImpl : CalendarRepo {
 
     )
 
-    override fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar =
+    override fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: String): Calendar =
         Calendar(
             ProductIdentifier("course/1/class/1/1"),
             components = mutableListOf(

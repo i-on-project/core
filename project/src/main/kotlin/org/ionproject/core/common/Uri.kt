@@ -25,7 +25,7 @@ object Uri {
     const val programmeByIdOffer = "${version}/programmes/{idProgramme}/offers/"
     const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
     const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
-    const val componentByCalendar =  "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
+    const val componentByCalendar = "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
     const val terms = "$version/"
     const val termByCal = "$version/{calId}"
 
@@ -60,6 +60,8 @@ object Uri {
     fun forProgrammeOfferById(idProgramme: Int, idOffer: Int) = programmeOfferByIdTemplate.expand(idProgramme, idOffer)
     fun forProgrammesByIdOffer(id: Int) = programmeByIdOfferTemplate.expand(id)
 
-    fun forComponentByCalendar(courseId : Int,calTerm : String,componentId: String) = componentByCalendarTemplate.expand(courseId,calTerm,componentId)
+    fun forComponentByCalendar(courseId: Int, calTerm: String, componentId: String) =
+        componentByCalendarTemplate.expand(courseId, calTerm, componentId)
+
     fun forTermByCal(calendarTerm: String) = termByCalTemplate.expand(calendarTerm)
 }

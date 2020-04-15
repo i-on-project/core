@@ -16,14 +16,18 @@ fun courseToDetailRepr(course: Course) =
                 title = "delete course",
                 method = HttpMethod.DELETE,
                 href = Uri.forCourseById(course.id),
-                isTemplated = true))
+                isTemplated = true
+            )
+        )
         .action(
             Action(
                 name = "edit",
                 title = "edit course",
                 method = HttpMethod.PATCH,
                 href = Uri.forCourseById(course.id),
-                isTemplated = false))
+                isTemplated = false
+            )
+        )
         .link("self", Uri.forCourseById(course.id))
         .link("current", Uri.forKlassByTerm(course.id, course.term!!))
         .link("collection", Uri.forCourses())

@@ -17,7 +17,8 @@ class ClassSectionRepoImplementation(private val tm: TransactionManager) : Class
             .createQuery(
                 """select CR.id as cid, CR.acronym, CS.term, CS.id as sid from dbo.ClassSection as CS
                 join dbo.Course as CR on CS.courseid=CR.id
-                where CR.id=:cid and term=:term and CS.id=:sid;""".trimIndent())
+                where CR.id=:cid and term=:term and CS.id=:sid;""".trimIndent()
+            )
             .bind("cid", cid)
             .bind("sid", sid)
             .bind("term", calendarTerm)

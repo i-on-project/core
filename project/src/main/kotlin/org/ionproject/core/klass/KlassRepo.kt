@@ -21,7 +21,8 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term from dbo.Class as C
                 join dbo.Course as CR on C.courseid=CR.id
-                where CR.id=:cid and C.term=:term""".trimIndent())
+                where CR.id=:cid and C.term=:term""".trimIndent()
+            )
             .bind("cid", id)
             .bind("term", calendarTerm)
             .map { ro, _ -> Klass(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term")) }
@@ -36,7 +37,8 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term, CS.id as sid from dbo.Class as C
                 join dbo.ClassSection as CS on C.courseid=CS.courseid and C.term=CS.term
-                join dbo.Course as CR on CR.id=C.courseid where CR.id=:cid and C.term=:term;""".trimIndent())
+                join dbo.Course as CR on CR.id=C.courseid where CR.id=:cid and C.term=:term;""".trimIndent()
+            )
             .bind("cid", id)
             .bind("term", calendarTerm)
             .map { ro, _ -> ClassSection(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term"), ro.getString("sid")) }
@@ -53,7 +55,8 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term from dbo.Class as C
                 join dbo.Course as CR on C.courseid=CR.id
-                where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent())
+                where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent()
+            )
             .bind("cid", id)
             .bind("page", page)
             .bind("limit", limit)

@@ -12,16 +12,16 @@ import org.ionproject.core.calendar.icalendar.properties.components.recurrence.R
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 
 class Event private constructor(
-     uid: UniqueIdentifier,
-     val summary: Summary,
-     val description: Description,
-     val stamp: DateTimeStamp,
-     val created: DateTimeCreated,
-     val categories: Categories,
-     val start: DateTimeStart,
-     val end: DateTimeEnd?,
-     val duration: Duration?,
-     val recurrenceRule: RecurrenceRule?
+    uid: UniqueIdentifier,
+    val summary: Summary,
+    val description: Description,
+    val stamp: DateTimeStamp,
+    val created: DateTimeCreated,
+    val categories: Categories,
+    val start: DateTimeStart,
+    val end: DateTimeEnd?,
+    val duration: Duration?,
+    val recurrenceRule: RecurrenceRule?
 ) : CalendarComponent(uid, stamp, summary, description, created, categories, start, end, duration, recurrenceRule) {
 
     constructor(

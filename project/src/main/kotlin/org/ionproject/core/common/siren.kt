@@ -9,13 +9,15 @@ class Relation(
     val href: URI,
     val type: String? = null,
     val title: String? = null,
-    @JsonProperty("class") val klass: List<String>? = null)
+    @JsonProperty("class") val klass: List<String>? = null
+)
 
 class Field(
     val name: String,
     val type: String? = null,
     val title: String? = null,
-    @JsonProperty("class") val klass: String? = null)
+    @JsonProperty("class") val klass: String? = null
+)
 
 class Action(
     val name: String,
@@ -24,7 +26,8 @@ class Action(
     val method: HttpMethod? = null,
     val type: String? = null,
     val isTemplated: Boolean? = null,
-    val fields: List<Field>? = null) {
+    val fields: List<Field>? = null
+) {
 
     // Some actions that will be used constantly
     companion object {
@@ -34,7 +37,8 @@ class Action(
             method = HttpMethod.POST,
             href = href,
             isTemplated = false,
-            type = Media.APPLICATION_JSON)
+            type = Media.APPLICATION_JSON
+        )
 
         fun genSearchAction(href: URI) = Action(
             name = "search",
@@ -46,21 +50,24 @@ class Action(
             fields = listOf(
                 Field(name = "limit", type = "number", klass = "param/limit"),
                 Field(name = "page", type = "number", klass = "param/page")
-            ))
+            )
+        )
 
         fun genDeleteAction(href: URI) = Action(
             name = "delete",
             href = href,
             method = HttpMethod.GET,
             type = Media.ALL,
-            isTemplated = false)
+            isTemplated = false
+        )
 
         fun genEditAction(href: URI) = Action(
             name = "edit",
             href = href,
             method = HttpMethod.PATCH,
             type = Media.APPLICATION_JSON,
-            isTemplated = false)
+            isTemplated = false
+        )
     }
 }
 
@@ -70,7 +77,8 @@ open class Siren(
     val entities: List<EmbeddedRepresentation>? = null,
     val title: String? = null,
     val actions: List<Action>? = null,
-    val links: List<Relation>? = null)
+    val links: List<Relation>? = null
+)
 
 /**
  * An embedded siren object, with a relationship to the parent siren object.
@@ -82,7 +90,8 @@ class EmbeddedRepresentation(
     entities: List<EmbeddedRepresentation>? = null,
     title: String? = null,
     actions: List<Action>? = null,
-    links: List<Relation>? = null) : Siren(klass, properties, entities, title, actions, links)
+    links: List<Relation>? = null
+) : Siren(klass, properties, entities, title, actions, links)
 
 class SirenBuilder(
     private var properties: Any = Unit,
@@ -91,7 +100,8 @@ class SirenBuilder(
     private var klass: MutableList<String>? = null,
     private var entities: MutableList<EmbeddedRepresentation>? = null,
     private var actions: MutableList<Action>? = null,
-    private var links: MutableList<Relation>? = null) {
+    private var links: MutableList<Relation>? = null
+) {
 
     fun klass(vararg klasses: String): SirenBuilder {
         if (klass == null) {
@@ -145,7 +155,8 @@ class SirenBuilder(
         entities,
         title,
         actions,
-        links)
+        links
+    )
 
     fun toSiren() = Siren(
         klass,
@@ -153,5 +164,6 @@ class SirenBuilder(
         entities,
         title,
         actions,
-        links)
+        links
+    )
 }

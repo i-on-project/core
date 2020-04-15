@@ -19,9 +19,11 @@ class KlassController(private val repo: KlassRepo) {
     }
 
     @GetMapping(Uri.klasses, produces = [Media.SIREN_TYPE])
-    fun getCollection(@PathVariable cid: Int,
-                      @RequestParam(defaultValue = "0") page: Int,
-                      @RequestParam(defaultValue = "5") limit: Int): Siren {
+    fun getCollection(
+        @PathVariable cid: Int,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "5") limit: Int
+    ): Siren {
         val klass = repo.getPage(cid, page, limit)
 
         return KlassToSiren.toSiren(cid, klass, page, limit)

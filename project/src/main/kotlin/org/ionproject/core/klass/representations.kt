@@ -37,17 +37,20 @@ object KlassToSiren {
             .link("about", Uri.forCourseById(cid))
             .action(Action.genAddItemAction(selfHref))
             .action(Action.genSearchAction(URI("$selfHref?term,course")))
-            .action(Action(
-                name = "batch-delete",
-                title = "Delete multiple items",
-                method = HttpMethod.DELETE,
-                href = URI("$selfHref?term,course"),
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "term", type = "text"),
-                    Field(name = "page", type = "number")
-                )))
+            .action(
+                Action(
+                    name = "batch-delete",
+                    title = "Delete multiple items",
+                    method = HttpMethod.DELETE,
+                    href = URI("$selfHref?term,course"),
+                    isTemplated = true,
+                    type = Media.SIREN_TYPE,
+                    fields = listOf(
+                        Field(name = "term", type = "text"),
+                        Field(name = "page", type = "number")
+                    )
+                )
+            )
             .toSiren()
     }
 

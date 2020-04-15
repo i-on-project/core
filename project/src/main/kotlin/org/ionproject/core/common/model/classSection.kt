@@ -5,4 +5,5 @@ class ClassSection(
     val courseAcr: String?,
     val calendarTerm: String,
     val id: String,
-    val lecturer: Int)  //Not implemented yet
+    val lecturer: Int
+)  //Not implemented yet
