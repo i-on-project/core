@@ -5,12 +5,18 @@ import org.springframework.http.MediaType
 object Media {
     private const val APPLICATION_TYPE = "application"
     private const val SIREN_SUBTYPE = "vnd.siren+json"
+    private const val JSON_SUBTYPE = "json"
+    private const val HOME_SUBTYPE = "json-home"
+    private const val PROBLEM_SUBTYPE = "problem+json"
 
     const val ALL = "*/*"
-    const val APPLICATION_JSON = "${APPLICATION_TYPE}/json"
-    const val PROBLEM_JSON = "${APPLICATION_TYPE}/problem+json"
+    const val APPLICATION_JSON = "${APPLICATION_TYPE}/${JSON_SUBTYPE}"
+    const val PROBLEM_JSON = "${APPLICATION_TYPE}/${PROBLEM_SUBTYPE}"
     const val SIREN_TYPE = "${APPLICATION_TYPE}/${SIREN_SUBTYPE}"
-    const val JSON_HOME = "${APPLICATION_TYPE}/json-home"
+    const val JSON_HOME = "${APPLICATION_TYPE}/${HOME_SUBTYPE}"
 
     val MEDIA_SIREN = MediaType(APPLICATION_TYPE, SIREN_SUBTYPE)
+    val MEDIA_JSON = MediaType(APPLICATION_TYPE, JSON_SUBTYPE)
+    val MEDIA_PROBLEM = MediaType(APPLICATION_TYPE, PROBLEM_SUBTYPE)
+    val MEDIA_HOME = MediaType(APPLICATION_TYPE, HOME_SUBTYPE)
 }
