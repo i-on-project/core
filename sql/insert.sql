@@ -3,14 +3,14 @@ insert into dbo.Programme(acronym, name, termSize) values
 	('MEIC', 'mestrado eng. inf.', 4);
 
 insert into dbo.CalendarTerm(id, start_date, end_date) values
-	( '1718v', to_timestamp(1586379923), null ),
-	( '1718i', to_timestamp(1586379924), null ),
-	( '1819v', to_timestamp(1586379925), null ),
-	( '1819i', to_timestamp(1586379927), null ),
-	( '1920v', to_timestamp(1586379929), null ),
-	( '1920i', to_timestamp(1586379930), null ),
-	( '2021v', to_timestamp(1586379940), null ),
-	( '2021i', to_timestamp(1586379950), null );
+	( '1718v', to_timestamp(1586379923), to_timestamp(1586379933) ),
+	( '1718i', to_timestamp(1586379924), to_timestamp(1586379933) ),
+	( '1819v', to_timestamp(1586379925), to_timestamp(1586379933) ),
+	( '1819i', to_timestamp(1586379927), to_timestamp(1586379933) ),
+	( '1920v', to_timestamp(1586379929), to_timestamp(1586379933) ),
+	( '1920i', to_timestamp(1586379930), to_timestamp(1586379943) ),
+	( '2021v', to_timestamp(1586379940), to_timestamp(1586379953) ),
+	( '2021i', to_timestamp(1586379950), to_timestamp(1586379963) );
 
 insert into dbo.Course(acronym, name) values
 	( 'SL', 'Software Laboratory' ),

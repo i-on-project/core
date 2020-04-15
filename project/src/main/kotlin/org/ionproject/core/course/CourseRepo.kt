@@ -6,8 +6,9 @@ import org.ionproject.core.common.model.Course
 import org.ionproject.core.common.transaction.TransactionManager
 import org.jdbi.v3.core.statement.Query
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
-@Component
+@Repository
 class CourseRepo(private val tm: TransactionManager) {
     val courseMapper: CourseMapper = CourseMapper()
 

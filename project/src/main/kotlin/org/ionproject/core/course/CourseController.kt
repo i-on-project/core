@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
  * representation?
  */
 @RestController
-class CourseSpringController(private val courseServices: CourseServices) {
+class CourseController(private val courseServices: CourseServices) {
 
 
     @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])

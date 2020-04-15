@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class ProgrammeSpringController(private val programmeServices: ProgrammeServices) {
+class ProgrammeController(private val programmeServices: ProgrammeServices) {
 
     @GetMapping(Uri.programmes)
     fun getProgrammes(): ResponseEntity<Siren> =
