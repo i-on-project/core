@@ -72,6 +72,23 @@ object CalendarData {
             JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
             WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id)"""
 
+    const val CALENDAR_COMPONENT_FROM_CLASS_QUERY = """WITH calendar_id AS (
+                    SELECT $CLASS_CALENDAR_ID
+                    FROM $CLASS
+                    WHERE $CLASS_COURSE = :courseId AND $CLASS_TERM = :term
+                )
+            SELECT $CALENDAR_COMPONENT_ID,
+                    $CALENDAR_COMPONENT_TYPE,
+                    $CALENDAR_COMPONENT_SUMMARY,
+                    $CALENDAR_COMPONENT_DESCRIPTION,
+                    $CALENDAR_COMPONENT_DTSTART,
+                    $CALENDAR_COMPONENT_DTEND,
+                    $RRULE_FREQ,
+                    $RRULE_BYDAY
+            FROM $CALENDAR_COMPONENT
+            JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
+            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id) AND $CALENDAR_COMPONENT_ID = :componentId"""
+
     const val CALENDAR_FROM_CLASS_SECTION_QUERY =
         """WITH calendar_id AS (
                     SELECT $CLASS_SECTION_CALENDAR_ID
@@ -90,12 +107,29 @@ object CalendarData {
             JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
             WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id)"""
 
+    const val CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY = """WITH calendar_id AS (
+                    SELECT $CLASS_SECTION_CALENDAR_ID
+                    FROM $CLASS_SECTION
+                    WHERE $CLASS_SECTION_COURSE = :courseId AND $CLASS_SECTION_TERM = :term AND $CLASS_SECTION_ID = :classSectionId
+                )
+            SELECT $CALENDAR_COMPONENT_ID,
+                    $CALENDAR_COMPONENT_TYPE,
+                    $CALENDAR_COMPONENT_SUMMARY,
+                    $CALENDAR_COMPONENT_DESCRIPTION,
+                    $CALENDAR_COMPONENT_DTSTART,
+                    $CALENDAR_COMPONENT_DTEND,
+                    $RRULE_FREQ,
+                    $RRULE_BYDAY
+            FROM $CALENDAR_COMPONENT
+            JOIN $RRULE ON $CALENDAR_COMPONENT_ID = $RRULE_COMPONENT_ID
+            WHERE $CALENDAR_COMPONENT_CALENDAR_ID = (SELECT * FROM calendar_id) AND $CALENDAR_COMPONENT_ID = :componentId"""
+
     @Component
     class CalendarComponentMapper : RowMapper<CalendarComponent> {
         override fun map(rs: ResultSet?, ctx: StatementContext?): CalendarComponent {
             if (rs != null) {
                 val type = rs.getString(CALENDAR_COMPONENT_TYPE)
-                val uid = UniqueIdentifier("$type/${rs.getInt(CALENDAR_COMPONENT_ID)}")
+                val uid = UniqueIdentifier(rs.getInt(CALENDAR_COMPONENT_ID).toString(16)) // TODO(use constant for uid radix)
                 val summary = Summary(rs.getString(CALENDAR_COMPONENT_SUMMARY))
                 val description = Description(rs.getString(CALENDAR_COMPONENT_DESCRIPTION))
                 val startDate = rs.getTimestamp(CALENDAR_COMPONENT_DTSTART).toDateTime()

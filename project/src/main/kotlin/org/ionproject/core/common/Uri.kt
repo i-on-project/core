@@ -25,6 +25,8 @@ object Uri {
     const val programmeByIdOffer = "${version}/programmes/{idProgramme}/offers/"
     const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
     const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
+    const val calendarComponentByClass = "${version}/courses/{cid}/classes/{calterm}/calendar/{cmpid}"
+    const val calendarComponentByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar/{cmpid}"
 
     val programmesByIdTemplate = UriTemplate(programmesById)
     val klassesTemplate = UriTemplate(klasses)
@@ -36,6 +38,8 @@ object Uri {
     val coursesWithParametersTemplate = UriTemplate(coursesWithParameters)
     val calendarByClassTemplate = UriTemplate(calendarByClass)
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
+    val calendarComponentByClassTemplate = UriTemplate(calendarComponentByClass)
+    val calendarComponentByClassSectionTemplate = UriTemplate(calendarComponentByClassSection)
 
     fun forCoursesTemplated() = URI(cousesQueryTemplate)
 
@@ -49,6 +53,8 @@ object Uri {
 
     fun forCalendarByClass(cid: Int, calterm: String) = calendarByClassTemplate.expand(cid, calterm)
     fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) = calendarByClassSectionTemplate.expand(cid, calterm, sid)
+    fun forCalendarComponentByClass(cid: Int, calterm: String, cmpid: String) = calendarComponentByClassTemplate.expand(cid, calterm, cmpid)
+    fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) = calendarComponentByClassSectionTemplate.expand(cid, calterm, sid, cmpid)
 
     fun forProgrammes() = URI(programmes)
     fun forProgrammesById(id: Int) = programmesByIdTemplate.expand(id)

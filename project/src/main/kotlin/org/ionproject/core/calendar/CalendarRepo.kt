@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository
 interface CalendarRepo {
     fun getClassCalendar(courseId: Int, calendarTerm: String): Calendar?
     fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar?
+    fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int) : Calendar?
+    fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: Int, componentId: Int) : Calendar?
 }
 
 @Repository
@@ -51,6 +53,49 @@ class CalendarRepoImpl(
             null,
             null,
             components
+        )
+    }
+
+    override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
+        val component = transactionManager.run {
+            it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
+                .bind("courseId", courseId)
+                .bind("term", calendarTerm)
+                .bind("componentId", componentId)
+                .map(componentMapper)
+                .one()
+        } ?: return null
+
+        return Calendar(
+            ProductIdentifier("/$courseId/classes/$calendarTerm"),
+            Version(),
+            null,
+            null,
+            mutableListOf(
+                component
+            )
+        )
+    }
+
+    override fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: Int, componentId: Int): Calendar? {
+        val component = transactionManager.run {
+            it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
+                .bind("courseId", courseId)
+                .bind("term", calendarTerm)
+                .bind("classSectionId", classSectionId)
+                .bind("componentId", componentId)
+                .map(componentMapper)
+                .one()
+        } ?: return null
+
+        return Calendar(
+            ProductIdentifier("/$courseId/classes/$calendarTerm/$classSectionId"),
+            Version(),
+            null,
+            null,
+            mutableListOf(
+                component
+            )
         )
     }
 }
