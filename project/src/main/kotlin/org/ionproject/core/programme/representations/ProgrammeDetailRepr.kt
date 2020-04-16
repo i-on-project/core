@@ -21,7 +21,7 @@ fun programmeToDetailRepr(programme : Programme) =
                         name = "edit-programme",
                         title = "Edit Programme",
                         method = HttpMethod.PUT,
-                        href = Uri.forProgrammesById(programme.id),
+                        href = Uri.forProgrammesById(programme.id).toTemplate(),
                         type = Media.APPLICATION_JSON,
                         fields = listOf(
                                 Field(name = "ProgrammeName", type = "text"),   //name may be null, but the action allows to modify
@@ -35,7 +35,7 @@ fun programmeToDetailRepr(programme : Programme) =
                         name = "add-offer",
                         title = "Add Offer",
                         method = HttpMethod.POST,
-                        href = Uri.forProgrammesByIdOffer(programme.id),
+                        href = Uri.forProgrammesByIdOffer(programme.id).toTemplate(),
                         type = Media.APPLICATION_JSON,
                         fields = listOf(
                                 Field(name = "CourseId", type = "number"),

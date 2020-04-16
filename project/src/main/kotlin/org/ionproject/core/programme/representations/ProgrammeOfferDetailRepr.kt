@@ -17,7 +17,7 @@ fun offerToDetailRepr(offer: ProgrammeOffer) =
                         title = "edit offer",
                         method = HttpMethod.PUT,
                         type = Media.APPLICATION_JSON,
-                        href = Uri.forProgrammeOfferById(offer.programmeId, offer.id),
+                        href = Uri.forProgrammeOfferById(offer.programmeId, offer.id).toTemplate(),
                         fields = listOf(
                                 Field(name = "Acronym", type = "text"),
                                 Field(name = "TermNumber", type = "number"),

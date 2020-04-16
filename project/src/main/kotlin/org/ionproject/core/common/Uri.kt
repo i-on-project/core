@@ -6,7 +6,6 @@ import java.net.URI
 object Uri {
     private const val version = "/v0"
 
-    const val cousesQueryTemplate = "${version}/courses?page,limit"      //TODO CORRECT THIS
     const val coursesWithParameters = "$version/courses?page={num}&limit={num2}"    //Used by the siren representation
 
     /*
@@ -25,6 +24,7 @@ object Uri {
     const val classSectionById = "${version}/courses/{cid}/classes/{calterm}/{sid}"
     const val programmeOfferById = "$version/programmes/{idProgramme}/offers/{idOffer}"
     const val programmeByIdOffer = "$version/programmes/{idProgramme}/offers/"
+    const val pagingQuery = "{?page,limit}"
 
     val programmesByIdTemplate = UriTemplate(programmesById)
     val klassesTemplate = UriTemplate(klasses)
@@ -34,8 +34,6 @@ object Uri {
     val programmeByIdOfferTemplate = UriTemplate(programmeByIdOffer)
     val courseByIdTemplate = UriTemplate(courseById)
     val coursesWithParametersTemplate = UriTemplate(coursesWithParameters)
-
-    fun forCoursesTemplated() = URI(cousesQueryTemplate)                //TODO CORRECT THIS
 
     fun forCourses() = URI(courses)
     fun forCourseById(courseId: Int) = courseByIdTemplate.expand(courseId)

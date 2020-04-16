@@ -2,6 +2,7 @@ package org.ionproject.core.home
 
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 class JsonHomeBuilderException(message: String) : Exception(message)
@@ -39,7 +40,7 @@ class Hints(
 
 class ResourceObject(
     val href: URI? = null,
-    val hrefTemplate: String? = null,
+    val hrefTemplate: UriTemplate? = null,
     val hrefVars: MutableMap<String, URI>? = null,
     val authSchemes: List<AuthenticationScheme>? = null,
     val hints: Hints? = null)
@@ -107,7 +108,7 @@ class ResourceBuilder(
     private val parent: JsonHomeBuilder,
     private val name: String,
     private var href: URI? = null,
-    private var hrefTemplate: String? = null,
+    private var hrefTemplate: UriTemplate? = null,
     private var hrefVars: MutableMap<String, URI>? = null,
     private var status: Status? = null,
     private var preconditionRequired: MutableList<String>? = null,
@@ -137,11 +138,11 @@ class ResourceBuilder(
      * Configure the resource object with a templated URI.
      * You cannot call the [href] function, from here on out.
      */
-    fun hrefTemplate(uri: String): ResourceBuilder {
+    fun hrefTemplate(uriTemplate: UriTemplate): ResourceBuilder {
         if (href != null) {
             throw JsonHomeBuilderException("In JSON Home, you can specify href for static URIs, or hrefTemplate+hrefVars for URI Templates, but not both.")
         }
-        this.hrefTemplate = uri
+        this.hrefTemplate = uriTemplate
         return this
     }
 

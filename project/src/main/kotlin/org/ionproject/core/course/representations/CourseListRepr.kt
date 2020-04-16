@@ -3,6 +3,7 @@ package org.ionproject.core.course.representations
 import org.ionproject.core.common.*
 import org.ionproject.core.common.model.Course
 import org.springframework.http.HttpMethod
+import org.springframework.web.util.UriTemplate
 
 fun courseToListRepr(courses : List<Course>, page : Int, limit : Int) = SirenBuilder()
         .klass("course", "collection")
@@ -16,7 +17,7 @@ fun courseToListRepr(courses : List<Course>, page : Int, limit : Int) = SirenBui
                         name = "add-item",
                         title = "Add a new Course",
                         method = HttpMethod.POST,
-                        href = Uri.forCourses(),
+                        href = Uri.forCourses().toTemplate(),
                         isTemplated = false,
                         type = Media.APPLICATION_JSON
                 )
@@ -26,7 +27,7 @@ fun courseToListRepr(courses : List<Course>, page : Int, limit : Int) = SirenBui
                         name = "search",
                         title = "Search Items",
                         method = HttpMethod.GET,
-                        href = Uri.forCoursesTemplated(),
+                        href = UriTemplate("${Uri.forCourses()}${Uri.pagingQuery}"),
                         isTemplated = true,
                         type = Media.SIREN_TYPE,
                         fields = listOf(

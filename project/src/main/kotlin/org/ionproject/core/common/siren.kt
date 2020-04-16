@@ -3,6 +3,7 @@ package org.ionproject.core.common
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 class Relation(
@@ -20,7 +21,7 @@ class Field(
 
 class Action(
     val name: String,
-    val href: URI,
+    val href: UriTemplate,
     val title: String? = null,
     val method: HttpMethod? = null,
     val type: String? = null,
@@ -29,7 +30,7 @@ class Action(
 
     // Some actions that will be used constantly
     companion object {
-        fun genAddItemAction(href: URI) = Action(
+        fun genAddItemAction(href: UriTemplate) = Action(
             name = "add-item",
             title = "Add Item",
             method = HttpMethod.POST,
@@ -37,7 +38,7 @@ class Action(
             isTemplated = false,
             type = Media.APPLICATION_JSON)
 
-        fun genSearchAction(href: URI) = Action(
+        fun genSearchAction(href: UriTemplate) = Action(
             name = "search",
             title = "Search items",
             method = HttpMethod.GET,
@@ -49,14 +50,14 @@ class Action(
                 Field(name = "page", type = "number", klass = "param/page")
             ))
 
-        fun genDeleteAction(href: URI) = Action(
+        fun genDeleteAction(href: UriTemplate) = Action(
             name = "delete",
             href = href,
             method = HttpMethod.GET,
             type = Media.ALL,
             isTemplated = false)
 
-        fun genEditAction(href: URI) = Action(
+        fun genEditAction(href: UriTemplate) = Action(
             name = "edit",
             href = href,
             method = HttpMethod.PATCH,

@@ -15,7 +15,7 @@ fun programmesListRepr(programmes: List<Programme>) = SirenBuilder()
                         name = "add-programme",
                         title = "Add Programme",
                         method = HttpMethod.POST,
-                        href = Uri.forProgrammes(),
+                        href = Uri.forProgrammes().toTemplate(),
                         type = Media.APPLICATION_JSON,
                         fields = listOf(
                                 Field(name = "ProgrammeAcr", type = "text"),
