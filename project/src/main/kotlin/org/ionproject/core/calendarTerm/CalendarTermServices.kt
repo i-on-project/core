@@ -5,7 +5,7 @@ import org.ionproject.core.common.model.CalendarTerm
 import org.springframework.stereotype.Component
 
 @Component
-class CalendarTermServices(private val repo: CalendarTermRepo) {
+class CalendarTermServices(private val repo: CalendarTermRepoImpl) {
     fun getTerms(page: Int, limit: Int, defaultFlag: Boolean): List<CalendarTerm> {
         if (page < 0 || limit < 0)
             throw IncorrectParametersException("The parameters limit:$limit or page:$page, can't have negative values.")

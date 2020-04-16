@@ -2,7 +2,8 @@ package org.ionproject.core.calendarTerm.representations
 
 import org.ionproject.core.common.*
 import org.ionproject.core.common.model.CalendarTerm
-import org.ionproject.core.klass.Klass
+import org.ionproject.core.common.model.Klass
+
 import org.springframework.http.HttpMethod
 
 fun CalendarTermDetailRepr(ct : CalendarTerm, page: Int, limit: Int) =

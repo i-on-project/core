@@ -1,8 +1,5 @@
 package org.ionproject.core.common.model
 
-import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeStart
-import org.ionproject.core.calendar.icalendar.types.Date
-import org.ionproject.core.klass.Klass
 import java.time.OffsetDateTime
 
 class CalendarTerm(

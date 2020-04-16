@@ -14,28 +14,16 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
 
-    @GetMapping(Uri.terms)
-    fun getTerms(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "0") limit: Int): ResponseEntity<Siren> {
+    @GetMapping(Uri.terms, produces = [Media.SIREN_TYPE])
+    fun getTerms(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "0") limit: Int): Siren {
         val defaultFlag = page == 0 && limit == 0
+        return CalendarTermListRepr(calendarTermServices.getTerms(page, limit, defaultFlag),page,limit)
 
-        return calendarTermServices.getTerms(page, limit, defaultFlag)
-                .let {
-                    ResponseEntity.ok()
-                            .header("Content-Type", Media.SIREN_TYPE)
-                            .body(CalendarTermListRepr(it, page, limit))
-                }
     }
 
-    @GetMapping(Uri.termByCalId)
-    fun getCalendarTerm(@PathVariable calTermId: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "0") limit: Int): ResponseEntity<Siren> {
+    @GetMapping(Uri.termByCalId, produces = [Media.SIREN_TYPE])
+    fun getCalendarTerm(@PathVariable calTermId: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "0") limit: Int): Siren {
         val defaultFlag = page == 0 && limit == 0
-
-        return calendarTermServices.getTermByCalId(calTermId, page, limit, defaultFlag)
-                .let {
-                    ResponseEntity.ok()
-                            .header("Content-Type", Media.SIREN_TYPE)
-                            .body(CalendarTermDetailRepr(it, page, limit))
-                }
-
+        return CalendarTermDetailRepr(calendarTermServices.getTermByCalId(calTermId, page, limit, defaultFlag),page,limit)
     }
 }
