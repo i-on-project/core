@@ -8,12 +8,12 @@ import java.sql.ResultSet
 class ProgrammeOfferMapper : RowMapper<ProgrammeOffer> {
     override fun map(rs: ResultSet, ctx: StatementContext?): ProgrammeOffer {
         return ProgrammeOffer(
-                rs.getInt("id"),
-                rs.getString("courseAcr"),
-                rs.getInt("programmeId"),
-                rs.getInt("courseId"),
-                rs.getInt("termNumber"),
-                rs.getBoolean("optional")
+            rs.getInt("id"),
+            rs.getString("courseAcr"),
+            rs.getInt("programmeId"),
+            rs.getInt("courseId"),
+            rs.getInt("termNumber"),
+            rs.getBoolean("optional")
         )
     }
 

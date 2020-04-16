@@ -2,7 +2,6 @@ package org.ionproject.core.common
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import java.net.URI
 
 class Relation(

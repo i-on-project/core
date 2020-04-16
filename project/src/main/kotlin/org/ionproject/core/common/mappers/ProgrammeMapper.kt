@@ -12,7 +12,7 @@ class ProgrammeMapper : RowMapper<Programme> {
      */
     override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
         return Programme(rs.getInt("id"), rs.getString("acronym"),
-                rs.getString("name"), rs.getInt("termSize"), mutableListOf())
+            rs.getString("name"), rs.getInt("termSize"), mutableListOf())
     }
 
 }

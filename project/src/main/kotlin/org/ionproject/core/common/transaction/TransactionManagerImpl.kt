@@ -6,11 +6,11 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
 
 @Component
-class TransactionManagerImpl(dsh : DataSourceHolder)  : TransactionManager {
+class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
     /**
      * Jdbi instance wraps a JDBC DataSource
      */
-    private val jdbi : Jdbi = Jdbi.create(dsh.dataSource)
+    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
 
     /**
      * Executes the transaction passed as parameter with the
@@ -45,7 +45,7 @@ class TransactionManagerImpl(dsh : DataSourceHolder)  : TransactionManager {
 
             handle.commit()
             return result
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             handle?.rollback()
             println("ERROR:${e.message}")
             return null

@@ -21,7 +21,7 @@ internal class ControllerTester {
     lateinit var mocker: MockMvc
 
     fun isValidSiren(uri: URI) = mocker.get(uri) {
-        accept = Media.MEDIA_SIREN
+        accept = Media.SIREN_MEDIA_TYPE
     }.andExpect {
         status { isOk }
         content { contentType("application/vnd.siren+json") }

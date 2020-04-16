@@ -4,7 +4,6 @@ import org.ionproject.core.ControllerTester
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
 
 internal class KlassControllerTest : ControllerTester() {
@@ -22,7 +21,7 @@ internal class KlassControllerTest : ControllerTester() {
     fun getPage_shouldRespondWithTheCorrectNumberOfItems() {
         var limit = 1
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
-            accept = Media.MEDIA_SIREN
+            accept = Media.SIREN_MEDIA_TYPE
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -33,7 +32,7 @@ internal class KlassControllerTest : ControllerTester() {
 
         limit = 2
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
-            accept = Media.MEDIA_SIREN
+            accept = Media.SIREN_MEDIA_TYPE
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
