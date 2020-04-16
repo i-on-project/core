@@ -27,11 +27,9 @@ The `categories` property of the `Event` in the example demonstrates a reoccurin
   "type": "calendar",
   "properties": {
     "prodid": {
-      "parameters": {},
-      "value": "/v0/courses/1/classes/1/sections/1"
+      "value": "/v0/courses/1/classes/1920v/61D"
     },
     "version": {
-      "parameters": {},
       "value": "2.0"
     }
   },
@@ -40,41 +38,40 @@ The `categories` property of the `Event` in the example demonstrates a reoccurin
       "type": "event",
       "properties": {
         "uid": {
-          "parameters": {},
-          "value": 45678
+          "value": "event/45678"
         },
         "summary": {
-          "parameters": {},
           "value": "Theory Class WAD-1920v"
         },
-        "description": {
-          "parameters": {},
-          "value": "Theory Class of the WAD-1920v class."
-        },
+        "description": [
+          {
+            "value": "Theory Class of the WAD-1920v class."
+          },
+          {
+            "parameters": {
+              "language": "pt/PT"
+            },
+            "value": "Aula teórica da turma DAW-1920v."
+          }
+        ],
         "categories": [
           {
-            "parameters": {},
             "value": ["Lecture", "Theory Class"],
           },
           {
-            "parameters": {},
             "value": "WAD",
           }
         ],
         "dtstamp": {
-          "parameters": {},
           "value": "2020-02-10T10:34:24Z"
         },
         "dtstart": {
-          "parameters": {},
           "value": "2020-03-19T11:00:00Z"
         },
         "duration": {
-          "parameters": {},
           "value": "PT03H00M00S"
         },
         "rrule": {
-          "parameters": {},
           "value": {
             "freq": "WEEKLY",
             "until": "2020-06-10T00:00:00Z",
@@ -97,7 +94,7 @@ A calendar, as described [here](https://icalendar.org/iCalendar-RFC-5545/3-4-ica
 
 * `prodid`: id of the creator of the calendar. In this domain it could be the identifier of a `Class`, `ClassSection`, etc.
   - type: **text**
-  - e.g. "/v0/courses/1/classes/1/sections/1"
+  - e.g. "/v0/courses/1/classes/1920v/sections/1"
 ## Actions
 An event collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
@@ -122,7 +119,7 @@ The `search` action allows the following parameters:
 
 The `batch-delete` action allows the following parameters:
 * `type`: delete all components whose `type` matches the one indicated
-  - e.g. /v0/courses/1/classes/1/sections/1/calendar?type=event, will delete all events
+  - e.g. /v0/courses/1/classes/1920v/sections/1/calendar?type=event, will delete all events
 
 ## Link Relations
 A `Calendar` representation:
@@ -138,11 +135,9 @@ A `Calendar` representation:
     "type": "calendar",
     "properties": {
       "prodid": {
-        "parameters": {},
-        "value": "/v0/courses/1/classes/1/sections/61D"
+        "value": "/v0/courses/1/classes/1920v/sections/61D"
       },
       "version": {
-        "parameters": {},
         "value": "2.0"
       }
     },
@@ -151,35 +146,27 @@ A `Calendar` representation:
         "type": "event",
         "properties": {
           "uid": {
-            "parameters": {},
-            "value": 45678
+            "value": "event/45678"
           },
           "summary": {
-            "parameters": {},
             "value": "Theory Class WAD-1920v"
           },
           "description": {
-            "parameters": {},
             "value": "Theory Class of the WAD-1920v class."
           },
           "categories": {
-            "parameters": {},
             "value": ["Lecture", "Theory Class"],
           },
           "dtstamp": {
-            "parameters": {},
             "value": "2020-02-10T10:34:24Z"
           },
           "dtstart": {
-            "parameters": {},
             "value": "2020-03-19T11:00:00Z"
           },
           "duration": {
-            "parameters": {},
             "value": "PT03H00M00S"
           },
           "rrule": {
-            "parameters": {},
             "value": {
               "freq": "WEEKLY",
               "until": "2020-06-10T00:00:00Z",
@@ -192,35 +179,27 @@ A `Calendar` representation:
         "type": "event",
         "properties": {
           "uid": {
-            "parameters": {},
-            "value": 45679
+            "value": "event/45679"
           },
           "summary": {
-            "parameters": {},
             "value": "Theory Class WAD-1920v"
           },
           "description": {
-            "parameters": {},
             "value": "Theory Class of the WAD-1920v class."
           },
           "categories": {
-            "parameters": {},
             "value": ["Lecture", "Theory Class"],
           },
           "dtstamp": {
-            "parameters": {},
             "value": "2020-02-10T10:34:24Z"
           },
           "dtstart": {
-            "parameters": {},
             "value": "2020-03-16T11:00:00Z"
           },
           "duration": {
-            "parameters": {},
             "value": "PT01H30M00S"
           },
           "rrule": {
-            "parameters": {},
             "value": {
               "freq": "WEEKLY",
               "until": "2020-06-10T00:00:00Z",
@@ -240,7 +219,7 @@ A `Calendar` representation:
         "lecturer": 1010
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" }
       ]
     }
   ],
@@ -249,7 +228,7 @@ A `Calendar` representation:
       "name": "search",
       "summary": "Search components",
       "method": "GET",
-      "href": "/v0/courses/1/classes/1/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}",
+      "href": "/v0/courses/1/classes/1920v/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}",
       "isTemplated": true,
       "type": "application/x-www-form-urlencoded",
       "fields": [
@@ -265,7 +244,7 @@ A `Calendar` representation:
       "name": "add-item",
       "title": "Add Item",
       "method": "POST",
-      "href": "/v0/courses/1/classes/1/calendar",
+      "href": "/v0/courses/1/classes/1920v/calendar",
       "isTemplated": false,
       "type": "application/json",
       "fields": [ ]
@@ -275,15 +254,15 @@ A `Calendar` representation:
       "title": "Delete multiple items",
       "method": "DELETE",
       "isTemplated": true,
-      "href": "/v0/courses/1/classes/1/calendar{?type}",
+      "href": "/v0/courses/1/classes/1920v/calendar{?type}",
       "fields": [
         { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/sections/61D/calendar" },
-    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1/sections/61D" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/61D/calendar" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v/61D" }
   ]
 } 
 ```
@@ -293,9 +272,9 @@ An `Event`, as described [here](https://tools.ietf.org/html/rfc5545#section-3.6.
 
 ## Properties
 * `uid`: the unique identifier of this `Event`
-  - [link](https://tools.ietf.org/html/rfc7986#section-5.3)
-  - type: [**integer**](https://tools.ietf.org/html/rfc5545#section-3.3.8)
-  - e.g. 38427
+  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
+  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
+  - e.g. "event/1234", "todo/1234523"
 
 * `summary`: summary of the `Event`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
@@ -365,35 +344,27 @@ MIME type: __application/vdn.siren+json__
     "type": "event",
     "properties": {
       "uid": {
-        "parameters": {},
-        "value": 1234
+        "value": "event/1234"
       },
       "summary": {
-        "parameters": {},
         "value": "WAD 1st Exam"
       },
       "description": {
-        "parameters": {},
         "value": "First exam of the WAD course during the 1920v semester"
       },
       "categories": {
-        "parameters": {},
         "value": "Exam",
       },
       "created": {
-        "parameters": {},
         "value": "2020-02-10T10:34:20Z"
       },
       "dtstamp": {
-        "parameters": {},
         "value": "2020-02-10T10:34:20Z"
       },
       "dtstart": {
-        "parameters": {},
         "value": "2020-03-19T14:00:00Z"
       },
       "dtend": {
-        "parameters": {},
         "value": "2020-03-19T16:30:00Z"
       },
     }
@@ -407,15 +378,15 @@ MIME type: __application/vdn.siren+json__
         "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
         { "rel": [ "term" ], "href": "/v0/terms/1" },
         { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/1234" },
-    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/1234" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v" }
   ]
 }
 ```
@@ -425,9 +396,9 @@ A calendar component designed to represent an assignment or something that requi
 
 ## Properties
 * `uid`: the unique identifier of this `Todo`
-  - [link](https://tools.ietf.org/html/rfc7986#section-5.3)
-  - type: [**integer**](https://tools.ietf.org/html/rfc5545#section-3.3.8)
-  - e.g. 38427
+  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
+  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
+  - e.g. "event/1234", "todo/1234523"
 
 * `summary`: summary of the `Todo`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
@@ -443,7 +414,7 @@ A calendar component designed to represent an assignment or something that requi
   - this property is optional
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
   - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-  - e.g. "https://i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
+  - e.g. "https://github.com/isel-leic-daw/1920v-public/wiki/phase-1"
 
 * `dtstamp`: date of the last modification of the `Todo`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
@@ -481,35 +452,27 @@ A Todo representation:
   "class": [ "todo" ],
   "properties": { 
     "uid": {
-      "parameters": {},
-      "value": 123490
+      "value": "todo/123490"
     },
     "summary": {
-      "parameters": {},
       "value": "WAD 1st Series"
     },
     "description": {
-      "parameters": {},
       "value": "First series of exercises for the WAD course during the 1920v semester"
     },
     "attachment": {
-      "parameters": {},
-      "value": "https://api.i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
+      "value": "https://github.com/isel-leic-daw/1920v-public/wiki/phase-1"
     },
     "categories": {
-      "parameters": {},
       "value": ["Evaluation", "Assignment", "Web App Development"],
     },
     "created": {
-      "parameters": {},
       "value": "2020-02-10T10:34:20Z"
     },
     "dtstamp": {
-      "parameters": {},
       "value": "2020-02-12T12:24:50Z"
     },
     "due": {
-      "parameters": {},
       "value": "2020-03-19T00:00:00Z"
     },
   },
@@ -522,16 +485,16 @@ A Todo representation:
         "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
         { "rel": [ "term" ], "href": "/v0/terms/1" },
         { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/123490" },
-    { "rel": [ "service-doc" ], "href": "/v0/courses/1/classes/1/docs/first-series" },
-    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/123490" },
+    { "rel": [ "service-doc" ], "href": "https://github.com/isel-leic-daw/1920v-public/wiki/phase-1" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v" }
   ]
 } 
 ```
@@ -542,9 +505,9 @@ For example, a synopsis of a lecture.
 
 ## Properties
 * `uid`: the unique identifier of this `Journal`
-  - [link](https://tools.ietf.org/html/rfc7986#section-5.3)
-  - type: [**integer**](https://tools.ietf.org/html/rfc5545#section-3.3.8)
-  - e.g. 38427
+  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
+  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
+  - e.g. "event/1234", "todo/1234523", "journal/2"
 
 * `summary`: summary of the `Journal`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
@@ -560,7 +523,6 @@ For example, a synopsis of a lecture.
   - this property is optional
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
   - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-  - e.g. "https://i-on.pt/v0/courses/1/classes/1/documents/primeira-serie.pdf"
 
 * `dtstamp`: date of the last modification of the `Journal`
   - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
@@ -602,43 +564,35 @@ A Todo representation:
   "class": [ "journal" ],
   "properties": { 
     "uid": {
-      "parameters": {},
-      "value": 123497
+      "value": "journal/123497"
     },
     "summary": {
-      "parameters": {},
       "value": "Error in 1st WAD Exam"
     },
     "description": {
-      "parameters": {},
       "value": "The first exercise had and ambigous question that resulted in both answers B and C being correct. Therefore both will be awarded full marks."
     },
     "categories": {
-      "parameters": {},
       "value": ["Error", "Evaluation", "Exam", "Web App Development"],
     },
     "created": {
-      "parameters": {},
       "value": "2020-02-10T10:34:20Z"
     },
     "dtstamp": {
-      "parameters": {},
       "value": "2020-02-12T12:24:50Z"
     },
     "dtstart": {
-      "parameters": {},
       "value": "2020-03-19T14:00:00Z"
     },
     "relatedTo": [
       {
-        "parameters": {},
-        "value": "/v0/courses/1/classes/1/calendar/1234"
+        "value": "/v0/courses/1/classes/1920v/calendar/1234"
       },
       {
         "parameters": {
           "reltype": "SIBLING"
         },
-        "value": "/v0/courses/1/classes/1/calendar/123485"
+        "value": "/v0/courses/1/classes/1920v/calendar/123485"
       }
     ],
   },
@@ -651,16 +605,16 @@ A Todo representation:
         "termId": "1"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1" },
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
         { "rel": [ "term" ], "href": "/v0/terms/1" },
         { "rel": [ "course"], "href": "/v0/courses/1" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1/calendar/123497" },
-    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1" },
-    { "rel": [ "related" ], "href": [ "/v0/courses/1/classes/1/calendar/1234", "/v0/courses/1/classes/1/calendar/123485" ] }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/123497" },
+    { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v" },
+    { "rel": [ "related" ], "href": [ "/v0/courses/1/classes/1920v/calendar/1234", "/v0/courses/1/classes/1920v/calendar/123485" ] }
   ]
 } 
 ```
