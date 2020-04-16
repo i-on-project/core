@@ -53,20 +53,18 @@ create table dbo.ClassSection (
 create table dbo.CalendarComponent (
 	id             int generated always as identity unique not null,
 	cid            int references dbo.Calendar(id),
-	title          varchar(50) not null,
-	message        varchar(200),
-	start_date     timestamp not null,
-	end_date       timestamp,
-	primary key(id, cid)
+	type		   char not null,
+	summary        varchar(50) not null,
+	description    varchar(200),
+	dtstart        timestamp not null,
+	dtend          timestamp,
+	primary key (id)
 );
 
 create table dbo.RecurrenceRule (
 	id         int,
-	cid        int,
 	freq       varchar(20),
 	byday      varchar(20),
-	start_time time,
-	duration   interval,
-	foreign key (id, cid) references dbo.CalendarComponent(id, cid),
-	primary key (id, cid, byday)
+	foreign key (id) references dbo.CalendarComponent(id),
+	primary key (id, byday)
 );
