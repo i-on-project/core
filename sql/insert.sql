@@ -128,3 +128,6 @@ insert into dbo.ClassSection(term, courseId, id) values
 	( '2021i', 3, '1D'  ),
 	( '2021i', 3, '2D'  ),
 	( '2021i', 3, '1N'  );
+
+INSERT INTO dbo.CalendarComponent(cid, type, summary, description, dtstart, dtend) VALUES
+(1, 'E', '1st exam WAD', 'Normal season exam for WAD-1920v', TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 16:30:00');
