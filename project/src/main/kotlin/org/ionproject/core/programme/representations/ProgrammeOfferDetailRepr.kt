@@ -17,7 +17,7 @@ fun offerToDetailRepr(offer: ProgrammeOffer) =
                         title = "edit offer",
                         method = HttpMethod.PUT,
                         type = Media.APPLICATION_JSON,
-                        href = Uri.forProgrammeOfferById(offer.programmeId, offer.id),
+                        href = Uri.forProgrammeOfferById(offer.programmeId, offer.id).toTemplate(),
                         fields = listOf(
                                 Field(name = "Acronym", type = "text"),
                                 Field(name = "TermNumber", type = "number"),
@@ -33,7 +33,7 @@ fun offerToDetailRepr(offer: ProgrammeOffer) =
 
 private fun buildSubentities(courseId : Int) = SirenBuilder()
         .klass("course")
-        .rel(Uri.REL_COURSE)
+        .rel(Uri.relCourse)
         .link("self", Uri.forCourseById(courseId))
         .toEmbed()
 

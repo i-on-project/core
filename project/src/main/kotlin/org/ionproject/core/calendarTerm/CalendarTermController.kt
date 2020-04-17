@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
 
-    @GetMapping(Uri.terms, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.calendarTerms, produces = [Media.SIREN_TYPE])
     fun getTerms(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
         return CalendarTermListRepr(calendarTermServices.getTerms(page, limit),page,limit)
     }
 
-    @GetMapping(Uri.termByCalId, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.calendarTermById, produces = [Media.SIREN_TYPE])
     fun getCalendarTerm(@PathVariable calTermId: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
         return CalendarTermDetailRepr(calendarTermServices.getTermByCalId(calTermId, page, limit),page,limit)
     }

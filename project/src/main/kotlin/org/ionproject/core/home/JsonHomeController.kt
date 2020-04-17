@@ -5,6 +5,7 @@ import org.ionproject.core.common.Uri
 import org.springframework.http.HttpMethod
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 private const val specLocation = "https://github.com/i-on-project/core/tree/master/docs/api"
@@ -21,7 +22,7 @@ class JsonHomeController {
         .link("describedBy", specUri)
         // course resource
         .newResource("courses")
-        .hrefTemplate(Uri.cousesQueryTemplate)
+        .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
         .hrefVar("limit", URI("/api-docs/params/limit"))
         .hrefVar("page", URI("/api-docs/params/page"))
         .docs(coursesSpecUri)
