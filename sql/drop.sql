@@ -1,4 +1,5 @@
 drop table if exists dbo.RecurrenceRule cascade;
+drop table if exists dbo.CalendarComponents cascade;
 drop table if exists dbo.CalendarComponent cascade;
 drop table if exists dbo.Calendar cascade;
 drop table if exists dbo.ClassSection cascade;
