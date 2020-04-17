@@ -1,5 +1,6 @@
 package org.ionproject.core.common.transaction
 
+import org.ionproject.core.common.Logger
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
@@ -47,8 +48,8 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
             return result
         } catch (e: Exception) {
             handle?.rollback()
-            println("ERROR:${e.message}")
-            return null
+            Logger.logError(e.localizedMessage)
+            return null     //TODO: THIS SHOULD BE REPLACED BY A THROWN EXCEPTION OR IT WONT CATCH EXCEPTIONS INSIDE THE LAMBDA
         } finally {
             handle?.close()
         }
