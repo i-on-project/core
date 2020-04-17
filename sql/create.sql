@@ -40,13 +40,13 @@ CREATE TABLE dbo.Class (
 	courseId        INT REFERENCES dbo.Course(id),
 	calendarTerm    INT REFERENCES dbo.CalendarTerm(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
-	UNIQUE(courseId, term)
+	UNIQUE(courseId, calendarTerm)
 );
 
 CREATE TABLE dbo.ClassSection (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	name            VARCHAR(10),
-	classId         INT REFERENCES dbo.Class(id)
+	name            VARCHAR(10) NOT NULL,
+	classId         INT REFERENCES dbo.Class(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE
 );
 
@@ -62,7 +62,7 @@ CREATE TABLE dbo.CalendarComponents (
 	calendar_id     INT REFERENCES dbo.Calendar(id),
 	component_id    INT REFERENCES dbo.CalendarComponent(id),
 	PRIMARY KEY (calendar_id, component_id)
-)
+);
 
 CREATE TABLE dbo.RecurrenceRule (
 	cid             INT REFERENCES dbo.CalendarComponent(id),
