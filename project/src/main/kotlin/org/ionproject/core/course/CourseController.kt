@@ -13,29 +13,17 @@ import java.util.*
  * representation?
  */
 @RestController
-class CourseSpringController(private val courseServices: CourseServices){
+class CourseController(private val courseServices: CourseServices){
 
 
     @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])
-    fun getCourses(@RequestParam(defaultValue = "0") page : Int, @RequestParam(defaultValue = "0") limit : Int) : ResponseEntity<Siren> {
-        val defaultFlag = page == 0 && limit == 0
+    fun getCourses(@RequestParam(defaultValue = "0") page : Int, @RequestParam(defaultValue = "10") limit : Int) : Siren =
+        courseToListRepr(courseServices.getCourses(page, limit), page, limit)
 
-        return courseServices.getCourses(page, limit, defaultFlag)
-                .let {
-                    ResponseEntity.ok()
-                            .header("Content-Type", Media.SIREN_TYPE)
-                            .body(courseToListRepr(it, page, limit))
-                }
-    }
 
     @GetMapping(Uri.courseById, produces = [Media.SIREN_TYPE])
-    fun getCourse(@PathVariable cid: Int) : ResponseEntity<Siren> =
-            courseServices.getCourseById(cid)
-                    .let {
-                        ResponseEntity.ok()
-                                .header("Content-Type", Media.SIREN_TYPE)
-                                .body(courseToDetailRepr(it))
-                    }
+    fun getCourse(@PathVariable cid: Int) : Siren =
+            courseToDetailRepr(courseServices.getCourseById(cid))
 
     /*
      * Annotation `RequiresAuth` serves as an indication

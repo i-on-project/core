@@ -5,7 +5,7 @@ import org.ionproject.core.common.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeServices(private val repo : ProgrammeRepo) {
+class ProgrammeServices(private val repo : ProgrammeRepoImpl) {
     /*
      * Should `ProgrammeSpringController` class hold a reference
      * to repo to avoid making this ""proxy"" useless call's?

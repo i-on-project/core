@@ -1,6 +1,5 @@
 package org.ionproject.core.calendarTerm
 
-import org.ionproject.core.common.customExceptions.IncorrectParametersException
 import org.ionproject.core.common.model.CalendarTerm
 import org.springframework.stereotype.Component
 
