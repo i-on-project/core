@@ -28,16 +28,17 @@ CREATE TABLE dbo.ProgrammeOffer(
 );
 
 CREATE TABLE dbo.CalendarTerm (
-	id              VARCHAR(10) PRIMARY KEY, -- e.g. "1920v"
-	start_date      TIMESTAMP,
-	end_date        TIMESTAMP CHECK(end_date > start_date),
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	name            VARCHAR(10) UNIQUE NOT NULL, -- e.g. "1920v"
+	start_date      TIMESTAMP NOT NULL,
+	end_date        TIMESTAMP NOT NULL CHECK(end_date > start_date),
 	UNIQUE(start_date, end_date)
 );
 
 CREATE TABLE dbo.Class (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	courseId        INT REFERENCES dbo.Course(id),
-	calendarTerm    VARCHAR(10) REFERENCES dbo.CalendarTerm(id),
+	calendarTerm    INT REFERENCES dbo.CalendarTerm(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
 	UNIQUE(courseId, term)
 );
