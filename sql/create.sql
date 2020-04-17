@@ -1,72 +1,74 @@
 CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
-create table dbo.Programme(
-	id   		INT generated always as identity primary key,
-	acronym 	VARCHAR(10) unique,				
-	name		VARCHAR(100) UNIQUE,			-- It may be null in this phase
-	termSize	INT					
+CREATE TABLE dbo.Programme(
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	acronym         VARCHAR(10) UNIQUE,				
+	name            VARCHAR(100) UNIQUE,			-- It may be NULL in this phase
+	termSize        INT					
 );
 
-create table dbo.Calendar (
-	id   int generated always as identity primary key
+CREATE TABLE dbo.Calendar (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 );
 
-create table dbo.Course (
-	id   	 INT generated always as identity primary key,
-	acronym  varchar(10) unique,	
-	name     varchar(100) unique				-- It may be null in this phase
+CREATE TABLE dbo.Course (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	acronym         VARCHAR(10) UNIQUE,	
+	name            VARCHAR(100) UNIQUE				-- It may be NULL in this phase
 );
 
 
-create table dbo.ProgrammeOffer(
-	id   	 		INT generated always as identity,
-	programmeId 		INT REFERENCES dbo.Programme(id),
-	courseId 		INT REFERENCES dbo.Course(id),
-	termNumber		INT, 
-	optional		BOOLEAN,
+CREATE TABLE dbo.ProgrammeOffer(
+	id              INT GENERATED ALWAYS AS IDENTITY,
+	programmeId     INT REFERENCES dbo.Programme(id),
+	courseId        INT REFERENCES dbo.Course(id),
+	termNumber      INT, 
+	optional        BOOLEAN,
 	PRIMARY KEY(programmeId, courseId, termNumber)
 );
 
-create table dbo.CalendarTerm (
-	id         varchar(10) primary key, -- e.g. "1920v"
-	start_date timestamp,
-	end_date   timestamp check(end_date > start_date),
-	unique(start_date, end_date)
+CREATE TABLE dbo.CalendarTerm (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	name            VARCHAR(10) UNIQUE NOT NULL, -- e.g. "1920v"
+	start_date      TIMESTAMP NOT NULL,
+	end_date        TIMESTAMP NOT NULL CHECK(end_date > start_date),
+	UNIQUE(start_date, end_date)
 );
 
-create table dbo.Class (
-	courseId INT references dbo.Course(id),
-	term     varchar(10) references dbo.CalendarTerm(id),
-	calendar int references dbo.Calendar(id),
-	primary key(courseId, term)
+CREATE TABLE dbo.Class (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	courseId        INT REFERENCES dbo.Course(id),
+	calendarTerm    INT REFERENCES dbo.CalendarTerm(id),
+	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+	UNIQUE(courseId, calendarTerm)
 );
 
-create table dbo.ClassSection (
-	id       varchar(10),
-	courseId   INT,
-	term     varchar(10),
-	calendar int references dbo.Calendar(id),
-	foreign key(courseId, term) references dbo.Class(courseId, term),
-	primary key(id, courseId, term)
+CREATE TABLE dbo.ClassSection (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	name            VARCHAR(10) NOT NULL,
+	classId         INT REFERENCES dbo.Class(id),
+	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE
 );
 
-create table dbo.CalendarComponent (
-	id             int generated always as identity unique not null,
-	cid            int references dbo.Calendar(id),
-	title          varchar(50) not null,
-	message        varchar(200),
-	start_date     timestamp not null,
-	end_date       timestamp,
-	primary key(id, cid)
+CREATE TABLE dbo.CalendarComponent (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	title           VARCHAR(50) NOT NULL,
+	message         VARCHAR(200),
+	start_date      TIMESTAMP NOT NULL,
+	end_date        TIMESTAMP
 );
 
-create table dbo.RecurrenceRule (
-	id         int,
-	cid        int,
-	freq       varchar(20),
-	byday      varchar(20),
-	start_time time,
-	duration   interval,
-	foreign key (id, cid) references dbo.CalendarComponent(id, cid),
-	primary key (id, cid, byday)
+CREATE TABLE dbo.CalendarComponents (
+	calendar_id     INT REFERENCES dbo.Calendar(id),
+	component_id    INT REFERENCES dbo.CalendarComponent(id),
+	PRIMARY KEY (calendar_id, component_id)
+);
+
+CREATE TABLE dbo.RecurrenceRule (
+	cid             INT REFERENCES dbo.CalendarComponent(id),
+	freq            VARCHAR(20),
+	byday           VARCHAR(20),
+	start_time      TIME,
+	duration        INTERVAL,
+	PRIMARY KEY (cid, byday)
 );
