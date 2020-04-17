@@ -52,7 +52,7 @@ private fun buildSubentities(programme: Programme, offer: ProgrammeOffer) : Embe
         SirenBuilder(ShortOfferRepr(offer.courseId, offer.termNumber))
             .klass("offer")
             .title("${offer.courseAcr} Offer")
-            .rel(Uri.REL_PROGRAMME_OFFER)
+            .rel(Uri.relProgrammeOffer)
             .link("self", Uri.forProgrammeOfferById(programme.id, offer.id))
             .toEmbed()
 

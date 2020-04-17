@@ -14,8 +14,8 @@ object ClassSectionToSiren {
         return SirenBuilder(cs)
             .klass(*classSectionClasses)
             .link("self", selfHref)
-            .link("collection", Uri.forKlassByTerm(cs.courseId, cs.calendarTerm))
-            .action(Action.genDeleteAction(UriTemplate("${Uri.forClassSectionById(cs.courseId, cs.calendarTerm, cs.id)}${Uri.pagingQuery}")))
+            .link("collection", Uri.forKlassByCalTerm(cs.courseId, cs.calendarTerm))
+            .action(Action.genDeleteAction(UriTemplate("${Uri.forClassSectionById(cs.courseId, cs.calendarTerm, cs.id)}${Uri.rfcPagingQuery}")))
             .toSiren()
     }
 }

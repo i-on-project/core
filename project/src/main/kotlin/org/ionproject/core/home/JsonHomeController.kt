@@ -22,7 +22,7 @@ class JsonHomeController {
         .link("describedBy", specUri)
         // course resource
         .newResource("courses")
-        .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.pagingQuery}"))
+        .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
         .hrefVar("limit", URI("/api-docs/params/limit"))
         .hrefVar("page", URI("/api-docs/params/page"))
         .docs(coursesSpecUri)

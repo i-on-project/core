@@ -5,15 +5,9 @@ import org.ionproject.core.common.customExceptions.ProhibitedUserException
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.server.NotAcceptableStatusException
-import org.springframework.web.servlet.NoHandlerFoundException
-import java.lang.IllegalArgumentException
-import java.lang.NullPointerException
-import java.lang.NumberFormatException
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -28,16 +22,16 @@ import javax.servlet.http.HttpServletRequest
 @RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(value = [ResourceNotFoundException::class])
-    private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request : HttpServletRequest) : ResponseEntity<*> {
-        val headers : HttpHeaders = HttpHeaders()
+    private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request: HttpServletRequest): ResponseEntity<*> {
+        val headers: HttpHeaders = HttpHeaders()
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
         return handleResponse("",
-                "Resource not found",
-                404,
-                ex.localizedMessage,
-                request.requestURI,
-                headers
+            "Resource not found",
+            404,
+            ex.localizedMessage,
+            request.requestURI,
+            headers
         )
     }
 
@@ -47,17 +41,17 @@ class ExceptionHandler {
      * of a integer on a parameter. e.g. /v0/courses/BUG
      * or when is used an illegal character in a url. e.g. /v0/courses/ç/
      */
-    @ExceptionHandler(value = [NumberFormatException::class,IllegalArgumentException::class])
-    private fun handleNumberFormatException(ex: NumberFormatException, request : HttpServletRequest) : ResponseEntity<*> {
-        val headers : HttpHeaders = HttpHeaders()
+    @ExceptionHandler(value = [NumberFormatException::class, IllegalArgumentException::class])
+    private fun handleNumberFormatException(ex: NumberFormatException, request: HttpServletRequest): ResponseEntity<*> {
+        val headers: HttpHeaders = HttpHeaders()
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
         return handleResponse("",
-                "Bad request",
-                400,
-                ex.localizedMessage,
-                request.requestURI,
-                headers
+            "Bad request",
+            400,
+            ex.localizedMessage,
+            request.requestURI,
+            headers
         )
     }
 
@@ -66,39 +60,42 @@ class ExceptionHandler {
      * page and limit. It should be thrown when they are invalid.
      */
     @ExceptionHandler(value = [IncorrectParametersException::class])
-    private fun handleIncorrectParametersException(ex : IncorrectParametersException, request: HttpServletRequest) : ResponseEntity<*> {
-        val headers : HttpHeaders = HttpHeaders()
+    private fun handleIncorrectParametersException(ex: IncorrectParametersException, request: HttpServletRequest): ResponseEntity<*> {
+        val headers: HttpHeaders = HttpHeaders()
         headers.add("Content-type", Media.PROBLEM_JSON.toString())
 
         return handleResponse(
-                "",
-                "Incorrect Query Parameters",
-                400,
-                ex.localizedMessage,
-                request.requestURI,
-                headers
+            "",
+            "Incorrect Query Parameters",
+            400,
+            ex.localizedMessage,
+            request.requestURI,
+            headers
         )
     }
+
     /*
      * Occurs when an Unauthenticated user
      * tries to access a restricted resource.
      */
     @ExceptionHandler(value = [UnauthenticatedUserException::class])
-    private fun handleUnauthenticatedAccess() {}
+    private fun handleUnauthenticatedAccess() {
+    }
 
     /*
      * Occurs when an Authenticated User
      * tries to access a resource that has no permissions for.
      */
     @ExceptionHandler(value = [ProhibitedUserException::class])
-    private fun handleProhibitedAccess(){}
+    private fun handleProhibitedAccess() {
+    }
 
-    private fun handleResponse(type: String, title: String, status: Int, detail: String, instance: String, headers: HttpHeaders) : ResponseEntity<*> {
+    private fun handleResponse(type: String, title: String, status: Int, detail: String, instance: String, headers: HttpHeaders): ResponseEntity<*> {
         return ResponseEntity
-                .status(status)
-                .headers(headers)
-                .header("Content-Type",Media.PROBLEM_JSON.toString())
-                .body(ProblemJson(type, title, status, detail, instance))
+            .status(status)
+            .headers(headers)
+            .header("Content-Type", Media.PROBLEM_JSON.toString())
+            .body(ProblemJson(type, title, status, detail, instance))
     }
 
 }

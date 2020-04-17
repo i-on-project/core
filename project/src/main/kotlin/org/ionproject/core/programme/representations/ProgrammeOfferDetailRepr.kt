@@ -33,7 +33,7 @@ fun offerToDetailRepr(offer: ProgrammeOffer) =
 
 private fun buildSubentities(courseId : Int) = SirenBuilder()
         .klass("course")
-        .rel(Uri.REL_COURSE)
+        .rel(Uri.relCourse)
         .link("self", Uri.forCourseById(courseId))
         .toEmbed()
 

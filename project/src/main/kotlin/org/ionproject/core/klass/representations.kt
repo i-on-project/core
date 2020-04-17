@@ -1,9 +1,7 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.common.*
-import org.springframework.http.HttpMethod
 import org.springframework.web.util.UriTemplate
-import java.net.URI
 
 val klassClasses = arrayOf("class")
 
@@ -20,7 +18,7 @@ object KlassToSiren {
         return SirenBuilder()
             .klass(*klassClasses)
             .rel("item")
-            .link("self", Uri.forKlassByTerm(klass.courseId, klass.calendarTerm))
+            .link("self", Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
             .toEmbed()
     }
 
@@ -34,21 +32,10 @@ object KlassToSiren {
         return SirenBuilder()
             .klass(*klassClasses, "collection")
             .entities(klasses.map { toSiren(it) })
-            .link("self", URI("$selfHref?page=$page&limit=$limit"))
+            .link("self", Uri.forPagingKlass(cid, page, limit))
             .link("about", Uri.forCourseById(cid))
             .action(Action.genAddItemAction(selfHref.toTemplate()))
-            .action(Action.genSearchAction(UriTemplate("$selfHref{?term,course}")))
-            .action(Action(
-                name = "batch-delete",
-                title = "Delete multiple items",
-                method = HttpMethod.DELETE,
-                href = UriTemplate("$selfHref{?term,course}"),
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "term", type = "text"),
-                    Field(name = "page", type = "number")
-                )))
+            .action(Action.genSearchAction(UriTemplate("${selfHref}${Uri.rfcPagingQuery}")))
             .toSiren()
     }
 
@@ -56,7 +43,7 @@ object KlassToSiren {
      * Fully detailed Class representation.
      */
     fun toSiren(klass: FullKlass): Siren {
-        val selfHref = Uri.forKlassByTerm(klass.courseId, klass.calendarTerm)
+        val selfHref = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm)
 
         // class sections of this class
         val sections = klass.sections.map {

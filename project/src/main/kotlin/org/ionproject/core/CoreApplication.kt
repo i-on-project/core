@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
+import org.ionproject.core.common.interceptors.LoggerInterceptor
+import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
 
@@ -35,6 +38,14 @@ class CoreSerializationConfig : WebMvcConfigurer {
         homeConverter.objectMapper = converter.objectMapper
         homeConverter.supportedMediaTypes = listOf(Media.MEDIA_HOME)
         converters.add(homeConverter)
+    }
+
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(LoggerInterceptor())
+        registry.addInterceptor(PageLimitQueryParamInterceptor())
+            .addPathPatterns("/v?/calendar-terms*")
+            .addPathPatterns("/v?/courses*")
+            .addPathPatterns("/v?/programmes*")
     }
 }
 

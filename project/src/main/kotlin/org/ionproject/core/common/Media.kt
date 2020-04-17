@@ -4,7 +4,9 @@ import org.springframework.http.MediaType
 
 object Media {
     private const val APPLICATION_TYPE = "application"
+    private const val TEXT_TYPE = "text"
     private const val SIREN_SUBTYPE = "vnd.siren+json"
+    private const val CALENDAR_SUBTYPE = "calendar"
     private const val JSON_SUBTYPE = "json"
     private const val HOME_SUBTYPE = "json-home"
     private const val PROBLEM_SUBTYPE = "problem+json"
@@ -19,4 +21,5 @@ object Media {
     val MEDIA_JSON = MediaType(APPLICATION_TYPE, JSON_SUBTYPE)
     val MEDIA_PROBLEM = MediaType(APPLICATION_TYPE, PROBLEM_SUBTYPE)
     val MEDIA_HOME = MediaType(APPLICATION_TYPE, HOME_SUBTYPE)
+    val MEDIA_TEXT_CALENDAR = MediaType(TEXT_TYPE, CALENDAR_SUBTYPE)
 }

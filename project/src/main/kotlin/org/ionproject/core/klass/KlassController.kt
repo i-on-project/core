@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class KlassController(private val repo: KlassRepo) {
 
-    @GetMapping(Uri.klassByTerm, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.klassByCalTerm, produces = [Media.SIREN_TYPE])
     fun get(@PathVariable cid: Int, @PathVariable calterm: String): Siren {
         val klass: FullKlass = repo.get(cid, calterm)
 
