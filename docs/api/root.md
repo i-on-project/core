@@ -3,6 +3,8 @@ The `root` resource is the entry point of the API. It allows for any client appl
 
 The `root` resource is represented in the [application/json-home](https://mnot.github.io/I-D/json-home/) media type.
 
+The paths to the different resources will start with a version number (e.g. `/v0/courses/`). This prevents breaking compatibility with clients using an older version of the API, allowing them to gradually adapt to the newer version.
+
 ## API object
 Contains information about the API.
 
@@ -35,7 +37,7 @@ Available "entry point" resources:
     },
     "resources": {
         "courses": {
-            "hrefTemplate": "/v0/courses?limit,page",
+            "hrefTemplate": "/v0/courses{?page,limit}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
                 "page": "/api-docs/params/page"
@@ -45,7 +47,7 @@ Available "entry point" resources:
             }
         },
         "terms": {
-            "hrefTemplate": "/v0/calendar-terms?limit,page",
+            "hrefTemplate": "/v0/calendar-terms{?page,limit}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
                 "page": "/api-docs/params/page"
