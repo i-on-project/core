@@ -129,8 +129,7 @@ insert into dbo.ClassSection(classId, name) values
 	(24, '2D'),
 	(24, '1N');
 
-INSERT INTO dbo.CalendarComponent(type, summary, description, dtstart, dtend) VALUES
-('E', '1st exam WAD', 'Normal season exam for WAD-1920v', TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 16:30:00');
+CALL dbo.newTodo(1, 'do the thing', 'I have to do the thing soon enough', TIMESTAMP '2021-06-19 14:00:00');
+CALL dbo.newTodo(1, 'do another thing', 'another one', TIMESTAMP '2022-06-19 14:00:00');
+CALL dbo.newEvent(1, '1st exam WAD', 'Normal season exam for WAD-1920v', TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 15:00:00');
 
-INSERT INTO dbo.CalendarComponents(calendar_id, component_id) VALUES
-(1,1);

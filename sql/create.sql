@@ -55,8 +55,7 @@ CREATE TABLE dbo.CalendarComponent (
     type            CHAR NOT NULL,
 	summary         VARCHAR(50) NOT NULL,
 	description     VARCHAR(200),
-	dtstart         TIMESTAMP NOT NULL,
-	dtend           TIMESTAMP
+	dtstart         TIMESTAMP NOT NULL
 );
 
 CREATE TABLE dbo.CalendarComponents (
