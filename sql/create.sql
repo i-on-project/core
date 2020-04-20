@@ -52,22 +52,20 @@ CREATE TABLE dbo.ClassSection (
 
 CREATE TABLE dbo.CalendarComponent (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    type            CHAR NOT NULL,
-	summary         VARCHAR(50) NOT NULL,
-	description     VARCHAR(200),
-	dtstart         TIMESTAMP NOT NULL,
-	dtend           TIMESTAMP
+    dtstamp         TIMESTAMP NOT NULL,
+    created         TIMESTAMP NOT NULL,
+    type            CHAR NOT NULL
 );
 
 CREATE TABLE dbo.CalendarComponents (
 	calendar_id     INT REFERENCES dbo.Calendar(id),
-	component_id    INT REFERENCES dbo.CalendarComponent(id),
-	PRIMARY KEY (calendar_id, component_id)
+	comp_id         INT REFERENCES dbo.CalendarComponent(id),
+	PRIMARY KEY (calendar_id, comp_id)
 );
 
 CREATE TABLE dbo.RecurrenceRule (
-	componentId     INT REFERENCES dbo.CalendarComponent(id),
+	comp_id     	INT REFERENCES dbo.CalendarComponent(id),
 	freq            VARCHAR(20),
 	byday           VARCHAR(20),
-	PRIMARY KEY (componentId, byday)
+	PRIMARY KEY (comp_id, byday)
 );
