@@ -129,7 +129,22 @@ insert into dbo.ClassSection(classId, name) values
 	(24, '2D'),
 	(24, '1N');
 
-CALL dbo.newTodo(1, 'do the thing', 'I have to do the thing soon enough', TIMESTAMP '2021-06-19 14:00:00');
-CALL dbo.newTodo(1, 'do another thing', 'another one', TIMESTAMP '2022-06-19 14:00:00');
-CALL dbo.newEvent(1, '1st exam WAD', 'Normal season exam for WAD-1920v', TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 15:00:00');
+INSERT INTO dbo.Language(name) VALUES 
+('pt-PT'),
+('en-US'),
+('en-GB');
+
+INSERT INTO dbo.ICalendarDataType(name) VALUES
+('DATE'),
+('DATETIME');
+
+INSERT INTO dbo.Category(name, language) VALUES
+('EXAME', 1),
+('EXAM', 2),
+('EXAM', 3);
+
+CALL dbo.newJournal(1, 'some summary', 'this is a description', 'https://www.google.com', 1, TIMESTAMP '2020-04-10 14:00:00');
+-- CALL dbo.newTodo(1, 'do the thing', 'I have to do the thing soon enough', TIMESTAMP '2021-06-19 14:00:00');
+--CALL dbo.newTodo(1, 'do another thing', 'another one', TIMESTAMP '2022-06-19 14:00:00');
+--CALL dbo.newEvent(1, '1st exam WAD', 'Normal season exam for WAD-1920v', TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 15:00:00');
 
