@@ -19,7 +19,7 @@ class CalendarTermController(private val calendarTermServices: CalendarTermServi
     }
 
     @GetMapping(Uri.calendarTermById, produces = [Media.SIREN_TYPE])
-    fun getCalendarTerm(@PathVariable calTermId: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
-        return CalendarTermDetailRepr(calendarTermServices.getTermByCalId(calTermId, page, limit),page,limit)
+    fun getCalendarTerm(@PathVariable calterm: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
+        return CalendarTermDetailRepr(calendarTermServices.getTermByCalId(calterm, page, limit),page,limit)
     }
 }
