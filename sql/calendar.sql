@@ -109,19 +109,20 @@ CREATE OR REPLACE view dbo.v_Event AS
     JOIN dbo.RecurrenceRule AS RR ON Comp.id=RR.comp_id
     WHERE Comp.type = 'E';
 
+DROP view dbo.v_Journal;
 -- VJOURNAL
 CREATE OR REPLACE view dbo.v_Journal AS 
     SELECT DISTINCT
-        CalComp.calendar_id,
-        Comp.id AS uid,
-        Summ.value AS summary,
-        Summ.language AS summary_language,
-        Descr.value AS description,
-        Descr.language AS description_language,
-        Att.value AS attachment,
+		Comp.id AS uid,
+		ARRAY_AGG(DISTINCT CalComp.calendar_id) AS calendars,
+		ARRAY_AGG(DISTINCT Summ.value) AS summaries,
+        ARRAY_AGG(DISTINCT Summ.language) AS summary_language,
+        ARRAY_AGG(DISTINCT Descr.value) AS description,
+        ARRAY_AGG(DISTINCT Descr.language) AS description_language,
+        ARRAY_AGG(DISTINCT Att.value) AS attachments,
         Comp.dtstamp,
         Comp.created,
-        Cat.value as category,
+        ARRAY_AGG(DISTINCT Cat.value) as categories,
         DS.value as dtstart,
         DS.type as dtstart_value_data_type
     FROM dbo.CalendarComponent AS Comp
@@ -131,7 +132,9 @@ CREATE OR REPLACE view dbo.v_Journal AS
     JOIN dbo.Attachment AS Att ON Comp.id = Att.comp_id
     JOIN dbo.Categories AS Cat ON Comp.id = Cat.comp_id
     JOIN dbo.Dtstart as DS ON Comp.id = DS.comp_id
-    WHERE Comp.type = 'J';
+    WHERE Comp.type = 'J'
+	GROUP BY uid, dtstart, dtstart_value_data_type
+	ORDER BY uid;
 
 ---- for creation of calendar components
 ---- these will verify constraints and insert in the appropriate tables
