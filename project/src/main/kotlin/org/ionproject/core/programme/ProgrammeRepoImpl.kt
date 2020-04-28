@@ -30,18 +30,18 @@ class ProgrammeRepoImpl(private val tm: TransactionManager) : ProgrammeRepo {
                     .map(programmeMapper)
                     .findOne()
 
-                var programme : Programme? = null
+                var programme: Programme? = null
 
-                if(res.isPresent) {
+                if (res.isPresent) {
                     programme = res.get()
                     val offers = handle.createQuery(
-                            """ SELECT po.*,co.acronym AS courseAcr FROM dbo.programmeOffer AS po INNER JOIN dbo.course AS co
+                        """ SELECT po.*,co.acronym AS courseAcr FROM dbo.programmeOffer AS po INNER JOIN dbo.course AS co
                         ON po.courseId=co.id
                         WHERE programmeId = :id 
                         """.trimIndent())
-                            .bind("id", id)
-                            .map(offerMapper)
-                            .list()
+                        .bind("id", id)
+                        .map(offerMapper)
+                        .list()
 
                     programme.offers.addAll(offers)
                 }

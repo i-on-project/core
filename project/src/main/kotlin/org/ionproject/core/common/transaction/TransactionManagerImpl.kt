@@ -1,10 +1,13 @@
 package org.ionproject.core.common.transaction
 
-import org.ionproject.core.common.Logger
+import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+
+private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
@@ -48,7 +51,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
             return result
         } catch (e: Exception) {
             handle?.rollback()
-            Logger.logError(e.localizedMessage)
+            logger.error(e.localizedMessage)
             return null     //TODO: THIS SHOULD BE REPLACED BY A THROWN EXCEPTION OR IT WONT CATCH EXCEPTIONS INSIDE THE LAMBDA
         } finally {
             handle?.close()

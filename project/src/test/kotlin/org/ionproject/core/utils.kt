@@ -1,6 +1,7 @@
 package org.ionproject.core
 
 import org.ionproject.core.common.Media
+import org.ionproject.core.common.transaction.DataSourceHolder
 import org.ionproject.core.common.transaction.TransactionManager
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -31,13 +32,9 @@ internal class ControllerTester {
 }
 
 @Primary
-class TransactionManagerTest : TransactionManager {
+class TransactionManagerTest(dsh: DataSourceHolder) : TransactionManager {
 
-    private val jdbi: Jdbi = Jdbi.create(PGSimpleDataSource().apply {
-        setUrl(System.getenv("DBHOST_ION_TESTS"))
-        user = System.getenv("DBUSER_ION_TESTS")
-        password = System.getenv("DBPASSWORD_ION_TESTS")
-    })
+    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
 
     override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         jdbi.open().use {
