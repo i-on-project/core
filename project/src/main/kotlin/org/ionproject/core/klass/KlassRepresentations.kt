@@ -2,12 +2,15 @@ package org.ionproject.core.klass
 
 import org.ionproject.core.common.Action
 import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.toTemplate
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
+import org.springframework.http.HttpMethod
 import org.springframework.web.util.UriTemplate
 
 val klassClasses = arrayOf("class")
@@ -46,8 +49,28 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
         .entities(map { klass -> klass.toSiren() })
         .link("self", Uri.forPagingKlass(cid, page, limit))
         .link("about", Uri.forCourseById(cid))
-        .action(Action.genAddItemAction(selfHref.toTemplate()))
-        .action(Action.genSearchAction(UriTemplate("${selfHref}${Uri.rfcPagingQuery}")))
+        .action(
+            Action(
+                name = "add-item",
+                title = "Add Item",
+                method = HttpMethod.POST,
+                href = selfHref.toTemplate(),
+                isTemplated = false,
+                type = Media.APPLICATION_JSON)
+        )
+        .action(
+            Action(
+                name = "search",
+                title = "Search items",
+                method = HttpMethod.GET,
+                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                isTemplated = true,
+                type = Media.APPLICATION_JSON,
+                fields = listOf(
+                    Field(name = "limit", type = "number", klass = "param/limit"),
+                    Field(name = "page", type = "number", klass = "param/page")
+                ))
+        )
         .toSiren()
 }
 
@@ -71,7 +94,20 @@ fun FullKlass.toSiren(): Siren {
         .entities(sections)
         .link("self", selfHref)
         .link("collection", Uri.forKlasses(courseId))
-        .action(Action.genDeleteAction(selfHref.toTemplate()))
-        .action(Action.genEditAction(selfHref.toTemplate()))
+        .action(
+            Action(
+                name = "delete",
+                href = selfHref.toTemplate(),
+                method = HttpMethod.DELETE,
+                type = Media.ALL,
+                isTemplated = false)
+        )
+        .action(
+            Action(
+                name = "edit",
+                href = selfHref.toTemplate(),
+                method = HttpMethod.PATCH,
+                type = Media.APPLICATION_JSON,
+                isTemplated = false))
         .toSiren()
 }

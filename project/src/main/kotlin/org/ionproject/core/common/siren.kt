@@ -25,45 +25,7 @@ class Action(
     val method: HttpMethod? = null,
     val type: String? = null,
     val isTemplated: Boolean? = null,
-    val fields: List<Field>? = null) {
-
-    // Some actions that will be used constantly
-    companion object {
-        fun genAddItemAction(href: UriTemplate) = Action(
-            name = "add-item",
-            title = "Add Item",
-            method = HttpMethod.POST,
-            href = href,
-            isTemplated = false,
-            type = Media.APPLICATION_JSON)
-
-        fun genSearchAction(href: UriTemplate) = Action(
-            name = "search",
-            title = "Search items",
-            method = HttpMethod.GET,
-            href = href,
-            isTemplated = true,
-            type = Media.APPLICATION_JSON,
-            fields = listOf(
-                Field(name = "limit", type = "number", klass = "param/limit"),
-                Field(name = "page", type = "number", klass = "param/page")
-            ))
-
-        fun genDeleteAction(href: UriTemplate) = Action(
-            name = "delete",
-            href = href,
-            method = HttpMethod.GET,
-            type = Media.ALL,
-            isTemplated = false)
-
-        fun genEditAction(href: UriTemplate) = Action(
-            name = "edit",
-            href = href,
-            method = HttpMethod.PATCH,
-            type = Media.APPLICATION_JSON,
-            isTemplated = false)
-    }
-}
+    val fields: List<Field>? = null)
 
 open class Siren(
     @JsonProperty("class") val klass: List<String>? = null,
