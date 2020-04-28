@@ -16,7 +16,6 @@ insert into dbo.Course(acronym, name) values
 	( 'SL', 'Software Laboratory' ),
 	( 'WAD', 'Web Applications Development' ),
 	( 'DM', 'Discrete Mathematics' );
-
 	
 insert into dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
 	(1, 2, TRUE, 3),
