@@ -38,7 +38,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      * sql code, as it not allows to share the handle between multiple operations
      * in the repository.
      */
-    override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R? {
+    override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         var handle: Handle? = null
         try {
             handle = jdbi.open() //Obtaining a handle wrapper to the datasource
@@ -52,7 +52,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
         } catch (e: Exception) {
             handle?.rollback()
             logger.error(e.localizedMessage)
-            return null     //TODO: THIS SHOULD BE REPLACED BY A THROWN EXCEPTION OR IT WONT CATCH EXCEPTIONS INSIDE THE LAMBDA
+            throw e // propagate
         } finally {
             handle?.close()
         }
