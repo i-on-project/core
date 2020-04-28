@@ -1,8 +1,9 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.classSection.ClassSection
+import org.ionproject.core.classSection.ClassSectionMapper
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.klass.mappers.KlassMapper
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.springframework.stereotype.Component
@@ -13,8 +14,9 @@ interface KlassRepo {
 }
 
 @Component
-class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
-
+class KlassRepoImplementation(private val tm: TransactionManager,
+                              private val klassMapper: KlassMapper,
+                              private val classSectionMapper: ClassSectionMapper) : KlassRepo {
     /**
      * Retrieve the target [Class] resource from the database, with all its details.
      */
@@ -26,7 +28,7 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
                 where CR.id=:cid and C.term=:term""".trimIndent())
             .bind("cid", id)
             .bind("term", calendarTerm)
-            .map { ro, _ -> Klass(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term")) }
+            .map(klassMapper)
             .findOne()
 
         if (!klass.isPresent) {
@@ -41,7 +43,7 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
                 join dbo.Course as CR on CR.id=C.courseid where CR.id=:cid and C.term=:term;""".trimIndent())
             .bind("cid", id)
             .bind("term", calendarTerm)
-            .map { ro, _ -> ClassSection(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term"), ro.getString("sid")) }
+            .map(classSectionMapper)
             .list()
 
         FullKlass(klassObj.courseId, klassObj.courseAcr, klassObj.calendarTerm, sections)
@@ -59,7 +61,7 @@ class KlassRepoImplementation(private val tm: TransactionManager) : KlassRepo {
             .bind("cid", id)
             .bind("page", page)
             .bind("limit", limit)
-            .map { ro, _ -> Klass(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term")) }
+            .map(klassMapper)
             .list()
     } ?: throw ResourceNotFoundException("")
 }

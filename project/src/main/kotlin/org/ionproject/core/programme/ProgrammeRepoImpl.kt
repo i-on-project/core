@@ -1,17 +1,17 @@
 package org.ionproject.core.programme
 
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
+import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.programme.mappers.ProgrammeMapper
 import org.ionproject.core.programme.mappers.ProgrammeOfferMapper
 import org.ionproject.core.programme.model.Programme
-import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeRepoImpl(private val tm: TransactionManager) : ProgrammeRepo {
-    val programmeMapper: ProgrammeMapper = ProgrammeMapper()
-    val offerMapper: ProgrammeOfferMapper = ProgrammeOfferMapper()
+class ProgrammeRepoImpl(private val tm: TransactionManager,
+                        private val programmeMapper: ProgrammeMapper,
+                        private val offerMapper: ProgrammeOfferMapper) : ProgrammeRepo {
 
     override fun getProgrammes(): List<Programme> {
         val result = tm.run { handle ->

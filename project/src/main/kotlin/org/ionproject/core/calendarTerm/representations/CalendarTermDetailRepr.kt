@@ -12,13 +12,13 @@ import org.springframework.http.HttpMethod
 /**
  * Output models
  */
-data class CalendarTermPropertiesRepr(val name: String)
+data class CalendarTermOutputModel(val name: String)
 
 /**
  * Siren representation generators
  */
 fun CalendarTerm.toCalendarTermDetailRepr(page: Int, limit: Int) =
-    SirenBuilder(CalendarTermPropertiesRepr(calTermId))
+    SirenBuilder(CalendarTermOutputModel(calTermId))
         .klass("calendar-term")
         .entities(classes.map { klass -> klass.toEmbed() })
         .action(

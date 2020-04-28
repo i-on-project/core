@@ -40,7 +40,7 @@ fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
         }.toSiren()
 
 private fun CalendarTerm.toEmbed() =
-    SirenBuilder(CalendarTermPropertiesRepr(calTermId))
+    SirenBuilder(CalendarTermOutputModel(calTermId))
         .klass("term")
         .rel("item")
         .link("self", Uri.forCalTermById(calTermId))

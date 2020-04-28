@@ -2,14 +2,14 @@ package org.ionproject.core.calendarTerm
 
 import org.ionproject.core.calendarTerm.model.CalendarTerm
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.klass.ClassMapper
+import org.ionproject.core.klass.mappers.KlassReducedMapper
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 @Repository
-class CalendarTermRepoImpl(private val tm: TransactionManager) : CalendarTermRepo {
-    val calendarTermMapper: CalendarTermMapper = CalendarTermMapper()
-    val classMapper: ClassMapper = ClassMapper()
+class CalendarTermRepoImpl(private val tm: TransactionManager,
+                           private val calendarTermMapper: CalendarTermMapper,
+                           private val classMapper: KlassReducedMapper) : CalendarTermRepo {
 
     override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
         val result = tm.run {

@@ -3,9 +3,11 @@ package org.ionproject.core.calendarTerm
 import org.ionproject.core.calendarTerm.model.CalendarTerm
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
+import org.springframework.stereotype.Component
 import java.sql.ResultSet
 import java.time.OffsetDateTime
 
+@Component
 class CalendarTermMapper: RowMapper<CalendarTerm> {
     override fun map(rs: ResultSet, ctx: StatementContext?): CalendarTerm {
         /*
@@ -18,5 +20,4 @@ class CalendarTermMapper: RowMapper<CalendarTerm> {
             rs.getObject("end_date", OffsetDateTime::class.java)
         )
     }
-
 }

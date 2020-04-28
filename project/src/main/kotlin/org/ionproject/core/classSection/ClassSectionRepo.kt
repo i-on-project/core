@@ -10,24 +10,26 @@ interface ClassSectionRepo {
 }
 
 @Repository
-class ClassSectionRepoImplementation(private val tm: TransactionManager) : ClassSectionRepo {
-    override fun get(cid: Int, calendarTerm: String, id: String): ClassSection = tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
-        val sid = id.toUpperCase()
-        val match = handle
-            .createQuery(
-                """select CR.id as cid, CR.acronym, CS.term, CS.id as sid from dbo.ClassSection as CS
+class ClassSectionRepoImplementation(private val tm: TransactionManager,
+                                     private val classSectionMapper: ClassSectionMapper) : ClassSectionRepo {
+    override fun get(cid: Int, calendarTerm: String, id: String): ClassSection =
+        tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
+            val sid = id.toUpperCase()
+            val match = handle
+                .createQuery(
+                    """select CR.id as cid, CR.acronym, CS.term, CS.id as sid from dbo.ClassSection as CS
                 join dbo.Course as CR on CS.courseid=CR.id
                 where CR.id=:cid and term=:term and CS.id=:sid;""".trimIndent())
-            .bind("cid", cid)
-            .bind("sid", sid)
-            .bind("term", calendarTerm)
-            .map { ro, _ -> ClassSection(ro.getInt("cid"), ro.getString("acronym"), ro.getString("term"), ro.getString("sid")) }
-            .findOne()
+                .bind("cid", cid)
+                .bind("sid", sid)
+                .bind("term", calendarTerm)
+                .map(classSectionMapper)
+                .findOne()
 
-        if (!match.isPresent) {
-            throw ResourceNotFoundException("")
-        }
+            if (!match.isPresent) {
+                throw ResourceNotFoundException("")
+            }
 
-        match.get()
-    } ?: throw ResourceNotFoundException("")
+            match.get()
+        } ?: throw ResourceNotFoundException("")
 }

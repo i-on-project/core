@@ -3,8 +3,10 @@ package org.ionproject.core.programme.mappers
 import org.ionproject.core.programme.model.Programme
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
+import org.springframework.stereotype.Component
 import java.sql.ResultSet
 
+@Component
 class ProgrammeMapper : RowMapper<Programme> {
     /**
      *OfferList is not always needed, in such cases it uses an empty list,
