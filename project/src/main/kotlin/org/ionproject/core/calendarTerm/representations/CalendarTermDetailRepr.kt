@@ -1,15 +1,26 @@
 package org.ionproject.core.calendarTerm.representations
 
-import org.ionproject.core.common.*
-import org.ionproject.core.common.model.CalendarTerm
-import org.ionproject.core.common.model.Klass
-
+import org.ionproject.core.calendarTerm.model.CalendarTerm
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
+import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
 
-fun CalendarTermDetailRepr(ct: CalendarTerm, page: Int, limit: Int) =
-    SirenBuilder(CalendarTermPropertiesRepr(ct.calTermId))
+/**
+ * Output models
+ */
+data class CalendarTermPropertiesRepr(val name: String)
+
+/**
+ * Siren representation generators
+ */
+fun CalendarTerm.toCalendarTermDetailRepr(page: Int, limit: Int) =
+    SirenBuilder(CalendarTermPropertiesRepr(calTermId))
         .klass("calendar-term")
-        .entities(ct.classes.map { buildSubEntities(it) })
+        .entities(classes.map { klass -> klass.toEmbed() })
         .action(
             Action(
                 name = "Search",
@@ -24,17 +35,15 @@ fun CalendarTermDetailRepr(ct: CalendarTerm, page: Int, limit: Int) =
                 )
             )
         )
-        .link("self", Uri.forPagingCalTermById(ct.calTermId, page, limit))
-        .link("next", Uri.forPagingCalTermById(ct.calTermId, page + 1, limit))
+        .link("self", Uri.forPagingCalTermById(calTermId, page, limit))
+        .link("next", Uri.forPagingCalTermById(calTermId, page + 1, limit))
         .link("collection", Uri.forCalTerms())
         .toSiren()
 
-private fun buildSubEntities(cl: Klass) =
+private fun Klass.toEmbed() =
     SirenBuilder()
         .klass("class")
         .rel(Uri.relClass)
-        .link("self", Uri.forKlassByCalTerm(cl.courseId, cl.calendarTerm))
-        .link("collection", Uri.forKlasses(cl.courseId))
+        .link("self", Uri.forKlassByCalTerm(courseId, calendarTerm))
+        .link("collection", Uri.forKlasses(courseId))
         .toEmbed()
-
-data class CalendarTermPropertiesRepr(val name: String)

@@ -1,7 +1,7 @@
-package org.ionproject.core.common.mappers
+package org.ionproject.core.klass
 
 
-import org.ionproject.core.common.model.Klass
+import org.ionproject.core.klass.model.Klass
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet

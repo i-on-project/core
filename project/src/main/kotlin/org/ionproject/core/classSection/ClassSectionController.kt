@@ -13,6 +13,6 @@ class ClassSectionController(private val repo: ClassSectionRepo) {
     @GetMapping(Uri.classSectionById, produces = [Media.SIREN_TYPE])
     fun get(@PathVariable cid: Int, @PathVariable calterm: String, @PathVariable sid: String): Siren {
         val cs = repo.get(cid, calterm, sid)
-        return ClassSectionToSiren.toSiren(cs)
+        return cs.toSiren()
     }
 }

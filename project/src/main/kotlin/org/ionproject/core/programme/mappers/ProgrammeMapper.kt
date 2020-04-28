@@ -1,6 +1,6 @@
-package org.ionproject.core.common.mappers
+package org.ionproject.core.programme.mappers
 
-import org.ionproject.core.common.model.Programme
+import org.ionproject.core.programme.model.Programme
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet
@@ -11,8 +11,8 @@ class ProgrammeMapper : RowMapper<Programme> {
      * in others the same method fills the list that was initialized here accordingly.
      */
     override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
-        return Programme(rs.getInt("id"), rs.getString("acronym"),
-            rs.getString("name"), rs.getInt("termSize"), mutableListOf())
+        return Programme(rs.getInt("id"), rs.getString("name"),
+            rs.getString("acronym"), rs.getInt("termSize"), mutableListOf())
     }
 
 }

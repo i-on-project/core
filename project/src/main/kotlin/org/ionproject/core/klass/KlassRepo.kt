@@ -3,6 +3,8 @@ package org.ionproject.core.klass
 import org.ionproject.core.classSection.ClassSection
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.klass.model.FullKlass
+import org.ionproject.core.klass.model.Klass
 import org.springframework.stereotype.Component
 
 interface KlassRepo {

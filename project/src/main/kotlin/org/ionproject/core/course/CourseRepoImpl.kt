@@ -1,10 +1,8 @@
 package org.ionproject.core.course
 
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.common.mappers.CourseMapper
-import org.ionproject.core.common.model.Course
 import org.ionproject.core.common.transaction.TransactionManager
-import org.jdbi.v3.core.statement.Query
+import org.ionproject.core.course.model.Course
 import org.springframework.stereotype.Component
 
 @Component

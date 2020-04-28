@@ -1,7 +1,7 @@
 package org.ionproject.core.programme
 
-import org.ionproject.core.common.model.Programme
-import org.ionproject.core.common.model.ProgrammeOffer
+import org.ionproject.core.programme.model.Programme
+import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,8 +18,8 @@ class ProgrammeServices(private val repo : ProgrammeRepoImpl) {
         return repo.getProgrammeById(id)
     }
 
-    fun getOfferById(id: Int): ProgrammeOffer {
-        return repo.getOfferById(id)
+    fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer {
+        return repo.getOfferById(idOffer, idProgramme)
     }
 
     fun editProgramme(programme : Programme) {

@@ -1,11 +1,11 @@
 package org.ionproject.core.programme
 
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.common.mappers.ProgrammeMapper
-import org.ionproject.core.common.mappers.ProgrammeOfferMapper
-import org.ionproject.core.common.model.Programme
-import org.ionproject.core.common.model.ProgrammeOffer
+import org.ionproject.core.programme.mappers.ProgrammeMapper
+import org.ionproject.core.programme.mappers.ProgrammeOfferMapper
+import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
@@ -25,7 +25,7 @@ class ProgrammeRepoImpl(private val tm: TransactionManager) : ProgrammeRepo {
     override fun getProgrammeById(id: Int): Programme {
         val result = tm.run { handle ->
             {
-                val res = handle.createQuery("SELECT * FROM dbo.programme WHERE id= :id")
+                val res = handle.createQuery("SELECT id, acronym, name, termsize FROM dbo.programme WHERE id= :id")
                     .bind("id", id)
                     .map(programmeMapper)
                     .findOne()
@@ -52,10 +52,11 @@ class ProgrammeRepoImpl(private val tm: TransactionManager) : ProgrammeRepo {
         return result ?: throw ResourceNotFoundException("Programme with id=$id was not found.")
     }
 
-    override fun getOfferById(id: Int): ProgrammeOffer {
+    override fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer {
         val result = tm.run { handle ->
-            handle.createQuery("SELECT * FROM dbo.programmeOffer WHERE id = :id")
-                .bind("id", id)
+            handle.createQuery("select po.id as id, acronym as courseAcr, programmeid, courseid, termnumber, optional from dbo.programmeoffer po join dbo.course c on po.courseid=c.id where po.id=:id and programmeid=:programmeid;")
+                .bind("id", idOffer)
+                .bind("programmeid", idProgramme)
                 .map(offerMapper)
                 .findOne()
         }
@@ -63,6 +64,6 @@ class ProgrammeRepoImpl(private val tm: TransactionManager) : ProgrammeRepo {
         if (result?.isPresent == true)
             return result.get()
         else
-            throw ResourceNotFoundException("Offer by id:$id was not found.")
+            throw ResourceNotFoundException("Offer by id:$idOffer was not found.")
     }
 }

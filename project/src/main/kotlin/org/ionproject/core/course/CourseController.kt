@@ -18,12 +18,12 @@ class CourseController(private val courseServices: CourseServices){
 
     @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])
     fun getCourses(@RequestParam(defaultValue = "0") page : Int, @RequestParam(defaultValue = "10") limit : Int) : Siren =
-        courseToListRepr(courseServices.getCourses(page, limit), page, limit)
+        courseServices.getCourses(page, limit).courseToListRepr(page, limit)
 
 
     @GetMapping(Uri.courseById, produces = [Media.SIREN_TYPE])
     fun getCourse(@PathVariable cid: Int) : Siren =
-            courseToDetailRepr(courseServices.getCourseById(cid))
+        courseServices.getCourseById(cid).courseToDetailRepr()
 
     /*
      * Annotation `RequiresAuth` serves as an indication

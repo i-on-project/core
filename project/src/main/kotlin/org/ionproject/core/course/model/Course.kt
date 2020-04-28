@@ -1,4 +1,4 @@
-package org.ionproject.core.common.model
+package org.ionproject.core.course.model
 
 /*
  * Represents the entity course
@@ -38,6 +38,7 @@ class Course(val id: Int,
         operator fun invoke(id: Int,
                             acronym: String,
                             name: String?,
-                            term: String?): Course? = of(id, acronym, name, term)
+                            term: String?): Course? =
+            of(id, acronym, name, term)
     }
 }

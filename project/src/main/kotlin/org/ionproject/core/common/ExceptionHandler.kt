@@ -35,7 +35,6 @@ class ExceptionHandler {
         )
     }
 
-
     /*
      * This exception can occur when a string is used instead
      * of a integer on a parameter. e.g. /v0/courses/BUG

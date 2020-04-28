@@ -1,7 +1,7 @@
 package org.ionproject.core.calendarTerm
 
-import org.ionproject.core.calendarTerm.representations.CalendarTermDetailRepr
-import org.ionproject.core.calendarTerm.representations.CalendarTermListRepr
+import org.ionproject.core.calendarTerm.representations.toCalendarTermDetailRepr
+import org.ionproject.core.calendarTerm.representations.toCalendarTermListRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
@@ -15,11 +15,13 @@ class CalendarTermController(private val calendarTermServices: CalendarTermServi
 
     @GetMapping(Uri.calendarTerms, produces = [Media.SIREN_TYPE])
     fun getTerms(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
-        return CalendarTermListRepr(calendarTermServices.getTerms(page, limit),page,limit)
+        return calendarTermServices.getTerms(page, limit).toCalendarTermListRepr(page,limit)
     }
 
     @GetMapping(Uri.calendarTermById, produces = [Media.SIREN_TYPE])
-    fun getCalendarTerm(@PathVariable calterm: String, @RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "10") limit: Int): Siren {
-        return CalendarTermDetailRepr(calendarTermServices.getTermByCalId(calterm, page, limit),page,limit)
+    fun getCalendarTerm(@PathVariable calterm: String,
+                        @RequestParam(defaultValue = "0") page: Int,
+                        @RequestParam(defaultValue = "10") limit: Int): Siren {
+        return calendarTermServices.getTermByCalId(calterm, page, limit).toCalendarTermDetailRepr(page,limit)
     }
 }

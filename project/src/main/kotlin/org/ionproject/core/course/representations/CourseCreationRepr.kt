@@ -1,7 +1,7 @@
 package org.ionproject.core.course.representations
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import org.ionproject.core.common.model.Course
+import org.ionproject.core.course.model.Course
 
 class InvalidCourseException : Exception()
 

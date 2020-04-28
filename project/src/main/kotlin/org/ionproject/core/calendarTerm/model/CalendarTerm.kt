@@ -1,5 +1,6 @@
-package org.ionproject.core.common.model
+package org.ionproject.core.calendarTerm.model
 
+import org.ionproject.core.klass.model.Klass
 import java.time.OffsetDateTime
 
 class CalendarTerm(

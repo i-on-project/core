@@ -1,6 +1,6 @@
 package org.ionproject.core.calendarTerm
 
-import org.ionproject.core.common.model.CalendarTerm
+import org.ionproject.core.calendarTerm.model.CalendarTerm
 import org.springframework.stereotype.Component
 
 @Component

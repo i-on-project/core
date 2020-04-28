@@ -1,9 +1,8 @@
 package org.ionproject.core.calendarTerm
 
+import org.ionproject.core.calendarTerm.model.CalendarTerm
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.common.mappers.CalendarTermMapper
-import org.ionproject.core.common.mappers.ClassMapper
-import org.ionproject.core.common.model.CalendarTerm
+import org.ionproject.core.klass.ClassMapper
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 

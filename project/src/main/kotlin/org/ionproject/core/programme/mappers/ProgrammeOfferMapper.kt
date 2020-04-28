@@ -1,6 +1,6 @@
-package org.ionproject.core.common.mappers
+package org.ionproject.core.programme.mappers
 
-import org.ionproject.core.common.model.ProgrammeOffer
+import org.ionproject.core.programme.model.ProgrammeOffer
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet

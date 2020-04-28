@@ -3,8 +3,7 @@ package org.ionproject.core.klass
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
-import org.ionproject.core.common.interceptors.LoggerInterceptor
-import org.slf4j.LoggerFactory
+import org.ionproject.core.klass.model.FullKlass
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
@@ -17,7 +16,7 @@ class KlassController(private val repo: KlassRepo) {
     fun get(@PathVariable cid: Int, @PathVariable calterm: String): Siren {
         val klass: FullKlass = repo.get(cid, calterm)
 
-        return KlassToSiren.toSiren(klass)
+        return klass.toSiren()
     }
 
     @GetMapping(Uri.klasses, produces = [Media.SIREN_TYPE])
@@ -26,6 +25,6 @@ class KlassController(private val repo: KlassRepo) {
                       @RequestParam(defaultValue = "5") limit: Int): Siren {
         val klass = repo.getPage(cid, page, limit)
 
-        return KlassToSiren.toSiren(cid, klass, page, limit)
+        return klass.toSiren(cid, page, limit)
     }
 }

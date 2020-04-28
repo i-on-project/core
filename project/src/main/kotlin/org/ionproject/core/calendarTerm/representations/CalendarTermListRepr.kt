@@ -1,14 +1,20 @@
 package org.ionproject.core.calendarTerm.representations
 
-import org.ionproject.core.common.*
-import org.ionproject.core.common.model.CalendarTerm
+import org.ionproject.core.calendarTerm.model.CalendarTerm
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.springframework.http.HttpMethod
-import org.springframework.web.util.UriTemplate
 
-fun CalendarTermListRepr(cts: List<CalendarTerm>, page: Int, limit: Int) =
+/**
+ * Siren representation generators
+ */
+fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
     SirenBuilder()
         .klass("calendar-term", "collection")
-        .entities(cts.map { buildSubEntities(it) })
+        .entities(this.map { calendarTerm ->  calendarTerm.toEmbed() })
         .action(
             Action(
                 name = "Search",
@@ -33,10 +39,10 @@ fun CalendarTermListRepr(cts: List<CalendarTerm>, page: Int, limit: Int) =
             }()
         }.toSiren()
 
-private fun buildSubEntities(ct: CalendarTerm) =
-    SirenBuilder(CalendarTermPropertiesRepr(ct.calTermId))
+private fun CalendarTerm.toEmbed() =
+    SirenBuilder(CalendarTermPropertiesRepr(calTermId))
         .klass("term")
         .rel("item")
-        .link("self", Uri.forCalTermById(ct.calTermId))
+        .link("self", Uri.forCalTermById(calTermId))
         .link("collection", Uri.forCalTerms())
         .toEmbed()

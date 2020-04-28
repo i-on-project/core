@@ -1,15 +1,20 @@
 package org.ionproject.core.programme.representations
 
 import org.ionproject.core.common.*
-import org.ionproject.core.common.model.Programme
+import org.ionproject.core.programme.model.Programme
 import org.springframework.http.HttpMethod
 
+/**
+ * Output models
+ */
+data class ProgrammeReducedOutputModel(val programmeId: Int, val acr: String)
 
-fun programmesListRepr(programmes: List<Programme>) = SirenBuilder()
+/**
+ * Siren representation generators
+ */
+fun List<Programme>.programmesListRepr() = SirenBuilder()
         .klass("collection", "programme")
-        .entities(programmes.map {
-            buildSubentities(it)
-        })
+        .entities(this.map { programme -> programme.buildSubentities() })
         .action(
                 Action(
                         name = "add-programme",
@@ -26,12 +31,9 @@ fun programmesListRepr(programmes: List<Programme>) = SirenBuilder()
         .link("self", href = Uri.forProgrammes())
         .toSiren()
 
-private fun buildSubentities(programme : Programme) =
-        SirenBuilder(ShortProgrammeRepr(programme.id, programme.acronym))
+private fun Programme.buildSubentities() =
+        SirenBuilder(ProgrammeReducedOutputModel(id, acronym))
             .klass("Programme")
             .rel("item")
-            .link("self", Uri.forProgrammesById(programme.id))
+            .link("self", Uri.forProgrammesById(id))
             .toEmbed()
-
-
-data class ShortProgrammeRepr(val programmeId: Int, val acr: String)

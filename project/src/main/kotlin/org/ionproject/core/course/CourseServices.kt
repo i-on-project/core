@@ -1,6 +1,6 @@
 package org.ionproject.core.course
 
-import org.ionproject.core.common.model.Course
+import org.ionproject.core.course.model.Course
 import org.springframework.stereotype.Component
 
 @Component

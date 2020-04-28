@@ -1,10 +1,10 @@
 package org.ionproject.core.programme
 
-import org.ionproject.core.common.model.Programme
-import org.ionproject.core.common.model.ProgrammeOffer
+import org.ionproject.core.programme.model.Programme
+import org.ionproject.core.programme.model.ProgrammeOffer
 
 interface ProgrammeRepo {
     fun getProgrammes(): List<Programme>
     fun getProgrammeById(id: Int): Programme
-    fun getOfferById(id: Int): ProgrammeOffer
+    fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer
 }
