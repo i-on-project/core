@@ -14,11 +14,11 @@ class ProgrammeServices(private val repo : ProgrammeRepoImpl) {
         return repo.getProgrammes()
     }
 
-    fun getProgrammeById(id : Int) : Programme {
+    fun getProgrammeById(id : Int) : Programme? {
         return repo.getProgrammeById(id)
     }
 
-    fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer {
+    fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer? {
         return repo.getOfferById(idOffer, idProgramme)
     }
 

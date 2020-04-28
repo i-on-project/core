@@ -9,7 +9,7 @@ class CourseServices(private val repo : CourseRepoImpl) {
         return repo.getCourses(page, limit)
     }
 
-    fun getCourseById(id: Int): Course {
+    fun getCourseById(id: Int): Course? {
         return repo.getCourseById(id)
     }
 }

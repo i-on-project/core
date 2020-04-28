@@ -5,6 +5,6 @@ import org.ionproject.core.programme.model.ProgrammeOffer
 
 interface ProgrammeRepo {
     fun getProgrammes(): List<Programme>
-    fun getProgrammeById(id: Int): Programme
-    fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer
+    fun getProgrammeById(id: Int): Programme?
+    fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer?
 }

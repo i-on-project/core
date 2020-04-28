@@ -12,7 +12,7 @@ class CalendarTermServices(private val repo: CalendarTermRepoImpl) {
     /*
      * Query Parameters tests should be moved from this place to a interceptor
      */
-    fun getTermByCalId(calId: String, page: Int, limit: Int): CalendarTerm {
+    fun getTermByCalId(calId: String, page: Int, limit: Int): CalendarTerm? {
         return repo.getTermByCalId(calId, page, limit)
     }
 }
