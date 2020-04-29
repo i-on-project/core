@@ -28,9 +28,7 @@ fun ProgrammeOffer.offerToDetailRepr() =
                         fields = listOf(
                                 Field(name = "Acronym", type = "text"),
                                 Field(name = "TermNumber", type = "number"),
-                                Field(name = "Credits", type = "number"),
-                                Field(name = "Optional", type = "boolean"),
-                                Field(name = "Precedents", type = "list")
+                                Field(name = "Optional", type = "boolean")
                         )
                 )
         )

@@ -23,8 +23,7 @@ import javax.servlet.http.HttpServletRequest
 class ExceptionHandler {
     @ExceptionHandler(value = [ResourceNotFoundException::class])
     private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request: HttpServletRequest): ResponseEntity<*> {
-        val headers: HttpHeaders = HttpHeaders()
-        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+        val headers = HttpHeaders()
 
         return handleResponse("",
             "Resource not found",
@@ -42,8 +41,7 @@ class ExceptionHandler {
      */
     @ExceptionHandler(value = [NumberFormatException::class, IllegalArgumentException::class])
     private fun handleNumberFormatException(ex: NumberFormatException, request: HttpServletRequest): ResponseEntity<*> {
-        val headers: HttpHeaders = HttpHeaders()
-        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+        val headers = HttpHeaders()
 
         return handleResponse("",
             "Bad request",
@@ -60,8 +58,7 @@ class ExceptionHandler {
      */
     @ExceptionHandler(value = [IncorrectParametersException::class])
     private fun handleIncorrectParametersException(ex: IncorrectParametersException, request: HttpServletRequest): ResponseEntity<*> {
-        val headers: HttpHeaders = HttpHeaders()
-        headers.add("Content-type", Media.PROBLEM_JSON.toString())
+        val headers = HttpHeaders()
 
         return handleResponse(
             "",
@@ -93,7 +90,7 @@ class ExceptionHandler {
         return ResponseEntity
             .status(status)
             .headers(headers)
-            .header("Content-Type", Media.PROBLEM_JSON.toString())
+            .header("Content-Type", Media.PROBLEM_JSON)
             .body(ProblemJson(type, title, status, detail, instance))
     }
 

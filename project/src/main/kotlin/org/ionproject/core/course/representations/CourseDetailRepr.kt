@@ -10,10 +10,10 @@ import org.springframework.http.HttpMethod
 /**
  * Output models
  */
-private data class CourseReducedOutputModel(val acronym: String, val name: String)
+private data class CourseReducedOutputModel(val acronym: String, val name: String? = null)
 
 fun Course.courseToDetailRepr() =
-    SirenBuilder(CourseReducedOutputModel(acronym, name!!))
+    SirenBuilder(CourseReducedOutputModel(acronym, name))
         .klass("course")
         .entities(listOf(buildSubentities(id)))
         .action(
