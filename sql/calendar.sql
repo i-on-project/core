@@ -57,6 +57,31 @@ CREATE TABLE IF NOT EXISTS dbo.Categories (
 );
 
 ---- for easier queries OR Calendar Components
+DROP VIEW dbo.v_Components;
+CREATE OR REPLACE VIEW dbo.v_Components AS
+	SELECT DISTINCT
+		Comp.id AS uid,
+		ARRAY_AGG(DISTINCT CalComp.calendar_id) AS calendars,
+		ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT(Summ.language, Summ.value)) AS summaries,
+        ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT(Descr.language, Descr.value)) AS descriptions,
+        Comp.dtstamp,
+        Comp.created,
+        ARRAY_AGG(DISTINCT Cat.value) AS categories
+    FROM 
+		dbo.CalendarComponent AS Comp
+    JOIN 
+		dbo.CalendarComponents AS CalComp ON CalComp.comp_id=Comp.id
+    JOIN 
+		dbo.Summary AS Summ ON Comp.id = Summ.comp_id
+    JOIN 
+		dbo.Description AS Descr ON Comp.id = Descr.comp_id
+    JOIN 
+		dbo.Categories AS Cat ON Comp.id = Cat.comp_id
+	GROUP BY
+		uid
+	ORDER BY 
+		uid;
+
 ---- these views will retrieve all the relevant Calendar Property types for a given calendar component
 -- VTODO
 DROP VIEW dbo.v_Todo;
