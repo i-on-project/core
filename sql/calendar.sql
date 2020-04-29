@@ -64,10 +64,10 @@ CREATE TABLE IF NOT EXISTS dbo.Categories (
 );
 
 
-DROP VIEW dbo.v_Journal;
-DROP VIEW dbo.v_Event;
-DROP VIEW dbo.v_Todo;
-DROP VIEW dbo.v_Components;
+DROP VIEW IF EXISTS dbo.v_Journal;
+DROP VIEW IF EXISTS dbo.v_Event;
+DROP VIEW IF EXISTS dbo.v_Todo;
+DROP VIEW IF EXISTS dbo.v_Components;
 ---- for easier queries OR Calendar Components
 
 CREATE OR REPLACE VIEW dbo.v_Components AS
@@ -160,9 +160,11 @@ CREATE OR REPLACE VIEW dbo.v_Journal AS
 -- VEVENT
 CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	cid INT,
-	summary VARCHAR(50),
-	description VARCHAR(200),
-	category INT,
+	summary VARCHAR(50)[],
+	summary_language INT[],
+	description VARCHAR(200)[],
+	description_language INT[],
+	category INT[],
 	dtstart TIMESTAMP,
     dtend TIMESTAMP,
     dtstart_dtend_type INT,
@@ -179,22 +181,36 @@ BEGIN
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
-    INSERT INTO dbo.Summary (comp_id, value) VALUES (component_id, summary);
-	INSERT INTO dbo.Description (comp_id, value) VALUES (component_id, description);
-	INSERT INTO dbo.Categories (comp_id, value) VALUES (component_id, category);
+	
+    INSERT INTO dbo.Summary (comp_id, value, language)
+	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
+	
+	INSERT INTO dbo.Description (comp_id, value, language)
+	SELECT component_id, UNNEST(description), UNNEST(description_language);
+	
+	INSERT INTO dbo.Categories (comp_id, value)
+	SELECT component_id, UNNEST(category);
+	
 	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtstart);
+	
     INSERT INTO dbo.Dtend (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtend);
-	INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday) VALUES (component_id, 'WEEKLY', byday);
+	
+	IF byday IS NOT NULL THEN
+		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday) VALUES (component_id, 'WEEKLY', byday);
+	END IF;
+	
 END
 $$ LANGUAGE PLpgSQL;
 
 -- VTODO
 CREATE OR REPLACE PROCEDURE dbo.newTodo(
 	cid INT,
-	summary VARCHAR(50),
-	description VARCHAR(200),
-	attachment VARCHAR(128),
-	category INT,
+	summary VARCHAR(50)[],
+	summary_language INT[],
+	description VARCHAR(200)[],
+	description_language INT[],
+	category INT[],
+	attachment VARCHAR(128)[],
 	dtstart TIMESTAMP
 ) AS $$
 #print_strict_params ON
@@ -209,10 +225,18 @@ BEGIN
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
 
-    INSERT INTO dbo.Summary (comp_id, value) VALUES (component_id, summary);
-	INSERT INTO dbo.Description (comp_id, value) VALUES (component_id, description);
-	INSERT INTO dbo.Attachment (comp_id, value) VALUES (component_id, attachment);
-	INSERT INTO dbo.Categories (comp_id, value) VALUES (component_id, category);
+    INSERT INTO dbo.Summary (comp_id, value, language)
+	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
+	
+	INSERT INTO dbo.Description (comp_id, value, language)
+	SELECT component_id, UNNEST(description), UNNEST(description_language);
+	
+	INSERT INTO dbo.Categories (comp_id, value)
+	SELECT component_id, UNNEST(category);
+	
+	INSERT INTO dbo.Attachment (comp_id, value)
+	SELECT component_id, UNNEST(attachment);
+	
 	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, (SELECT id FROM dbo.ICalendarDataType WHERE name='DATETIME'), dtstart);
 END
 $$ LANGUAGE PLpgSQL;
@@ -220,11 +244,14 @@ $$ LANGUAGE PLpgSQL;
 -- VJOURNAL
 CREATE OR REPLACE PROCEDURE dbo.newJournal(
 	cid INT,
-	summary VARCHAR(50),
-	description VARCHAR(200),
-	attachment VARCHAR(128),
-	category INT,
-	dtstart TIMESTAMP
+	summary VARCHAR(50)[],
+	summary_language INT[],
+	description VARCHAR(200)[],
+	description_language INT[],
+	category INT[],
+	attachment VARCHAR(128)[],
+	dtstart TIMESTAMP,
+	dtstart_value_type INT
 ) AS $$
 #print_strict_params ON
 DECLARE
@@ -237,11 +264,20 @@ BEGIN
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
-
-    INSERT INTO dbo.Summary (comp_id, value) VALUES (component_id, summary);
-	INSERT INTO dbo.Description (comp_id, value) VALUES (component_id, description);
-	INSERT INTO dbo.Attachment (comp_id, value) VALUES (component_id, attachment);
-	INSERT INTO dbo.Categories (comp_id, value) VALUES (component_id, category);
-	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, (SELECT id FROM dbo.ICalendarDataType WHERE name='DATETIME'), dtstart);
+	
+    INSERT INTO dbo.Summary (comp_id, value, language)
+	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
+	
+	INSERT INTO dbo.Description (comp_id, value, language)
+	SELECT component_id, UNNEST(description), UNNEST(description_language);
+	
+	INSERT INTO dbo.Categories (comp_id, value)
+	SELECT component_id, UNNEST(category);
+	
+	INSERT INTO dbo.Attachment (comp_id, value)
+	SELECT component_id, UNNEST(attachment);
+	
+	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_value_type, dtstart);
+	
 END
 $$ LANGUAGE PLpgSQL;
