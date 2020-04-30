@@ -128,3 +128,21 @@ insert into dbo.ClassSection(classId, name) values
 	(24, '1D'),
 	(24, '2D'),
 	(24, '1N');
+
+INSERT INTO dbo.Language(name) VALUES 
+('pt-PT'),
+('en-US'),
+('en-GB');
+
+INSERT INTO dbo.ICalendarDataType(name) VALUES
+('DATE'),
+('DATETIME');
+
+INSERT INTO dbo.Category(name, language) VALUES
+('EXAME', 1),
+('EXAM', 2),
+('EXAM', 3);
+
+CALL dbo.newJournal(1, ARRAY['some summary', 'uma sinopse'], ARRAY[2,1], ARRAY['this is a description'], ARRAY[2], ARRAY[1,2,3], ARRAY['https://www.google.com'], TIMESTAMP '2020-04-10 14:00:00', 1);
+CALL dbo.newTodo(1, ARRAY['do the thing'], ARRAY[2], ARRAY['I have to do the thing soon enough'], ARRAY[2], ARRAY[1,2], ARRAY['https://www.google.com'], TIMESTAMP '2021-06-19 14:00:00');
+CALL dbo.newEvent(1, ARRAY['1st exam WAD'], ARRAY[2], ARRAY['Normal season exam for WAD-1920v'], ARRAY[2], ARRAY[3], TIMESTAMP '2020-06-19 14:00:00', TIMESTAMP '2020-06-19 15:00:00', 2, NULL);

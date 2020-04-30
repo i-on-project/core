@@ -6,7 +6,7 @@ set -e
 [ -z "$2" ] && db="core" || db="$2"
 [ -z "$3" ] && role="bob" || role="$3"
 
-cat drop.sql create.sql course_scripts.sql insert.sql |\
+cat drop.sql create.sql calendar.sql course_scripts.sql insert.sql |\
 	psql -1 -p "$port" "$db" "$role"
 
 
