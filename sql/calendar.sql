@@ -67,10 +67,11 @@ CREATE TABLE IF NOT EXISTS dbo.Categories (
 DROP VIEW IF EXISTS dbo.v_Journal;
 DROP VIEW IF EXISTS dbo.v_Event;
 DROP VIEW IF EXISTS dbo.v_Todo;
-DROP VIEW IF EXISTS dbo.v_Components;
+DROP VIEW IF EXISTS dbo.v_ComponentsAll;
+DROP VIEW IF EXISTS dbo.v_ComponentsCommon;
 ---- for easier queries OR Calendar Components
 
-CREATE OR REPLACE VIEW dbo.v_Components AS
+CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 	SELECT DISTINCT
 		Comp.id AS uid,
 		CalComp.calendar_id AS calendars,
@@ -95,6 +96,34 @@ CREATE OR REPLACE VIEW dbo.v_Components AS
 	ORDER BY 
 		uid;
 
+-- Mashup of all component types
+CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS 
+	SELECT DISTINCT
+		Comp.*,
+		Att.value AS attachments,
+		DS.value AS dtstart,
+        DS.type AS dtstart_value_data_type,
+		DE.value AS dtend,
+        DE.type AS dtend_value_data_type,
+		RR.byday,
+		D.value AS due,
+        D.type AS due_value_data_type
+	FROM 
+		dbo.v_ComponentsCommon AS Comp
+    LEFT JOIN 
+		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
+	LEFT JOIN
+		dbo.Due AS D ON Comp.uid=D.comp_id
+	LEFT JOIN 
+		dbo.Dtstart as DS ON Comp.uid = DS.comp_id
+	LEFT JOIN
+		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
+    LEFT JOIN
+		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
+	ORDER BY 
+		uid;
+		
+
 ---- these views will retrieve all the relevant Calendar Property types for a given calendar component
 -- VTODO
 
@@ -105,8 +134,8 @@ CREATE OR REPLACE VIEW dbo.v_Todo AS
 		D.value AS due,
         D.type AS due_value_data_type
     FROM 
-		dbo.v_Components AS Comp
-    JOIN 
+		dbo.v_ComponentsCommon AS Comp
+    LEFT JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
 	JOIN
 		dbo.Due AS D ON Comp.uid=D.comp_id
@@ -125,12 +154,12 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
         DE.type AS dtend_value_data_type,
 		RR.byday
     FROM 
-		dbo.v_Components AS Comp
+		dbo.v_ComponentsCommon AS Comp
     JOIN 
 		dbo.Dtstart as DS ON Comp.uid = DS.comp_id
 	JOIN
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
-    JOIN
+    LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
     WHERE 
 		Comp.type = 'E'
@@ -145,7 +174,7 @@ CREATE OR REPLACE VIEW dbo.v_Journal AS
         DS.value AS dtstart,
         DS.type AS dtstart_value_data_type
     FROM 
-		dbo.v_Components AS Comp
+		dbo.v_ComponentsCommon AS Comp
     JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
     JOIN 
@@ -211,7 +240,8 @@ CREATE OR REPLACE PROCEDURE dbo.newTodo(
 	description_language INT[],
 	category INT[],
 	attachment VARCHAR(128)[],
-	dtstart TIMESTAMP
+	due TIMESTAMP,
+	due_value_type INT
 ) AS $$
 #print_strict_params ON
 DECLARE
@@ -237,7 +267,7 @@ BEGIN
 	INSERT INTO dbo.Attachment (comp_id, value)
 	SELECT component_id, UNNEST(attachment);
 	
-	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, (SELECT id FROM dbo.ICalendarDataType WHERE name='DATETIME'), dtstart);
+	INSERT INTO dbo.Due (comp_id, type, value) VALUES (component_id, due_value_type, due);
 END
 $$ LANGUAGE PLpgSQL;
 

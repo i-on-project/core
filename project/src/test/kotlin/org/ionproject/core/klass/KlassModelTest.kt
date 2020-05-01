@@ -1,6 +1,8 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSection
+import org.ionproject.core.klass.model.FullKlass
+import org.ionproject.core.klass.model.Klass
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

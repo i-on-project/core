@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.get
 internal class KlassControllerTest : ControllerTester() {
     @Test
     fun getClassResource_shouldRespondWithTheSirenRepresentationOfClass() {
-        isValidSiren(Uri.forKlassByTerm(1, "1920v"))
+        isValidSiren(Uri.forKlassByCalTerm(1, "1920v"))
     }
 
     @Test
@@ -21,7 +21,7 @@ internal class KlassControllerTest : ControllerTester() {
     fun getPage_shouldRespondWithTheCorrectNumberOfItems() {
         var limit = 1
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
-            accept = Media.SIREN_MEDIA_TYPE
+            accept = Media.MEDIA_SIREN
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -32,7 +32,7 @@ internal class KlassControllerTest : ControllerTester() {
 
         limit = 2
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
-            accept = Media.SIREN_MEDIA_TYPE
+            accept = Media.MEDIA_SIREN
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }

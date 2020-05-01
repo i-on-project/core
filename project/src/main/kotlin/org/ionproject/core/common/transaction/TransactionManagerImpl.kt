@@ -1,9 +1,13 @@
 package org.ionproject.core.common.transaction
 
+import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+
+private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
@@ -34,7 +38,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      * sql code, as it not allows to share the handle between multiple operations
      * in the repository.
      */
-    override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R? {
+    override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         var handle: Handle? = null
         try {
             handle = jdbi.open() //Obtaining a handle wrapper to the datasource
@@ -47,8 +51,8 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
             return result
         } catch (e: Exception) {
             handle?.rollback()
-            println("ERROR:${e.message}")
-            return null
+            logger.error(e.localizedMessage)
+            throw e // propagate
         } finally {
             handle?.close()
         }
