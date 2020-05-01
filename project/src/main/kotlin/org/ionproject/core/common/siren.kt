@@ -2,7 +2,7 @@ package org.ionproject.core.common
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
+import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 class Relation(
@@ -20,50 +20,12 @@ class Field(
 
 class Action(
     val name: String,
-    val href: URI,
+    val href: UriTemplate,
     val title: String? = null,
     val method: HttpMethod? = null,
     val type: String? = null,
     val isTemplated: Boolean? = null,
-    val fields: List<Field>? = null) {
-
-    // Some actions that will be used constantly
-    companion object {
-        fun genAddItemAction(href: URI) = Action(
-            name = "add-item",
-            title = "Add Item",
-            method = HttpMethod.POST,
-            href = href,
-            isTemplated = false,
-            type = Media.APPLICATION_JSON)
-
-        fun genSearchAction(href: URI) = Action(
-            name = "search",
-            title = "Search items",
-            method = HttpMethod.GET,
-            href = href,
-            isTemplated = true,
-            type = Media.APPLICATION_JSON,
-            fields = listOf(
-                Field(name = "limit", type = "number", klass = "param/limit"),
-                Field(name = "page", type = "number", klass = "param/page")
-            ))
-
-        fun genDeleteAction(href: URI) = Action(
-            name = "delete",
-            href = href,
-            method = HttpMethod.GET,
-            type = Media.ALL,
-            isTemplated = false)
-
-        fun genEditAction(href: URI) = Action(
-            name = "edit",
-            href = href,
-            method = HttpMethod.PATCH,
-            type = Media.APPLICATION_JSON,
-            isTemplated = false)
-    }
-}
+    val fields: List<Field>? = null)
 
 open class Siren(
     @JsonProperty("class") val klass: List<String>? = null,

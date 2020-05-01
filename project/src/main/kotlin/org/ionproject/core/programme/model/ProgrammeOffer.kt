@@ -1,4 +1,4 @@
-package org.ionproject.core.common.model
+package org.ionproject.core.programme.model
 
 class ProgrammeOffer(val id: Int,
                      val courseAcr: String,

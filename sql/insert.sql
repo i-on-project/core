@@ -2,58 +2,50 @@ insert into dbo.Programme(acronym, name, termSize) values
 	('LEIC', 'licenciatura eng. inf.', 6),
 	('MEIC', 'mestrado eng. inf.', 4);
 
-insert into dbo.CalendarTerm(name, start_date, end_date) values
-	('1718v', TIMESTAMP '2018-02-15 00:00:00', TIMESTAMP '2018-06-15 00:00:00'),
-	('1718i', TIMESTAMP '2017-09-05 00:00:00', TIMESTAMP '2018-01-05 00:00:00'),
-	('1819v', TIMESTAMP '2019-02-15 00:00:00', TIMESTAMP '2019-06-15 00:00:00'),
-	('1819i', TIMESTAMP '2018-09-05 00:00:00', TIMESTAMP '2019-01-05 00:00:00'),
-	('1920v', TIMESTAMP '2020-02-15 00:00:00', TIMESTAMP '2020-06-15 00:00:00'),
-	('1920i', TIMESTAMP '2019-09-05 00:00:00', TIMESTAMP '2020-01-05 00:00:00'),
-	('2021v', TIMESTAMP '2021-02-15 00:00:00', TIMESTAMP '2021-06-15 00:00:00'),
-	('2021i', TIMESTAMP '2020-09-05 00:00:00', TIMESTAMP '2021-01-05 00:00:00');
-
-insert into dbo.Calendar values (default);
-insert into dbo.Calendar values (default);
-insert into dbo.Calendar values (default);
-insert into dbo.Calendar values (default);
-insert into dbo.Calendar values (default);
-insert into dbo.Calendar values (default);
+insert into dbo.CalendarTerm(id, start_date, end_date) values
+	( '1718v', to_timestamp(1586379923), to_timestamp(1586379933) ),
+	( '1718i', to_timestamp(1586379924), to_timestamp(1586379933) ),
+	( '1819v', to_timestamp(1586379925), to_timestamp(1586379933) ),
+	( '1819i', to_timestamp(1586379927), to_timestamp(1586379933) ),
+	( '1920v', to_timestamp(1586379929), to_timestamp(1586379933) ),
+	( '1920i', to_timestamp(1586379930), to_timestamp(1586379943) ),
+	( '2021v', to_timestamp(1586379940), to_timestamp(1586379953) ),
+	( '2021i', to_timestamp(1586379950), to_timestamp(1586379963) );
 
 insert into dbo.Course(acronym, name) values
-	('SL', 'Software Laboratory'),
-	('WAD', 'Web Applications Development'),
-	('DM', 'Discrete Mathematics');
+	( 'SL', 'Software Laboratory' ),
+	( 'WAD', 'Web Applications Development' ),
+	( 'DM', 'Discrete Mathematics' );
 	
 insert into dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
 	(1, 2, TRUE, 3),
 	(1, 1, FALSE, 4),
 	(1, 3, FALSE, 1);
 
-insert into dbo.Class(calendarTerm, courseId) values
-	(1, 1),
-	(1, 2),
-	(1, 3),
-	(2, 1),
-	(2, 2),
-	(2, 3),
-	(3, 1),
-	(3, 2),
-	(3, 3),
-	(4, 1),
-	(4, 2),
-	(4, 3),
-	(5, 1),
-	(5, 2),
-	(5, 3),
-	(6, 1),
-	(6, 2),
-	(6, 3),
-	(7, 1),
-	(7, 2),
-	(7, 3),
-	(8, 1),
-	(8, 2),
-	(8, 3);
+call dbo.sp_classCalendarCreate('1718v', 1);
+call dbo.sp_classCalendarCreate('1718v', 2);
+call dbo.sp_classCalendarCreate('1718v', 3);
+call dbo.sp_classCalendarCreate('1718i', 1);
+call dbo.sp_classCalendarCreate('1718i', 2);
+call dbo.sp_classCalendarCreate('1718i', 3);
+call dbo.sp_classCalendarCreate('1819v', 1);
+call dbo.sp_classCalendarCreate('1819v', 2);
+call dbo.sp_classCalendarCreate('1819v', 3);
+call dbo.sp_classCalendarCreate('1819i', 1);
+call dbo.sp_classCalendarCreate('1819i', 2);
+call dbo.sp_classCalendarCreate('1819i', 3);
+call dbo.sp_classCalendarCreate('1920v', 1);
+call dbo.sp_classCalendarCreate('1920v', 2);
+call dbo.sp_classCalendarCreate('1920v', 3);
+call dbo.sp_classCalendarCreate('1920i', 1);
+call dbo.sp_classCalendarCreate('1920i', 2);
+call dbo.sp_classCalendarCreate('1920i', 3);
+call dbo.sp_classCalendarCreate('2021v', 1);
+call dbo.sp_classCalendarCreate('2021v', 2);
+call dbo.sp_classCalendarCreate('2021v', 3);
+call dbo.sp_classCalendarCreate('2021i', 1);
+call dbo.sp_classCalendarCreate('2021i', 2);
+call dbo.sp_classCalendarCreate('2021i', 3);
 
 insert into dbo.ClassSection(classId, name) values
 	(1, '1D'),
