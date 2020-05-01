@@ -1,4 +1,4 @@
-package org.ionproject.core.common.model
+package org.ionproject.core.course.model
 
 /*
  * Represents the entity course
@@ -11,10 +11,10 @@ class Course(val id: Int,
 
     /**
     Page and limit are query parameters, they coexist with eachother and one without the other
-    * mean nothing. (e.g. page=1(or more)&limit=0 makes no sense, and the parameters are ignored)
-    * The default is 0 as its a optional parameter, when limit is 0 (or under) the sql query behaves as the parameters
-    * are not there and a limit is not estabilished. ( will return all rows )
-    */
+     * mean nothing. (e.g. page=1(or more)&limit=0 makes no sense, and the parameters are ignored)
+     * The default is 0 as its a optional parameter, when limit is 0 (or under) the sql query behaves as the parameters
+     * are not there and a limit is not estabilished. ( will return all rows )
+     */
 
     /*
      * Redefines invoke for a constructor with validations,
@@ -27,17 +27,18 @@ class Course(val id: Int,
         fun of(id: Int,
                acronym: String,
                name: String?,
-               term: String?) : Course? {
+               term: String?): Course? {
 
-            if(acronym.trim() == "" || name?.trim() == "")
-                return null;
+            if (acronym.trim() == "" || name?.trim() == "")
+                return null
 
             return Course(id, acronym, name, term)
         }
 
         operator fun invoke(id: Int,
-                            acronym : String,
+                            acronym: String,
                             name: String?,
-                            term: String?) : Course? = of(id, acronym, name, term)
+                            term: String?): Course? =
+            of(id, acronym, name, term)
     }
 }

@@ -1,6 +1,5 @@
-package org.ionproject.core.klass
+package org.ionproject.core.klass.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.ionproject.core.classSection.ClassSection
 
 /**
@@ -19,4 +18,4 @@ class FullKlass(
     courseId: Int,
     courseAcr: String?, // optional
     calendarTerm: String,
-    @JsonIgnore val sections: List<ClassSection>) : Klass(courseId, courseAcr, calendarTerm)
+    val sections: List<ClassSection>) : Klass(courseId, courseAcr, calendarTerm)

@@ -9,9 +9,7 @@ import javax.sql.DataSource
  */
 @Component
 object DataSourceHolder {
-    val dataSource : DataSource = PGSimpleDataSource().apply {
-        setUrl(System.getenv("DBHOST_ION"))
-        user = System.getenv("DBUSER_ION")
-        password = System.getenv("DBPASSWORD_ION")
+    val dataSource: DataSource = PGSimpleDataSource().apply {
+        setUrl(System.getenv("JDBC_DATABASE_URL"))
     }
 }

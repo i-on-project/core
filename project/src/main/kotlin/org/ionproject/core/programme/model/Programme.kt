@@ -1,4 +1,4 @@
-package org.ionproject.core.common.model
+package org.ionproject.core.programme.model
 
 class Programme(val id: Int,
                 val name: String? = "",
