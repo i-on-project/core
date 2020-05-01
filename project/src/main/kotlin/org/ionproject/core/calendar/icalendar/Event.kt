@@ -13,24 +13,24 @@ import org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 class Event private constructor(
     uid: UniqueIdentifier,
-    summary: Summary,
-    description: Description,
+    summary: Array<Summary>,
+    description: Array<Description>,
     stamp: DateTimeStamp,
     created: DateTimeCreated,
-    categories: Categories?,
+    categories: Array<Categories>,
     start: DateTimeStart,
     end: DateTimeEnd?,
     duration: Duration?,
     recurrenceRule: RecurrenceRule?
-) : CalendarComponent(uid, stamp, summary, description, created, categories, start, end, duration, recurrenceRule) {
+) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, recurrenceRule) {
 
     constructor(
         uid: UniqueIdentifier,
-        summary: Summary,
-        description: Description,
+        summary: Array<Summary>,
+        description: Array<Description>,
         stamp: DateTimeStamp,
         created: DateTimeCreated,
-        categories: Categories?,
+        categories: Array<Categories>,
         start: DateTimeStart,
         duration: Duration,
         recurrenceRule: RecurrenceRule? = null
@@ -38,11 +38,11 @@ class Event private constructor(
 
     constructor(
         uid: UniqueIdentifier,
-        summary: Summary,
-        description: Description,
+        summary: Array<Summary>,
+        description: Array<Description>,
         stamp: DateTimeStamp,
         created: DateTimeCreated,
-        categories: Categories?,
+        categories: Array<Categories>,
         start: DateTimeStart,
         end: DateTimeEnd,
         recurrenceRule: RecurrenceRule? = null

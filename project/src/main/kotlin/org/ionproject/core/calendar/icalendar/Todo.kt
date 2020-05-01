@@ -11,14 +11,14 @@ import org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 class Todo(
     uniqueIdentifier: UniqueIdentifier,
-    summary: Summary,
-    description: Description,
-    attachment: Attachment?,
+    summary: Array<Summary>,
+    description: Array<Description>,
+    attachment: Array<Attachment>,
     dateTimeStamp: DateTimeStamp,
     created: DateTimeCreated,
     due: DateTimeDue,
-    categories: Categories?
-) : CalendarComponent(uniqueIdentifier, dateTimeStamp, summary, description, attachment, created, due, categories) {
+    categories: Array<Categories>
+) : CalendarComponent(uniqueIdentifier, dateTimeStamp, *summary, *description, *attachment, created, due, *categories) {
     override val componentName: String
         get() = iCalName
 

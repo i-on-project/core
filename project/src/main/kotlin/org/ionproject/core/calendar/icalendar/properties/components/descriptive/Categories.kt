@@ -13,9 +13,10 @@ class Categories(
     val language: Language? = null
 ) : ParameterizedProperty, MultiValuedProperty<Text> {
 
+    constructor(categories: List<String>, language: Language?) : this(*categories.toTypedArray(), language = language)
+
     override val parameters: List<PropertyParameter>
         get() = listOfNotNull(language)
-
 
     override val name: String
         get() = "CATEGORIES"
