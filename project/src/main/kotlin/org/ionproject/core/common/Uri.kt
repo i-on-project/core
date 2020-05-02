@@ -70,15 +70,18 @@ object Uri {
     // Calendars
     const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
     const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
-    const val componentByCalendar = "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
+    const val componentByClassCalendar = "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
+    const val componentByClassSectionCalendar = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar/{component}"
 
     val calendarByClassTemplate = UriTemplate(calendarByClass)
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
-    val componentByCalendarTemplate = UriTemplate(componentByCalendar)
+    val componentByClassCalendarTemplate = UriTemplate(componentByClassCalendar)
+    val componentByClassSectionCalendarTemplate = UriTemplate(componentByClassSectionCalendar)
 
     fun forCalendarByClass(cid: Int, calterm: String) = calendarByClassTemplate.expand(cid, calterm)
     fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) = calendarByClassSectionTemplate.expand(cid, calterm, sid)
-    fun forComponentByCalendar(courseId: Int, calTerm: String, componentId: String) = componentByCalendarTemplate.expand(courseId, calTerm, componentId)
+    fun forCalendarComponentByClass(cid: Int, calterm: String, cmpid: String) = componentByClassCalendarTemplate.expand(cid, calterm, cmpid)
+    fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) = componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
 
     // custom link rel
     const val relClass = "/rel/class"
