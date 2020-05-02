@@ -3,6 +3,7 @@ package org.ionproject.core
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import org.ionproject.core.calendar.ICalToTextCalHttpMessageConverter
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -38,6 +39,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
         homeConverter.objectMapper = converter.objectMapper
         homeConverter.supportedMediaTypes = listOf(Media.MEDIA_HOME)
         converters.add(homeConverter)
+
+        // Calendar -> text/calendar
+        converters.add(ICalToTextCalHttpMessageConverter())
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
@@ -46,6 +50,14 @@ class CoreSerializationConfig : WebMvcConfigurer {
                 .addPathPatterns("/v?/calendar-terms*")
                 .addPathPatterns("/v?/courses/**")
                 .addPathPatterns("/v?/programmes*")
+    }
+}
+
+@Configuration
+@EnableWebMvc
+class ApiConfig : WebMvcConfigurer {
+    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
+
     }
 }
 
