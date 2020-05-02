@@ -14,11 +14,12 @@ class CategoryRepoImpl(
     private val transactionManager: TransactionManager,
     private val categoryMapper: CategoryData.CategoryMapper
 ) : CategoryRepo {
+
+    private val categories = hashMapOf<Int, Pair<Language, String>>()
+
     init {
         populateCategoryMap()
     }
-
-    private val categories = hashMapOf<Int, Pair<Language, String>>()
 
     private fun populateCategoryMap() {
         transactionManager.run {

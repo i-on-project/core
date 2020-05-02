@@ -31,6 +31,6 @@ object LanguageData {
     @Component
     class LanguageMapper : RowMapper<Pair<Int, Language>> {
         override fun map(rs: ResultSet, ctx: StatementContext): Pair<Int, Language> =
-            rs.getInt(ID_COLUMN) to Language(NAME_COLUMN)
+            rs.getInt(ID_COLUMN) to Language(rs.getString(NAME_COLUMN))
     }
 }

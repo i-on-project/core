@@ -53,14 +53,6 @@ class CoreSerializationConfig : WebMvcConfigurer {
     }
 }
 
-@Configuration
-@EnableWebMvc
-class ApiConfig : WebMvcConfigurer {
-    override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-
-    }
-}
-
 fun main(args: Array<String>) {
     runApplication<CoreApplication>(*args)
 }

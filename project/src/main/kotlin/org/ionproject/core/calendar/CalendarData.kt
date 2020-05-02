@@ -27,7 +27,7 @@ import org.ionproject.core.calendar.icalendar.types.Date as DateType
 
 object CalendarData {
     private const val CALENDAR_COMPONENT_ABBREVIATION = "cmp"
-    private const val CALENDAR_COMPONENT = "dbo.v_Components $CALENDAR_COMPONENT_ABBREVIATION"
+    private const val CALENDAR_COMPONENT = "dbo.v_ComponentsAll $CALENDAR_COMPONENT_ABBREVIATION"
 
     private const val UID_COLUMN = "uid"
     private const val CALENDARS_COLUMN = "calendars"
@@ -62,25 +62,30 @@ object CalendarData {
     private const val DUE = "$CALENDAR_COMPONENT_ABBREVIATION.$DUE_COLUMN"
 
     private const val SELECT = """
-        SELECT 
-            $UID,
-            $TYPE,
-            ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT($SUMMARIES_LANGUAGE, $SUMMARIES)) AS $SUMMARIES_COLUMN,
-            ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) AS $DESCRIPTIONS_COLUMN,
-            ARRAY_AGG(DISTINCT $CATEGORIES) AS $CATEGORIES_COLUMN,
-            ARRAY_AGG(DISTINCT $ATTACHMENTS) AS $ATTACHMENTS_COLUMN,
-            $DTSTAMP,
-            $CREATED
-            $DTSTART,
-            $DTEND,
-            $DUE,
-            $BYDAY
+    SELECT 
+        $UID,
+        $TYPE,
+        ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT($SUMMARIES_LANGUAGE, $SUMMARIES)) AS $SUMMARIES_COLUMN,
+        ARRAY_AGG(DISTINCT MERGE_LANGUAGE_TEXT($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) AS $DESCRIPTIONS_COLUMN,
+        ARRAY_AGG(DISTINCT $CATEGORIES) AS $CATEGORIES_COLUMN,
+        ARRAY_AGG(DISTINCT $ATTACHMENTS) AS $ATTACHMENTS_COLUMN,
+        $DTSTAMP,
+        $CREATED,
+        $DTSTART,
+        $DTEND,
+        $DUE,
+        $BYDAY
     """
 
-    private const val GROUP_BY = """
-        GROUP BY
-            $UID
-    """
+    private const val GROUP_BY = """GROUP BY
+        $UID, 
+        $TYPE,
+        $DTSTAMP,
+        $CREATED,
+        $DTSTART,
+        $DTEND,
+        $DUE,
+        $BYDAY"""
 
     private const val CLASS_ABBREVIATION = "c"
     private const val CLASS = "dbo.Class $CLASS_ABBREVIATION"
@@ -103,8 +108,8 @@ object CalendarData {
             $SELECT
             FROM
                 $CALENDAR_COMPONENT
-            $GROUP_BY
-            WHERE $CALENDARS = (SELECT * FROM calendar_id)"""
+            WHERE $CALENDARS = (SELECT * FROM calendar_id)
+            $GROUP_BY"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_CALENDAR_ID
@@ -144,12 +149,11 @@ object CalendarData {
     ) : RowMapper<CalendarComponent> {
 
         override fun map(rs: ResultSet, ctx: StatementContext): CalendarComponent {
-            val type = rs.getString(TYPE)
-            val uid = UniqueIdentifier(rs.getInt(UID).toString(16)) // TODO(use constant for uid radix)
+            val type = rs.getString(TYPE_COLUMN)
+            val uid = UniqueIdentifier(rs.getInt(UID_COLUMN).toString(16)) // TODO(use constant for uid radix)
             val categories = rs.getCategories(CATEGORIES_COLUMN)
             val summary = rs.getSummaries(SUMMARIES_COLUMN)
             val description = rs.getDescriptions(DESCRIPTIONS_COLUMN)
-            val dtStart = DateTimeStart(rs.getDatetime(DTSTART_COLUMN))
             val dtStamp = DateTimeStamp(rs.getDatetime(DTSTAMP_COLUMN))
             val created = DateTimeCreated(rs.getDatetime(CREATED_COLUMN))
 
@@ -161,9 +165,9 @@ object CalendarData {
                     dtStamp,
                     created,
                     categories,
-                    dtStart,
-                    DateTimeEnd(rs.getDatetime(DTSTART)),
-                    RecurrenceRule(Recur(byDay = rs.getString(BYDAY_COLUMN).split(",").map { WeekDay(WeekDay.Weekday.valueOf(it), null) }))
+                    DateTimeStart(rs.getDatetime(DTSTART_COLUMN)),
+                    DateTimeEnd(rs.getDatetime(DTEND_COLUMN)),
+                    rs.getRecurrenceRule(BYDAY_COLUMN)
                 )
                 "J" -> Journal(
                     uid,
@@ -171,7 +175,7 @@ object CalendarData {
                     description,
                     rs.getAttachments(ATTACHMENTS_COLUMN),
                     dtStamp,
-                    dtStart,
+                    DateTimeStart(rs.getDatetime(DTSTART_COLUMN)),
                     created,
                     categories
                 )
@@ -182,7 +186,7 @@ object CalendarData {
                     rs.getAttachments(ATTACHMENTS_COLUMN),
                     dtStamp,
                     created,
-                    DateTimeDue(rs.getDatetime(DTSTART)),
+                    DateTimeDue(rs.getDatetime(DUE_COLUMN)),
                     categories
                 )
                 else -> throw UnknownCalendarComponentTypeException("The type represented by $type is not known.")
@@ -218,7 +222,9 @@ object CalendarData {
         }
 
         private fun ResultSet.getCategories(columnName: String): Array<Categories> {
-            val cats = getArray(columnName).array as IntArray
+            val tempCats = getArray(columnName).array as Array<java.lang.Integer>
+
+            val cats = tempCats.map { it.toInt() }
 
             return cats.map {
                 categoryRepo.byId(it) ?: TODO("FOREIGN KEY EXCEPTION")
@@ -230,6 +236,15 @@ object CalendarData {
                     language = pair.key
                 )
             }.toTypedArray()
+        }
+
+        private fun ResultSet.getRecurrenceRule(columnName: String) : RecurrenceRule? {
+            val weekDays = getString(BYDAY_COLUMN)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
+
+            return if (weekDays == null) null
+            else RecurrenceRule(
+                Recur(byDay = weekDays)
+            )
         }
 
     }
@@ -255,11 +270,17 @@ private fun ResultSet.getDatetime(columnName: String): DateTime {
 }
 
 private fun ResultSet.getAttachments(columnName: String): Array<Attachment> {
-    val att = getArray(columnName).array as Array<String>
+    val att = getArray(columnName).array as Array<String?>
 
-    return att.map {
-        Attachment(
-            Uri(it)
+    val attachments = mutableListOf<Attachment>()
+
+    att.forEach {
+        if (it == null) return emptyArray()
+
+        attachments.add(
+            Attachment(Uri(it))
         )
-    }.toTypedArray()
+    }
+
+    return attachments.toTypedArray()
 }

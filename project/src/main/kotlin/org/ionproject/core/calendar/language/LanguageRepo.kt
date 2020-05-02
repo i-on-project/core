@@ -13,11 +13,12 @@ class LanguagaRepoImpl(
     private val transactionManager: TransactionManager,
     private val languageMapper: LanguageData.LanguageMapper
 ) : LanguageRepo {
+
+    private val languages = hashMapOf<Int, Language>()
+
     init {
         populateLanguageMap()
     }
-
-    private val languages = hashMapOf<Int, Language>()
 
     private fun populateLanguageMap() {
         val languages = transactionManager.run {
