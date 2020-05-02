@@ -49,40 +49,33 @@ Since the number of class sections is thought to be very reduced, all of them wi
   "properties": {
     "courseAcr": "WAD",
     "courseId": 1,
-    "calendar term": "1920v"
+    "calendarTerm": "1920v"
   },
   "entities": [
     {
       "class": [ "class", "section" ],
       "properties": {
-        "id": "1d"
+        "courseId": 1,
+        "courseAcr": "SL",
+        "calendarTerm": "1920i",
+        "id": "1D"
       },
       "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
       "links": [
-      { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/1d" },
+      { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/1D" },
       ]
     },
     {
       "class": [ "class", "section" ],
       "properties": {
-        "id": "2d"
+        "courseId": 1,
+        "courseAcr": "SL",
+        "calendarTerm": "1920i",
+        "id": "2D"
       },
       "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
       "links": [
-        { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/2d" },
-      ]
-    },
-    {
-      "class": [ "class", "section" ],
-      "properties": {
-        "id": "1n"
-      },
-      "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
-      "links": [
-        { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/1n" },
+        { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/2D" },
       ]
     },
     {
@@ -96,7 +89,6 @@ Since the number of class sections is thought to be very reduced, all of them wi
   "actions": [
     {
       "name": "delete",
-      "title": "Delete class",
       "method": "DELETE",
       "isTemplated": false,
       "href": "/v0/courses/1/classes/1920v",
@@ -107,7 +99,7 @@ Since the number of class sections is thought to be very reduced, all of them wi
       "title": "Edit class",
       "method": "PATCH",
       "isTemplated": false,
-      "type": "application/json",
+      "type": "*/*",
       "href": "/v0/courses/1/classes/1920v",
       "fields": [ ]
     } 
@@ -200,7 +192,6 @@ The following fields are parameters of the action `batch-delete`:
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "WAD Class during the 1920v semester",
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" }
       ]
@@ -208,7 +199,6 @@ The following fields are parameters of the action `batch-delete`:
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "WAD Class during the 1920i semester",
       "links": [
         { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920i" }
       ]
@@ -235,22 +225,10 @@ The following fields are parameters of the action `batch-delete`:
       "isTemplated": false,
       "type": "application/json",
       "fields": [ ]
-    },
-    {
-      "name": "batch-delete",
-      "title": "Delete multiple items",
-      "method": "DELETE",
-      "isTemplated": true,
-      "href": "/v0/courses/1/classes{?term,course}",
-      "fields": [
-        { "name": "term", "type": "text" },
-        { "name": "course", "type": "text" }
-      ]
     }
   ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1/classes" },
-    { "rel": [ "current" ], "href": "/v0/courses/1/classes/1920v" },
     { "rel": [ "about" ], "href": "/v0/courses/1" }
   ]
 }
