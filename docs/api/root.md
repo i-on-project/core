@@ -31,8 +31,7 @@ Available "entry point" resources:
     "api": {
         "title": "i-on Core",
         "links": {
-            "author": "mailto:core@ion.pt",
-            "describedBy": "https://github.com/i-on-project/core/tree/feature/gh-16-basic-impl/docs/api"
+            "describedBy": "https://github.com/i-on-project/core/tree/master/docs/api"
         }
     },
     "resources": {
