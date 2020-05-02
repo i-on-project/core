@@ -13,8 +13,10 @@ class ProgrammeMapper : RowMapper<Programme> {
      * in others the same method fills the list that was initialized here accordingly.
      */
     override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
-        return Programme(rs.getInt("id"), rs.getString("name"),
-            rs.getString("acronym"), rs.getInt("termSize"), mutableListOf())
+        return Programme(
+            rs.getInt("id"), rs.getString("name"),
+            rs.getString("acronym"), rs.getInt("termSize"), mutableListOf()
+        )
     }
 
 }

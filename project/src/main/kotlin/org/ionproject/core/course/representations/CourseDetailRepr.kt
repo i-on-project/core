@@ -3,8 +3,8 @@ package org.ionproject.core.course.representations
 import org.ionproject.core.common.Action
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
-import org.ionproject.core.course.model.Course
 import org.ionproject.core.common.toTemplate
+import org.ionproject.core.course.model.Course
 import org.springframework.http.HttpMethod
 
 /**
@@ -22,14 +22,18 @@ fun Course.courseToDetailRepr() =
                 title = "delete course",
                 method = HttpMethod.DELETE,
                 href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = true))
+                isTemplated = true
+            )
+        )
         .action(
             Action(
                 name = "edit",
                 title = "edit course",
                 method = HttpMethod.PATCH,
                 href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = false))
+                isTemplated = false
+            )
+        )
         .link("self", Uri.forCourseById(id))
         .link("current", Uri.forKlassByCalTerm(id, term!!))
         .link("collection", Uri.forCourses())

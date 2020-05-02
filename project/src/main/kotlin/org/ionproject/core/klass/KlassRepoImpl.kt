@@ -1,7 +1,6 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSectionMapper
-import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.klass.mappers.KlassMapper
 import org.ionproject.core.klass.model.FullKlass
@@ -9,9 +8,11 @@ import org.ionproject.core.klass.model.Klass
 import org.springframework.stereotype.Component
 
 @Component
-class KlassRepoImplementation(private val tm: TransactionManager,
-                              private val klassMapper: KlassMapper,
-                              private val classSectionMapper: ClassSectionMapper) : KlassRepo {
+class KlassRepoImplementation(
+    private val tm: TransactionManager,
+    private val klassMapper: KlassMapper,
+    private val classSectionMapper: ClassSectionMapper
+) : KlassRepo {
     /**
      * Retrieve the target [Class] resource from the database, with all its details.
      */
@@ -20,7 +21,8 @@ class KlassRepoImplementation(private val tm: TransactionManager,
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term from dbo.Class as C
                 join dbo.Course as CR on C.courseid=CR.id
-                where CR.id=:cid and C.term=:term""".trimIndent())
+                where CR.id=:cid and C.term=:term""".trimIndent()
+            )
             .bind("cid", id)
             .bind("term", calendarTerm)
             .map(klassMapper)
@@ -35,7 +37,8 @@ class KlassRepoImplementation(private val tm: TransactionManager,
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term, CS.id as sid from dbo.Class as C
                 join dbo.ClassSection as CS on C.courseid=CS.courseid and C.term=CS.term
-                join dbo.Course as CR on CR.id=C.courseid where CR.id=:cid and C.term=:term;""".trimIndent())
+                join dbo.Course as CR on CR.id=C.courseid where CR.id=:cid and C.term=:term;""".trimIndent()
+            )
             .bind("cid", id)
             .bind("term", calendarTerm)
             .map(classSectionMapper)
@@ -52,7 +55,8 @@ class KlassRepoImplementation(private val tm: TransactionManager,
             .createQuery(
                 """select CR.id as cid, CR.acronym, C.term from dbo.Class as C
                 join dbo.Course as CR on C.courseid=CR.id
-                where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent())
+                where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent()
+            )
             .bind("cid", id)
             .bind("page", page)
             .bind("limit", limit)

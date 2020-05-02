@@ -5,7 +5,7 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface LanguageRepo {
-    fun byId(id: Int) : Language?
+    fun byId(id: Int): Language?
 }
 
 @Repository

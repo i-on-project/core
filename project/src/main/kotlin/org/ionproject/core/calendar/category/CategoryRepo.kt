@@ -6,7 +6,7 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface CategoryRepo {
-    fun byId(id: Int) : Pair<Language, String>?
+    fun byId(id: Int): Pair<Language, String>?
 }
 
 @Repository

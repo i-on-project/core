@@ -8,9 +8,11 @@ import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeRepoImpl(private val tm: TransactionManager,
-                        private val programmeMapper: ProgrammeMapper,
-                        private val offerMapper: ProgrammeOfferMapper) : ProgrammeRepo {
+class ProgrammeRepoImpl(
+    private val tm: TransactionManager,
+    private val programmeMapper: ProgrammeMapper,
+    private val offerMapper: ProgrammeOfferMapper
+) : ProgrammeRepo {
 
     override fun getProgrammes(): List<Programme> = tm.run { handle ->
         handle.createQuery("SELECT * FROM dbo.programme")
@@ -32,7 +34,8 @@ class ProgrammeRepoImpl(private val tm: TransactionManager,
                 """ SELECT po.*,co.acronym AS courseAcr FROM dbo.programmeOffer AS po INNER JOIN dbo.course AS co
                         ON po.courseId=co.id
                         WHERE programmeId = :id 
-                        """.trimIndent())
+                        """.trimIndent()
+            )
                 .bind("id", id)
                 .map(offerMapper)
                 .list()

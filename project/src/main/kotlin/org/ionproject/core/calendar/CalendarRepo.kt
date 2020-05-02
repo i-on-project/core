@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository
 interface CalendarRepo {
     fun getClassCalendar(courseId: Int, calendarTerm: String): Calendar?
     fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: Int): Calendar?
-    fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int) : Calendar?
-    fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: Int, componentId: Int) : Calendar?
+    fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar?
+    fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: Int, componentId: Int): Calendar?
 }
 
 @Repository

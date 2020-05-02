@@ -4,8 +4,8 @@ import org.ionproject.core.course.model.Course
 import org.springframework.stereotype.Component
 
 @Component
-class CourseServices(private val repo : CourseRepoImpl) {
-    fun getCourses(page : Int, limit : Int): List<Course> {
+class CourseServices(private val repo: CourseRepoImpl) {
+    fun getCourses(page: Int, limit: Int): List<Course> {
         return repo.getCourses(page, limit)
     }
 

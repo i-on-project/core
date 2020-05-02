@@ -38,7 +38,8 @@ fun List<Course>.courseToListRepr(page: Int, limit: Int) = SirenBuilder()
                 Field(name = "limit", type = "number", klass = "param/limit"),
                 Field(name = "page", type = "number", klass = "param/page")
             )
-        ))
+        )
+    )
     .link("self", Uri.forPagingCourses(page, limit))
     .link("next", Uri.forPagingCourses(page + 1, limit)).let {
         {

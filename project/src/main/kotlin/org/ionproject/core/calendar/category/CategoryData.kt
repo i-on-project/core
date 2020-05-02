@@ -40,6 +40,6 @@ object CategoryData {
             rs.getInt(ID_COLUMN) to (
                     (languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")) to
                             rs.getString(NAME_COLUMN)
-            )
+                    )
     }
 }

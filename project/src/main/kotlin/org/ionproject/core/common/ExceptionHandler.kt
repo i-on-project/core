@@ -25,7 +25,8 @@ class ExceptionHandler {
     private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request: HttpServletRequest): ResponseEntity<*> {
         val headers = HttpHeaders()
 
-        return handleResponse("",
+        return handleResponse(
+            "",
             "Resource not found",
             404,
             ex.localizedMessage,
@@ -43,7 +44,8 @@ class ExceptionHandler {
     private fun handleNumberFormatException(ex: NumberFormatException, request: HttpServletRequest): ResponseEntity<*> {
         val headers = HttpHeaders()
 
-        return handleResponse("",
+        return handleResponse(
+            "",
             "Bad request",
             400,
             ex.localizedMessage,

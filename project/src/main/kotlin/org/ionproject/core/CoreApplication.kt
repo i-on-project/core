@@ -47,9 +47,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LoggerInterceptor())
         registry.addInterceptor(PageLimitQueryParamInterceptor())
-                .addPathPatterns("/v?/calendar-terms*")
-                .addPathPatterns("/v?/courses/**")
-                .addPathPatterns("/v?/programmes*")
+            .addPathPatterns("/v?/calendar-terms*")
+            .addPathPatterns("/v?/courses/**")
+            .addPathPatterns("/v?/programmes*")
     }
 }
 

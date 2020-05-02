@@ -1,13 +1,7 @@
 package org.ionproject.core.classSection
 
-import org.ionproject.core.common.Action
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.Siren
-import org.ionproject.core.common.SirenBuilder
-import org.ionproject.core.common.Uri
-import org.ionproject.core.common.toTemplate
+import org.ionproject.core.common.*
 import org.springframework.http.HttpMethod
-import org.springframework.web.util.UriTemplate
 
 val classSectionClasses = arrayOf("class", "section")
 
@@ -23,7 +17,8 @@ fun ClassSection.toSiren(): Siren {
                 href = selfHref.toTemplate(),
                 method = HttpMethod.DELETE,
                 type = Media.ALL,
-                isTemplated = false)
+                isTemplated = false
+            )
         )
         .toSiren()
 }

@@ -1,13 +1,6 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.common.Action
-import org.ionproject.core.common.EmbeddedRepresentation
-import org.ionproject.core.common.Field
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.Siren
-import org.ionproject.core.common.SirenBuilder
-import org.ionproject.core.common.Uri
-import org.ionproject.core.common.toTemplate
+import org.ionproject.core.common.*
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
@@ -56,7 +49,8 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
                 method = HttpMethod.POST,
                 href = selfHref.toTemplate(),
                 isTemplated = false,
-                type = Media.APPLICATION_JSON)
+                type = Media.APPLICATION_JSON
+            )
         )
         .action(
             Action(
@@ -69,7 +63,8 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
                 fields = listOf(
                     Field(name = "limit", type = "number", klass = "param/limit"),
                     Field(name = "page", type = "number", klass = "param/page")
-                ))
+                )
+            )
         )
         .toSiren()
 }
@@ -100,7 +95,8 @@ fun FullKlass.toSiren(): Siren {
                 href = selfHref.toTemplate(),
                 method = HttpMethod.DELETE,
                 type = Media.ALL,
-                isTemplated = false)
+                isTemplated = false
+            )
         )
         .action(
             Action(
@@ -108,6 +104,8 @@ fun FullKlass.toSiren(): Siren {
                 href = selfHref.toTemplate(),
                 method = HttpMethod.PATCH,
                 type = Media.APPLICATION_JSON,
-                isTemplated = false))
+                isTemplated = false
+            )
+        )
         .toSiren()
 }

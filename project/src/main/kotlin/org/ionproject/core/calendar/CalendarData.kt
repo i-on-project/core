@@ -1,7 +1,10 @@
 package org.ionproject.core.calendar
 
 import org.ionproject.core.calendar.category.CategoryRepo
-import org.ionproject.core.calendar.icalendar.*
+import org.ionproject.core.calendar.icalendar.CalendarComponent
+import org.ionproject.core.calendar.icalendar.Event
+import org.ionproject.core.calendar.icalendar.Journal
+import org.ionproject.core.calendar.icalendar.Todo
 import org.ionproject.core.calendar.icalendar.properties.components.change_management.DateTimeCreated
 import org.ionproject.core.calendar.icalendar.properties.components.change_management.DateTimeStamp
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeDue
@@ -18,7 +21,6 @@ import org.ionproject.core.calendar.language.LanguageRepo
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.springframework.stereotype.Component
-import java.net.URI
 import java.sql.ResultSet
 import java.time.OffsetDateTime
 import org.ionproject.core.calendar.icalendar.types.Date as DateType
@@ -187,7 +189,7 @@ object CalendarData {
             }
         }
 
-        private fun ResultSet.getSummaries(columnName: String) : Array<Summary> {
+        private fun ResultSet.getSummaries(columnName: String): Array<Summary> {
             val summaries = getArray(columnName).array as Array<String>
 
             return summaries.map { summary ->
@@ -201,7 +203,7 @@ object CalendarData {
             }.toTypedArray()
         }
 
-        private fun ResultSet.getDescriptions(columnName: String) : Array<Description> {
+        private fun ResultSet.getDescriptions(columnName: String): Array<Description> {
             val descriptions = getArray(columnName).array as Array<String>
 
             return descriptions.map { description ->
@@ -215,7 +217,7 @@ object CalendarData {
             }.toTypedArray()
         }
 
-        private fun ResultSet.getCategories(columnName: String) : Array<Categories> {
+        private fun ResultSet.getCategories(columnName: String): Array<Categories> {
             val cats = getArray(columnName).array as IntArray
 
             return cats.map {
@@ -236,7 +238,7 @@ object CalendarData {
 class UnknownCalendarComponentTypeException(message: String) : Exception(message)
 
 
-private fun ResultSet.getDatetime(columnName: String) : DateTime {
+private fun ResultSet.getDatetime(columnName: String): DateTime {
     val offsetTime = getObject(columnName, OffsetDateTime::class.java)
     return DateTime(
         DateType(
@@ -252,7 +254,7 @@ private fun ResultSet.getDatetime(columnName: String) : DateTime {
     )
 }
 
-private fun ResultSet.getAttachments(columnName: String) : Array<Attachment> {
+private fun ResultSet.getAttachments(columnName: String): Array<Attachment> {
     val att = getArray(columnName).array as Array<String>
 
     return att.map {
