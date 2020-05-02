@@ -5,7 +5,7 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.common.Media.TEXT_CALENDAR_MEDIA_TYPE
+import org.ionproject.core.common.Media.MEDIA_TEXT_CALENDAR
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
@@ -14,7 +14,7 @@ import java.io.PrintWriter
 import java.io.Writer
 import java.lang.reflect.Type
 
-class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(TEXT_CALENDAR_MEDIA_TYPE) {
+class ICalToTextCalHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(MEDIA_TEXT_CALENDAR) {
 
     override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
 
@@ -24,59 +24,51 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
         throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        when (outputMessage.headers.contentType) {
-            null -> {
-                outputMessage.headers.contentType = TEXT_CALENDAR_MEDIA_TYPE
-                PrintWriter(outputMessage.body).apply {
-                    toiCalendar(t, this)
-                    close()
-                }
-            }
-            TEXT_CALENDAR_MEDIA_TYPE -> PrintWriter(outputMessage.body).apply {
-                toiCalendar(t, this)
-                close()
-            }
+        outputMessage.headers.contentType = MEDIA_TEXT_CALENDAR
+        PrintWriter(outputMessage.body).apply {
+            writeCalendar(t, this)
+            close()
         }
     }
 
     override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar =
         throw UnsupportedOperationException("This message converter can't read.")
 
-    private fun toiCalendar(calendar: Calendar, output: Writer) {
-        output.writeICalendar("BEGIN:VCALENDAR")
+    fun writeCalendar(calendar: Calendar, writer: Writer) {
+        writer.writeICalendar("BEGIN:VCALENDAR")
 
         calendar.apply {
-            toiCalendar(prod, output)
-            toiCalendar(version, output)
+            writeProperty(prod, writer)
+            writeProperty(version, writer)
             if (scale != null) {
-                toiCalendar(scale, output)
+                writeProperty(scale, writer)
             }
 
             if (method != null) {
-                toiCalendar(method, output)
+                writeProperty(method, writer)
             }
 
             forEach {
-                toiCalendar(it, output)
+                writeComponent(it, writer)
             }
         }
 
-        output.writeICalendar("END:VCALENDAR")
+        writer.writeICalendar("END:VCALENDAR")
     }
 
-    private fun toiCalendar(calendarComponent: CalendarComponent, output: Writer) {
+    private fun writeComponent(calendarComponent: CalendarComponent, writer: Writer) {
         calendarComponent.apply {
-            output.writeICalendar("BEGIN:$componentName")
+            writer.writeICalendar("BEGIN:$componentName")
 
             properties.forEach {
-                toiCalendar(it, output)
+                writeProperty(it, writer)
             }
 
-            output.writeICalendar("END:$componentName")
+            writer.writeICalendar("END:$componentName")
         }
     }
 
-    private fun toiCalendar(property: Property, output: Writer) {
+    private fun writeProperty(property: Property, writer: Writer) {
         property.apply {
             val parameters = if (this is ParameterizedProperty) {
                 parameters.map { ";${it.name}=${it.values.joinToString(",")}" }.let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
@@ -86,7 +78,7 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
                 value.joinToString(",")
             } else value.toString()
 
-            output.writeICalendar("$name$parameters:$value")
+            writer.writeICalendar("$name$parameters:$value")
         }
     }
 }

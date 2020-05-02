@@ -2,8 +2,9 @@ package org.ionproject.core
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
-import org.ionproject.core.calendar.ICalendarHttpMessageConverter
+import org.ionproject.core.calendar.ICalToTextCalHttpMessageConverter
 import com.fasterxml.jackson.databind.module.SimpleModule
+import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -54,7 +55,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 @EnableWebMvc
 class ApiConfig : WebMvcConfigurer {
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-        converters.add(ICalendarHttpMessageConverter())
+        converters.add(ICalToTextCalHttpMessageConverter())
     }
 }
 
