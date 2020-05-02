@@ -43,10 +43,14 @@ Available "entry point" resources:
                 "page": "/api-docs/params/page"
             },
             "hints": {
-                "allow": ["GET", "POST", "PATCH"]  
+                "allow": ["GET"],
+		"formats": {
+			"application/vnd.siren+json":{}
+		}
+		"docs": "https://github.com/i-on-project/core/tree/master/docs/api/courses.md"
             }
         },
-        "terms": {
+        "calendar-terms": {
             "hrefTemplate": "/v0/calendar-terms{?page,limit}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
@@ -54,7 +58,10 @@ Available "entry point" resources:
             },
             "hints": {
                 "allow": ["GET"],
-				"docs": "https://github.com/i-on-project/core/tree/feature/gh-16-basic-impl/docs/api/courses.md"
+		"formats": {
+			"application/vnd.siren+json":{}
+		}
+		"docs": "https://github.com/i-on-project/core/blob/master/docs/api/calendar-terms.md"
             }
         }
     }
