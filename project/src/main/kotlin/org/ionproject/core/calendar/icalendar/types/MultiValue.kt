@@ -9,6 +9,9 @@ class MultiValue<out T>(
         if (values.isEmpty()) throw IllegalArgumentException("Properties cannot be value-less.")
     }
 
+    override val value: Any
+        get() = values.map { it.value }
+
     override val name: String
         get() = values[0].name
 

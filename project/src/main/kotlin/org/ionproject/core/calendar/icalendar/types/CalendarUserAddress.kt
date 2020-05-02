@@ -1,6 +1,6 @@
 package org.ionproject.core.calendar.icalendar.types
 
-class CalendarUserAddress : ICalendarDataType {
+class CalendarUserAddress(override val value: String) : ICalendarDataType {
 
     companion object {
         const val name: String = "CAL_ADDRESS"

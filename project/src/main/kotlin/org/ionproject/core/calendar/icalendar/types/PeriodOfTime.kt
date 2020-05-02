@@ -13,6 +13,9 @@ class PeriodOfTime private constructor(
         private const val name = "PERIOD"
     }
 
+    override val value: Any
+        get() = toString()
+
     override val name: String
         get() = Companion.name
 

@@ -31,6 +31,9 @@ class Time private constructor(
             )
     }
 
+    override val value: Any
+        get() = toString()
+
     override val name: String
         get() = Companion.name
 

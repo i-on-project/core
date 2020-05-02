@@ -10,6 +10,9 @@ class UTCOffset(
         private const val name = "UTC-OFFSET"
     }
 
+    override val value: Any
+        get() = toString()
+
     override val name: String
         get() = Companion.name
 

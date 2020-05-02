@@ -10,4 +10,4 @@ fun String.toPropertyParameterText(): String =
         "\"${this}\""
     } else this
 
-fun String.startsAndEndsWith(str: String): Boolean = str.startsWith(str) && str.endsWith(str)
+fun String.startsAndEndsWith(str: String): Boolean = startsWith(str) && endsWith(str)

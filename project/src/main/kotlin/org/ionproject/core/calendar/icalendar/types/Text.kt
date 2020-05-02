@@ -3,7 +3,7 @@ package org.ionproject.core.calendar.icalendar.types
 class Text(
     text: String
 ) : ICalendarDataType {
-    private val value: String
+    override val value: String
 
     init {
         var temp = text.replace(",", "\\,")

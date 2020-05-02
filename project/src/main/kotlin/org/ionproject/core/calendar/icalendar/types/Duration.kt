@@ -18,6 +18,9 @@ abstract class Duration private constructor(
     override val name: String
         get() = Companion.name
 
+    override val value: Any
+        get() = toString()
+
     override fun toString(): String {
         return "${if (adding) "" else "-"}P"
     }
@@ -122,7 +125,7 @@ abstract class Duration private constructor(
         override fun toString(): String = super.toString() + "T$subTime"
     }
 
-    private class DurationWeek(val value: Int, adding: Boolean) : Duration(adding) {
-        override fun toString(): String = super.toString() + "${value}W"
+    private class DurationWeek(val weeks: Int, adding: Boolean) : Duration(adding) {
+        override fun toString(): String = super.toString() + "${weeks}W"
     }
 }

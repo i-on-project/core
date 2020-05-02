@@ -1,11 +1,11 @@
 package org.ionproject.core.calendar.icalendar.types
 
 class Recur private constructor(
-    private val frequency: Frequency = Frequency.WEEKLY,
-    private val until: ICalendarDataType? = null,
-    private val count: Int? = null,
-    private val interval: Int? = null,
-    private val byDay: List<WeekDay>? = null
+    val frequency: Frequency = Frequency.WEEKLY,
+    val until: ICalendarDataType? = null,
+    val count: Int? = null,
+    val interval: Int? = null,
+    val byDay: List<WeekDay>? = null
 ) : ICalendarDataType {
 
     constructor(interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, null, null, interval, byDay)
@@ -24,6 +24,9 @@ class Recur private constructor(
     )
 
     constructor(count: Int?, interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, count = count, interval = interval, byDay = byDay)
+
+    override val value: Any
+        get() = toString()
 
     override val name: String = "RECUR"
 

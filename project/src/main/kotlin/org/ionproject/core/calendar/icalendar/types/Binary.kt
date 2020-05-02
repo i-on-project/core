@@ -2,7 +2,7 @@ package org.ionproject.core.calendar.icalendar.types
 
 import java.util.*
 
-class Binary(val value: String) : ICalendarDataType {
+class Binary(override val value: String) : ICalendarDataType {
 
     override fun toString(): String = Base64.getEncoder().encodeToString(value.toByteArray())
 

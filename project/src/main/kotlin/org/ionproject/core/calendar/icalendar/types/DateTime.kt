@@ -4,6 +4,9 @@ class DateTime(
     private val date: Date,
     private val time: Time
 ) : ICalendarDataType {
+    override val value: Any
+        get() = toString()
+
     override val name: String
         get() = iCalName
 

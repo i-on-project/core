@@ -1,7 +1,7 @@
 package org.ionproject.core.calendar.icalendar.types
 
 class Integer(
-    val value: Int
+    override val value: Int
 ) : ICalendarDataType {
     operator fun compareTo(i: Int): Int = value.compareTo(i)
 
