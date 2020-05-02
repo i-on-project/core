@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarController(private val repository: CalendarRepo) {
 
-    @GetMapping(Uri.calendarByClass, produces = [Media.CALENDAR])
+    @GetMapping(Uri.calendarByClass, produces = [Media.CALENDAR, Media.SIREN_TYPE])
     fun fromClass(
         @PathVariable cid: Int,
         @PathVariable calterm: String
@@ -22,9 +22,9 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
-    @GetMapping(Uri.calendarByClassSection, produces = [Media.CALENDAR])
+    @GetMapping(Uri.calendarByClassSection, produces = [Media.CALENDAR, Media.SIREN_TYPE])
     fun fromClassSection(
-        @PathVariable sid: Int,
+        @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int
     ): ResponseEntity<Any> {
@@ -35,7 +35,7 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
-    @GetMapping(Uri.componentByClassCalendar, produces = [Media.CALENDAR])
+    @GetMapping(Uri.componentByClassCalendar, produces = [Media.CALENDAR, Media.SIREN_TYPE])
     fun fromClassCalendar(
         @PathVariable cid: Int,
         @PathVariable calterm: String,
@@ -50,7 +50,7 @@ class CalendarController(private val repository: CalendarRepo) {
 
     @GetMapping(Uri.componentByClassSectionCalendar, produces = [Media.CALENDAR, Media.SIREN_TYPE])
     fun fromClassSectionCalendar(
-        @PathVariable sid: Int,
+        @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int,
         @PathVariable cmpid: String

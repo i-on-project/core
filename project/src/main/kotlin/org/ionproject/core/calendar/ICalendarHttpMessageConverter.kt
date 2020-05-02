@@ -5,7 +5,7 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.common.Media.MEDIA_TEXT_CALENDAR
+import org.ionproject.core.common.Media
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
@@ -14,7 +14,8 @@ import java.io.PrintWriter
 import java.io.Writer
 import java.lang.reflect.Type
 
-class ICalToTextCalHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(MEDIA_TEXT_CALENDAR) {
+class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(Media.MEDIA_TEXT_CALENDAR) {
+
 
     override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
 
@@ -24,7 +25,6 @@ class ICalToTextCalHttpMessageConverter : AbstractGenericHttpMessageConverter<Ca
         throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        outputMessage.headers.contentType = MEDIA_TEXT_CALENDAR
         PrintWriter(outputMessage.body).apply {
             writeCalendar(t, this)
             close()
@@ -34,7 +34,7 @@ class ICalToTextCalHttpMessageConverter : AbstractGenericHttpMessageConverter<Ca
     override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar =
         throw UnsupportedOperationException("This message converter can't read.")
 
-    fun writeCalendar(calendar: Calendar, writer: Writer) {
+    private fun writeCalendar(calendar: Calendar, writer: Writer) {
         writer.writeICalendar("BEGIN:VCALENDAR")
 
         calendar.apply {
