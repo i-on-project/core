@@ -76,7 +76,7 @@ The following fields are parameters of the action `search`:
   ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/calendar-terms/1920v?limit=2" },
-    { "rel": [ "next" ], "href": "/v0/calendar-terms?page=1&limit=2" },
+    { "rel": [ "next" ], "href": "/v0/calendar-terms/1920v?page=1&limit=2" },
     { "rel": [ "collection" ], "href": "/v0/calendar-terms" }
   ]
 }
@@ -155,10 +155,10 @@ The following fields are parameters of the action `search`:
   ],
   "actions": [
     {
-      "name": "search",
+      "name": "Search",
       "title": "Search items",
       "method": "GET",
-      "href": "/v0/calendar-terms{?limit,page}",
+      "href": "/v0/calendar-terms{?page,limit}",
       "isTemplated": true,
       "type": "application/vnd.siren+json",
       "fields": [
