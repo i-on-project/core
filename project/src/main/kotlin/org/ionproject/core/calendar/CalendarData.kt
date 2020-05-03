@@ -238,7 +238,7 @@ object CalendarData {
             }.toTypedArray()
         }
 
-        private fun ResultSet.getRecurrenceRule(columnName: String) : RecurrenceRule? {
+        private fun ResultSet.getRecurrenceRule(columnName: String): RecurrenceRule? {
             val weekDays = getString(BYDAY_COLUMN)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
 
             return if (weekDays == null) null

@@ -38,8 +38,8 @@ object CategoryData {
     ) : RowMapper<Pair<Int, Pair<Language, String>>> {
         override fun map(rs: ResultSet, ctx: StatementContext): Pair<Int, Pair<Language, String>> =
             rs.getInt(ID_COLUMN) to (
-                    (languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")) to
-                            rs.getString(NAME_COLUMN)
-                    )
+                (languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")) to
+                    rs.getString(NAME_COLUMN)
+                )
     }
 }

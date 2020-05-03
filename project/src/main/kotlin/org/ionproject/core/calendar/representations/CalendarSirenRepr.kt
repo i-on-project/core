@@ -12,7 +12,7 @@ import java.net.URI
 
 private const val CALENDAR_CLASS = "calendar"
 
-fun Calendar.toSiren() : Siren =
+fun Calendar.toSiren(): Siren =
     SirenBuilder(properties)
         .klass(CALENDAR_CLASS)
         .action(
@@ -55,8 +55,8 @@ fun Calendar.toSiren() : Siren =
                 )
             )
         )
-        .link("self", URI("${prod.value}/calendar"))
-        .link("about", URI("${prod.value}"))
+        .link("self", href = URI("${prod.value}/calendar"))
+        .link("about", href = URI("${prod.value}"))
         .toSiren()
 
 
@@ -67,7 +67,7 @@ private const val PRODID = "prodid"
 private const val VERSION = "version"
 private const val SUB_COMPONENTS = "subComponents"
 
-private val Calendar.properties : Map<String, Any>
+private val Calendar.properties: Map<String, Any>
     get() = mapOf(
         TYPE to "calendar",
         PROPERTIES to mapOf(
@@ -78,14 +78,14 @@ private val Calendar.properties : Map<String, Any>
     )
 
 private fun CalendarComponent.toSiren(): Map<String, Any> {
-        val type = this::class.java.simpleName.toLowerCase()
-        return mapOf(
-            TYPE to type,
-            PROPERTIES to properties.associate {
-                it.name.toLowerCase() to it.toSiren()
-            }
-        )
-    }
+    val type = this::class.java.simpleName.toLowerCase()
+    return mapOf(
+        TYPE to type,
+        PROPERTIES to properties.associate {
+            it.name.toLowerCase() to it.toSiren()
+        }
+    )
+}
 
 private fun Property.toSiren(): Any {
     val aux = this as? ParameterizedProperty

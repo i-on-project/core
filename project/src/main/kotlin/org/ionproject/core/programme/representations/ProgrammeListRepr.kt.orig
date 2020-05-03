@@ -32,8 +32,16 @@ fun List<Programme>.programmesListRepr() = SirenBuilder()
     .toSiren()
 
 private fun Programme.buildSubentities() =
+<<<<<<< HEAD
     SirenBuilder(ProgrammeReducedOutputModel(id, acronym))
         .klass("Programme")
         .rel("item")
-        .link("self", href = Uri.forProgrammesById(id))
+        .link("self", Uri.forProgrammesById(id))
         .toEmbed()
+=======
+        SirenBuilder(ProgrammeReducedOutputModel(id, acronym))
+            .klass("Programme")
+            .rel("item")
+            .link("self", href = Uri.forProgrammesById(id))
+            .toEmbed()
+>>>>>>> 7fffcee3dad9a966ab8d9350e6717c6b5a19ab24

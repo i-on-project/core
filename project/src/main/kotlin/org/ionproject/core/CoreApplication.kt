@@ -36,8 +36,8 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
         converter.objectMapper.registerModule(
             SimpleModule()
-            .addSerializer(UriTemplate::class.java, UriTemplateSerializer())
-            .addSerializer(Calendar::class.java, CalendarSerializer())
+                .addSerializer(UriTemplate::class.java, UriTemplateSerializer())
+                .addSerializer(Calendar::class.java, CalendarSerializer())
         )
 
         // JSON Home

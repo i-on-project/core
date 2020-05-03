@@ -36,8 +36,16 @@ fun ProgrammeOffer.offerToDetailRepr() =
         .link("related", href = Uri.forProgrammesById(id))
         .toSiren()
 
+<<<<<<< HEAD
 private fun buildSubentities(courseId: Int) = SirenBuilder()
     .klass("course")
     .rel(Uri.relCourse)
-    .link("self", href = Uri.forCourseById(courseId))
+    .link("self", Uri.forCourseById(courseId))
     .toEmbed()
+=======
+private fun buildSubentities(courseId : Int) = SirenBuilder()
+        .klass("course")
+        .rel(Uri.relCourse)
+        .link("self", href = Uri.forCourseById(courseId))
+        .toEmbed()
+>>>>>>> 7fffcee3dad9a966ab8d9350e6717c6b5a19ab24
