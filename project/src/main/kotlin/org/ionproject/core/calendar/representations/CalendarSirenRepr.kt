@@ -10,8 +10,11 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.util.UriTemplate
 import java.net.URI
 
+private const val CALENDAR_CLASS = "calendar"
+
 fun Calendar.toSiren() : Siren =
     SirenBuilder(properties)
+        .klass(CALENDAR_CLASS)
         .action(
             Action(
                 name = "search",

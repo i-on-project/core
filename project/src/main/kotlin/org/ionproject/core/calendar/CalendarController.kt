@@ -5,7 +5,16 @@ import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+
+// Query parameters
+private const val TYPE = "type"
+private const val START_BEFORE = "startBefore"
+private const val START_AFTER = "startAfter"
+private const val END_BEFORE = "endBefore"
+private const val END_AFTER = "endAfter"
+private const val SUMMARY = "summary"
 
 @RestController
 class CalendarController(private val repository: CalendarRepo) {
@@ -13,9 +22,15 @@ class CalendarController(private val repository: CalendarRepo) {
     @GetMapping(Uri.calendarByClass, produces = [Media.CALENDAR, Media.SIREN_TYPE])
     fun fromClass(
         @PathVariable cid: Int,
-        @PathVariable calterm: String
+        @PathVariable calterm: String,
+        @RequestParam(required = false, name = TYPE) type: Char?,
+        @RequestParam(required = false, name = START_BEFORE) startBefore: String?,
+        @RequestParam(required = false, name = START_AFTER) startAfter: String?,
+        @RequestParam(required = false, name = END_BEFORE) endBefore: String?,
+        @RequestParam(required = false, name = END_AFTER) endAfter: String?,
+        @RequestParam(required = false, name = SUMMARY) summary: String?
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassCalendar(cid, calterm)
+        val calendar = repository.getClassCalendar(cid, calterm, type, startBefore, startAfter, endBefore, endAfter, summary)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -26,9 +41,15 @@ class CalendarController(private val repository: CalendarRepo) {
     fun fromClassSection(
         @PathVariable sid: String,
         @PathVariable calterm: String,
-        @PathVariable cid: Int
+        @PathVariable cid: Int,
+        @RequestParam(required = false, name = TYPE) type: Char?,
+        @RequestParam(required = false, name = START_BEFORE) startBefore: String?,
+        @RequestParam(required = false, name = START_AFTER) startAfter: String?,
+        @RequestParam(required = false, name = END_BEFORE) endBefore: String?,
+        @RequestParam(required = false, name = END_AFTER) endAfter: String?,
+        @RequestParam(required = false, name = SUMMARY) summary: String?
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassSectionCalendar(cid, calterm, sid)
+        val calendar = repository.getClassSectionCalendar(cid, calterm, sid, type, startBefore, startAfter, endBefore, endAfter, summary)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
