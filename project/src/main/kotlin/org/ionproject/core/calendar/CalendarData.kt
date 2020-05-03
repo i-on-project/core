@@ -118,8 +118,8 @@ object CalendarData {
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
-            $GROUP_BY
-            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId"""
+            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId
+            $GROUP_BY"""
 
     const val CALENDAR_FROM_CLASS_SECTION_QUERY =
         """WITH calendar_id AS (
@@ -129,8 +129,8 @@ object CalendarData {
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
-            $GROUP_BY
-            WHERE $CALENDARS = (SELECT * FROM calendar_id)"""
+            WHERE $CALENDARS = (SELECT * FROM calendar_id)
+            $GROUP_BY"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_SECTION_CALENDAR_ID
@@ -139,8 +139,8 @@ object CalendarData {
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
-            $GROUP_BY
-            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId"""
+            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId
+            $GROUP_BY"""
 
     @Component
     class CalendarComponentMapper(

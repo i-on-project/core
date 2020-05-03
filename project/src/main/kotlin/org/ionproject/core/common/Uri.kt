@@ -71,8 +71,8 @@ object Uri {
     // Calendars
     const val calendarByClass = "${version}/courses/{cid}/classes/{calterm}/calendar"
     const val calendarByClassSection = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar"
-    const val componentByClassCalendar = "${version}/courses/{cid}/classes/{calterm}/calendar/{component}"
-    const val componentByClassSectionCalendar = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar/{component}"
+    const val componentByClassCalendar = "${version}/courses/{cid}/classes/{calterm}/calendar/{cmpid}"
+    const val componentByClassSectionCalendar = "${version}/courses/{cid}/classes/{calterm}/{sid}/calendar/{cmpid}"
 
     val calendarByClassTemplate = UriTemplate(calendarByClass)
     val calendarByClassSectionTemplate = UriTemplate(calendarByClassSection)
