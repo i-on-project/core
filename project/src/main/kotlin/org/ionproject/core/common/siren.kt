@@ -6,7 +6,7 @@ import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 class Relation(
-        val rel: MutableList<String>,
+        val rel: List<String>,
         val href: URI,
         val type: String? = null,
         val title: String? = null,
@@ -98,7 +98,7 @@ class SirenBuilder(
             links = mutableListOf()
         }
 
-        links?.add(Relation(mutableListOf(*r), href))
+        links?.add(Relation(listOf(*r), href))
         return this
     }
 
