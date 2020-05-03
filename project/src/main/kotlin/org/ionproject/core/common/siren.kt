@@ -6,11 +6,11 @@ import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 class Relation(
-    val rel: String,
-    val href: URI,
-    val type: String? = null,
-    val title: String? = null,
-    @JsonProperty("class") val klass: List<String>? = null)
+        val rel: MutableList<String>,
+        val href: URI,
+        val type: String? = null,
+        val title: String? = null,
+        @JsonProperty("class") val klass: List<String>? = null)
 
 class Field(
     val name: String,
@@ -93,11 +93,12 @@ class SirenBuilder(
         return this
     }
 
-    fun link(r: String, href: URI): SirenBuilder {
+    fun link(vararg r: String, href: URI): SirenBuilder {
         if (links == null) {
             links = mutableListOf()
         }
-        links?.add(Relation(r, href))
+
+        links?.add(Relation(mutableListOf(*r), href))
         return this
     }
 

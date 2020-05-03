@@ -57,5 +57,5 @@ private fun Programme.buildSubentities(offer: ProgrammeOffer) : EmbeddedRepresen
             .klass("offer")
             .title("${offer.courseAcr} Offer")
             .rel(Uri.relProgrammeOffer)
-            .link("self", Uri.forProgrammeOfferById(this.id, offer.id))
+            .link("self", href = Uri.forProgrammeOfferById(this.id, offer.id))
             .toEmbed()
