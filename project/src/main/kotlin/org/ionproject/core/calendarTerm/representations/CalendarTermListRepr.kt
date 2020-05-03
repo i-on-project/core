@@ -25,12 +25,12 @@ fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
                 )
             )
         )
-        .link("self", Uri.forPagingCalTerms(page, limit))
-        .link("next", Uri.forPagingCalTerms(page + 1, limit))
+        .link("self", href = Uri.forPagingCalTerms(page, limit))
+        .link("next", href = Uri.forPagingCalTerms(page + 1, limit))
         .let {
             {
                 if (page > 0)
-                    it.link("previous", Uri.forPagingCalTerms(page - 1, limit))
+                    it.link("previous", href = Uri.forPagingCalTerms(page - 1, limit))
                 it
             }()
         }.toSiren()
@@ -39,6 +39,6 @@ private fun CalendarTerm.toEmbed() =
     SirenBuilder(CalendarTermOutputModel(calTermId))
         .klass("term")
         .rel("item")
-        .link("self", Uri.forCalTermById(calTermId))
-        .link("collection", Uri.forCalTerms())
+        .link("self", href = Uri.forCalTermById(calTermId))
+        .link("collection", href = Uri.forCalTerms())
         .toEmbed()

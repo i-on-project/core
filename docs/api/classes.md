@@ -7,10 +7,14 @@ The `class` resource has three possible representations: a detailed (or full) re
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `course`: the course's unique acronym
-  - mandatory
+* `courseAcr`: the course's unique acronym
   - type: **text**
   - e.g. "WAD"
+
+* `courseId`: the course's unique identifier
+  - mandatory
+  - type: **number**
+  - e.g. 1
 
 * `calendar term`: period when the academic `event`s of the `course` will occur
   - mandatory
@@ -43,58 +47,51 @@ Since the number of class sections is thought to be very reduced, all of them wi
 {
   "class" : [ "class" ],
   "properties": {
-    "course": "WAD",
-    "calendar term": "1920v"
+    "courseAcr": "WAD",
+    "courseId": 1,
+    "calendarTerm": "1920v"
   },
   "entities": [
     {
       "class": [ "class", "section" ],
       "properties": {
-        "id": "1d"
+        "courseId": 1,
+        "courseAcr": "SL",
+        "calendarTerm": "1920i",
+        "id": "1D"
       },
       "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
       "links": [
-      { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v/1d" },
+      { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/1D" },
       ]
     },
     {
       "class": [ "class", "section" ],
       "properties": {
-        "id": "2d"
+        "courseId": 1,
+        "courseAcr": "SL",
+        "calendarTerm": "1920i",
+        "id": "2D"
       },
       "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
       "links": [
-        { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v/2d" },
-      ]
-    },
-    {
-      "class": [ "class", "section" ],
-      "properties": {
-        "id": "1n"
-      },
-      "rel": [ "item" ],
-      "title": "Class Section of Course WAD at Calendar Term 1920v",
-      "links": [
-        { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v/1n" },
+        { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v/2D" },
       ]
     },
     {
       "class": [ "calendar" ],
       "rel": [ "/rel/calendar" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/dwa/classes/s1920v/calendar" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/s1920v/calendar" }
       ]
     }
   ],
   "actions": [
     {
       "name": "delete",
-      "title": "Delete class",
       "method": "DELETE",
       "isTemplated": false,
-      "href": "/v0/courses/wad/classes/1920v",
+      "href": "/v0/courses/1/classes/1920v",
       "fields": [ ]
     },
     {
@@ -102,17 +99,34 @@ Since the number of class sections is thought to be very reduced, all of them wi
       "title": "Edit class",
       "method": "PATCH",
       "isTemplated": false,
-      "type": "application/json",
-      "href": "/v0/courses/wad/classes/1920v",
+      "type": "*/*",
+      "href": "/v0/courses/1/classes/1920v",
       "fields": [ ]
     } 
   ],
   "links": [
-    { "rel" : [ "self" ], "href": "/v0/courses/wad/classes/1920v" },
-    { "rel" : [ "collection" ], "href": "/v0/courses/wad/classes/" }
+    { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v" },
+    { "rel" : [ "collection" ], "href": "/v0/courses/1/classes/" }
   ]
 }
 ```
+
+# `Class Item`
+
+A simplified representation of a `class`. This is how `class`es are represented as individual `collection` items.
+
+## Properties
+All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
+* `courseId`: the course's unique identifier
+  - mandatory
+  - type: **number**
+  - e.g. 1
+
+## Link relations
+A class item representation:
+* *must* include a link to its context, using the `self` link relation
+* *may* include a link to the `course collection` it belongs to, using the `collection` link relation
 
 # `Class Collection`
 
@@ -121,10 +135,14 @@ Lists out the `course`'s classes for different semesters.
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `course`: the course's unique acronym
-  - mandatory
+* `courseAcr`: the course's unique acronym
   - type: **text**
   - e.g. "WAD"
+
+* `courseId`: the course's unique identifier
+  - mandatory
+  - type: **number**
+  - e.g. 1
 
 ## Link relations
 A class representation:
@@ -167,23 +185,21 @@ The following fields are parameters of the action `batch-delete`:
 {
   "class" : [ "collection", "class" ],
   "properties": {
-    "course": "WAD"
+    "courseId": 1
   },
   "entities" : [
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "WAD Class during the 1920v semester",
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" }
       ]
     },
     {
       "class": [ "class" ],
       "rel": [ "item" ],
-      "title": "WAD Class during the 1920i semester",
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920i" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920i" }
       ]
     }
   ],
@@ -192,7 +208,7 @@ The following fields are parameters of the action `batch-delete`:
       "name": "search",
       "title": "Search items",
       "method": "GET",
-      "href": "/v0/courses/wad/classes{?limit,page}",
+      "href": "/v0/courses/1/classes{?limit,page}",
       "isTemplated": true,
       "type": "application/vnd.siren+json",
       "fields": [
@@ -204,27 +220,15 @@ The following fields are parameters of the action `batch-delete`:
       "name": "add-item",
       "title": "Add Item",
       "method": "POST",
-      "href": "/v0/courses/wad/classes",
+      "href": "/v0/courses/1/classes",
       "isTemplated": false,
       "type": "application/json",
       "fields": [ ]
-    },
-    {
-      "name": "batch-delete",
-      "title": "Delete multiple items",
-      "method": "DELETE",
-      "isTemplated": true,
-      "href": "/v0/courses/wad/classes{?term,course}",
-      "fields": [
-        { "name": "term", "type": "text" },
-        { "name": "course", "type": "text" }
-      ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/v0/courses/wad/classes" },
-    { "rel": [ "current" ], "href": "/v0/courses/wad/classes/1920v" },
-    { "rel": [ "about" ], "href": "/v0/courses/wad" }
+    { "rel": [ "self" ], "href": "/v0/courses/1/classes" },
+    { "rel": [ "about" ], "href": "/v0/courses/1" }
   ]
 }
 ```

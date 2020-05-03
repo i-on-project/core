@@ -1,6 +1,14 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.common.*
+import org.ionproject.core.classSection.ClassSection
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.Siren
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
+import org.ionproject.core.common.toTemplate
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
@@ -26,10 +34,12 @@ fun Klass.toSiren(): EmbeddedRepresentation {
     return SirenBuilder()
         .klass(*klassClasses)
         .rel("item")
-        .link("self", Uri.forKlassByCalTerm(courseId, calendarTerm))
+        .link("self", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .toEmbed()
 }
 
+
+data class propertiesClass(val cid: Int)
 /**
  * Class Collection resource's representation.
  * Supports paging
@@ -37,11 +47,11 @@ fun Klass.toSiren(): EmbeddedRepresentation {
 fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
     val selfHref = Uri.forKlasses(cid)
 
-    return SirenBuilder()
+    return SirenBuilder(propertiesClass(cid))
         .klass(*klassClasses, "collection")
         .entities(map { klass -> klass.toSiren() })
-        .link("self", Uri.forPagingKlass(cid, page, limit))
-        .link("about", Uri.forCourseById(cid))
+        .link("self", href = Uri.forPagingKlass(cid, page, limit))
+        .link("about", href = Uri.forCourseById(cid))
         .action(
             Action(
                 name = "add-item",
@@ -49,7 +59,12 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
                 method = HttpMethod.POST,
                 href = selfHref.toTemplate(),
                 isTemplated = false,
+<<<<<<< HEAD
                 type = Media.APPLICATION_JSON
+=======
+                type = Media.APPLICATION_JSON,
+                fields = listOf()
+>>>>>>> 7fffcee3dad9a966ab8d9350e6717c6b5a19ab24
             )
         )
         .action(
@@ -59,7 +74,7 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
                 method = HttpMethod.GET,
                 href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
                 isTemplated = true,
-                type = Media.APPLICATION_JSON,
+                type = Media.SIREN_TYPE,
                 fields = listOf(
                     Field(name = "limit", type = "number", klass = "param/limit"),
                     Field(name = "page", type = "number", klass = "param/page")
@@ -78,17 +93,30 @@ fun FullKlass.toSiren(): Siren {
     // class sections of this class
     val sections = sections.map { section ->
         SirenBuilder(section)
-            .klass("class", "section")
-            .rel("item")
-            .link("self", Uri.forClassSectionById(courseId, calendarTerm, section.id))
-            .toEmbed()
+                .klass("class", "section")
+                .rel("item")
+                .link("self", href = Uri.forClassSectionById(courseId, calendarTerm, section.id))
+                .toEmbed()
+    }
+
+    fun calTermEntity(courseId: Int, calTerm: String) : EmbeddedRepresentation =
+            SirenBuilder()
+                    .klass("calendar")
+                    .rel(Uri.relCalendar)
+                    .link("self", href = Uri.forCalendarByClass(courseId, calTerm))
+                    .toEmbed()
+
+    fun buildSubEntities(sections: List<EmbeddedRepresentation>, courseId: Int, calendarTerm: String): MutableList<EmbeddedRepresentation> {
+        val listSubEntities = sections.toMutableList()
+        listSubEntities.add(calTermEntity(this.courseId, this.calendarTerm))
+        return listSubEntities
     }
 
     return SirenBuilder(KlassOutputModel.of(this))
         .klass(*klassClasses)
-        .entities(sections)
-        .link("self", selfHref)
-        .link("collection", Uri.forKlasses(courseId))
+        .entities(buildSubEntities(sections, this.courseId, this.calendarTerm))
+        .link("self", href = selfHref)
+        .link("collection", href = Uri.forKlasses(courseId))
         .action(
             Action(
                 name = "delete",
@@ -103,9 +131,14 @@ fun FullKlass.toSiren(): Siren {
                 name = "edit",
                 href = selfHref.toTemplate(),
                 method = HttpMethod.PATCH,
+<<<<<<< HEAD
                 type = Media.APPLICATION_JSON,
                 isTemplated = false
             )
         )
+=======
+                type = Media.ALL,
+                isTemplated = false))
+>>>>>>> 7fffcee3dad9a966ab8d9350e6717c6b5a19ab24
         .toSiren()
 }

@@ -11,6 +11,7 @@ import java.net.URI
 private const val specLocation = "https://github.com/i-on-project/core/tree/master/docs/api"
 private val specUri = URI(specLocation)
 private val coursesSpecUri = URI("${specLocation}/courses.md")
+private val calendarTermsSpecUri = URI("$specLocation/calendar-terms.md")
 
 private const val apiName = "i-on Core"
 
@@ -19,15 +20,21 @@ class JsonHomeController {
 
     @GetMapping("/", produces = [Media.JSON_HOME])
     fun getRoot(): JsonHome = JsonHomeBuilder(apiName)
-        .link("describedBy", specUri)
-        // course resource
-        .newResource("courses")
-        .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
-        .hrefVar("limit", URI("/api-docs/params/limit"))
-        .hrefVar("page", URI("/api-docs/params/page"))
-        .docs(coursesSpecUri)
-        .formats(Media.MEDIA_SIREN)
-        .allow(HttpMethod.GET)
-        .toResourceObject()
-        .toJsonHome()
+            .link("describedBy", specUri)
+            // course resource
+            .newResource("courses")
+            .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
+            .hrefVar("limit", URI("/api-docs/params/limit"))
+            .hrefVar("page", URI("/api-docs/params/page"))
+            .docs(coursesSpecUri)
+            .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+            .toResourceObject()
+            .newResource("calendar-terms")
+            .hrefTemplate(Uri.pagingCalendarTerms)
+            .hrefVar("limit", URI("/api-docs/params/limit"))
+            .hrefVar("page", URI("/api-docs/params/page"))
+            .docs(calendarTermsSpecUri)
+            .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+            .toResourceObject()
+            .toJsonHome()
 }

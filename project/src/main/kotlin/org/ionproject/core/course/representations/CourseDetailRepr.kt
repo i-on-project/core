@@ -10,33 +10,35 @@ import org.springframework.http.HttpMethod
 /**
  * Output models
  */
-private data class CourseReducedOutputModel(val acronym: String, val name: String? = null)
+private data class CourseReducedOutputModel(val id: Int, val acronym: String, val name: String? = null)
 
 fun Course.courseToDetailRepr() =
-    SirenBuilder(CourseReducedOutputModel(acronym, name))
+    SirenBuilder(CourseReducedOutputModel(id,acronym, name))
         .klass("course")
         .entities(listOf(buildSubentities(id)))
         .action(
             Action(
-                name = "delete",
-                title = "delete course",
-                method = HttpMethod.DELETE,
-                href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = true
+                    name = "delete",
+                    title = "delete course",
+                    method = HttpMethod.DELETE,
+                    href = Uri.forCourseById(id).toTemplate(),
+                    isTemplated = false,
+                    fields = listOf()
             )
         )
         .action(
             Action(
-                name = "edit",
-                title = "edit course",
-                method = HttpMethod.PATCH,
-                href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = false
+                    name = "edit",
+                    title = "edit course",
+                    method = HttpMethod.PATCH,
+                    href = Uri.forCourseById(id).toTemplate(),
+                    isTemplated = false,
+                    fields = listOf()
             )
         )
-        .link("self", Uri.forCourseById(id))
-        .link("current", Uri.forKlassByCalTerm(id, term!!))
-        .link("collection", Uri.forCourses())
+        .link("self", href = Uri.forCourseById(id))
+        .link("current", href = Uri.forKlassByCalTerm(id, term!!))
+        .link("collection", href = Uri.forCourses())
         .toSiren()
 
 
@@ -44,6 +46,6 @@ private fun buildSubentities(courseId: Int) =
     SirenBuilder()
         .klass("class", "collection")
         .rel(Uri.relClass)
-        .link("self", Uri.forKlasses(courseId))
-        .link("course", Uri.forCourseById(courseId))
+        .link("self", href = Uri.forKlasses(courseId))
+        .link("about", href = Uri.forCourseById(courseId))
         .toEmbed()

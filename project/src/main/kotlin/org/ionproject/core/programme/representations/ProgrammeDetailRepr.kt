@@ -52,10 +52,10 @@ fun Programme.programmeToDetailRepr() =
         .link("up", href = Uri.forProgrammes())
         .toSiren()
 
-private fun Programme.buildSubentities(offer: ProgrammeOffer): EmbeddedRepresentation =
-    SirenBuilder(ShortOfferRepr(offer.courseId, offer.termNumber))
-        .klass("offer")
-        .title("${offer.courseAcr} Offer")
-        .rel(Uri.relProgrammeOffer)
-        .link("self", Uri.forProgrammeOfferById(this.id, offer.id))
-        .toEmbed()
+private fun Programme.buildSubentities(offer: ProgrammeOffer) : EmbeddedRepresentation =
+        SirenBuilder(ShortOfferRepr(offer.courseId, offer.termNumber))
+            .klass("offer")
+            .title("${offer.courseAcr} Offer")
+            .rel(Uri.relProgrammeOffer)
+            .link("self", href = Uri.forProgrammeOfferById(this.id, offer.id))
+            .toEmbed()
