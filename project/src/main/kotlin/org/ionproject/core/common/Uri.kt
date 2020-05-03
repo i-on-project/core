@@ -85,4 +85,5 @@ object Uri {
     const val relClassSection = "/rel/class-section"
     const val relProgrammeOffer = "/rel/programmeOffer"
     const val relCourse = "/rel/course"
+    const val relCalendar = "/rel/calendar"
 }

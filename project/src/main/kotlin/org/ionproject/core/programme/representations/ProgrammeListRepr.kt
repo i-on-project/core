@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod
 /**
  * Output models
  */
-data class ProgrammeReducedOutputModel(val programmeId: Int, val acr: String)
+data class ProgrammeReducedOutputModel(val programmeId: Int, val acronym: String)
 
 /**
  * Siren representation generators
@@ -35,5 +35,5 @@ private fun Programme.buildSubentities() =
         SirenBuilder(ProgrammeReducedOutputModel(id, acronym))
             .klass("Programme")
             .rel("item")
-            .link("self", Uri.forProgrammesById(id))
+            .link("self", href = Uri.forProgrammesById(id))
             .toEmbed()
