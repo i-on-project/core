@@ -185,7 +185,6 @@ The following fields are parameters of the action `batch-delete`:
 {
   "class" : [ "collection", "class" ],
   "properties": {
-    "courseAcr": "WAD",
     "courseId": 1
   },
   "entities" : [
