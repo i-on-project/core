@@ -40,7 +40,7 @@ A programme is composed by a set of _offers_.
     "class": [ "programme" ],
     "properties": {
         "id": 1,
-        "name": "Licenciatura em Engenharia Informática e de Computadores", //It may not appear
+        "name": "Licenciatura em Engenharia Informática e de Computadores", 
         "acronym": "LEIC",
         "termSize": 6
     },
@@ -50,8 +50,8 @@ A programme is composed by a set of _offers_.
             "title": "LS Offer",
             "rel": [ "/rel/programmeOffer" ],
             "properties": {
-                "CourseId": 2,
-                "TermNumber": 3
+                "courseId": 2,
+                "termNumber": 3
             },
             "links" : [
                 { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1"}
@@ -90,7 +90,7 @@ A programme is composed by a set of _offers_.
             "href": "/v0/programmes/1",
             "type": "application/json",
             "fields": [
-                { "name": "ProgrammeName", "type": "text"}, //the name may be NULL, you can edit it
+                { "name": "ProgrammeName", "type": "text"}, 
                 { "name": "Acronym", "type": "text"},
                 { "name": "TermSize", "type": "number"}
             ]
@@ -133,10 +133,10 @@ A collection of the possible programmes.
     "class": [ "collection", "programme" ],
     "entities": [
         {
-            "class": [ "programme" ],
+            "class": [ "Programme" ],
             "rel": [ "item" ],
             "properties": {
-                "id": 1,
+                "programmeId": 1,
                 "acronym": "LEIC"
             },
             "links" : [
