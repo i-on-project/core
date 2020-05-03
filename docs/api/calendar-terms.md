@@ -6,13 +6,13 @@ The `calendar term` resource has three possible representations: a detailed (or 
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `name`: the calendar term's name
+* `id`: the calendar term's unique identifier
   - mandatory
   - type: **text**
   - e.g. "1819v"
 
 ## Link relations
-A term representation:
+A calendar term representation:
 * *must* include a link to its context, using the `self` link relation
 * *may* include a link to the collection it belongs, using the `collection` link relation
 * *may* include links to a number of classes that were available during said calendar term, using the `/rel/class` link relation
@@ -47,16 +47,16 @@ The following fields are parameters of the action `search`:
       "class": [ "class" ],
       "rel": [ "/rel/class" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/wad/classes/1920v" },
-        { "rel": [ "collection" ], "href": "/v0/courses/wad/classes" }
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
+        { "rel": [ "collection" ], "href": "/v0/courses/1/classes" }
       ]
     },
     {
       "class": [ "class" ],
       "rel": [ "/rel/class" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/sl/classes/1920v" },
-        { "rel": [ "collection" ], "href": "/v0/courses/sl/classes" }
+        { "rel": [ "self" ], "href": "/v0/courses/2/classes/1920v" },
+        { "rel": [ "collection" ], "href": "/v0/courses/2/classes" }
       ]
     }
   ],
@@ -76,7 +76,7 @@ The following fields are parameters of the action `search`:
   ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/calendar-terms/1920v?limit=2" },
-    { "rel": [ "next" ], "href": "/v0/calendar-terms?page=1&limit=2" },
+    { "rel": [ "next" ], "href": "/v0/calendar-terms/1920v?page=1&limit=2" },
     { "rel": [ "collection" ], "href": "/v0/calendar-terms" }
   ]
 }
@@ -89,7 +89,7 @@ A simplified representation of a `calendar term`. This is how `calendar term`s a
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `name`: the calendar term's unique acronym; an abbreviation of its name
+* `id`: the calendar term's unique identifier
   - mandatory
   - type: **text**
   - e.g. "1920v"
@@ -97,7 +97,7 @@ All properties which are not assigned with the `mandatory` label, are optional, 
 ## Link relations
 A calendar term item representation:
 * *must* include a link to its context, using the `self` link relation
-* *may* include a link to the `term collection` it belongs to, using the `collection` link relation
+* *may* include a link to the `calendar term collection` it belongs to, using the `collection` link relation
 
 # `Calendar Term Collection`
 
@@ -127,7 +127,7 @@ The following fields are parameters of the action `search`:
 ## Example representation
 ```json
 {
-  "class": [ "term", "collection" ],
+  "class": [ "calendar-term", "collection" ],
   "properties": { },
   "entities": [
     {
@@ -155,10 +155,10 @@ The following fields are parameters of the action `search`:
   ],
   "actions": [
     {
-      "name": "search",
+      "name": "Search",
       "title": "Search items",
       "method": "GET",
-      "href": "/v0/calendar-terms{?limit,page}",
+      "href": "/v0/calendar-terms{?page,limit}",
       "isTemplated": true,
       "type": "application/vnd.siren+json",
       "fields": [

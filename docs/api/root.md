@@ -1,7 +1,9 @@
 # `Root`
-The `root` resource is the entry point of the API. It allows for any client application to navigate through the different resources with no out-of-band knowledge of the API.
+The `root` resource is the entry point of the API. It allows for any client application to navigate through different resources with no out-of-band knowledge of the API.
 
 The `root` resource is represented in the [application/json-home](https://mnot.github.io/I-D/json-home/) media type.
+
+The paths to the different resources will start with a version number (e.g. `/v0/courses/`). This prevents breaking compatibility with clients using an older version of the API, allowing them to gradually adapt to the newer version.
 
 ## API object
 Contains information about the API.
@@ -9,10 +11,17 @@ Contains information about the API.
 * `title`: the name of the API
     - e.g. "i-on Core"
 
-## Resources
-An object containing some resources, aswell as some of the available operations for said resources.
+* `describedBy`: *link* to the API documentation
+    - e.g. "https://github.com/i-on-project/core/tree/feature/gh-16-basic-impl/docs/api"
 
-Available resources:
+## Resources
+This property of the JSON Home object has members of link relation type.
+These describe in great detail the possible resources the client may want to access initially.
+
+Important considerations for clients:
+* the location of the resource is provided by the `hrefTemplate` property when a URI Template is used (this means the resource can be accessed via a range of URIs) or an `href` property when there is only one possible URI. Both properties will not be included simultaneously, but at least one will. The `hrefTemplate` property will be followed by an `hrefVars` property describing the parameters of the URI Template.
+
+Available "entry point" resources:
 * `courses`
 * `calendar-terms`
 
@@ -22,29 +31,36 @@ Available resources:
     "api": {
         "title": "i-on Core",
         "links": {
-            "author": "mailto:core@ion.pt",
-            "describedBy": "/api-docs/"
+            "describedBy": "https://github.com/i-on-project/core/tree/master/docs/api"
         }
     },
     "resources": {
         "courses": {
-            "href": "/v0/courses{?limit,page}",
+            "hrefTemplate": "/v0/courses{?page,limit}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
                 "page": "/api-docs/params/page"
             },
             "hints": {
-                "allow": ["GET", "POST", "PATCH"]  
+                "allow": ["GET"],
+		"formats": {
+			"application/vnd.siren+json":{}
+		}
+		"docs": "https://github.com/i-on-project/core/tree/master/docs/api/courses.md"
             }
         },
-        "terms": {
-            "href": "/v0/calendar-terms{?limit,page}",
+        "calendar-terms": {
+            "hrefTemplate": "/v0/calendar-terms{?page,limit}",
             "hrefVars": {
                 "limit": "/api-docs/params/limit",
                 "page": "/api-docs/params/page"
             },
             "hints": {
-                "allow": ["GET"]  
+                "allow": ["GET"],
+		"formats": {
+			"application/vnd.siren+json":{}
+		}
+		"docs": "https://github.com/i-on-project/core/blob/master/docs/api/calendar-terms.md"
             }
         }
     }

@@ -6,8 +6,12 @@ The `course` resource has three possible representations: a detailed (or full) r
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `acronym`: the course's unique acronym; an abbreviation of its name
+* `id`: the course's unique identifier
   - mandatory
+  - type: **number**
+  - e.g. 1
+
+* `acronym`: the course's unique acronym; an abbreviation of its name
   - type: **text**
   - e.g. "WAD"
 
@@ -21,7 +25,6 @@ A course representation:
 * *may* include a link to the collection it belongs, using the `collection` link relation
 * *may* include a link to the currently active class (current semester), using the `/rel/current` link relation
 * *may* include links to its classes, using the `/rel/class` link relation
-* *may* include a link to its calendar, using the `/rel/calendar` link relation
 
 ## Actions
 * `delete`: delete the course
@@ -37,24 +40,17 @@ A course representation:
 {
   "class": [ "course" ],
   "properties": { 
+    "id": 1,
     "acronym": "WAD",
-	  "name": "Web Application Development"
+	"name": "Web Application Development"
   },
   "entities": [
     {
       "class": [ "class", "collection" ],
       "rel": [ "/rel/class" ], 
       "links": [
-        { "rel": [ "self" ], "href": "/courses/wad/classes" },
-        { "rel": [ "course" ], "href": "/courses/wad" }
-      ]
-    },
-    {
-      "class": [ "event", "collection" ],
-      "rel": [ "/rel/event" ], 
-      "links": [
-        { "rel": [ "self" ], "href": "/courses/wad/events" },
-        { "rel": [ "course" ], "href": "/courses/wad" }  
+        { "rel": [ "self" ], "href": "/v0/courses/1/classes" },
+        { "rel": [ "about" ], "href": "/v0/courses/1" }
       ]
     }
   ],
@@ -64,7 +60,7 @@ A course representation:
       "title": "Delete course",
       "method": "DELETE",
       "isTemplated": false,
-      "href": "/v0/courses/wad",
+      "href": "/v0/courses/1",
       "fields": [ ]
     },
     {
@@ -73,14 +69,14 @@ A course representation:
       "method": "PATCH",
       "isTemplated": false,
       "type": "application/json",
-      "href": "/v0/courses/wad",
+      "href": "/v0/courses/1",
       "fields": [ ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/courses/wad" },
-    { "rel": [ "current" ], "href": "/v0/courses/wad/classes/1920v" },
-    { "rel": [ "collection" ], "href": "/courses" }
+    { "rel": [ "self" ], "href": "/v0/courses/1" },
+    { "rel": [ "current" ], "href": "/v0/courses/1/classes/1920v" },
+    { "rel": [ "collection" ], "href": "/v0/courses" }
   ]
 }
 ```
@@ -91,6 +87,11 @@ A simplified representation of a `course`. This is how `course`s are represented
 
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
+
+* `id`: the course's unique identifier
+  - mandatory
+  - type: **number**
+  - e.g. 1
 
 * `acronym`: the course's unique acronym; an abbreviation of its name
   - mandatory
@@ -142,24 +143,26 @@ The following fields are parameters of the action `search`:
       "class": [ "course" ],
       "rel": [ "item" ], 
       "properties": { 
+	    "id": 1,
         "acronym": "WAD"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/courses/wad" },
-		{ "rel": [ "current" ], "href": "/v0/courses/wad/classes/1920v" },
-        { "rel": [ "collection" ], "href": "/courses" }
+        { "rel": [ "self" ], "href": "/v0/courses/1" },
+		{ "rel": [ "current" ], "href": "/v0/courses/1/classes/1920v" },
+        { "rel": [ "collection" ], "href": "/v0/courses" }
       ]
     },
     {
       "class": [ "class" ],
       "rel": [ "item" ], 
       "properties": { 
+	    "id": 2,
         "acronym": "SL"
       },
       "links": [
-        { "rel": [ "self" ], "href": "/courses/sl" },
-		{ "rel": [ "current" ], "href": "/v0/courses/sl/classes/1920v" },
-        { "rel": [ "collection" ], "href": "/courses" }
+        { "rel": [ "self" ], "href": "/v0/courses/2" },
+		{ "rel": [ "current" ], "href": "/v0/courses/2/classes/1920v" },
+        { "rel": [ "collection" ], "href": "/v0/courses" }
       ]
     }
   ],
@@ -187,9 +190,9 @@ The following fields are parameters of the action `search`:
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "/courses?page=1&limit=2" },
-    { "rel": [ "next" ], "href": "/courses?page=2&limit=2" },
-    { "rel": [ "previous" ], "href": "/courses?page=0&limit=2" }
+    { "rel": [ "self" ], "href": "/v0/courses?page=1&limit=2" },
+    { "rel": [ "next" ], "href": "/v0/courses?page=2&limit=2" },
+    { "rel": [ "previous" ], "href": "/v0/courses?page=0&limit=2" }
   ]
 }
 ```
