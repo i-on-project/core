@@ -1,13 +1,11 @@
 package org.ionproject.core.common
 
-import org.ionproject.core.common.customExceptions.IncorrectParametersException
-import org.ionproject.core.common.customExceptions.ProhibitedUserException
-import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
+import org.ionproject.core.common.customExceptions.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.client.HttpServerErrorException
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -21,6 +19,20 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
+
+    @ExceptionHandler(value = [InternalServerErrorException::class])
+    private fun handleInternalServerError(ex: InternalServerErrorException, request: HttpServletRequest) : ResponseEntity<*> {
+        val headers = HttpHeaders()
+
+        return handleResponse("",
+                "Internal Server Error",
+                500,
+                ex.localizedMessage,
+                request.requestURI,
+                headers
+        )
+    }
+
     @ExceptionHandler(value = [ResourceNotFoundException::class])
     private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request: HttpServletRequest): ResponseEntity<*> {
         val headers = HttpHeaders()

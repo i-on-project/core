@@ -1,6 +1,8 @@
 package org.ionproject.core.common.transaction
 
+import org.ionproject.core.common.customExceptions.InternalServerErrorException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
+import org.jdbi.v3.core.ConnectionException
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
@@ -49,6 +51,10 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
 
             handle.commit()
             return result
+        } catch (e: ConnectionException) {
+            handle?.rollback()
+            logger.error(e.localizedMessage)
+            throw InternalServerErrorException("It wasn't possible to establish a connection to the database.")
         } catch (e: Exception) {
             handle?.rollback()
             logger.error(e.localizedMessage)
