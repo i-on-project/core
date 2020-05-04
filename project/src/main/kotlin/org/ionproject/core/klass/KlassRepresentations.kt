@@ -1,14 +1,6 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.classSection.ClassSection
-import org.ionproject.core.common.Action
-import org.ionproject.core.common.EmbeddedRepresentation
-import org.ionproject.core.common.Field
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.Siren
-import org.ionproject.core.common.SirenBuilder
-import org.ionproject.core.common.Uri
-import org.ionproject.core.common.toTemplate
+import org.ionproject.core.common.*
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
@@ -26,6 +18,8 @@ private data class KlassOutputModel(val courseId: Int, val courseAcr: String?, v
     }
 }
 
+private data class KlassCollectionOutputModel(val cid: Int)
+
 /**
  * Class item representation.
  * Is used as an embedded siren object in a Class Collection.
@@ -38,8 +32,6 @@ fun Klass.toSiren(): EmbeddedRepresentation {
         .toEmbed()
 }
 
-
-data class propertiesClass(val cid: Int)
 /**
  * Class Collection resource's representation.
  * Supports paging
@@ -47,7 +39,7 @@ data class propertiesClass(val cid: Int)
 fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
     val selfHref = Uri.forKlasses(cid)
 
-    return SirenBuilder(propertiesClass(cid))
+    return SirenBuilder(KlassCollectionOutputModel(cid))
         .klass(*klassClasses, "collection")
         .entities(map { klass -> klass.toSiren() })
         .link("self", href = Uri.forPagingKlass(cid, page, limit))
