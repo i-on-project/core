@@ -15,9 +15,7 @@ data class ShortOfferForOfferRepr(val id : Int, val acronym: String, val termNum
 fun ProgrammeOffer.offerToDetailRepr() =
         SirenBuilder(ShortOfferForOfferRepr(id, courseAcr, termNumber, optional))
         .klass("offer")
-        .entities(
-                listOf(buildSubentities(courseId))
-        )
+        .entities(buildSubentities(courseId))
         .action(
                 Action(
                         name = "edit",
