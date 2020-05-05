@@ -35,16 +35,13 @@ internal class ClassSectionControllerTest : ControllerTester() {
                 .toEmbed())
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlassByCalTerm(cs.courseId, cs.calendarTerm))
-            .action(
-                Action(
-                    name = "delete",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.DELETE,
-                    type = Media.ALL,
-                    isTemplated = false,
-                    fields = listOf()
-                )
-            )
+            .action(Action(
+                name = "delete",
+                href = selfHref.toTemplate(),
+                method = HttpMethod.DELETE,
+                type = Media.ALL,
+                isTemplated = false,
+                fields = listOf()))
             .toSiren()
 
         isValidSiren(selfHref)

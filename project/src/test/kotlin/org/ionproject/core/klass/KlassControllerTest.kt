@@ -72,21 +72,18 @@ internal class KlassControllerTest : ControllerTester() {
             .entities(entities)
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlasses(klass.courseId))
-            .action(
-                Action(
-                    name = "delete",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.DELETE,
-                    type = Media.ALL,
-                    isTemplated = false)
-            )
-            .action(
-                Action(
-                    name = "edit",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.PATCH,
-                    type = Media.ALL,
-                    isTemplated = false))
+            .action(Action(
+                name = "delete",
+                href = selfHref.toTemplate(),
+                method = HttpMethod.DELETE,
+                type = Media.ALL,
+                isTemplated = false))
+            .action(Action(
+                name = "edit",
+                href = selfHref.toTemplate(),
+                method = HttpMethod.PATCH,
+                type = Media.ALL,
+                isTemplated = false))
             .toSiren()
 
         isValidSiren(selfHref)
@@ -108,38 +105,34 @@ internal class KlassControllerTest : ControllerTester() {
 
         val expected = SirenBuilder(OutputModel(cid))
             .klass(*klassClasses, "collection")
-            .entities(list.map { klass -> SirenBuilder()
-                .klass(*klassClasses)
-                .rel("item")
-                .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
-                .toEmbed()
+            .entities(list.map { klass ->
+                SirenBuilder()
+                    .klass(*klassClasses)
+                    .rel("item")
+                    .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
+                    .toEmbed()
             })
             .link("self", href = selfHrefPage)
             .link("about", href = Uri.forCourseById(cid))
-            .action(
-                Action(
-                    name = "add-item",
-                    title = "Add Item",
-                    method = HttpMethod.POST,
-                    href = selfHref.toTemplate(),
-                    isTemplated = false,
-                    type = Media.APPLICATION_JSON,
-                    fields = listOf()
-                )
-            )
-            .action(
-                Action(
-                    name = "search",
-                    title = "Search items",
-                    method = HttpMethod.GET,
-                    href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
-                    isTemplated = true,
-                    type = Media.SIREN_TYPE,
-                    fields = listOf(
-                        Field(name = "limit", type = "number", klass = "param/limit"),
-                        Field(name = "page", type = "number", klass = "param/page")
-                    ))
-            )
+            .action(Action(
+                name = "add-item",
+                title = "Add Item",
+                method = HttpMethod.POST,
+                href = selfHref.toTemplate(),
+                isTemplated = false,
+                type = Media.APPLICATION_JSON,
+                fields = listOf()))
+            .action(Action(
+                name = "search",
+                title = "Search items",
+                method = HttpMethod.GET,
+                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                isTemplated = true,
+                type = Media.SIREN_TYPE,
+                fields = listOf(
+                    Field(name = "limit", type = "number", klass = "param/limit"),
+                    Field(name = "page", type = "number", klass = "param/page")
+                )))
             .toSiren()
 
         isValidSiren(selfHrefPage)

@@ -33,7 +33,7 @@ fun List<Programme>.programmesListRepr() = SirenBuilder()
 
 private fun Programme.buildSubentities() =
         SirenBuilder(ProgrammeReducedOutputModel(id, acronym))
-            .klass("Programme")
+            .klass("programme")
             .rel("item")
             .link("self", href = Uri.forProgrammesById(id))
             .toEmbed()

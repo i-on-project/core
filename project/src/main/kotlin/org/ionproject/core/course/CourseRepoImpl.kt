@@ -9,7 +9,7 @@ class CourseRepoImpl(private val tm: TransactionManager,
                      private val courseMapper: CourseMapper) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> = tm.run { handle ->
-        handle.createQuery("SELECT * FROM courseWithTerm OFFSET :offset LIMIT :lim order by id")
+        handle.createQuery("SELECT * FROM courseWithTerm order by id OFFSET :offset LIMIT :lim")
             .bind("offset", page * limit)
             .bind("lim", limit)
             .map(courseMapper)
