@@ -80,6 +80,15 @@ class SirenBuilder(
         return this
     }
 
+    fun entities(entity: EmbeddedRepresentation): SirenBuilder {
+        if (entities == null) {
+            entities = mutableListOf()
+        }
+
+        entities?.add(entity)
+        return this
+    }
+
     fun action(ac: Action): SirenBuilder {
         if (actions == null) {
             actions = mutableListOf()

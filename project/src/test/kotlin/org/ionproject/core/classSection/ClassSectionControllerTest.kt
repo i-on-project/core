@@ -28,11 +28,11 @@ internal class ClassSectionControllerTest : ControllerTester() {
 
         val expected = SirenBuilder(this)
             .klass(*classSectionClasses)
-            .entities(listOf(SirenBuilder()
+            .entities(SirenBuilder()
                 .klass("calendar")
                 .rel(Uri.relCalendar)
                 .link("self", href = Uri.forCalendarByClassSection(cs.courseId, cs.calendarTerm, cs.id))
-                .toEmbed()))
+                .toEmbed())
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlassByCalTerm(cs.courseId, cs.calendarTerm))
             .action(

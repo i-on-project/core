@@ -1,6 +1,13 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.Siren
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
+import org.ionproject.core.common.toTemplate
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
@@ -93,7 +100,7 @@ fun FullKlass.toSiren(): Siren {
                     .link("self", href = Uri.forCalendarByClass(courseId, calTerm))
                     .toEmbed()
 
-    fun buildSubEntities(sections: List<EmbeddedRepresentation>, courseId: Int, calendarTerm: String): MutableList<EmbeddedRepresentation> {
+    fun buildSubEntities(sections: List<EmbeddedRepresentation>): MutableList<EmbeddedRepresentation> {
         val listSubEntities = sections.toMutableList()
         listSubEntities.add(calTermEntity(this.courseId, this.calendarTerm))
         return listSubEntities
@@ -101,7 +108,7 @@ fun FullKlass.toSiren(): Siren {
 
     return SirenBuilder(KlassOutputModel.of(this))
         .klass(*klassClasses)
-        .entities(buildSubEntities(sections, this.courseId, this.calendarTerm))
+        .entities(buildSubEntities(sections))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlasses(courseId))
         .action(

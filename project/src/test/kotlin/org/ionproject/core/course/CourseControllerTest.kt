@@ -43,13 +43,12 @@ internal class CourseControllerTest : ControllerTester() {
             val expected =
                 SirenBuilder(CourseReducedOutputModel(course.id, course.acronym, course.name))
                     .klass("course")
-                    .entities(listOf(
-                        SirenBuilder()
-                            .klass("class", "collection")
-                            .rel(Uri.relClass)
-                            .link("self", href = Uri.forKlasses(course.id))
-                            .link("about", href = Uri.forCourseById(course.id))
-                            .toEmbed()))
+                    .entities(SirenBuilder()
+                        .klass("class", "collection")
+                        .rel(Uri.relClass)
+                        .link("self", href = Uri.forKlasses(course.id))
+                        .link("about", href = Uri.forCourseById(course.id))
+                        .toEmbed())
                     .action(
                         Action(
                             name = "delete",
