@@ -39,17 +39,17 @@ internal class KlassControllerTest : ControllerTester() {
      * 200 OK tests
      */
     @Test
-    fun getClassResource_shouldRespondWithTheSirenRepresentationOfClass() {
+    fun getClass_shouldRespondWithSirenType() {
         isValidSiren(Uri.forKlassByCalTerm(1, "1920v")).andReturn()
     }
 
     @Test
-    fun getClassCollectionResource_shouldRespondWithTheSirenRepresentationOfClassCollection() {
+    fun getClassCollection_shouldRespondWithSirenType() {
         isValidSiren(Uri.forKlasses(1)).andReturn()
     }
 
     @Test
-    fun getClass_shouldRespondWithTheSirenRepresentationOfClass() {
+    fun getClass_shouldRespondWithTheExactSirenRepresentationOfClass() {
         val klass = getFullKlass()
         val selfHref = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm)
 
@@ -96,7 +96,7 @@ internal class KlassControllerTest : ControllerTester() {
     }
 
     @Test
-    fun getClasses_shouldRespondWithTheSirenRepresentationOfClassCollection() {
+    fun getClasses_shouldRespondWithTheExactSirenRepresentationOfClassCollection() {
         val list = getClassCollection()
         val page = 0
         val limit = 2
