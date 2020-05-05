@@ -133,7 +133,7 @@ A collection of the possible programmes.
     "class": [ "collection", "programme" ],
     "entities": [
         {
-            "class": [ "Programme" ],
+            "class": [ "programme" ],
             "rel": [ "item" ],
             "properties": {
                 "programmeId": 1,
@@ -144,7 +144,7 @@ A collection of the possible programmes.
             ]
         },
         {
-            "class": [ "Programme" ],
+            "class": [ "programme" ],
             "rel": [ "item" ],
             "properties": {
                 "id": 2,
