@@ -1,6 +1,9 @@
 package org.ionproject.core.common
 
-import org.ionproject.core.common.customExceptions.*
+import org.ionproject.core.common.customExceptions.IncorrectParametersException
+import org.ionproject.core.common.customExceptions.ProhibitedUserException
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
+import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -19,8 +22,12 @@ import javax.servlet.http.HttpServletRequest
 class ExceptionHandler {
 
     @ExceptionHandler(value = [ResourceNotFoundException::class])
-    private fun handleResourceNotFoundException(ex: ResourceNotFoundException, request: HttpServletRequest): ResponseEntity<ProblemJson> {
-        return handleResponse("",
+    private fun handleResourceNotFoundException(
+        ex: ResourceNotFoundException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "",
             "Resource not found",
             404,
             ex.localizedMessage,
@@ -34,8 +41,12 @@ class ExceptionHandler {
      * or when is used an illegal character in a url. e.g. /v0/courses/ç/
      */
     @ExceptionHandler(value = [NumberFormatException::class, IllegalArgumentException::class])
-    private fun handleNumberFormatException(ex: NumberFormatException, request: HttpServletRequest): ResponseEntity<ProblemJson> {
-        return handleResponse("",
+    private fun handleNumberFormatException(
+        ex: NumberFormatException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "",
             "Bad request",
             400,
             ex.localizedMessage,
@@ -48,7 +59,10 @@ class ExceptionHandler {
      * page and limit. It should be thrown when they are invalid.
      */
     @ExceptionHandler(value = [IncorrectParametersException::class])
-    private fun handleIncorrectParametersException(ex: IncorrectParametersException, request: HttpServletRequest): ResponseEntity<ProblemJson> {
+    private fun handleIncorrectParametersException(
+        ex: IncorrectParametersException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
         return handleResponse(
             "",
             "Incorrect Query Parameters",
@@ -74,11 +88,17 @@ class ExceptionHandler {
     private fun handleProhibitedAccess() {
     }
 
-    private fun handleResponse(type: String, title: String, status: Int, detail: String, instance: String): ResponseEntity<ProblemJson> {
+    private fun handleResponse(
+        type: String,
+        title: String,
+        status: Int,
+        detail: String,
+        instance: String
+    ): ResponseEntity<ProblemJson> {
         return ResponseEntity
-                .status(status)
-                .header("Content-Type", Media.PROBLEM_JSON)
-                .body(ProblemJson(type, title, status, detail, instance))
+            .status(status)
+            .header("Content-Type", Media.PROBLEM_JSON)
+            .body(ProblemJson(type, title, status, detail, instance))
     }
 
 }

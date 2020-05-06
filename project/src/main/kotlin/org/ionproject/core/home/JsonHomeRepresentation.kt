@@ -14,7 +14,8 @@ enum class Status {
 // Immutables
 class ApiObject(
     val title: String,
-    val links: Map<String, URI>? = null)
+    val links: Map<String, URI>? = null
+)
 
 /**
  * This is the JsonHome object returned by the controller and then serialized to JSON format.
@@ -24,7 +25,8 @@ class ApiObject(
  */
 class JsonHome(
     val api: ApiObject,
-    val resources: Map<String, ResourceObject>? = null)
+    val resources: Map<String, ResourceObject>? = null
+)
 
 class Hints(
     val allow: List<HttpMethod>? = null,
@@ -36,18 +38,21 @@ class Hints(
     val acceptPut: List<MediaType>? = null,
     val acceptRanges: List<String>? = null,
     val acceptPrefer: List<String>? = null,
-    val docs: URI? = null)
+    val docs: URI? = null
+)
 
 class ResourceObject(
     val href: URI? = null,
     val hrefTemplate: UriTemplate? = null,
     val hrefVars: MutableMap<String, URI>? = null,
     val authSchemes: List<AuthenticationScheme>? = null,
-    val hints: Hints? = null)
+    val hints: Hints? = null
+)
 
 class AuthenticationScheme(
     val scheme: String,
-    val realms: List<String>)
+    val realms: List<String>
+)
 
 // Mutables
 /**
@@ -59,7 +64,8 @@ class AuthenticationScheme(
 class JsonHomeBuilder(
     private val title: String,
     private var links: MutableMap<String, URI>? = null,
-    private var resources: MutableMap<String, ResourceObject>? = null) {
+    private var resources: MutableMap<String, ResourceObject>? = null
+) {
 
     fun link(name: String, href: URI): JsonHomeBuilder {
         if (links == null) {
@@ -101,7 +107,8 @@ class JsonHomeBuilder(
      */
     fun toJsonHome(): JsonHome = JsonHome(
         ApiObject(title, links),
-        resources)
+        resources
+    )
 }
 
 class ResourceBuilder(
@@ -120,7 +127,8 @@ class ResourceBuilder(
     private var docs: URI? = null,
     private var allow: MutableList<HttpMethod>? = null,
     private var authSchemes: MutableList<AuthenticationScheme>? = null,
-    private var formats: MutableMap<MediaType, Unit>? = null) {
+    private var formats: MutableMap<MediaType, Unit>? = null
+) {
 
     /**
      * Configure the resource object with a static URI.
@@ -261,7 +269,8 @@ class ResourceBuilder(
                 acceptPut,
                 acceptRanges,
                 acceptPrefer,
-                docs)
+                docs
+            )
         }
         return parent.putResource(name, ResourceObject(href, hrefTemplate, hrefVars, authSchemes, hints))
     }

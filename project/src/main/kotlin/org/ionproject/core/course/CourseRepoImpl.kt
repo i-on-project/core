@@ -5,8 +5,10 @@ import org.ionproject.core.course.model.Course
 import org.springframework.stereotype.Component
 
 @Component
-class CourseRepoImpl(private val tm: TransactionManager,
-                     private val courseMapper: CourseMapper) : CourseRepo {
+class CourseRepoImpl(
+    private val tm: TransactionManager,
+    private val courseMapper: CourseMapper
+) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> = tm.run { handle ->
         handle.createQuery("SELECT * FROM courseWithTerm order by id OFFSET :offset LIMIT :lim")

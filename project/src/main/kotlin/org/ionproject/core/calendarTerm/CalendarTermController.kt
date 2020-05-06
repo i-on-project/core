@@ -14,17 +14,21 @@ import org.springframework.web.bind.annotation.RestController
 class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
 
     @GetMapping(Uri.calendarTerms)
-    fun getTerms(@RequestParam(defaultValue = "0") page: Int,
-                 @RequestParam(defaultValue = "10") limit: Int): ResponseEntity<Siren> {
+    fun getTerms(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") limit: Int
+    ): ResponseEntity<Siren> {
         val calTerms = calendarTermServices.getTerms(page, limit)
 
         return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
     }
 
     @GetMapping(Uri.calendarTermById)
-    fun getCalendarTerm(@PathVariable calterm: String,
-                        @RequestParam(defaultValue = "0") page: Int,
-                        @RequestParam(defaultValue = "10") limit: Int): ResponseEntity<Siren> {
+    fun getCalendarTerm(
+        @PathVariable calterm: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") limit: Int
+    ): ResponseEntity<Siren> {
         val calTerm = calendarTermServices.getTermByCalId(calterm, page, limit)
 
         calTerm?.let { return ResponseEntity.ok(it.toCalendarTermDetailRepr(page, limit)) }

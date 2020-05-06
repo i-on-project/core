@@ -21,7 +21,8 @@ class JsonHomeController {
 
     @GetMapping("/")
     fun getRoot(): ResponseEntity<JsonHome> =
-            ResponseEntity.ok(JsonHomeBuilder(apiName)
+        ResponseEntity.ok(
+            JsonHomeBuilder(apiName)
                 .link("describedBy", specUri)
                 // course resource
                 .newResource("courses")
@@ -39,5 +40,5 @@ class JsonHomeController {
                 .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
                 .toResourceObject()
                 .toJsonHome()
-            )
+        )
 }

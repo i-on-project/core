@@ -20,7 +20,8 @@ internal class CourseControllerTest : ControllerTester() {
 
         fun getCourseCollection() = listOf(
             Course(1, "SL", "Software Laboratory"),
-            Course(2, "WAD", "Web Applications Development"))
+            Course(2, "WAD", "Web Applications Development")
+        )
     }
 
     /**
@@ -44,29 +45,41 @@ internal class CourseControllerTest : ControllerTester() {
 
         val expected = SirenBuilder(OutputModel(course.id, course.acronym, course.name))
             .klass("course")
-            .entities(SirenBuilder()
-                .klass("class", "collection")
-                .rel(Uri.relClass)
-                .link("self", href = Uri.forKlasses(course.id))
-                .link("about", href = Uri.forCourseById(course.id))
-                .toEmbed())
-            .action(Action(
-                name = "delete",
-                title = "delete course",
-                method = HttpMethod.DELETE,
-                href = Uri.forCourseById(course.id).toTemplate(),
-                isTemplated = false,
-                fields = listOf()))
-            .action(Action(
-                name = "edit",
-                title = "edit course",
-                method = HttpMethod.PATCH,
-                href = Uri.forCourseById(course.id).toTemplate(),
-                isTemplated = false,
-                fields = listOf()))
+            .entities(
+                SirenBuilder()
+                    .klass("class", "collection")
+                    .rel(Uri.relClass)
+                    .link("self", href = Uri.forKlasses(course.id))
+                    .link("about", href = Uri.forCourseById(course.id))
+                    .toEmbed()
+            )
+            .action(
+                Action(
+                    name = "delete",
+                    title = "delete course",
+                    method = HttpMethod.DELETE,
+                    href = Uri.forCourseById(course.id).toTemplate(),
+                    isTemplated = false,
+                    fields = listOf()
+                )
+            )
+            .action(
+                Action(
+                    name = "edit",
+                    title = "edit course",
+                    method = HttpMethod.PATCH,
+                    href = Uri.forCourseById(course.id).toTemplate(),
+                    isTemplated = false,
+                    fields = listOf()
+                )
+            )
             .link("self", href = Uri.forCourseById(course.id))
-            .link("current", href = Uri.forKlassByCalTerm(current.id, current.term
-                ?: throw AssertionError("The Calendar Term of the current course must not be null")))
+            .link(
+                "current", href = Uri.forKlassByCalTerm(
+                    current.id, current.term
+                        ?: throw AssertionError("The Calendar Term of the current course must not be null")
+                )
+            )
             .link("collection", href = Uri.forCourses())
             .toSiren()
 
@@ -94,30 +107,39 @@ internal class CourseControllerTest : ControllerTester() {
                     .klass("class")
                     .rel("item")
                     .link("self", href = Uri.forCourseById(course.id))
-                    .link("current", href = Uri.forKlassByCalTerm(current.id, current.term
-                        ?: throw AssertionError("The Calendar Term of the current course must not be null")))
+                    .link(
+                        "current", href = Uri.forKlassByCalTerm(
+                            current.id, current.term
+                                ?: throw AssertionError("The Calendar Term of the current course must not be null")
+                        )
+                    )
                     .link("collection", href = selfHref)
                     .toEmbed()
             })
-            .action(Action(
-                name = "add-item",
-                title = "Add a new Course",
-                method = HttpMethod.POST,
-                href = selfHref.toTemplate(),
-                isTemplated = false,
-                type = Media.APPLICATION_JSON
-            ))
-            .action(Action(
-                name = "search",
-                title = "Search Items",
-                method = HttpMethod.GET,
-                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "limit", type = "number", klass = "param/limit"),
-                    Field(name = "page", type = "number", klass = "param/page")
-                )))
+            .action(
+                Action(
+                    name = "add-item",
+                    title = "Add a new Course",
+                    method = HttpMethod.POST,
+                    href = selfHref.toTemplate(),
+                    isTemplated = false,
+                    type = Media.APPLICATION_JSON
+                )
+            )
+            .action(
+                Action(
+                    name = "search",
+                    title = "Search Items",
+                    method = HttpMethod.GET,
+                    href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                    isTemplated = true,
+                    type = Media.SIREN_TYPE,
+                    fields = listOf(
+                        Field(name = "limit", type = "number", klass = "param/limit"),
+                        Field(name = "page", type = "number", klass = "param/page")
+                    )
+                )
+            )
             .link("self", href = selfHrefPaged)
             .link("next", href = Uri.forPagingCourses(page + 1, limit))
             .toSiren()

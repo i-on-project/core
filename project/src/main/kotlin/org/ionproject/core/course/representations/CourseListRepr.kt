@@ -8,7 +8,7 @@ import org.springframework.web.util.UriTemplate
 /**
  * Output models
  */
-data class SmallCourseRepr(val id: Int,val acronym: String)
+data class SmallCourseRepr(val id: Int, val acronym: String)
 
 /**
  * Siren representation generators
@@ -38,7 +38,8 @@ fun List<Course>.courseToListRepr(page: Int, limit: Int) = SirenBuilder()
                 Field(name = "limit", type = "number", klass = "param/limit"),
                 Field(name = "page", type = "number", klass = "param/page")
             )
-        ))
+        )
+    )
     .link("self", href = Uri.forPagingCourses(page, limit))
     .link("next", href = Uri.forPagingCourses(page + 1, limit)).let {
         {

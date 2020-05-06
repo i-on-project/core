@@ -27,13 +27,19 @@ class CoreApplication
 @EnableWebMvc
 class CoreSerializationConfig : WebMvcConfigurer {
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-        val converter = converters.find { it is MappingJackson2HttpMessageConverter } as MappingJackson2HttpMessageConverter
+        val converter =
+            converters.find { it is MappingJackson2HttpMessageConverter } as MappingJackson2HttpMessageConverter
 
         // Additional options for Jackson
         converter.objectMapper // default used by spring
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)  // ignore null properties
             .configure(SerializationFeature.INDENT_OUTPUT, true) // json pretty output
-        converter.objectMapper.registerModule(SimpleModule().addSerializer(UriTemplate::class.java, UriTemplateSerializer()))
+        converter.objectMapper.registerModule(
+            SimpleModule().addSerializer(
+                UriTemplate::class.java,
+                UriTemplateSerializer()
+            )
+        )
 
 
         converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
@@ -60,9 +66,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LoggerInterceptor())
         registry.addInterceptor(PageLimitQueryParamInterceptor())
-                .addPathPatterns("/v?/calendar-terms*")
-                .addPathPatterns("/v?/courses/**")
-                .addPathPatterns("/v?/programmes*")
+            .addPathPatterns("/v?/calendar-terms*")
+            .addPathPatterns("/v?/courses/**")
+            .addPathPatterns("/v?/programmes*")
     }
 }
 
