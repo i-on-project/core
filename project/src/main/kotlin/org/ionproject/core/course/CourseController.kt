@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CourseController(private val courseServices: CourseServices) {
 
-    @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.courses)
     fun getCourses(@RequestParam(defaultValue = "0") page: Int,
                    @RequestParam(defaultValue = "10") limit: Int): ResponseEntity<Siren> {
         val courses = courseServices.getCourses(page, limit)
@@ -31,7 +31,7 @@ class CourseController(private val courseServices: CourseServices) {
         return ResponseEntity.ok(siren)
     }
 
-    @GetMapping(Uri.courseById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
         val course = courseServices.getCourseById(cid)
 
