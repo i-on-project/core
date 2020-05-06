@@ -28,41 +28,41 @@ Available "entry point" resources:
 ## Example
 ```javascript
 {
-    "api": {
-        "title": "i-on Core",
-        "links": {
-            "describedBy": "https://github.com/i-on-project/core/tree/master/docs/api"
-        }
-    },
-    "resources": {
-        "courses": {
-            "hrefTemplate": "/v0/courses{?page,limit}",
-            "hrefVars": {
-                "limit": "/api-docs/params/limit",
-                "page": "/api-docs/params/page"
-            },
-            "hints": {
-                "allow": ["GET"],
-		"formats": {
-			"application/vnd.siren+json":{}
-		}
-		"docs": "https://github.com/i-on-project/core/tree/master/docs/api/courses.md"
-            }
-        },
-        "calendar-terms": {
-            "hrefTemplate": "/v0/calendar-terms{?page,limit}",
-            "hrefVars": {
-                "limit": "/api-docs/params/limit",
-                "page": "/api-docs/params/page"
-            },
-            "hints": {
-                "allow": ["GET"],
-		"formats": {
-			"application/vnd.siren+json":{}
-		}
-		"docs": "https://github.com/i-on-project/core/blob/master/docs/api/calendar-terms.md"
-            }
-        }
+  "api" : {
+    "title" : "i-on Core",
+    "links" : {
+      "describedBy" : "https://github.com/i-on-project/core/tree/master/docs/api"
     }
+  },
+  "resources" : {
+    "courses" : {
+      "hrefTemplate" : "/v0/courses{?page,limit}",
+      "hrefVars" : {
+        "limit" : "/api-docs/params/limit",
+        "page" : "/api-docs/params/page"
+      },
+      "hints" : {
+        "allow" : [ "GET" ],
+        "formats" : {
+          "application/vnd.siren+json" : { }
+        },
+        "docs" : "https://github.com/i-on-project/core/tree/master/docs/api/courses.md"
+      }
+    },
+    "calendar-terms" : {
+      "hrefTemplate" : "/v0/calendar-terms{?page,limit}",
+      "hrefVars" : {
+        "limit" : "/api-docs/params/limit",
+        "page" : "/api-docs/params/page"
+      },
+      "hints" : {
+        "allow" : [ "GET" ],
+        "formats" : {
+          "application/vnd.siren+json" : { }
+        },
+        "docs" : "https://github.com/i-on-project/core/tree/master/docs/api/calendar-terms.md"
+      }
+    }
+  }
 }
 ```
