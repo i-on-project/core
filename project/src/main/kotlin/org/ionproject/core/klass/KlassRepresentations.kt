@@ -1,6 +1,5 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.classSection.ClassSection
 import org.ionproject.core.common.Action
 import org.ionproject.core.common.EmbeddedRepresentation
 import org.ionproject.core.common.Field
@@ -26,6 +25,8 @@ private data class KlassOutputModel(val courseId: Int, val courseAcr: String?, v
     }
 }
 
+private data class KlassCollectionOutputModel(val cid: Int)
+
 /**
  * Class item representation.
  * Is used as an embedded siren object in a Class Collection.
@@ -38,8 +39,6 @@ fun Klass.toSiren(): EmbeddedRepresentation {
         .toEmbed()
 }
 
-
-data class propertiesClass(val cid: Int)
 /**
  * Class Collection resource's representation.
  * Supports paging
@@ -47,7 +46,7 @@ data class propertiesClass(val cid: Int)
 fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
     val selfHref = Uri.forKlasses(cid)
 
-    return SirenBuilder(propertiesClass(cid))
+    return SirenBuilder(KlassCollectionOutputModel(cid))
         .klass(*klassClasses, "collection")
         .entities(map { klass -> klass.toSiren() })
         .link("self", href = Uri.forPagingKlass(cid, page, limit))
@@ -101,7 +100,7 @@ fun FullKlass.toSiren(): Siren {
                     .link("self", href = Uri.forCalendarByClass(courseId, calTerm))
                     .toEmbed()
 
-    fun buildSubEntities(sections: List<EmbeddedRepresentation>, courseId: Int, calendarTerm: String): MutableList<EmbeddedRepresentation> {
+    fun buildSubEntities(sections: List<EmbeddedRepresentation>): MutableList<EmbeddedRepresentation> {
         val listSubEntities = sections.toMutableList()
         listSubEntities.add(calTermEntity(this.courseId, this.calendarTerm))
         return listSubEntities
@@ -109,7 +108,7 @@ fun FullKlass.toSiren(): Siren {
 
     return SirenBuilder(KlassOutputModel.of(this))
         .klass(*klassClasses)
-        .entities(buildSubEntities(sections, this.courseId, this.calendarTerm))
+        .entities(buildSubEntities(sections))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlasses(courseId))
         .action(

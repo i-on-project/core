@@ -25,7 +25,7 @@ class CourseRepoImpl(private val tm: TransactionManager,
     }
 
     override fun getCourseById(id: Int): Course? = tm.run { handle ->
-        handle.createQuery("SELECT * FROM courseWithTerm WHERE id=:id")
+        handle.createQuery("SELECT * FROM courseWithTerm WHERE id=:id order by id")
             .bind("id", id)
             .map(courseMapper)
             .firstOrNull()

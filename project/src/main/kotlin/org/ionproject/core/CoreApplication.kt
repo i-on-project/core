@@ -7,6 +7,9 @@ import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
+import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
+import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
+import org.ionproject.core.common.messageConverters.SirenMessageConverter
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
@@ -30,14 +33,28 @@ class CoreSerializationConfig : WebMvcConfigurer {
         converter.objectMapper // default used by spring
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)  // ignore null properties
             .configure(SerializationFeature.INDENT_OUTPUT, true) // json pretty output
-
         converter.objectMapper.registerModule(SimpleModule().addSerializer(UriTemplate::class.java, UriTemplateSerializer()))
 
-        // JSON Home
-        val homeConverter = MappingJackson2HttpMessageConverter()
-        homeConverter.objectMapper = converter.objectMapper
-        homeConverter.supportedMediaTypes = listOf(Media.MEDIA_HOME)
-        converters.add(homeConverter)
+
+        converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
+
+        //Registering Message Converters
+        converters.add(0, SirenMessageConverter(converter))
+        converters.add(0, JsonHomeMessageConverter(converter))
+        converters.add(0, ProblemJsonMessageConverter(converter))
+
+        /**
+         * Converters were added to position 0 to be more privileged than the default
+         * message converters.
+         * (If such wasn't done, the default behavior (without specifying the Accept Header) would always be JSON)
+         *
+         * Also, if the property supportedMediaTypes of MappingJackson2HttpMessageConverter wasn't overriden
+         * a controller which returns hypermedia "JSON-HOME" would accept the header "Accept: application/vnd.siren+json"
+         * and return a document of type "JSON-HOME" with the header "Content-Type:application/vnd.siren+json",
+         * because the default message converter matches everything with "application/json" and "application/*+json}".*/
+         *
+         *
+         */
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {

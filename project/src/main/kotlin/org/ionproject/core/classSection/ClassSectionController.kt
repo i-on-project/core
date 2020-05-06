@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ClassSectionController(private val repo: ClassSectionRepo) {
 
-    @GetMapping(Uri.classSectionById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.classSectionById)
     fun get(@PathVariable cid: Int,
             @PathVariable calterm: String,
             @PathVariable sid: String): ResponseEntity<Siren> {

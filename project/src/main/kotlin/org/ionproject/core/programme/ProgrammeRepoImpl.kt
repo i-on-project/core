@@ -32,6 +32,7 @@ class ProgrammeRepoImpl(private val tm: TransactionManager,
                 """ SELECT po.*,co.acronym AS courseAcr FROM dbo.programmeOffer AS po INNER JOIN dbo.course AS co
                         ON po.courseId=co.id
                         WHERE programmeId = :id 
+                        ORDER BY po.id
                         """.trimIndent())
                 .bind("id", id)
                 .map(offerMapper)
