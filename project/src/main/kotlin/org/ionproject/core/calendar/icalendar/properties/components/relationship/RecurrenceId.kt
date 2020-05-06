@@ -16,21 +16,30 @@ class RecurrenceId private constructor(
     val recurrenceIdentifierRange: RecurrenceIdentifierRange? = null
 ) : ParameterizedProperty {
 
-    constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier?, recurrenceIdentifierRange: RecurrenceIdentifierRange?) : this(
+    constructor(
+        dateTime: DateTime,
+        timeZoneIdentifier: TimeZoneIdentifier?,
+        recurrenceIdentifierRange: RecurrenceIdentifierRange?
+    ) : this(
         dateTime,
         null,
         timeZoneIdentifier,
         recurrenceIdentifierRange
     )
 
-    constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier?, recurrenceIdentifierRange: RecurrenceIdentifierRange?) : this(
+    constructor(
+        date: Date,
+        timeZoneIdentifier: TimeZoneIdentifier?,
+        recurrenceIdentifierRange: RecurrenceIdentifierRange?
+    ) : this(
         date,
         ValueDataType(date),
         timeZoneIdentifier,
         recurrenceIdentifierRange
     )
 
-    override val parameters: List<PropertyParameter> = listOfNotNull(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
+    override val parameters: List<PropertyParameter> =
+        listOfNotNull(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
 
     override val name: String
         get() = "RECURRENCE-ID"

@@ -37,10 +37,10 @@ object CategoryData {
     ) : RowMapper<Pair<Int, Category>> {
         override fun map(rs: ResultSet, ctx: StatementContext): Pair<Int, Category> =
             rs.getInt(ID_COLUMN) to (
-                Category(
-                    rs.getString(NAME_COLUMN),
-                    languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")
-                )
-            )
+                    Category(
+                        rs.getString(NAME_COLUMN),
+                        languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")
+                    )
+                    )
     }
 }

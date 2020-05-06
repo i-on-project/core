@@ -6,7 +6,14 @@ abstract class Duration private constructor(
     companion object {
         private const val name = "DURATION"
 
-        operator fun invoke(weeks: Int = 0, days: Int = 0, hours: Int = 0, minutes: Int = 0, seconds: Int = 0, adding: Boolean = true): Duration {
+        operator fun invoke(
+            weeks: Int = 0,
+            days: Int = 0,
+            hours: Int = 0,
+            minutes: Int = 0,
+            seconds: Int = 0,
+            adding: Boolean = true
+        ): Duration {
             if (weeks > 0) return DurationWeek(weeks, adding)
             if (days > 0) {
                 return DurationDate(days, hours, minutes, seconds, adding)
@@ -25,7 +32,8 @@ abstract class Duration private constructor(
         return "${if (adding) "" else "-"}P"
     }
 
-    private class DurationDate(private val day: DurationDay, private val time: DurationTime? = null, adding: Boolean) : Duration(adding) {
+    private class DurationDate(private val day: DurationDay, private val time: DurationTime? = null, adding: Boolean) :
+        Duration(adding) {
         class DurationDay(val value: Int) {
             init {
                 if (value <= 0) throw IllegalArgumentException("Day value must be greater than 0")

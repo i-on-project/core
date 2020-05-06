@@ -23,7 +23,12 @@ class Recur private constructor(
         byDay = byDay
     )
 
-    constructor(count: Int?, interval: Int? = null, byDay: List<WeekDay>?) : this(Frequency.WEEKLY, count = count, interval = interval, byDay = byDay)
+    constructor(count: Int?, interval: Int? = null, byDay: List<WeekDay>?) : this(
+        Frequency.WEEKLY,
+        count = count,
+        interval = interval,
+        byDay = byDay
+    )
 
     override val value: Any
         get() = toString()

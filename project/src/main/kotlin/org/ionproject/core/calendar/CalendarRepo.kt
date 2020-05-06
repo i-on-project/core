@@ -8,10 +8,36 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface CalendarRepo {
-    fun getClassCalendar(courseId: Int, calendarTerm: String, type: Char?, startBefore: String?, startAfter: String?, endBefore: String?, endAfter: String?, summary: String?): Calendar?
-    fun getClassSectionCalendar(courseId: Int, calendarTerm: String, classSectionId: String, type: Char?, startBefore: String?, startAfter: String?, endBefore: String?, endAfter: String?, summary: String?): Calendar?
+    fun getClassCalendar(
+        courseId: Int,
+        calendarTerm: String,
+        type: Char?,
+        startBefore: String?,
+        startAfter: String?,
+        endBefore: String?,
+        endAfter: String?,
+        summary: String?
+    ): Calendar?
+
+    fun getClassSectionCalendar(
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        type: Char?,
+        startBefore: String?,
+        startAfter: String?,
+        endBefore: String?,
+        endAfter: String?,
+        summary: String?
+    ): Calendar?
+
     fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar?
-    fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: String, componentId: Int): Calendar?
+    fun getClassSectionCalendarComponent(
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        componentId: Int
+    ): Calendar?
 }
 
 @Repository
@@ -20,7 +46,16 @@ class CalendarRepoImpl(
     private val componentMapper: CalendarData.CalendarComponentMapper
 ) : CalendarRepo {
 
-    override fun getClassCalendar(courseId: Int, calendarTerm: String, type: Char?, startBefore: String?, startAfter: String?, endBefore: String?, endAfter: String?, summary: String?): Calendar? {
+    override fun getClassCalendar(
+        courseId: Int,
+        calendarTerm: String,
+        type: Char?,
+        startBefore: String?,
+        startAfter: String?,
+        endBefore: String?,
+        endAfter: String?,
+        summary: String?
+    ): Calendar? {
         val components = transactionManager.run {
             it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
                 .bind("courseId", courseId)
@@ -41,7 +76,16 @@ class CalendarRepoImpl(
     }
 
     override fun getClassSectionCalendar(
-        courseId: Int, calendarTerm: String, classSectionId: String, type: Char?, startBefore: String?, startAfter: String?, endBefore: String?, endAfter: String?, summary: String?): Calendar? {
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        type: Char?,
+        startBefore: String?,
+        startAfter: String?,
+        endBefore: String?,
+        endAfter: String?,
+        summary: String?
+    ): Calendar? {
         val components = transactionManager.run {
             it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
                 .bind("courseId", courseId)
@@ -89,7 +133,12 @@ class CalendarRepoImpl(
 
     }
 
-    override fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: String, componentId: Int): Calendar? {
+    override fun getClassSectionCalendarComponent(
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        componentId: Int
+    ): Calendar? {
         try {
             val component = transactionManager.run {
                 it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)

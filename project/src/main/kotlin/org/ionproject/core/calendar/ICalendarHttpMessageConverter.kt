@@ -71,7 +71,8 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
     private fun writeProperty(property: Property, writer: Writer) {
         property.apply {
             val parameters = if (this is ParameterizedProperty) {
-                parameters.map { ";${it.name}=${it.values.joinToString(",")}" }.let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
+                parameters.map { ";${it.name}=${it.values.joinToString(",")}" }
+                    .let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
             } else ""
 
             val value = if (this is MultiValuedProperty<*>) {

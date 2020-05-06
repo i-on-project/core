@@ -14,8 +14,17 @@ class DateTimeStart private constructor(
     val timeZoneIdentifier: TimeZoneIdentifier?
 ) : ParameterizedProperty {
 
-    constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(dateTime, null, timeZoneIdentifier)
-    constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(date, ValueDataType(date), timeZoneIdentifier)
+    constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(
+        dateTime,
+        null,
+        timeZoneIdentifier
+    )
+
+    constructor(date: Date, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(
+        date,
+        ValueDataType(date),
+        timeZoneIdentifier
+    )
 
     override val parameters: List<PropertyParameter>
         get() = listOfNotNull(valueDataType, timeZoneIdentifier)

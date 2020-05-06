@@ -30,7 +30,8 @@ class CalendarController(private val repository: CalendarRepo) {
         @RequestParam(required = false, name = END_AFTER) endAfter: String?,
         @RequestParam(required = false, name = SUMMARY) summary: String?
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassCalendar(cid, calterm, type, startBefore, startAfter, endBefore, endAfter, summary)
+        val calendar =
+            repository.getClassCalendar(cid, calterm, type, startBefore, startAfter, endBefore, endAfter, summary)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -49,7 +50,17 @@ class CalendarController(private val repository: CalendarRepo) {
         @RequestParam(required = false, name = END_AFTER) endAfter: String?,
         @RequestParam(required = false, name = SUMMARY) summary: String?
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassSectionCalendar(cid, calterm, sid, type, startBefore, startAfter, endBefore, endAfter, summary)
+        val calendar = repository.getClassSectionCalendar(
+            cid,
+            calterm,
+            sid,
+            type,
+            startBefore,
+            startAfter,
+            endBefore,
+            endAfter,
+            summary
+        )
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -62,7 +73,8 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable calterm: String,
         @PathVariable cmpid: String
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassCalendarComponent(cid, calterm, cmpid.toInt(16)) // TODO(use constant for uid radix)
+        val calendar =
+            repository.getClassCalendarComponent(cid, calterm, cmpid.toInt(16)) // TODO(use constant for uid radix)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -76,7 +88,12 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable cid: Int,
         @PathVariable cmpid: String
     ): ResponseEntity<Any> {
-        val calendar = repository.getClassSectionCalendarComponent(cid, calterm, sid, cmpid.toInt(16)) // TODO(use constant for uid radix)
+        val calendar = repository.getClassSectionCalendarComponent(
+            cid,
+            calterm,
+            sid,
+            cmpid.toInt(16)
+        ) // TODO(use constant for uid radix)
         return if (calendar != null) {
             ResponseEntity.ok(calendar)
         } else

@@ -82,8 +82,12 @@ object Uri {
     val componentByClassSectionCalendarTemplate = UriTemplate(componentByClassSectionCalendar)
 
     fun forCalendarByClass(cid: Int, calterm: String) = calendarByClassTemplate.expand(cid, calterm)
-    fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) = calendarByClassSectionTemplate.expand(cid, calterm, sid)
-    fun forCalendarComponentByClass(cid: Int, calterm: String, cmpid: String) = componentByClassCalendarTemplate.expand(cid, calterm, cmpid)
+    fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) =
+        calendarByClassSectionTemplate.expand(cid, calterm, sid)
+
+    fun forCalendarComponentByClass(cid: Int, calterm: String, cmpid: String) =
+        componentByClassCalendarTemplate.expand(cid, calterm, cmpid)
+
     fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) =
         componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
 

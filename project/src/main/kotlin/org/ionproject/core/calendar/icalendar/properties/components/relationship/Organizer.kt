@@ -12,7 +12,8 @@ class Organizer(
     val sentBy: SentBy? = null
 ) : ParameterizedProperty {
 
-    override val parameters: List<PropertyParameter> = listOfNotNull(language, commonName, directoryEntryReference, sentBy)
+    override val parameters: List<PropertyParameter> =
+        listOfNotNull(language, commonName, directoryEntryReference, sentBy)
 
     override val name: String
         get() = "ORGANIZER"
