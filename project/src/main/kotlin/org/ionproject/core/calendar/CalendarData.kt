@@ -89,21 +89,28 @@ object CalendarData {
 
     private const val CLASS_ABBREVIATION = "c"
     private const val CLASS = "dbo.Class $CLASS_ABBREVIATION"
-    private const val CLASS_CALENDAR_ID = "$CLASS_ABBREVIATION.calendar"
-    private const val CLASS_COURSE = "$CLASS_ABBREVIATION.courseId"
-    private const val CLASS_TERM = "$CLASS_ABBREVIATION.term"
+
+    private const val CALENDAR_ID_COLUMN = "calendar"
+    private const val COURSE_COLUMN = "courseId"
+    private const val TERM_COLUMN = "term"
+    private const val ID_COLUMN = "id"
+
+    private const val CLASS_CALENDAR_ID = "$CLASS_ABBREVIATION.$CALENDAR_ID_COLUMN"
+    private const val CLASS_COURSE = "$CLASS_ABBREVIATION.$COURSE_COLUMN"
+    private const val CLASS_TERM = "$CLASS_ABBREVIATION.$TERM_COLUMN"
 
     private const val CLASS_SECTION_ABBREVIATION = "cs"
     private const val CLASS_SECTION = "dbo.Class $CLASS_SECTION_ABBREVIATION"
-    private const val CLASS_SECTION_CALENDAR_ID = "$CLASS_SECTION_ABBREVIATION.calendar"
-    private const val CLASS_SECTION_ID = "$CLASS_SECTION_ABBREVIATION.id"
-    private const val CLASS_SECTION_COURSE = "$CLASS_SECTION_ABBREVIATION.courseId"
-    private const val CLASS_SECTION_TERM = "$CLASS_SECTION_ABBREVIATION.term"
+
+    private const val CLASS_SECTION_CALENDAR_ID = "$CLASS_SECTION_ABBREVIATION.$CALENDAR_ID_COLUMN"
+    private const val CLASS_SECTION_ID = "$CLASS_SECTION_ABBREVIATION.$ID_COLUMN"
+    private const val CLASS_SECTION_COURSE = "$CLASS_SECTION_ABBREVIATION.$COURSE_COLUMN"
+    private const val CLASS_SECTION_TERM = "$CLASS_SECTION_ABBREVIATION.$TERM_COLUMN"
 
     const val CALENDAR_FROM_CLASS_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_CALENDAR_ID
                     FROM $CLASS
-                    WHERE $CLASS_COURSE = :courseId AND $CLASS_TERM = :term
+                    WHERE $CLASS_COURSE = :$COURSE_COLUMN AND $CLASS_TERM = :$TERM_COLUMN
                 )
             $SELECT
             FROM
@@ -114,18 +121,23 @@ object CalendarData {
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_CALENDAR_ID
                     FROM $CLASS
-                    WHERE $CLASS_COURSE = :courseId AND $CLASS_TERM = :term
+                    WHERE $CLASS_COURSE = :$COURSE_COLUMN AND $CLASS_TERM = :$TERM_COLUMN
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
-            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId
+            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :$UID_COLUMN
             $GROUP_BY"""
 
     const val CALENDAR_FROM_CLASS_SECTION_QUERY =
         """WITH calendar_id AS (
                     SELECT $CLASS_SECTION_CALENDAR_ID
                     FROM $CLASS_SECTION
-                    WHERE $CLASS_SECTION_COURSE = :courseId AND $CLASS_SECTION_TERM = :term AND $CLASS_SECTION_ID = :classSectionId
+                    WHERE 
+                        $CLASS_SECTION_COURSE = :$COURSE_COLUMN 
+                        AND
+                        $CLASS_SECTION_TERM = :$TERM_COLUMN
+                        AND
+                        $CLASS_SECTION_ID = :$ID_COLUMN
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
@@ -135,11 +147,16 @@ object CalendarData {
     const val CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY = """WITH calendar_id AS (
                     SELECT $CLASS_SECTION_CALENDAR_ID
                     FROM $CLASS_SECTION
-                    WHERE $CLASS_SECTION_COURSE = :courseId AND $CLASS_SECTION_TERM = :term AND $CLASS_SECTION_ID = :classSectionId
+                    WHERE 
+                        $CLASS_SECTION_COURSE = :$COURSE_COLUMN 
+                        AND
+                        $CLASS_SECTION_TERM = :$TERM_COLUMN
+                        AND
+                        $CLASS_SECTION_ID = :$ID_COLUMN
                 )
             $SELECT
             FROM $CALENDAR_COMPONENT
-            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :componentId
+            WHERE $CALENDARS = (SELECT * FROM calendar_id) AND $UID = :$UID_COLUMN
             $GROUP_BY"""
 
     @Component
