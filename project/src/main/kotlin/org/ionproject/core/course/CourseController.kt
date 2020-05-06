@@ -1,6 +1,5 @@
 package org.ionproject.core.course
 
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.RequiresAuthentication
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class CourseController(private val courseServices: CourseServices) {
 
-    @GetMapping(Uri.courses, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.courses)
     fun getCourses(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") limit: Int
@@ -28,7 +27,7 @@ class CourseController(private val courseServices: CourseServices) {
         return ResponseEntity.ok(siren)
     }
 
-    @GetMapping(Uri.courseById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
         val course = courseServices.getCourseById(cid)
 

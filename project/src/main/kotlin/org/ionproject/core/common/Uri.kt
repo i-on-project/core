@@ -18,7 +18,9 @@ object Uri {
 
     fun forCalTerms() = URI(calendarTerms)
     fun forCalTermById(calterm: String) = calendarTermByIdTemplate.expand(calterm)
-    fun forPagingCalTerms(page: Int, limit: Int) = UriTemplate("${calendarTerms}${springWebPagingQuery}").expand(page, limit)
+    fun forPagingCalTerms(page: Int, limit: Int) =
+        UriTemplate("${calendarTerms}${springWebPagingQuery}").expand(page, limit)
+
     fun forPagingCalTermById(calterm: String, page: Int, limit: Int) =
         UriTemplate("${calendarTermById}${springWebPagingQuery}").expand(calterm, page, limit)
 

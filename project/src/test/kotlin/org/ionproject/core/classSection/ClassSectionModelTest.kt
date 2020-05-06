@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 internal class ClassSectionModelTest {
     @Test
-    fun createClassSection_shouldNotThrowExceptionOrChangeValues() {
+    fun createClassSection_shouldMatchEveryValueAppliedToCtor() {
         val cid = 1
         val acr = "acr"
         val calendarTerm = "1920v"

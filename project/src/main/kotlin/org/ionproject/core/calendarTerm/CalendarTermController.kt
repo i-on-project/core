@@ -2,7 +2,6 @@ package org.ionproject.core.calendarTerm
 
 import org.ionproject.core.calendarTerm.representations.toCalendarTermDetailRepr
 import org.ionproject.core.calendarTerm.representations.toCalendarTermListRepr
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
 
-    @GetMapping(Uri.calendarTerms, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.calendarTerms)
     fun getTerms(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") limit: Int
@@ -24,7 +23,7 @@ class CalendarTermController(private val calendarTermServices: CalendarTermServi
         return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
     }
 
-    @GetMapping(Uri.calendarTermById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.calendarTermById)
     fun getCalendarTerm(
         @PathVariable calterm: String,
         @RequestParam(defaultValue = "0") page: Int,

@@ -10,7 +10,8 @@ class Relation(
     val href: URI,
     val type: String? = null,
     val title: String? = null,
-    @JsonProperty("class") val klass: List<String>? = null)
+    @JsonProperty("class") val klass: List<String>? = null
+)
 
 class Field(
     val name: String,
@@ -82,6 +83,15 @@ class SirenBuilder(
         if (ents != null) {
             entities?.addAll(ents)
         }
+        return this
+    }
+
+    fun entities(entity: EmbeddedRepresentation): SirenBuilder {
+        if (entities == null) {
+            entities = mutableListOf()
+        }
+
+        entities?.add(entity)
         return this
     }
 

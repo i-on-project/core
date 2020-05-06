@@ -11,7 +11,7 @@ class CourseRepoImpl(
 ) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> = tm.run { handle ->
-        handle.createQuery("SELECT * FROM courseWithTerm OFFSET :offset LIMIT :lim")
+        handle.createQuery("SELECT * FROM courseWithTerm order by id OFFSET :offset LIMIT :lim")
             .bind("offset", page * limit)
             .bind("lim", limit)
             .map(courseMapper)
@@ -19,7 +19,7 @@ class CourseRepoImpl(
     } as List<Course>
 
     override fun getCourseById(id: Int): Course? = tm.run { handle ->
-        handle.createQuery("SELECT * FROM courseWithTerm WHERE id=:id")
+        handle.createQuery("SELECT * FROM courseWithTerm WHERE id=:id order by id")
             .bind("id", id)
             .map(courseMapper)
             .firstOrNull()

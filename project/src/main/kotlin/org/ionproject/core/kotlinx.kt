@@ -50,3 +50,8 @@ fun StringBuilder.appendIfNotNull(vararg objs: Any?) {
         if (obj != null) this.append(obj.toString())
     }
 }
+
+fun <R> MutableList<R>.fluentAdd(vararg r: R): MutableList<R> {
+    this.addAll(r)
+    return this
+}

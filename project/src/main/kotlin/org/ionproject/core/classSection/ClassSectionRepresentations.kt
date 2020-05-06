@@ -9,7 +9,7 @@ fun ClassSection.toSiren(): Siren {
     val selfHref = Uri.forClassSectionById(courseId, calendarTerm, id)
     return SirenBuilder(this)
         .klass(*classSectionClasses)
-        .entities(listOf(buildSubEntities(courseId, calendarTerm, id)))
+        .entities(buildSubEntities(courseId, calendarTerm, id))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .action(

@@ -18,7 +18,12 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
         return true
     }
 
-    override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
+    override fun afterCompletion(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+        ex: Exception?
+    ) {
         val startTime: Long = request.getAttribute("startTime") as Long
         val endTime: Long = System.currentTimeMillis()
         logger.info(

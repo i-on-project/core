@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class KlassModelTest {
     @Test
-    fun createClass_shouldNotThrowExceptionOrChangeValues() {
+    fun createClass_shouldMatchEveryValueAppliedToCtor() {
         val cid = 1
         val acr = "acr"
         val calendarTerm = "1920v"
@@ -22,7 +22,7 @@ internal class KlassModelTest {
     }
 
     @Test
-    fun createFullClass_shouldNotThrowExceptionOrChangeValues() {
+    fun createFullClass_shouldMatchEveryValueAppliedToCtor() {
         val cid = 1
         val acr = "acr"
         val calendarTerm = "1920v"

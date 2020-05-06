@@ -15,7 +15,7 @@ private data class CourseReducedOutputModel(val id: Int, val acronym: String, va
 fun Course.courseToDetailRepr() =
     SirenBuilder(CourseReducedOutputModel(id, acronym, name))
         .klass("course")
-        .entities(listOf(buildSubentities(id)))
+        .entities(buildSubentities(id))
         .action(
             Action(
                 name = "delete",

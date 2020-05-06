@@ -1,6 +1,5 @@
 package org.ionproject.core.programme
 
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.programme.model.Programme
@@ -14,14 +13,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ProgrammeController(private val programmeServices: ProgrammeServices) {
 
-    @GetMapping(Uri.programmes, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.programmes)
     fun getProgrammes(): ResponseEntity<Siren> {
         val programmes = programmeServices.getProgrammes()
 
         return ResponseEntity.ok(programmes.programmesListRepr())
     }
 
-    @GetMapping(Uri.programmesById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.programmesById)
     fun getProgramme(@PathVariable id: Int): ResponseEntity<Siren> {
         val programme = programmeServices.getProgrammeById(id)
 
@@ -29,7 +28,7 @@ class ProgrammeController(private val programmeServices: ProgrammeServices) {
         return ResponseEntity.notFound().build()
     }
 
-    @GetMapping(Uri.programmeOfferById, produces = [Media.SIREN_TYPE])
+    @GetMapping(Uri.programmeOfferById)
     fun getOffer(@PathVariable idProgramme: Int, @PathVariable idOffer: Int): ResponseEntity<Siren> {
         val offer = programmeServices.getOfferById(idOffer, idProgramme)
 
