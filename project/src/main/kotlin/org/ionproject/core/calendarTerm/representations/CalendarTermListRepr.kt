@@ -1,11 +1,7 @@
 package org.ionproject.core.calendarTerm.representations
 
 import org.ionproject.core.calendarTerm.model.CalendarTerm
-import org.ionproject.core.common.Action
-import org.ionproject.core.common.Field
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.SirenBuilder
-import org.ionproject.core.common.Uri
+import org.ionproject.core.common.*
 import org.springframework.http.HttpMethod
 
 /**
@@ -14,7 +10,7 @@ import org.springframework.http.HttpMethod
 fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
     SirenBuilder()
         .klass("calendar-term", "collection")
-        .entities(this.map { calendarTerm ->  calendarTerm.toEmbed() })
+        .entities(this.map { calendarTerm -> calendarTerm.toEmbed() })
         .action(
             Action(
                 name = "Search",

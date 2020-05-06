@@ -7,10 +7,10 @@ import org.springframework.http.HttpOutputMessage
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import java.io.PrintWriter
-import java.lang.UnsupportedOperationException
 import java.lang.reflect.Type
 
-class JsonHomeMessageConverter(private val converter: MappingJackson2HttpMessageConverter) : AbstractGenericHttpMessageConverter<JsonHome>(Media.MEDIA_HOME) {
+class JsonHomeMessageConverter(private val converter: MappingJackson2HttpMessageConverter) :
+    AbstractGenericHttpMessageConverter<JsonHome>(Media.MEDIA_HOME) {
     override fun supports(clazz: Class<*>): Boolean = clazz == JsonHome::class.java
 
     override fun writeInternal(t: JsonHome, type: Type?, outputMessage: HttpOutputMessage) {
@@ -21,9 +21,9 @@ class JsonHomeMessageConverter(private val converter: MappingJackson2HttpMessage
     }
 
     override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): JsonHome =
-            throw UnsupportedOperationException("This converter can't read.")
+        throw UnsupportedOperationException("This converter can't read.")
 
     override fun readInternal(clazz: Class<out JsonHome>, inputMessage: HttpInputMessage): JsonHome =
-            throw UnsupportedOperationException("This converter can't read.")
+        throw UnsupportedOperationException("This converter can't read.")
 
 }

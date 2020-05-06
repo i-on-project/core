@@ -5,16 +5,16 @@ import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component
 
 @Component
-class ProgrammeServices(private val repo : ProgrammeRepo) {
+class ProgrammeServices(private val repo: ProgrammeRepo) {
     /*
      * Should `ProgrammeSpringController` class hold a reference
      * to repo to avoid making this ""proxy"" useless call's?
      */
-    fun getProgrammes() : List<Programme> {
+    fun getProgrammes(): List<Programme> {
         return repo.getProgrammes()
     }
 
-    fun getProgrammeById(id : Int) : Programme? {
+    fun getProgrammeById(id: Int): Programme? {
         return repo.getProgrammeById(id)
     }
 
@@ -22,15 +22,15 @@ class ProgrammeServices(private val repo : ProgrammeRepo) {
         return repo.getOfferById(idOffer, idProgramme)
     }
 
-    fun editProgramme(programme : Programme) {
+    fun editProgramme(programme: Programme) {
         TODO("Write API")
     }
 
-    fun addProgramme(programme : Programme) {
+    fun addProgramme(programme: Programme) {
         TODO("Write API")
     }
 
-    fun addOffer(acr : String, offer : ProgrammeOffer) {
+    fun addOffer(acr: String, offer: ProgrammeOffer) {
         TODO("Write API")
     }
 }

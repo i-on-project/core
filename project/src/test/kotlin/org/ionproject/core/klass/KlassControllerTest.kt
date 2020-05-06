@@ -19,11 +19,13 @@ internal class KlassControllerTest : ControllerTester() {
             val cid = 1
             val cacr = "SL"
             val calTerm = "1718v"
-            return FullKlass(cid, cacr, calTerm, sections = listOf(
-                ClassSection(cid, cacr, calTerm, "1D"),
-                ClassSection(cid, cacr, calTerm, "2D"),
-                ClassSection(cid, cacr, calTerm, "1N")
-            ))
+            return FullKlass(
+                cid, cacr, calTerm, sections = listOf(
+                    ClassSection(cid, cacr, calTerm, "1D"),
+                    ClassSection(cid, cacr, calTerm, "2D"),
+                    ClassSection(cid, cacr, calTerm, "1N")
+                )
+            )
         }
 
         fun getClassCollection(): List<Klass> {
@@ -72,18 +74,24 @@ internal class KlassControllerTest : ControllerTester() {
             .entities(entities)
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlasses(klass.courseId))
-            .action(Action(
-                name = "delete",
-                href = selfHref.toTemplate(),
-                method = HttpMethod.DELETE,
-                type = Media.ALL,
-                isTemplated = false))
-            .action(Action(
-                name = "edit",
-                href = selfHref.toTemplate(),
-                method = HttpMethod.PATCH,
-                type = Media.ALL,
-                isTemplated = false))
+            .action(
+                Action(
+                    name = "delete",
+                    href = selfHref.toTemplate(),
+                    method = HttpMethod.DELETE,
+                    type = Media.ALL,
+                    isTemplated = false
+                )
+            )
+            .action(
+                Action(
+                    name = "edit",
+                    href = selfHref.toTemplate(),
+                    method = HttpMethod.PATCH,
+                    type = Media.ALL,
+                    isTemplated = false
+                )
+            )
             .toSiren()
 
         isValidSiren(selfHref)
@@ -114,25 +122,31 @@ internal class KlassControllerTest : ControllerTester() {
             })
             .link("self", href = selfHrefPage)
             .link("about", href = Uri.forCourseById(cid))
-            .action(Action(
-                name = "add-item",
-                title = "Add Item",
-                method = HttpMethod.POST,
-                href = selfHref.toTemplate(),
-                isTemplated = false,
-                type = Media.APPLICATION_JSON,
-                fields = listOf()))
-            .action(Action(
-                name = "search",
-                title = "Search items",
-                method = HttpMethod.GET,
-                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "limit", type = "number", klass = "param/limit"),
-                    Field(name = "page", type = "number", klass = "param/page")
-                )))
+            .action(
+                Action(
+                    name = "add-item",
+                    title = "Add Item",
+                    method = HttpMethod.POST,
+                    href = selfHref.toTemplate(),
+                    isTemplated = false,
+                    type = Media.APPLICATION_JSON,
+                    fields = listOf()
+                )
+            )
+            .action(
+                Action(
+                    name = "search",
+                    title = "Search items",
+                    method = HttpMethod.GET,
+                    href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                    isTemplated = true,
+                    type = Media.SIREN_TYPE,
+                    fields = listOf(
+                        Field(name = "limit", type = "number", klass = "param/limit"),
+                        Field(name = "page", type = "number", klass = "param/page")
+                    )
+                )
+            )
             .toSiren()
 
         isValidSiren(selfHrefPage)

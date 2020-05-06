@@ -18,8 +18,11 @@ object Uri {
 
     fun forCalTerms() = URI(calendarTerms)
     fun forCalTermById(calterm: String) = calendarTermByIdTemplate.expand(calterm)
-    fun forPagingCalTerms(page: Int, limit: Int) = UriTemplate("${calendarTerms}${springWebPagingQuery}").expand(page, limit)
-    fun forPagingCalTermById(calterm: String, page: Int, limit: Int) = UriTemplate("${calendarTermById}${springWebPagingQuery}").expand(calterm, page, limit)
+    fun forPagingCalTerms(page: Int, limit: Int) =
+        UriTemplate("${calendarTerms}${springWebPagingQuery}").expand(page, limit)
+
+    fun forPagingCalTermById(calterm: String, page: Int, limit: Int) =
+        UriTemplate("${calendarTermById}${springWebPagingQuery}").expand(calterm, page, limit)
 
     // Courses
     const val courses = "${version}/courses"
@@ -77,8 +80,11 @@ object Uri {
     val componentByCalendarTemplate = UriTemplate(componentByCalendar)
 
     fun forCalendarByClass(cid: Int, calterm: String) = calendarByClassTemplate.expand(cid, calterm)
-    fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) = calendarByClassSectionTemplate.expand(cid, calterm, sid)
-    fun forComponentByCalendar(courseId: Int, calTerm: String, componentId: String) = componentByCalendarTemplate.expand(courseId, calTerm, componentId)
+    fun forCalendarByClassSection(cid: Int, calterm: String, sid: String) =
+        calendarByClassSectionTemplate.expand(cid, calterm, sid)
+
+    fun forComponentByCalendar(courseId: Int, calTerm: String, componentId: String) =
+        componentByCalendarTemplate.expand(courseId, calTerm, componentId)
 
     // custom link rel
     const val relClass = "/rel/class"

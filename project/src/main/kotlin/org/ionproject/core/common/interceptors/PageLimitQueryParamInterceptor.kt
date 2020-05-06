@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
-  * Tests query parameters 'page' and 'limit'.
-  * Page & Limit can have different meanings according
-  * to the endpoint which is requested.
+ * Tests query parameters 'page' and 'limit'.
+ * Page & Limit can have different meanings according
+ * to the endpoint which is requested.
  */
 
 class PageLimitQueryParamInterceptor : HandlerInterceptorAdapter() {
@@ -20,16 +20,16 @@ class PageLimitQueryParamInterceptor : HandlerInterceptorAdapter() {
         val pageValue = request.getParameter("page")
         val limitValue = request.getParameter("limit")
 
-        if(pageValue != null) {            //If its null, user didn't use query params and there is nothing to test
+        if (pageValue != null) {            //If its null, user didn't use query params and there is nothing to test
             val page = pageValue.toInt()
-            if(page < 0) {
+            if (page < 0) {
                 throw IncorrectParametersException("The parameter page can't be negative, page=$page")
             }
         }
 
-        if(limitValue != null) {
+        if (limitValue != null) {
             val limit = limitValue.toInt()
-            if(limit < 0 || limit > MAX_LIMIT) {
+            if (limit < 0 || limit > MAX_LIMIT) {
                 throw IncorrectParametersException("The parameter limit can't be negative or above the limit, limit=$limit")
             }
         }

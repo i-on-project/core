@@ -1,6 +1,5 @@
 package org.ionproject.core.klass
 
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
@@ -13,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController
 class KlassController(private val repo: KlassRepo) {
 
     @GetMapping(Uri.klasses)
-    fun getCollection(@PathVariable cid: Int,
-                      @RequestParam(defaultValue = "0") page: Int,
-                      @RequestParam(defaultValue = "5") limit: Int): ResponseEntity<Siren> {
+    fun getCollection(
+        @PathVariable cid: Int,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "5") limit: Int
+    ): ResponseEntity<Siren> {
         val klasses = repo.getPage(cid, page, limit)
 
         return ResponseEntity.ok(klasses.toSiren(cid, page, limit))

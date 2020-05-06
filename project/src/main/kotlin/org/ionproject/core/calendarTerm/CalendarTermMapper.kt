@@ -8,7 +8,7 @@ import java.sql.ResultSet
 import java.time.OffsetDateTime
 
 @Component
-class CalendarTermMapper: RowMapper<CalendarTerm> {
+class CalendarTermMapper : RowMapper<CalendarTerm> {
     override fun map(rs: ResultSet, ctx: StatementContext?): CalendarTerm {
         /*
          *https://jdbc.postgresql.org/documentation/head/8-date-time.html

@@ -6,8 +6,10 @@ import org.ionproject.core.course.model.Course
 import org.springframework.stereotype.Component
 
 @Component
-class CourseRepoImpl(private val tm: TransactionManager,
-                     private val courseMapper: CourseMapper) : CourseRepo {
+class CourseRepoImpl(
+    private val tm: TransactionManager,
+    private val courseMapper: CourseMapper
+) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> {
        val result = tm.run { handle ->

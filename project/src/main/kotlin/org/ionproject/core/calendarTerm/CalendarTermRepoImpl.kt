@@ -7,9 +7,11 @@ import org.ionproject.core.klass.mappers.KlassReducedMapper
 import org.springframework.stereotype.Repository
 
 @Repository
-class CalendarTermRepoImpl(private val tm: TransactionManager,
-                           private val calendarTermMapper: CalendarTermMapper,
-                           private val classMapper: KlassReducedMapper) : CalendarTermRepo {
+class CalendarTermRepoImpl(
+    private val tm: TransactionManager,
+    private val calendarTermMapper: CalendarTermMapper,
+    private val classMapper: KlassReducedMapper
+) : CalendarTermRepo {
 
     override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
         val result = tm.run { handle ->
