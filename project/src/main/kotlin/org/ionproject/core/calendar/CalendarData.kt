@@ -222,24 +222,26 @@ object CalendarData {
         }
 
         private fun ResultSet.getCategories(columnName: String): Array<Categories> {
-            val tempCats = getArray(columnName).array as Array<java.lang.Integer>
+            val tempCats = getArray(columnName).array as Array<Int>
 
-            val cats = tempCats.map { it.toInt() }
+            val cats = tempCats.map { it }
 
             return cats.map {
                 categoryRepo.byId(it) ?: TODO("FOREIGN KEY EXCEPTION")
             }.groupBy {
-                it.first
+                it.language // group categories of this event by language
             }.map { pair ->
+                val categories = pair.value
+
                 Categories(
-                    pair.value.map { it.second },
+                    categories.map { it.value },
                     language = pair.key
                 )
             }.toTypedArray()
         }
 
         private fun ResultSet.getRecurrenceRule(columnName: String): RecurrenceRule? {
-            val weekDays = getString(BYDAY_COLUMN)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
+            val weekDays = getString(columnName)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
 
             return if (weekDays == null) null
             else RecurrenceRule(

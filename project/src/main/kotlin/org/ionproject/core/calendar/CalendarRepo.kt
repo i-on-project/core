@@ -27,7 +27,7 @@ class CalendarRepoImpl(
                 .bind("term", calendarTerm)
                 .map(componentMapper)
                 .list()
-        } ?: mutableListOf()
+        }
 
         return Calendar(
             ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
@@ -49,7 +49,7 @@ class CalendarRepoImpl(
                 .bind("classSectionId", classSectionId)
                 .map(componentMapper)
                 .list()
-        } ?: mutableListOf()
+        }
 
         return Calendar(
             ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
@@ -63,45 +63,56 @@ class CalendarRepoImpl(
     }
 
     override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
-        val component = transactionManager.run {
-            it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
-                .bind("courseId", courseId)
-                .bind("term", calendarTerm)
-                .bind("componentId", componentId)
-                .map(componentMapper)
-                .one()
-        } ?: return null
+        try {
+            val component = transactionManager.run {
+                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
+                    .bind("courseId", courseId)
+                    .bind("term", calendarTerm)
+                    .bind("componentId", componentId)
+                    .map(componentMapper)
+                    .one()
+            }
 
-        return Calendar(
-            ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
-            Version(),
-            null,
-            null,
-            mutableListOf(
-                component
+            return Calendar(
+                ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
+                Version(),
+                null,
+                null,
+                mutableListOf(
+                    component
+                )
             )
-        )
+
+        } catch (e: IllegalStateException) {
+            return null
+        }
+
     }
 
     override fun getClassSectionCalendarComponent(courseId: Int, calendarTerm: String, classSectionId: String, componentId: Int): Calendar? {
-        val component = transactionManager.run {
-            it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
-                .bind("courseId", courseId)
-                .bind("term", calendarTerm)
-                .bind("classSectionId", classSectionId)
-                .bind("componentId", componentId)
-                .map(componentMapper)
-                .one()
-        } ?: return null
+        try {
+            val component = transactionManager.run {
+                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
+                    .bind("courseId", courseId)
+                    .bind("term", calendarTerm)
+                    .bind("classSectionId", classSectionId)
+                    .bind("componentId", componentId)
+                    .map(componentMapper)
+                    .one()
+            }
 
-        return Calendar(
-            ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
-            Version(),
-            null,
-            null,
-            mutableListOf(
-                component
+            return Calendar(
+                ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
+                Version(),
+                null,
+                null,
+                mutableListOf(
+                    component
+                )
             )
-        )
+        } catch (e: IllegalStateException) {
+            return null
+        }
+
     }
 }

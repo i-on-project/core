@@ -1,6 +1,5 @@
 package org.ionproject.core.calendar.category
 
-import org.ionproject.core.calendar.icalendar.properties.parameters.Language
 import org.ionproject.core.calendar.language.LanguageRepo
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
@@ -35,11 +34,13 @@ object CategoryData {
     @Component
     class CategoryMapper(
         private val languageRepo: LanguageRepo
-    ) : RowMapper<Pair<Int, Pair<Language, String>>> {
-        override fun map(rs: ResultSet, ctx: StatementContext): Pair<Int, Pair<Language, String>> =
+    ) : RowMapper<Pair<Int, Category>> {
+        override fun map(rs: ResultSet, ctx: StatementContext): Pair<Int, Category> =
             rs.getInt(ID_COLUMN) to (
-                (languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")) to
-                    rs.getString(NAME_COLUMN)
+                Category(
+                    rs.getString(NAME_COLUMN),
+                    languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")
                 )
+            )
     }
 }
