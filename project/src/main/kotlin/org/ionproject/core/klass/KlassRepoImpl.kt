@@ -1,6 +1,7 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSectionMapper
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.klass.mappers.KlassMapper
 import org.ionproject.core.klass.model.FullKlass
@@ -58,7 +59,7 @@ class KlassRepoImplementation(
                 join dbo.Course as CR on C.courseid=CR.id
                 where CR.id=:cid order by C.term offset :page limit :limit;""".trimIndent())
                     .bind("cid", id)
-                    .bind("page", page)
+                    .bind("page", page * limit)
                     .bind("limit", limit)
                     .map(klassMapper)
                     .list()

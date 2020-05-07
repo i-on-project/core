@@ -1,9 +1,6 @@
 package org.ionproject.core.common
 
-import org.ionproject.core.common.customExceptions.IncorrectParametersException
-import org.ionproject.core.common.customExceptions.ProhibitedUserException
-import org.ionproject.core.common.customExceptions.ResourceNotFoundException
-import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
+import org.ionproject.core.common.customExceptions.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
