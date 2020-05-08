@@ -55,30 +55,30 @@ object CalendarData {
     // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
     private const val SELECT = """
     select 
-        $CALENDAR_COMPONENT.$UID,
-        $CALENDAR_COMPONENT.$TYPE,
-        array_agg(distinct merge_language_text($CALENDAR_COMPONENT.$SUMMARIES_LANGUAGE, $CALENDAR_COMPONENT.$SUMMARIES)) as $SUMMARIES,
-        array_agg(distinct merge_language_text($CALENDAR_COMPONENT.$DESCRIPTIONS_LANGUAGE, $CALENDAR_COMPONENT.$DESCRIPTIONS)) as $DESCRIPTIONS,
-        array_agg(distinct $CALENDAR_COMPONENT.$CATEGORIES) as $CATEGORIES,
-        array_agg(distinct $CALENDAR_COMPONENT.$ATTACHMENTS) as $ATTACHMENTS,
-        $CALENDAR_COMPONENT.$DTSTAMP,
-        $CALENDAR_COMPONENT.$CREATED,
-        $CALENDAR_COMPONENT.$DTSTART,
-        $CALENDAR_COMPONENT.$DTEND,
-        $CALENDAR_COMPONENT.$DUE,
-        $CALENDAR_COMPONENT.$BYDAY
+        $UID,
+        $TYPE,
+        array_agg(distinct merge_language_text($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES,
+        array_agg(distinct merge_language_text($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS,
+        array_agg(distinct $CATEGORIES) as $CATEGORIES,
+        array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS,
+        $DTSTAMP,
+        $CREATED,
+        $DTSTART,
+        $DTEND,
+        $DUE,
+        $BYDAY
     """
 
     // This group by is necessary when queries use $SELECT, otherwise the use of array_agg will launch an SQL exception
     private const val GROUP_BY = """group by
-        $CALENDAR_COMPONENT.$UID, 
-        $CALENDAR_COMPONENT.$TYPE,
-        $CALENDAR_COMPONENT.$DTSTAMP,
-        $CALENDAR_COMPONENT.$CREATED,
-        $CALENDAR_COMPONENT.$DTSTART,
-        $CALENDAR_COMPONENT.$DTEND,
-        $CALENDAR_COMPONENT.$DUE,
-        $CALENDAR_COMPONENT.$BYDAY"""
+        $UID, 
+        $TYPE,
+        $DTSTAMP,
+        $CREATED,
+        $DTSTART,
+        $DTEND,
+        $DUE,
+        $BYDAY"""
 
     const val CALENDAR_FROM_CLASS_QUERY =
         """with calendar_id as (
@@ -90,7 +90,7 @@ object CalendarData {
             from
                 $CALENDAR_COMPONENT
             where 
-                $CALENDAR_COMPONENT.$CALENDARS = (select * from calendar_id) 
+                $CALENDARS = (select * from calendar_id) 
             $GROUP_BY"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY =
@@ -103,9 +103,9 @@ object CalendarData {
             from 
                 $CALENDAR_COMPONENT
             where 
-                $CALENDAR_COMPONENT.$CALENDARS = (select * from calendar_id)
+                $CALENDARS = (select * from calendar_id)
                 and
-                $CALENDAR_COMPONENT.$UID = :$UID
+                $UID = :$UID
             $GROUP_BY"""
 
     const val CALENDAR_FROM_CLASS_SECTION_QUERY =
@@ -142,9 +142,9 @@ object CalendarData {
             $SELECT
             from $CALENDAR_COMPONENT
             where
-                $CALENDAR_COMPONENT.$CALENDARS = (select * from calendar_id)
+                $CALENDARS = (select * from calendar_id)
                 and
-                $CALENDAR_COMPONENT.$UID = :$UID
+                $UID = :$UID
             $GROUP_BY"""
 
     @Component
