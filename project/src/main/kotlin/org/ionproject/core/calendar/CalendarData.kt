@@ -18,8 +18,10 @@ import org.ionproject.core.calendar.icalendar.properties.components.recurrence.R
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 import org.ionproject.core.calendar.icalendar.types.*
 import org.ionproject.core.calendar.language.LanguageRepo
+import org.ionproject.core.startsAndEndsWith
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
+import org.postgresql.util.PGobject
 import org.springframework.stereotype.Component
 import java.sql.ResultSet
 import java.time.OffsetDateTime
@@ -28,7 +30,7 @@ import org.ionproject.core.calendar.icalendar.types.Date as DateType
 object CalendarData {
     // Name of Calendar component view and of calendar property columns
     private const val CALENDAR_COMPONENT = "dbo.v_ComponentsAll"
-    private const val UID = "uid"
+    const val UID = "uid"
     private const val CALENDARS = "calendars"
     private const val TYPE = "type"
     private const val SUMMARIES = "summaries"
@@ -48,17 +50,17 @@ object CalendarData {
     private const val CLASS = "dbo.Class"
     private const val CLASS_SECTION = "dbo.ClassSection"
     private const val CALENDAR = "calendar"
-    private const val COURSE = "courseId"
-    private const val TERM = "term"
-    private const val ID = "id"
+    const val COURSE = "courseId"
+    const val TERM = "term"
+    const val ID = "id"
 
     // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
     private const val SELECT = """
     select 
         $UID,
         $TYPE,
-        array_agg(distinct merge_language_text($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES,
-        array_agg(distinct merge_language_text($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS,
+        array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES,
+        array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS,
         array_agg(distinct $CATEGORIES) as $CATEGORIES,
         array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS,
         $DTSTAMP,
@@ -199,31 +201,31 @@ object CalendarData {
         }
 
         private fun ResultSet.getSummaries(columnName: String): Array<Summary> {
-            val summaries = getArray(columnName).array as Array<String>
-
-            return summaries.map { summary ->
-                val text = summary.substringAfter(':')
-                val language = summary.substringBefore(':').toInt()
+            val summaries = getCompositeArray(columnName) {
+                val summaryLanguage = it[0] as Int
+                val summary = it[1] as String
 
                 Summary(
-                    text,
-                    language = languageRepo.byId(language)
+                    summary,
+                    language = languageRepo.byId(summaryLanguage)
                 )
-            }.toTypedArray()
+            }
+
+            return summaries.toTypedArray()
         }
 
         private fun ResultSet.getDescriptions(columnName: String): Array<Description> {
-            val descriptions = getArray(columnName).array as Array<String>
-
-            return descriptions.map { description ->
-                val text = description.substringAfter(':')
-                val language = description.substringBefore(':').toInt()
+            val descriptions = getCompositeArray(columnName) {
+                val descriptionLanguage = it[0] as Int
+                val description = it[1] as String
 
                 Description(
-                    text,
-                    language = languageRepo.byId(language)
+                    description,
+                    language = languageRepo.byId(descriptionLanguage)
                 )
-            }.toTypedArray()
+            }
+
+            return descriptions.toTypedArray()
         }
 
         private fun ResultSet.getCategories(columnName: String): Array<Categories> {
@@ -254,11 +256,48 @@ object CalendarData {
             )
         }
 
+        private fun PGobject.toList() : List<Any> {
+            value = value.removeSurrounding("(", ")")
+            val values = value.split(',')
+
+            return List(values.size) {
+                val str = values[it]
+                if (str.startsAndEndsWith('"')) {
+                    str.removeSurrounding("\"")
+                } else {
+                    str.toInt()
+                }
+            }
+        }
+
+        private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R) : List<R> {
+            val array = getArray(columnName).array as Array<Any>
+
+            return array.map {
+                val pgObject = it as PGobject
+                pgObject.apply {
+                    value = value.removeSurrounding("(", ")")
+                }
+
+                val values = pgObject.value.split(',')
+
+                val list = List(values.size) {
+                    val str = values[it]
+                    if (str.startsAndEndsWith('"')) {
+                        str.removeSurrounding("\"")
+                    } else {
+                        str.toInt()
+                    }
+                }
+
+                oper(list)
+            }
+        }
+
     }
 }
 
 class UnknownCalendarComponentTypeException(message: String) : Exception(message)
-
 
 private fun ResultSet.getDatetime(columnName: String): DateTime {
     val offsetTime = getObject(columnName, OffsetDateTime::class.java)

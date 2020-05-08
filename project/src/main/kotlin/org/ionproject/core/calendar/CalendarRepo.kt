@@ -58,8 +58,8 @@ class CalendarRepoImpl(
     ): Calendar? {
         val components = transactionManager.run {
             it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
-                .bind("courseId", courseId)
-                .bind("term", calendarTerm)
+                .bind(CalendarData.COURSE, courseId)
+                .bind(CalendarData.TERM, calendarTerm)
                 .map(componentMapper)
                 .list()
         }
@@ -87,10 +87,10 @@ class CalendarRepoImpl(
         summary: String?
     ): Calendar? {
         val components = transactionManager.run {
-            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
-                .bind("courseId", courseId)
-                .bind("term", calendarTerm)
-                .bind("classSectionId", classSectionId)
+            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_SECTION_QUERY)
+                .bind(CalendarData.COURSE, courseId)
+                .bind(CalendarData.TERM, calendarTerm)
+                .bind(CalendarData.ID, classSectionId)
                 .map(componentMapper)
                 .list()
         }
@@ -110,9 +110,9 @@ class CalendarRepoImpl(
         try {
             val component = transactionManager.run {
                 it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
-                    .bind("courseId", courseId)
-                    .bind("term", calendarTerm)
-                    .bind("componentId", componentId)
+                    .bind(CalendarData.COURSE, courseId)
+                    .bind(CalendarData.TERM, calendarTerm)
+                    .bind(CalendarData.UID, componentId)
                     .map(componentMapper)
                     .one()
             }
@@ -142,10 +142,10 @@ class CalendarRepoImpl(
         try {
             val component = transactionManager.run {
                 it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
-                    .bind("courseId", courseId)
-                    .bind("term", calendarTerm)
-                    .bind("classSectionId", classSectionId)
-                    .bind("componentId", componentId)
+                    .bind(CalendarData.COURSE, courseId)
+                    .bind(CalendarData.TERM, calendarTerm)
+                    .bind(CalendarData.ID, classSectionId)
+                    .bind(CalendarData.UID, componentId)
                     .map(componentMapper)
                     .one()
             }
