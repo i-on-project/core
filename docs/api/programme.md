@@ -50,6 +50,7 @@ A programme is composed by a set of _offers_.
             "title": "LS Offer",
             "rel": [ "/rel/programmeOffer" ],
             "properties": {
+                "id": 1,
                 "courseId": 2,
                 "termNumber": 3
             },
@@ -62,6 +63,7 @@ A programme is composed by a set of _offers_.
             "title": "AED Offer",
             "rel": [ "/rel/programmeOffer" ],
             "properties": {
+                "id": 2,
                 "CourseId": 5,
                 "TermNumber": 3
             },
@@ -74,6 +76,7 @@ A programme is composed by a set of _offers_.
             "title": "POO Offer",
             "rel": [ "/rel/programmeOffer" ],
             "properties": {
+                "id": 3,
                 "CourseId": 4,
                 "TermNumber": 1
             },
