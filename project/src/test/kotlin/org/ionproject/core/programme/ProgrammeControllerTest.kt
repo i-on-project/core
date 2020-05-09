@@ -34,11 +34,11 @@ internal class ProgrammeControllerTest : ControllerTester() {
         val selfHref = Uri.forProgrammesById(p.id)
 
         data class OutputModel(val id: Int, val name: String? = null, val acronym: String, val termSize: Int)
-        data class ItemOutputModel(val courseId: Int, val termNumber: Int)
+        data class ItemOutputModel(val id: Int, val courseId: Int, val termNumber: Int)
 
         val expected = SirenBuilder(OutputModel(p.id, p.name, p.acronym, p.termSize))
             .entities(p.offers.map {
-                SirenBuilder(ItemOutputModel(it.courseId, it.termNumber))
+                SirenBuilder(ItemOutputModel(it.id, it.courseId, it.termNumber))
                     .klass("offer")
                     .title("${it.courseAcr} Offer")
                     .rel(Uri.relProgrammeOffer)

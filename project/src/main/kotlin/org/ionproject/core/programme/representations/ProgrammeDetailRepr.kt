@@ -10,7 +10,7 @@ import org.springframework.http.HttpMethod
  */
 data class ShortProgrammeReprWithoutOffer(val id: Int, val name: String? = null, val acronym: String, val termSize: Int)
 
-data class ShortOfferRepr(val courseId: Int, val termNumber: Int)
+data class ShortOfferRepr(val id: Int, val courseId: Int, val termNumber: Int)
 
 /**
  * Builds the Siren representations
@@ -53,7 +53,7 @@ fun Programme.programmeToDetailRepr() =
         .toSiren()
 
 private fun Programme.buildSubentities(offer: ProgrammeOffer): EmbeddedRepresentation =
-    SirenBuilder(ShortOfferRepr(offer.courseId, offer.termNumber))
+    SirenBuilder(ShortOfferRepr(offer.id, offer.courseId, offer.termNumber))
         .klass("offer")
         .title("${offer.courseAcr} Offer")
         .rel(Uri.relProgrammeOffer)
