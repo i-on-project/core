@@ -3,6 +3,9 @@ package org.ionproject.core
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import org.ionproject.core.calendar.ICalendarHttpMessageConverter
+import org.ionproject.core.calendar.icalendar.Calendar
+import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -34,13 +37,14 @@ class CoreSerializationConfig : WebMvcConfigurer {
         converter.objectMapper // default used by spring
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)  // ignore null properties
             .configure(SerializationFeature.INDENT_OUTPUT, true) // json pretty output
-        converter.objectMapper.registerModule(
-            SimpleModule().addSerializer(
-                UriTemplate::class.java,
-                UriTemplateSerializer()
+            .registerModule(
+                SimpleModule()
+                    .addSerializer(UriTemplate::class.java, UriTemplateSerializer())
+                    .addSerializer(Calendar::class.java, CalendarSerializer())
             )
-        )
 
+        // Calendar -> text/calendar || application/vdn.siren+json
+        converters.add(ICalendarHttpMessageConverter())
 
         converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
 
