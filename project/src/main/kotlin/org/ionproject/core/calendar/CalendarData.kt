@@ -258,20 +258,6 @@ object CalendarData {
             )
         }
 
-        private fun PGobject.toList() : List<Any> {
-            value = value.removeSurrounding("(", ")")
-            val values = value.split(',')
-
-            return List(values.size) {
-                val str = values[it]
-                if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"")
-                } else {
-                    str.toInt()
-                }
-            }
-        }
-
         private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R) : List<R> {
             val array = getArray(columnName).array as Array<Any>
 
