@@ -18,7 +18,9 @@ import org.ionproject.core.calendar.icalendar.properties.components.recurrence.R
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 import org.ionproject.core.calendar.icalendar.types.*
 import org.ionproject.core.calendar.language.LanguageRepo
+import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.ionproject.core.startsAndEndsWith
+import org.ionproject.core.toHexString
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.postgresql.util.PGobject
@@ -157,7 +159,7 @@ object CalendarData {
 
         override fun map(rs: ResultSet, ctx: StatementContext): CalendarComponent {
             val type = rs.getString(TYPE)
-            val uid = UniqueIdentifier(rs.getInt(UID).toString(16)) // TODO(use constant for uid radix)
+            val uid = UniqueIdentifier(rs.getInt(UID).toHexString())
             val categories = rs.getCategories(CATEGORIES)
             val summary = rs.getSummaries(SUMMARIES)
             val description = rs.getDescriptions(DESCRIPTIONS)
@@ -234,7 +236,7 @@ object CalendarData {
             val cats = tempCats.map { it }
 
             return cats.map {
-                categoryRepo.byId(it) ?: TODO("FOREIGN KEY EXCEPTION")
+                categoryRepo.byId(it) ?: throw ForeignKeyException("category", "categories")
             }.groupBy {
                 it.language // group categories of this event by language
             }.map { pair ->

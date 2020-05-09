@@ -2,6 +2,7 @@ package org.ionproject.core.calendar
 
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
+import org.ionproject.core.hexStringToInt
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -74,7 +75,7 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable cmpid: String
     ): ResponseEntity<Any> {
         val calendar =
-            repository.getClassCalendarComponent(cid, calterm, cmpid.toInt(16)) // TODO(use constant for uid radix)
+            repository.getClassCalendarComponent(cid, calterm, cmpid.hexStringToInt())
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -92,8 +93,8 @@ class CalendarController(private val repository: CalendarRepo) {
             cid,
             calterm,
             sid,
-            cmpid.toInt(16)
-        ) // TODO(use constant for uid radix)
+            cmpid.hexStringToInt()
+        )
         return if (calendar != null) {
             ResponseEntity.ok(calendar)
         } else

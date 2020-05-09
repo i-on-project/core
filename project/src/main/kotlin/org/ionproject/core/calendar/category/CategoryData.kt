@@ -1,6 +1,7 @@
 package org.ionproject.core.calendar.category
 
 import org.ionproject.core.calendar.language.LanguageRepo
+import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.springframework.stereotype.Component
@@ -39,8 +40,8 @@ object CategoryData {
             rs.getInt(ID_COLUMN) to (
                     Category(
                         rs.getString(NAME_COLUMN),
-                        languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: TODO("FOREIGN KEY EXCEPTION")
+                        languageRepo.byId(rs.getInt(LANGUAGE_COLUMN)) ?: throw ForeignKeyException("category", "language")
                     )
-                    )
+                )
     }
 }

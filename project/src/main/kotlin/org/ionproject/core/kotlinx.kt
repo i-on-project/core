@@ -22,3 +22,6 @@ fun <R> MutableList<R>.fluentAdd(vararg r: R): MutableList<R> {
 
 fun String.startsAndEndsWith(str: String): Boolean = startsWith(str) && endsWith(str)
 fun String.startsAndEndsWith(str: Char): Boolean = startsWith(str) && endsWith(str)
+
+fun String.hexStringToInt() : Int = toInt(16)
+fun Int.toHexString() : String = toString(16)

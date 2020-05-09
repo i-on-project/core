@@ -72,7 +72,7 @@ class CalendarRepoImpl(
             components
         )
 
-        TODO("use query params")
+        TODO("use query params. Need query builder from https://github.com/i-on-project/core/issues/76")
     }
 
     override fun getClassSectionCalendar(
@@ -103,7 +103,7 @@ class CalendarRepoImpl(
             components
         )
 
-        TODO("use query params")
+        TODO("use query params. Need query builder from https://github.com/i-on-project/core/issues/76")
     }
 
     override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
