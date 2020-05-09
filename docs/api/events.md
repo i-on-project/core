@@ -117,10 +117,6 @@ The `search` action allows the following parameters:
 
 * `summary`: filters **components** that do not have a matching `summary`
 
-The `batch-delete` action allows the following parameters:
-* `type`: delete all components whose `type` matches the one indicated
-  - e.g. /v0/courses/1/classes/1920v/sections/1/calendar?type=event, will delete all events
-
 ## Link Relations
 A `Calendar` representation:
 * *must* include a link to its context, using the `self` link relation
@@ -210,19 +206,6 @@ A `Calendar` representation:
       }
     ]
   },
-  "entities": [
-    {
-      "class": [ "class", "section" ],
-      "rel": [ "/rel/class-section" ],
-      "properties": {
-        "uid": "61D",
-        "lecturer": 1010
-      },
-      "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" }
-      ]
-    }
-  ],
   "actions": [
     {
       "name": "search",
@@ -238,25 +221,6 @@ A `Calendar` representation:
         { "name": "endBefore", "type": "date", "class": "https://example.org/param/date-query" },
         { "name": "endAfter", "type": "date", "class": "https://example.org/param/date-query" },
         { "name": "summary", "type": "text", "class": "https://example.org/param/free-text-query" }
-      ]
-    },
-    {
-      "name": "add-item",
-      "title": "Add Item",
-      "method": "POST",
-      "href": "/v0/courses/1/classes/1920v/calendar",
-      "isTemplated": false,
-      "type": "application/json",
-      "fields": [ ]
-    },
-    {
-      "name": "batch-delete",
-      "title": "Delete multiple items",
-      "method": "DELETE",
-      "isTemplated": true,
-      "href": "/v0/courses/1/classes/1920v/calendar{?type}",
-      "fields": [
-        { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" }
       ]
     }
   ],
@@ -369,21 +333,6 @@ MIME type: __application/vdn.siren+json__
       },
     }
   },
-  "entities": [
-    {
-      "class": [ "class" ],
-      "rel": [ "/rel/class" ],
-      "properties": {
-        "classId": "1",
-        "termId": "1"
-      },
-      "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/1" },
-        { "rel": [ "course"], "href": "/v0/courses/1" }
-      ]
-    }
-  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/1234" },
     { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v" }
@@ -476,21 +425,6 @@ A Todo representation:
       "value": "2020-03-19T00:00:00Z"
     },
   },
-  "entities": [
-    {
-      "class": [ "class" ],
-      "rel": [ "/rels/class" ],
-      "properties": {
-        "classId": "1",
-        "termId": "1"
-      },
-      "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/1" },
-        { "rel": [ "course"], "href": "/v0/courses/1" }
-      ]
-    }
-  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/123490" },
     { "rel": [ "service-doc" ], "href": "https://github.com/isel-leic-daw/1920v-public/wiki/phase-1" },
@@ -596,21 +530,6 @@ A Todo representation:
       }
     ],
   },
-  "entities": [
-    {
-      "class": [ "class" ],
-      "rel": [ "/rels/class" ],
-      "properties": {
-        "classId": "1",
-        "termId": "1"
-      },
-      "links": [
-        { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v" },
-        { "rel": [ "term" ], "href": "/v0/terms/1" },
-        { "rel": [ "course"], "href": "/v0/courses/1" }
-      ]
-    }
-  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/calendar/123497" },
     { "rel": [ "about" ], "href": "/v0/courses/1/classes/1920v" },
