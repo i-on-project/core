@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CalendarTermRepoImpl(
-    private val tm: TransactionManager,
-    private val calendarTermMapper: CalendarTermMapper,
-    private val classMapper: KlassReducedMapper
+        private val tm: TransactionManager,
+        private val calendarTermMapper: CalendarTermMapper,
+        private val classMapper: KlassReducedMapper
 ) : CalendarTermRepo {
 
     override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
@@ -22,8 +22,8 @@ class CalendarTermRepoImpl(
                     .list()
         } as List<CalendarTerm>
 
-        if(result.isEmpty()) {
-            if(page > 0)
+        if (result.isEmpty()) {
+            if (page > 0)
                 throw ResourceNotFoundException("No results for page $page with limit $limit.")
         }
 
@@ -53,8 +53,8 @@ class CalendarTermRepoImpl(
             term
         }
 
-        if(result == null) {
-            if(page > 0)
+        if (result == null) {
+            if (page > 0)
                 throw ResourceNotFoundException("No results for page $page with limit $limit.")
         }
 

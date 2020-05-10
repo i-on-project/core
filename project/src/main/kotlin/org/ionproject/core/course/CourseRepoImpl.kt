@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CourseRepoImpl(
-    private val tm: TransactionManager,
-    private val courseMapper: CourseMapper
+        private val tm: TransactionManager,
+        private val courseMapper: CourseMapper
 ) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> {
@@ -20,8 +20,8 @@ class CourseRepoImpl(
                     .list()
         } as List<Course>
 
-        if(result.isEmpty()) {
-            if(page > 0)
+        if (result.isEmpty()) {
+            if (page > 0)
                 throw ResourceNotFoundException("No results for page $page with limit $limit.")
         }
 
