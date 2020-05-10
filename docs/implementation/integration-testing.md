@@ -45,25 +45,27 @@ To further clarify, these types of tests will act as real clients to an authenti
 This section will compare the different testing policies in terms of usefulness and performance.
 
 ## End-to-End
-Very "rough around the edges" end-to-end tests using scripts.
+Very "rough around the edges" end-to-end tests the custom [gradle task](https://github.com/i-on-project/core/commit/a83793f585bcad2a113f9c37582ae7ee1b69f7d1) `fullBuild` and [JUnit tests](https://github.com/i-on-project/core/commit/f634fe482a288f7fcda4abb0d45509bc11284aa8).
+The unit tests will use an `HttpClient` to connect to the server running in the background.
+These tests are available in a [separate branch](https://github.com/i-on-project/core/commits/test/gh-72-integration-testing-options) (run using: `./gradlew fullBuild`).
 
 ### Result
-* `work_ion_run > /dev/null 2>&1  1.27s user 0.15s system 19% cpu 7.087 total`
-* roughly 7 seconds
+* `./gradlew clean fullBuild  1.55s user 0.11s system 13% cpu 12.735 total`
+* roughly 13 seconds
 
 ### Procedure
 * uses a script which does the following:
-    - `gradle clean build test`
-    - launching `java -server` as a background job
-    - polling until server responds
-    - using `curl` to retrieve the representations of various resources, *one at a time*
-    - comparing its output with hard coded strings
-    - terminate
+    - `gradle assemble`
+    - launching `java -server` as a process and detach it from the current process
+    - polling until server responds (using synchronous `Socket`s)
+    - `gradle test`
+    - kill the server's process
 
 ### Notes
-* all tests are sequential (no parallelism involved)
-* all spring boot tests were removed, only remaining a few unit tests
-* the retrieved payload will have to be the exact same every time
+* all spring boot tests were removed
+* unit tests will connect to the server using `HttpClient`
+* the retrieved payload will be compared with a hard coded string (i.e. the expected JSON object)
+    - the retrieved payload will have to be the exact same every time
     - any slight change will cause the test to fail
     - the order of each and every JSON property matters
 * deliberately placing bugs in the code will make the string validation exit with error
@@ -85,3 +87,13 @@ Very "rough around the edges" end-to-end tests using scripts.
 * benevolent towards slight changes
     - e.g. the order of the JSON properties
     - e.g. trailing spaces of the JSON object
+
+# Conclusion
+In my opinion, Spring Boot tests would be the better option to implement the integration tests.
+Spring Boot tests appear to have better performance and provide very useful information for debug.
+
+However, the results achieved are mostly limited to the framework's implementation, as opposed to the "homemade" integration tests which may be improved by hand.
+Further, Spring Boot will have framework specific lingo making it harder to read and modify for newcomers.
+All integration tests will have to be reimplemented should the source code be refactored for use with a different framework/environment.
+
+
