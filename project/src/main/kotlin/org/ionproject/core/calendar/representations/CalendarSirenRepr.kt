@@ -6,6 +6,7 @@ import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
 import org.ionproject.core.common.*
+import org.ionproject.core.mapEntries
 import org.springframework.http.HttpMethod
 import org.springframework.web.util.UriTemplate
 import java.net.URI
@@ -43,7 +44,8 @@ fun Calendar.toSiren(): Siren =
                 type = Media.APPLICATION_JSON,
                 fields = listOf()
             )
-        ).action(
+        )
+        .action(
             Action(
                 name = "batch-delete",
                 title = "Delete multiple items",
@@ -81,11 +83,26 @@ private fun CalendarComponent.toSiren(): Map<String, Any> {
     val type = this::class.java.simpleName.toLowerCase()
     return mapOf(
         TYPE to type,
-        PROPERTIES to properties.associate {
-            it.name.toLowerCase() to it.toSiren()
-        }
+        PROPERTIES to properties.toMap()
     )
 }
+
+private fun Iterable<Property>.toMap(): Map<String, Any> =
+    this
+        .groupBy {
+            it.name
+        }
+        .mapEntries {
+            val propName = it.key.toLowerCase()
+            val list = it.value
+            if (list.size > 1) {
+                propName to arrayOf(
+                    list.map(Property::toSiren)
+                )
+            } else {
+                propName to list[0].toSiren()
+            }
+        }
 
 private fun Property.toSiren(): Any {
     val aux = this as? ParameterizedProperty
