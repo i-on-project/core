@@ -1,6 +1,7 @@
-package org.ionproject.core.klass.mappers
+package org.ionproject.core.klass.sql
 
-
+import org.ionproject.core.klass.sql.KlassData.CAL_TERM
+import org.ionproject.core.klass.sql.KlassData.CID
 import org.ionproject.core.klass.model.Klass
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
@@ -10,9 +11,9 @@ import java.sql.ResultSet
 @Component
 class KlassReducedMapper : RowMapper<Klass> {
     override fun map(rs: ResultSet, ctx: StatementContext?): Klass {
-        /*
-         * Missing calendar Id
-         */
-        return Klass(rs.getInt("courseId"), null, rs.getString("term"))
+        return Klass(
+            rs.getInt(CID),
+            null,
+            rs.getString(CAL_TERM))
     }
 }

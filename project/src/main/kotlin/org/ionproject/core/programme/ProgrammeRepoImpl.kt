@@ -1,8 +1,8 @@
 package org.ionproject.core.programme
 
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.programme.mappers.ProgrammeMapper
-import org.ionproject.core.programme.mappers.ProgrammeOfferMapper
+import org.ionproject.core.programme.sql.ProgrammeMapper
+import org.ionproject.core.programme.sql.ProgrammeOfferMapper
 import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.programme.model.ProgrammeOffer
 import org.springframework.stereotype.Component

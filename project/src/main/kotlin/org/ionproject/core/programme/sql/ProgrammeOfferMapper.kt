@@ -1,4 +1,4 @@
-package org.ionproject.core.programme.mappers
+package org.ionproject.core.programme.sql
 
 import org.ionproject.core.programme.model.ProgrammeOffer
 import org.jdbi.v3.core.mapper.RowMapper
