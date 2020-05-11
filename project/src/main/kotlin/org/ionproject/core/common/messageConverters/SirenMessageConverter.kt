@@ -1,5 +1,6 @@
 package org.ionproject.core.common.messageConverters
 
+import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.springframework.http.HttpInputMessage
@@ -10,24 +11,23 @@ import java.io.PrintWriter
 import java.lang.reflect.Type
 
 class SirenMessageConverter(private val converter: MappingJackson2HttpMessageConverter) :
-    AbstractGenericHttpMessageConverter<Siren>(Media.MEDIA_SIREN) {
+    AbstractGenericHttpMessageConverter<Any>(Media.MEDIA_SIREN) {
 
     override fun supports(clazz: Class<*>): Boolean {
-        val result = clazz == Siren::class.java
-        return result
+        return (clazz == Siren::class.java || clazz == Calendar::class.java)
     }
 
-    override fun writeInternal(t: Siren, type: Type?, outputMessage: HttpOutputMessage) {
+    override fun writeInternal(t: Any, type: Type?, outputMessage: HttpOutputMessage) {
         PrintWriter(outputMessage.body).apply {
             converter.write(t, Media.MEDIA_SIREN, outputMessage)
             close()
         }
     }
 
-    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Siren =
+    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Any =
         throw UnsupportedOperationException("This converter can't read.")
 
-    override fun readInternal(clazz: Class<out Siren>, inputMessage: HttpInputMessage): Siren =
+    override fun readInternal(clazz: Class<out Any>, inputMessage: HttpInputMessage): Any =
         throw UnsupportedOperationException("This converter can't read.")
 
 }
