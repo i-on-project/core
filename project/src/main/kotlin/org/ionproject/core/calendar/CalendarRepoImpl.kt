@@ -6,7 +6,9 @@ import org.ionproject.core.calendar.icalendar.properties.calendar.Version
 import org.ionproject.core.calendar.sql.CalendarComponentMapper
 import org.ionproject.core.calendar.sql.CalendarData
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.klass.sql.KlassData
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -26,11 +28,24 @@ class CalendarRepoImpl(
         summary: String?
     ): Calendar? {
         val components = tm.run {
-            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
-                .bind(CalendarData.COURSE, courseId)
-                .bind(CalendarData.TERM, calendarTerm)
-                .map(componentMapper)
-                .list()
+            it ->
+            {
+                val count = it
+                        .createQuery(CalendarData.CHECK_IF_CLASS_EXISTS)
+                        .bind(CalendarData.TERM, calendarTerm)
+                        .bind(CalendarData.ID, courseId)
+                        .mapTo(Integer::class.java)
+                        .one() ?: 0
+
+                if(count == 0)
+                    throw ResourceNotFoundException("There is no class for the course with id $courseId at the calendar term $calendarTerm.")
+
+                it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
+                        .bind(CalendarData.COURSE, courseId)
+                        .bind(CalendarData.TERM, calendarTerm)
+                        .map(componentMapper)
+                        .list()
+            }()
         }
 
         return Calendar(
@@ -56,12 +71,26 @@ class CalendarRepoImpl(
         summary: String?
     ): Calendar? {
         val components = tm.run {
-            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_SECTION_QUERY)
-                .bind(CalendarData.COURSE, courseId)
-                .bind(CalendarData.TERM, calendarTerm)
-                .bind(CalendarData.ID, classSectionId)
-                .map(componentMapper)
-                .list()
+            it ->
+            {
+                val count = it
+                        .createQuery(CalendarData.CHECK_IF_CLASS_SECTION_EXISTS)
+                        .bind(CalendarData.TERM, calendarTerm)
+                        .bind(CalendarData.ID, courseId)
+                        .bind(CalendarData.CAS_ID, classSectionId)
+                        .mapTo(Integer::class.java)
+                        .one() ?: 0
+
+                if(count == 0)
+                    throw ResourceNotFoundException("There is no classSection $classSectionId for the course with id $courseId at the calendar term $calendarTerm.")
+
+                it.createQuery(CalendarData.CALENDAR_FROM_CLASS_SECTION_QUERY)
+                        .bind(CalendarData.COURSE, courseId)
+                        .bind(CalendarData.TERM, calendarTerm)
+                        .bind(CalendarData.ID, classSectionId)
+                        .map(componentMapper)
+                        .list()
+            }()
         }
 
         return Calendar(

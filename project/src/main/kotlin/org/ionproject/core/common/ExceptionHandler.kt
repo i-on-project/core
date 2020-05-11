@@ -1,6 +1,8 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
+import org.jdbi.v3.core.statement.UnableToCreateStatementException
+import org.postgresql.util.PSQLException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -17,6 +19,21 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
+
+    @ExceptionHandler(value = [PSQLException::class])
+    private fun handleUnableToCreateStatementException(
+            ex: PSQLException,
+            request: HttpServletRequest
+    ) : ResponseEntity<ProblemJson> {
+        return handleResponse(
+                "",
+                "Internal Error (DB)",
+                500,
+                ex.localizedMessage,
+                request.requestURI
+        )
+    }
+
     @ExceptionHandler(value = [InternalServerErrorException::class])
     private fun handleInternalServerErrorException(
             ex: InternalServerErrorException,

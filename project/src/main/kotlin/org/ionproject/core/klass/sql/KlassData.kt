@@ -41,4 +41,8 @@ internal object KlassData {
         join $SCHEMA.$COURSE as CR on C.$CID=CR.$COURSE_ID
         where C.$CID=:$CID order by C.$CAL_TERM offset :$OFFSET limit :$LIMIT
     """
+
+    const val CHECK_IF_COURSE_EXISTS = """
+        select count(*) from $SCHEMA.$COURSE as C where C.$COURSE_ID=:$CID
+    """
 }
