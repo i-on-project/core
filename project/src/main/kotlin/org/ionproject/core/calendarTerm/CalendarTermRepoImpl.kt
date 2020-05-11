@@ -1,25 +1,32 @@
 package org.ionproject.core.calendarTerm
 
 import org.ionproject.core.calendarTerm.model.CalendarTerm
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.CALENDAR_TERMS_QUERY
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.CALENDAR_TERM_QUERY
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.CLASSES_QUERY
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.ID
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.LIMIT
+import org.ionproject.core.calendarTerm.sql.CalendarTermData.OFFSET
+import org.ionproject.core.calendarTerm.sql.CalendarTermMapper
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.klass.mappers.KlassReducedMapper
+import org.ionproject.core.klass.sql.KlassReducedMapper
 import org.springframework.stereotype.Repository
 
 @Repository
 class CalendarTermRepoImpl(
-        private val tm: TransactionManager,
-        private val calendarTermMapper: CalendarTermMapper,
-        private val classMapper: KlassReducedMapper
+    private val tm: TransactionManager,
+    private val calendarTermMapper: CalendarTermMapper,
+    private val classMapper: KlassReducedMapper
 ) : CalendarTermRepo {
 
     override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
         val result = tm.run { handle ->
-            handle.createQuery("SELECT * FROM dbo.CalendarTerm OFFSET :offset LIMIT :lim")
-                    .bind("offset", page * limit)
-                    .bind("lim", limit)
-                    .map(calendarTermMapper)
-                    .list()
+            handle.createQuery(CALENDAR_TERMS_QUERY)
+                .bind(OFFSET, page * limit)
+                .bind(LIMIT, limit)
+                .map(calendarTermMapper)
+                .list()
         } as List<CalendarTerm>
 
         if (result.isEmpty()) {
@@ -32,21 +39,22 @@ class CalendarTermRepoImpl(
 
     override fun getTermByCalId(calId: String, page: Int, limit: Int): CalendarTerm? {
         val result = tm.run { handle ->
-            val res = handle.createQuery("SELECT * FROM dbo.CalendarTerm WHERE id=:id")
-                    .bind("id", calId)
-                    .map(calendarTermMapper)
-                    .findOne()
+            val res = handle.createQuery(CALENDAR_TERM_QUERY)
+                .bind(ID, calId)
+                .map(calendarTermMapper)
+                .findOne()
 
             var term: CalendarTerm? = null
             if (res.isPresent) {
                 term = res.get()
 
-                val classes = handle.createQuery("SELECT * FROM dbo.Class WHERE term=:id OFFSET :offset LIMIT :lim")
-                        .bind("id", calId)
-                        .bind("offset", page * limit)
-                        .bind("lim", limit)
-                        .map(classMapper)
-                        .list()
+                val classes = handle
+                    .createQuery(CLASSES_QUERY)
+                    .bind(ID, calId)
+                    .bind(OFFSET, page * limit)
+                    .bind(LIMIT, limit)
+                    .map(classMapper)
+                    .list()
 
                 term.classes.addAll(classes)
             }
