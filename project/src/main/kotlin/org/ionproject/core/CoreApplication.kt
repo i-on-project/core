@@ -44,7 +44,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
             )
 
         // Calendar -> text/calendar || application/vdn.siren+json
-        converters.add(ICalendarHttpMessageConverter())
+        converters.add(0, ICalendarHttpMessageConverter())
 
         converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
 
