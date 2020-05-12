@@ -1,6 +1,7 @@
-package org.ionproject.core.common
+package org.ionproject.core.common.querybuilder
 
 import org.jdbi.v3.core.statement.Query
+import org.springframework.util.MultiValueMap
 
 class SQLQueryBuilder {
 
@@ -31,19 +32,19 @@ class SQLQueryBuilder {
         }
 
         fun with(query: String) : With {
-            queryComponents.add(query)
+            queryComponents.add("$query\n")
             return this
         }
     }
 
     open inner class Select {
         fun select(vararg columns: String): From {
-            queryComponents.add("select ${columns.joinToString()}")
+            queryComponents.add("select ${columns.joinToString(",\n")}\n")
             return From()
         }
 
         fun selectDistinct(vararg columns: String): From {
-            queryComponents.add("select distinct ${columns.joinToString()}")
+            queryComponents.add("select distinct ${columns.joinToString(",\n")}\n")
             return From()
         }
     }
@@ -73,6 +74,23 @@ class SQLQueryBuilder {
                 } else
                     "and $condition\n"
             )
+            return this
+        }
+
+        fun where(srcFilters: Map<String, Condition>, toBeApplied: MultiValueMap<String, String>) : Where {
+            toBeApplied.forEach {
+                val toBeAppliedKey = it.key
+
+                val condition = srcFilters[toBeAppliedKey]
+
+                if (condition != null) {
+                    val toBeAppliedValues = it.value
+
+                    val builtCondition = condition.build(toBeAppliedValues.size)
+                    where(builtCondition)
+                }
+            }
+
             return this
         }
     }

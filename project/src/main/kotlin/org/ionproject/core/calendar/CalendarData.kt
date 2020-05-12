@@ -1,5 +1,6 @@
 package org.ionproject.core.calendar
 
+import org.ionproject.core.bind
 import org.ionproject.core.calendar.category.CategoryRepo
 import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.Event
@@ -19,12 +20,16 @@ import org.ionproject.core.calendar.icalendar.properties.components.relationship
 import org.ionproject.core.calendar.icalendar.types.*
 import org.ionproject.core.calendar.language.LanguageRepo
 import org.ionproject.core.common.customExceptions.ForeignKeyException
+import org.ionproject.core.common.querybuilder.*
 import org.ionproject.core.startsAndEndsWith
 import org.ionproject.core.toHexString
+import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.mapper.RowMapper
+import org.jdbi.v3.core.statement.Query
 import org.jdbi.v3.core.statement.StatementContext
 import org.postgresql.util.PGobject
 import org.springframework.stereotype.Component
+import org.springframework.util.MultiValueMap
 import java.sql.ResultSet
 import java.time.OffsetDateTime
 import org.ionproject.core.calendar.icalendar.types.Date as DateType
@@ -84,19 +89,6 @@ object CalendarData {
         $DUE,
         $BYDAY"""
 
-    const val CALENDAR_FROM_CLASS_QUERY =
-        """with calendar_id as (
-                    select $CLASS.$CALENDAR
-                    from $CLASS
-                    where $CLASS.$COURSE = :$COURSE and $CLASS.$TERM = :$TERM
-                )
-            $SELECT
-            from
-                $CALENDAR_COMPONENT
-            where 
-                $CALENDARS = (select * from calendar_id) 
-            $GROUP_BY"""
-
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY =
         """with calendar_id as (
                     select $CLASS.$CALENDAR
@@ -111,25 +103,7 @@ object CalendarData {
                 and
                 $UID = :$UID
             $GROUP_BY"""
-
-    const val CALENDAR_FROM_CLASS_SECTION_QUERY =
-        """with calendar_id as (
-                    select 
-                        $CLASS_SECTION.$CALENDAR
-                    from 
-                        $CLASS_SECTION
-                    where 
-                        $CLASS_SECTION.$COURSE = :$COURSE 
-                        and
-                        $CLASS_SECTION.$TERM = :$TERM
-                        and
-                        $CLASS_SECTION.$ID = :$ID
-                )
-            $SELECT
-            from $CALENDAR_COMPONENT
-            where $CALENDARS = (select * from calendar_id)
-            $GROUP_BY"""
-
+    
     const val CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY =
         """with calendar_id as (
                     select 
@@ -150,6 +124,133 @@ object CalendarData {
                 and
                 $UID = :$UID
             $GROUP_BY"""
+
+    // Query parameters
+    private const val START_BEFORE = "startBefore"
+    private const val START_AFTER = "startAfter"
+    private const val END_BEFORE = "endBefore"
+    private const val END_AFTER = "endAfter"
+    private const val SUMMARY = "summary"
+
+    private val QUERY_FILTERS = mapOf(
+        TYPE to VarcharCondition(TYPE, ComparisonOperator.EQUALS, TYPE, AggregationOperator.OR),
+        START_BEFORE to TimestampCondition(DTSTART, ComparisonOperator.LESSER_THAN, START_BEFORE),
+        START_AFTER to TimestampCondition(DTSTART, ComparisonOperator.GREATER_THAN, START_AFTER),
+        END_BEFORE to TimestampCondition(DTEND, ComparisonOperator.LESSER_THAN, END_BEFORE),
+        END_AFTER to TimestampCondition(DTEND, ComparisonOperator.GREATER_THAN, END_AFTER),
+        SUMMARY to VarcharCondition(SUMMARIES, ComparisonOperator.LIKE, SUMMARY)
+    )
+
+    fun calendarFromClassQuery(
+        handle: Handle,
+        courseId: Int,
+        calendarTerm: String,
+        filters: MultiValueMap<String, String>
+    ): Query {
+        val queryString = SQLQueryBuilder()
+            .with("""with calendar_id as (
+                    select $CLASS.$CALENDAR
+                    from $CLASS
+                    where $CLASS.$COURSE = :$COURSE and $CLASS.$TERM = :$TERM
+                )""")
+            .select(
+                UID,
+                TYPE,
+                "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
+                "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
+                "array_agg(distinct $CATEGORIES) as $CATEGORIES",
+                "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
+                DTSTAMP,
+                CREATED,
+                DTSTART,
+                DTEND,
+                DUE,
+                BYDAY
+            ).from(
+                CALENDAR_COMPONENT
+            ).where(
+                "$CALENDARS = (select * from calendar_id)"
+            ).where(
+                QUERY_FILTERS,
+                filters
+            ).groupBy(
+                UID,
+                TYPE,
+                DTSTAMP,
+                CREATED,
+                DTSTART,
+                DTEND,
+                DUE,
+                BYDAY
+            ).build()
+
+        val query = handle.createQuery(queryString)
+            .bind(COURSE, courseId)
+            .bind(TERM, calendarTerm)
+            .bind(QUERY_FILTERS, filters)
+
+        return query
+    }
+
+    fun calendarFromClassSectionQuery(
+        handle: Handle,
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        filters: MultiValueMap<String, String>
+    ): Query {
+        val queryString = SQLQueryBuilder()
+            .with("""with calendar_id as (
+                    select 
+                        $CLASS_SECTION.$CALENDAR
+                    from 
+                        $CLASS_SECTION
+                    where 
+                        $CLASS_SECTION.$COURSE = :$COURSE 
+                        and
+                        $CLASS_SECTION.$TERM = :$TERM
+                        and
+                        $CLASS_SECTION.$ID = :$ID
+                )""")
+            .select(
+                UID,
+                TYPE,
+                "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
+                "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
+                "array_agg(distinct $CATEGORIES) as $CATEGORIES",
+                "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
+                DTSTAMP,
+                CREATED,
+                DTSTART,
+                DTEND,
+                DUE,
+                BYDAY
+            ).from(
+                CALENDAR_COMPONENT
+            ).where(
+                "$CALENDARS = (select * from calendar_id)"
+            ).where(
+                QUERY_FILTERS,
+                filters
+            ).groupBy(
+                UID,
+                TYPE,
+                DTSTAMP,
+                CREATED,
+                DTSTART,
+                DTEND,
+                DUE,
+                BYDAY
+            ).build()
+
+        val query = handle.createQuery(queryString)
+            .bind(COURSE, courseId)
+            .bind(TERM, calendarTerm)
+            .bind(ID, classSectionId)
+            .bind(QUERY_FILTERS, filters)
+
+        return query
+    }
 
     @Component
     class CalendarComponentMapper(
@@ -258,7 +359,7 @@ object CalendarData {
             )
         }
 
-        private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R) : List<R> {
+        private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R): List<R> {
             val array = getArray(columnName).array as Array<Any>
 
             return array.map {
@@ -284,6 +385,7 @@ object CalendarData {
 
     }
 }
+
 
 class UnknownCalendarComponentTypeException(message: String) : Exception(message)
 

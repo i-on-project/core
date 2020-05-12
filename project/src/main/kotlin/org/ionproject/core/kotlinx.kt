@@ -1,5 +1,9 @@
 package org.ionproject.core
 
+import org.ionproject.core.common.querybuilder.Condition
+import org.jdbi.v3.core.statement.Query
+import org.springframework.util.MultiValueMap
+
 fun CharSequence.toInt(): Int {
     var acc = 0
     val unsigned = this[0] != '-'
@@ -25,3 +29,14 @@ fun String.startsAndEndsWith(str: Char): Boolean = startsWith(str) && endsWith(s
 
 fun String.hexStringToInt() : Int = toInt(16)
 fun Int.toHexString() : String = toString(16)
+
+fun Query.bind(queryFilters: Map<String, Condition>, filters: MultiValueMap<String, String>): Query {
+    filters.forEach { (key, list) ->
+        if (queryFilters.containsKey(key)) {
+            list.forEachIndexed { index, s ->
+                bind("$key$index", queryFilters[key]?.parse(s))
+            }
+        }
+    }
+    return this
+}

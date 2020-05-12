@@ -6,32 +6,24 @@ import org.ionproject.core.calendar.icalendar.properties.calendar.Version
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
+import org.springframework.util.MultiValueMap
 
 interface CalendarRepo {
     fun getClassCalendar(
         courseId: Int,
         calendarTerm: String,
-        type: Char?,
-        startBefore: String?,
-        startAfter: String?,
-        endBefore: String?,
-        endAfter: String?,
-        summary: String?
+        filters: MultiValueMap<String, String>
     ): Calendar?
 
     fun getClassSectionCalendar(
         courseId: Int,
         calendarTerm: String,
         classSectionId: String,
-        type: Char?,
-        startBefore: String?,
-        startAfter: String?,
-        endBefore: String?,
-        endAfter: String?,
-        summary: String?
+        filters: MultiValueMap<String, String>
     ): Calendar?
 
     fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar?
+
     fun getClassSectionCalendarComponent(
         courseId: Int,
         calendarTerm: String,
@@ -49,17 +41,10 @@ class CalendarRepoImpl(
     override fun getClassCalendar(
         courseId: Int,
         calendarTerm: String,
-        type: Char?,
-        startBefore: String?,
-        startAfter: String?,
-        endBefore: String?,
-        endAfter: String?,
-        summary: String?
+        filters: MultiValueMap<String, String>
     ): Calendar? {
         val components = transactionManager.run {
-            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_QUERY)
-                .bind(CalendarData.COURSE, courseId)
-                .bind(CalendarData.TERM, calendarTerm)
+            CalendarData.calendarFromClassQuery(it, courseId, calendarTerm, filters)
                 .map(componentMapper)
                 .list()
         }
@@ -71,26 +56,16 @@ class CalendarRepoImpl(
             null,
             components
         )
-
-        TODO("use query params. Need query builder from https://github.com/i-on-project/core/issues/76")
     }
 
     override fun getClassSectionCalendar(
         courseId: Int,
         calendarTerm: String,
         classSectionId: String,
-        type: Char?,
-        startBefore: String?,
-        startAfter: String?,
-        endBefore: String?,
-        endAfter: String?,
-        summary: String?
+        filters: MultiValueMap<String, String>
     ): Calendar? {
         val components = transactionManager.run {
-            it.createQuery(CalendarData.CALENDAR_FROM_CLASS_SECTION_QUERY)
-                .bind(CalendarData.COURSE, courseId)
-                .bind(CalendarData.TERM, calendarTerm)
-                .bind(CalendarData.ID, classSectionId)
+            CalendarData.calendarFromClassSectionQuery(it, courseId, calendarTerm, classSectionId, filters)
                 .map(componentMapper)
                 .list()
         }
@@ -102,8 +77,6 @@ class CalendarRepoImpl(
             null,
             components
         )
-
-        TODO("use query params. Need query builder from https://github.com/i-on-project/core/issues/76")
     }
 
     override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
