@@ -6,18 +6,13 @@ import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.hexStringToInt
 import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-// Query parameters
-private const val TYPE = "type"
-private const val START_BEFORE = "startBefore"
-private const val START_AFTER = "startAfter"
-private const val END_BEFORE = "endBefore"
-private const val END_AFTER = "endAfter"
-private const val SUMMARY = "summary"
+
 
 @RestController
 class CalendarController(private val repository: CalendarRepo) {
@@ -26,15 +21,10 @@ class CalendarController(private val repository: CalendarRepo) {
     fun fromClass(
         @PathVariable cid: Int,
         @PathVariable calterm: String,
-        @RequestParam(required = false, name = TYPE) type: Char?,
-        @RequestParam(required = false, name = START_BEFORE) startBefore: String?,
-        @RequestParam(required = false, name = START_AFTER) startAfter: String?,
-        @RequestParam(required = false, name = END_BEFORE) endBefore: String?,
-        @RequestParam(required = false, name = END_AFTER) endAfter: String?,
-        @RequestParam(required = false, name = SUMMARY) summary: String?
+        @RequestParam query: MultiValueMap<String, String>
     ): ResponseEntity<Calendar> {
         val calendar =
-            repository.getClassCalendar(cid, calterm, type, startBefore, startAfter, endBefore, endAfter, summary)
+            repository.getClassCalendar(cid, calterm, query)
         return if (calendar != null)
             ResponseEntity.ok(calendar)
         else
@@ -46,23 +36,13 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int,
-        @RequestParam(required = false, name = TYPE) type: Char?,
-        @RequestParam(required = false, name = START_BEFORE) startBefore: String?,
-        @RequestParam(required = false, name = START_AFTER) startAfter: String?,
-        @RequestParam(required = false, name = END_BEFORE) endBefore: String?,
-        @RequestParam(required = false, name = END_AFTER) endAfter: String?,
-        @RequestParam(required = false, name = SUMMARY) summary: String?
+        @RequestParam query: MultiValueMap<String, String>
     ): ResponseEntity<Calendar> {
         val calendar = repository.getClassSectionCalendar(
             cid,
             calterm,
             sid,
-            type,
-            startBefore,
-            startAfter,
-            endBefore,
-            endAfter,
-            summary
+            query
         )
         return if (calendar != null)
             ResponseEntity.ok(calendar)
