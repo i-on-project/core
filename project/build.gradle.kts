@@ -49,25 +49,47 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-// -- BD automation
-
-tasks.register<PgStart>("pgStart")
-tasks.register<PgStop>("pgStop")
-tasks.register<PgToggle>("pgToggle")
+// DB automation
+tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is already running
+tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist
+tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
 tasks.register<PgDropDb>("pgDropDb")
 tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
 
-tasks.register("setupDb") {
+/**
+ * Delay in milliseconds.
+ *
+ * After issuing a command to create or remove a container,
+ * the process exits before the changes take complete effect in the Docker daemon.
+ */
+val dockerDelay = 2000L
+
+/**
+ * Will execute all the tasks needed to setup the database running in a container,
+ * in the proper order.
+ */
+tasks.register("pgSetupDb") {
     val startTask = "pgStart"
     val createDbTask = "pgCreateDb"
     val initSchemaTask = "pgInitSchema"
     val addDataTask = "pgAddData"
 
     dependsOn(startTask, createDbTask, initSchemaTask, addDataTask)
-
-    tasks[createDbTask].mustRunAfter(startTask).doFirst { sleep(1000) }
+    tasks[createDbTask].mustRunAfter(startTask).doFirst { sleep(dockerDelay) }
     tasks[initSchemaTask].mustRunAfter(createDbTask)
     tasks[addDataTask].mustRunAfter(initSchemaTask)
+}
+
+/**
+ * Will destroy the container before setting the database (which will be done inside
+ * a new container).
+ */
+tasks.register("pgReset") {
+    val setupTask = "pgSetupDb"
+    val stopTask = "pgStop"
+
+    dependsOn(setupTask, stopTask)
+    tasks[setupTask].mustRunAfter(stopTask).doFirst { sleep(dockerDelay) }
 }
