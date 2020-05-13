@@ -1,6 +1,5 @@
 package org.ionproject.core.calendarTerm
 
-
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester

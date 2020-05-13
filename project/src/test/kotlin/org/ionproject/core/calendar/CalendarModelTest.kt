@@ -22,7 +22,6 @@ import org.ionproject.core.calendar.icalendar.types.Uri
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-
 internal class CalendarModelTest {
     @Test
     fun createCalendar() {
@@ -44,16 +43,16 @@ internal class CalendarModelTest {
 
     @Test
     fun createTodo() {
-        val todo: Todo =
+        val todo =
                 Todo(
                         UniqueIdentifier("uid"),
-                        arrayOf<Summary>(Summary("summary")),
-                        arrayOf<Description>(Description("description")),
-                        arrayOf<Attachment>(Attachment(Uri("something"))),
+                        arrayOf(Summary("summary")),
+                        arrayOf(Description("description")),
+                        arrayOf(Attachment(Uri("something"))),
                         DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeDue(Date.of(2020, 0, 31)),
-                        arrayOf<Categories>(Categories("categorie"))
+                        arrayOf(Categories("categorie"))
                 )
 
         Assertions.assertEquals(todo.uid.value, "uid")
@@ -64,16 +63,16 @@ internal class CalendarModelTest {
 
     @Test
     fun createJournal() {
-        val journal: Journal =
+        val journal =
                 Journal(
                         UniqueIdentifier("uid"),
-                        arrayOf<Summary>(Summary("summary")),
-                        arrayOf<Description>(Description("description")),
-                        arrayOf<Attachment>(Attachment(Uri("something"))),
+                        arrayOf(Summary("summary")),
+                        arrayOf(Description("description")),
+                        arrayOf(Attachment(Uri("something"))),
                         DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        arrayOf<Categories>(Categories("categorie"))
+                        arrayOf(Categories("categorie"))
                 )
 
         Assertions.assertEquals(journal.uid.value, "uid")
@@ -84,14 +83,14 @@ internal class CalendarModelTest {
 
     @Test
     fun createEvent() {
-        val event: Event =
+        val event =
                 Event(
                         UniqueIdentifier("uid"),
-                        arrayOf<Summary>(Summary("summary")),
-                        arrayOf<Description>(Description("description")),
+                        arrayOf(Summary("summary")),
+                        arrayOf(Description("description")),
                         DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        arrayOf<Categories>(Categories("categorie")),
+                        arrayOf(Categories("categorie")),
                         DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         DateTimeEnd(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
                         null
@@ -101,6 +100,5 @@ internal class CalendarModelTest {
         Assertions.assertEquals(event.componentName, "VEVENT")
         Assertions.assertEquals(event.dtStamp.value.value,
                 DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString())
-
     }
 }

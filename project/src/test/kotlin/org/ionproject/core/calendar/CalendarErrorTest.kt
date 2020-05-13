@@ -52,6 +52,4 @@ internal class CalendarErrorTest : ControllerTester() {
                     .andReturn()
         }
     }
-
-
 }

@@ -10,7 +10,7 @@ internal object CalendarTermData {
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
 
-    const val CLASS_CAL_TERM = "term"
+    const val CLASS_CAL_TERM = "calendarterm"
 
     const val CALENDAR_TERMS_QUERY = """
         select $ID, $START_DATE, $END_DATE
