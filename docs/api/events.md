@@ -17,7 +17,7 @@ For example, a `Todo` with a created date of `2020-03-19T14:00:00Z` and a due da
 All [iCalendar](#icalendar) objects and components will have a `type` property to distinguish its kind. Each of these objects has a `properties` property that is an object that has all of its [properties](https://tools.ietf.org/html/rfc5545#section-3.5). Each individual property will then have a `parameters` and `value` property where its parameters and value are respectively specified.
 
 Multi-valued property values use arrays, but their `type` value is as if the value was not in an array. An array with a single value is equivalent to that same value without the array.
-Some properties can occur multiple times. In those cases the property value will not be an object but an array of objects.
+Some properties can occur multiple times. In those cases the property will not be an object but an array of objects.
 
 The `categories` property of the `Event` in the example demonstrates a reoccuring property and mutli-valued values.
 
@@ -88,13 +88,9 @@ The `categories` property of the `Event` in the example demonstrates a reoccurin
 A calendar, as described [here](https://icalendar.org/iCalendar-RFC-5545/3-4-icalendar-object.html), represents a component container. Each individual object of the domain has its own calendar.
 
 ## Properties
-* `version`: the unique version of [iCalendar](#icalendar) being used
-  - type: **text**
-  - e.g. "2.0"
+* [version](#version)
+* [prodid](#prodid)
 
-* `prodid`: id of the creator of the calendar. In this domain it could be the identifier of a `Class`, `ClassSection`, etc.
-  - type: **text**
-  - e.g. "/v0/courses/1/classes/1920v/sections/1"
 ## Actions
 An event collection representation includes a description of the available actions the client may want to apply. Details on how the client should go around applying such actions are described in the message itself.
 
@@ -106,6 +102,11 @@ The available actions are:
 ### Fields
 The `search` action allows the following parameters:
 * `type`: filters **components** that don't have the specified `type`
+  * Possible types
+    * E - Events  
+    * T - Todos
+    * J - Journals
+  * If multiple types are specified, such as E and T, the search result will have components of the `Event` and `Todo` type. If all types are specified it is the same as not specifying one.
 
 * `startBefore`: filters **components** that have a `dtstart` later than specified
 
@@ -131,7 +132,7 @@ A `Calendar` representation:
     "type": "calendar",
     "properties": {
       "prodid": {
-        "value": "/v0/courses/1/classes/1920v/sections/61D"
+        "value": "/v0/courses/1/classes/1920v/61D"
       },
       "version": {
         "value": "2.0"
@@ -235,63 +236,16 @@ A `Calendar` representation:
 An `Event`, as described [here](https://tools.ietf.org/html/rfc5545#section-3.6.1), represents an occurrence within a given time frame, such as an exam, a meeting or an appointment. It can also represent a repeating occurrence if the [`rrule`](https://tools.ietf.org/html/rfc5545#section-3.8.5.3) property is specified. For an example of a recurring event check the `Calendar` [example](#example-representation)
 
 ## Properties
-* `uid`: the unique identifier of this `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "event/1234", "todo/1234523"
-
-* `summary`: summary of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "WAD 1st Exam"
-
-* `description`: description of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First exam for the WAD-1920v class. Students are free to bring a cheat sheet of only 1 page, written by hand."
-
-* `dtstamp`: date of the last modification of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `created`: date of creation of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.1)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `dtstart`: starting date of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.2.4)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-    - alternate types:
-      - [**date**](https://tools.ietf.org/html/rfc5545#section-3.3.4)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `dtend`: ending date of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.2.2)
-  - only one of `duration` or `dtend` can be present
-  - the `endDate` should be after `startDate`
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-    - alternate types:
-      - [**date**](https://tools.ietf.org/html/rfc5545#section-3.3.4)
-        - if this data type is used for `dtend` then it **must** be used for `dtstart` aswell
-  - e.g. 2020-03-19T16:30:00Z
-
-* `duration`: duration of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.2.5)
-  - only one of `duration` or `dtend` can be present
-  - type: [**duration**](https://tools.ietf.org/html/rfc5545#section-3.3.6)
-  - e.g. "P45DT23H12M56S"
-
-* `categories`: categories of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.2)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - supports multiple values by using an array
-  - e.g. "Exam", "Lecture", ["Evaluation", "Exam"]
-
-* `rrule`: recurrency rule of the `Event`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.5.3)
-  - type: [**recur**](https://tools.ietf.org/html/rfc5545#section-3.3.10)
+* [uid](#uid)
+* [summary](#summary)  
+* [description](#description)
+* [dtstamp](#dtstamp)
+* [created](#created)
+* [categories](#categories)
+* [dtstart](#dtstart)
+* [dtend](#dtend)
+* [rrule](#rrule)
+  - this property is optional and will only be defined on recurring `Event`s
 
 ## Link Relations
 An event representation:
@@ -344,49 +298,15 @@ MIME type: __application/vdn.siren+json__
 A calendar component designed to represent an assignment or something that requires action, e.g. a work assignment at school. It lacks a starting date because the ability for it to be done is not aquired after the `Todo` is created. The instant it is created is the instant it is started.
 
 ## Properties
-* `uid`: the unique identifier of this `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "event/1234", "todo/1234523"
-
-* `summary`: summary of the `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "WAD 1st Series"
-
-* `description`: description of the `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First series of exercises for the WAD course during the 1920v semester"
-
-* `attach`: attachment related that could, for example, be related to the requirements or objectives of the `Todo`
+* [uid](#uid)
+* [summary](#summary)  
+* [description](#description)
+* [dtstamp](#dtstamp)
+* [created](#created)
+* [attach](#attach)
   - this property is optional
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
-  - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-  - e.g. "https://github.com/isel-leic-daw/1920v-public/wiki/phase-1"
-
-* `dtstamp`: date of the last modification of the `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `created`: date of creation of the `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.1)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `due`: defines the date and time that the `Todo` is expected to be completed
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.2.3)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-    - alternate types:
-      - [**date**](https://tools.ietf.org/html/rfc5545#section-3.3.4)
-  - e.g. 2020-03-19T00:00:00Z
-
-* `categories`: categories of the `Todo`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.2)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - supports multiple values by using an array
-  - e.g. "Math", "Lecture", ["Evaluation", "Assignment", "Cyber Security"]
+* [categories](#categories)
+* [due](#due)
 
 ## Link Relations
 A Todo representation:
@@ -438,52 +358,16 @@ A calendar component meant to associate text with a given time.
 For example, a synopsis of a lecture.
 
 ## Properties
-* `uid`: the unique identifier of this `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "event/1234", "todo/1234523", "journal/2"
-
-* `summary`: summary of the `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "WAD 1st Series"
-
-* `description`: description of the `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - e.g. "First series of exercises for the WAD course during the 1920v semester"
-
-* `attach`: attachment that related to the content of the `Journal`
+* [uid](#uid)
+* [summary](#summary)  
+* [description](#description)
+* [attach](#attach)
   - this property is optional
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
-  - type: [**uri**](https://tools.ietf.org/html/rfc5545#section-3.3.13)
-
-* `dtstamp`: date of the last modification of the `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `dtstart`: date that the `Journal` entry is refering to
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.2.4)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-    - alternate types:
-      - [**date**](https://tools.ietf.org/html/rfc5545#section-3.3.4)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `created`: date of creation of the `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.7.1)
-  - type: [**date-time**](https://tools.ietf.org/html/rfc5545#section-3.3.5)
-  - e.g. 2020-03-19T14:00:00Z
-
-* `categories`: categories of the `Journal`
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.1.2)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
-  - supports multiple values by using an array
-  - e.g. "Math", "Lecture", ["Evaluation", "Assignment", "Cyber Security"]
-
-* `relatedTo`: Unique identifiers of other components the `Journal` entry is related to
-  - [link](https://tools.ietf.org/html/rfc5545#section-3.8.4.5)
-  - type: [**text**](https://tools.ietf.org/html/rfc5545#section-3.3.11)
+* [dtstamp](#dtstamp)
+* [dtstart](#dtstart)
+* [created](#created)
+* [categories](#categories)
+* [relatedTo](#relatedto)
 
 ## Link Relations
 A Todo representation:
@@ -537,3 +421,151 @@ A Todo representation:
   ]
 } 
 ```
+
+# Properties
+## `version`
+The unique version of [iCalendar](#icalendar) being used
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.7.4)
+  - type: **text**
+  - e.g. "2.0"
+
+## `prodid`
+Id of the creator of the calendar. In this domain it could be the identifier of a `Class`, `ClassSection`, etc.
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.7.3)
+  - type: **text**
+  - The text will be the full path to the resource it is identifying
+  - e.g. "/v0/courses/1/classes/1920v/1"
+
+## `uid`
+The unique identifier of a component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.4.7)
+  - type: [**text**](#text)
+  - e.g. "event/1234", "todo/1234523", "journal/2"
+
+## `summary`
+Summary of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.1.12)
+  - type: [**text**](#text)
+  - e.g. "WAD 1st Series"
+
+## `description`
+Description of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.1.5)
+  - type: [**text**](#text)
+  - e.g. "First series of exercises for the WAD course during the 1920v semester"
+
+## `attach`
+
+Attachment that related to the content of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.1.1)
+  - type: [**uri**](#uri)
+
+## `dtstamp`
+
+Date of the last modification of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.7.2)
+  - type: [**date-time**](#datetime)
+  - e.g. 2020-03-19T14:00:00Z
+
+## `dtstart`
+
+Starting date
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.2.4)
+  - type: [**date-time**](#datetime)
+    - alternate types:
+      - [**date**](#date)
+  - if this property is used on a `Journal` component it represents the instant referred
+  - e.g. 2020-03-19T14:00:00Z
+
+## `created`
+
+Date of creation of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.7.1)
+  - type: [**date-time**](#datetime)
+  - e.g. 2020-03-19T14:00:00Z
+
+## `categories`
+
+Categories of the component
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.1.2)
+  - type: [**text**](#text)
+  - supports multiple values by using an array
+  - e.g. "Math", "Lecture", ["Evaluation", "Assignment", "Cyber Security"]
+
+## `relatedTo`
+
+Unique identifiers of other components the component is related to
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.4.5)
+  - type: [**text**](#text)
+
+## `due`
+
+Defines the date and time that the component is expected to be completed
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.2.3)
+  - type: [**date-time**](#datetime)
+    - alternate types:
+      - [**date**](#date)
+  - e.g. 2020-03-19T00:00:00Z
+
+
+## `dtend`
+
+Ending date
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.2.2)
+  - the `endDate` should be after `startDate`
+  - type: [**date-time**](#datetime)
+    - alternate types:
+      - [**date**](#date)
+        - if this data type is used for `dtend` then it **must** be used for `dtstart` aswell
+  - e.g. 2020-03-19T16:30:00Z
+
+## `rrule`
+Recurrency rule of the component. Only used in `Event`s
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.8.5.3)
+  - type: [**recur**](https://tools.ietf.org/html/rfc5545#section-3.3.10)
+
+# Data types
+
+## Text
+A sequence of characters. What characters are allowed or not is defined in the iCalendar RFC.
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.3.11)
+
+## Date
+A date with the format: YYYYmmDD
+- Y - Year
+- m - Month
+- D - Day of Month
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.3.4)
+
+## Datetime
+A date with the format: YYYYmmDDThhMMssZ
+- Y - Year
+- m - Month
+- D - Day of Month
+- h - Hour
+- M - Minute
+- s - Second
+- Z - The Z will appear if the time is in UTC time
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.3.5)
+
+## URI
+A Unique Resource Identifier as described [here](https://tools.ietf.org/html/rfc3986#section-3).
+
+[RFC](https://tools.ietf.org/html/rfc5545#section-3.3.13)
