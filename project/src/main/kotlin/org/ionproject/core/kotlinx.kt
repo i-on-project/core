@@ -40,3 +40,11 @@ fun Query.bind(queryFilters: Map<String, Condition>, filters: MultiValueMap<Stri
     }
     return this
 }
+
+fun <K, V, NK, NV> Map<K, V>.mapEntries(oper: (Map.Entry<K, V>) -> Pair<NK, NV>): Map<NK, NV> {
+    return map {
+        oper(it)
+    }.associate {
+        it
+    }
+}
