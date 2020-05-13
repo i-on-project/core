@@ -25,14 +25,17 @@ object CalendarData {
   const val BYDAY = "byday"
   const val DUE = "due"
 
-  // Class and ClassSection table and column names
-  private const val CLASS = "dbo.Class"
-  const val CLASS_TABLE_ID = "id"
-  private const val CLASS_SECTION = "dbo.ClassSection"
-  private const val CALENDAR = "calendar"
-  const val COURSE = "courseId"
+  // Tables
+  const val CLASS = "dbo.Class"
+  const val COURSE = "dbo.Course"
+  const val CLASS_SECTION = "dbo.ClassSection"
+
+  // Column names
+  const val CALENDAR = "calendar"
+  const val COURSE_ID = "courseId"
   const val CAL_TERM = "calendarterm"
   const val CLASS_ID = "classid"
+  const val CAS_ID = "cas_id"
   const val ID = "id"
 
   // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
@@ -67,7 +70,7 @@ object CalendarData {
       """with calendar_id as (
                     select $CLASS.$CALENDAR
                     from $CLASS
-                    where $CLASS.$COURSE = :$COURSE and $CLASS.$CAL_TERM = :$CAL_TERM
+                    where $CLASS.$COURSE_ID = :$COURSE_ID and $CLASS.$CAL_TERM = :$CAL_TERM
                 )
             $SELECT
             from 
@@ -85,9 +88,9 @@ object CalendarData {
                     from 
                         $CLASS_SECTION
                     join
-                        $CLASS on $CLASS.$CLASS_TABLE_ID=$CLASS_SECTION.$CLASS_ID
+                        $CLASS on $CLASS.$ID=$CLASS_SECTION.$CLASS_ID
                     where 
-                        $CLASS.$COURSE = :$COURSE 
+                        $CLASS.$COURSE_ID = :$COURSE_ID 
                         and
                         $CLASS.$CAL_TERM = :$CAL_TERM
                         and
@@ -127,7 +130,7 @@ object CalendarData {
             .with("""with calendar_id as (
                     select $CLASS.$CALENDAR
                     from $CLASS
-                    where $CLASS.$COURSE = :$COURSE and $CLASS.$CAL_TERM = :$CAL_TERM
+                    where $CLASS.$COURSE_ID = :$COURSE_ID and $CLASS.$CAL_TERM = :$CAL_TERM
                 )""")
             .select(
                 UID,
@@ -161,7 +164,7 @@ object CalendarData {
             ).build()
 
         val query = handle.createQuery(queryString)
-          .bind(COURSE, courseId)
+          .bind(COURSE_ID, courseId)
           .bind(CAL_TERM, calendarTerm)
             .bind(QUERY_FILTERS, filters)
 
@@ -182,9 +185,9 @@ object CalendarData {
                     from 
                         $CLASS_SECTION
                     join
-                        $CLASS on $CLASS.$CLASS_TABLE_ID=$CLASS_SECTION.$CLASS_ID
+                        $CLASS on $CLASS.$ID=$CLASS_SECTION.$CLASS_ID
                     where 
-                        $CLASS.$COURSE = :$COURSE 
+                        $CLASS.$COURSE_ID = :$COURSE_ID 
                         and
                         $CLASS.$CAL_TERM = :$CAL_TERM
                         and
@@ -209,24 +212,37 @@ object CalendarData {
                 "$CALENDARS = (select * from calendar_id)"
             ).where(
                 QUERY_FILTERS,
-                filters
-            ).groupBy(
-                UID,
-                TYPE,
-                DTSTAMP,
-                CREATED,
-                DTSTART,
-                DTEND,
-                DUE,
-                BYDAY
-            ).build()
+            filters
+          ).groupBy(
+            UID,
+            TYPE,
+            DTSTAMP,
+            CREATED,
+            DTSTART,
+            DTEND,
+            DUE,
+            BYDAY
+          ).build()
 
-        val query = handle.createQuery(queryString)
-          .bind(COURSE, courseId)
-          .bind(CAL_TERM, calendarTerm)
-            .bind(ID, classSectionId)
-            .bind(QUERY_FILTERS, filters)
+      val query = handle.createQuery(queryString)
+        .bind(COURSE_ID, courseId)
+        .bind(CAL_TERM, calendarTerm)
+        .bind(ID, classSectionId)
+        .bind(QUERY_FILTERS, filters)
 
-        return query
+      return query
     }
+
+  const val CHECK_IF_CLASS_EXISTS = """
+        select count(*) from $COURSE as CO
+        join $CLASS as CA on CO.$ID=CA.$COURSE_ID
+        where $CAL_TERM=:$CAL_TERM AND CO.$ID=:$ID
+        """
+
+  const val CHECK_IF_CLASS_SECTION_EXISTS = """
+        select count(*) from $COURSE as CO
+        join $CLASS as C on CO.$ID=C.$COURSE_ID
+        join $CLASS_SECTION as CAS on C.$ID=CAS.$CLASS_ID
+        where C.$CAL_TERM=:$CAL_TERM AND CO.$ID=:$ID AND CAS.$ID=:$CAS_ID
+        """
 }

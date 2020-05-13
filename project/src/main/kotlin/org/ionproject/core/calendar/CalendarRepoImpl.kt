@@ -6,76 +6,100 @@ import org.ionproject.core.calendar.icalendar.properties.calendar.Version
 import org.ionproject.core.calendar.sql.CalendarComponentMapper
 import org.ionproject.core.calendar.sql.CalendarData
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 import org.springframework.util.MultiValueMap
 
 @Repository
 class CalendarRepoImpl(
-    private val transactionManager: TransactionManager,
-    private val componentMapper: CalendarComponentMapper
+  private val transactionManager: TransactionManager,
+  private val componentMapper: CalendarComponentMapper
 ) : CalendarRepo {
 
     override fun getClassCalendar(
-        courseId: Int,
-        calendarTerm: String,
-        filters: MultiValueMap<String, String>
+      courseId: Int,
+      calendarTerm: String,
+      filters: MultiValueMap<String, String>
     ): Calendar? {
-        val components = transactionManager.run {
-            CalendarData.calendarFromClassQuery(it, courseId, calendarTerm, filters)
-                .map(componentMapper)
-                .list()
+      val components = transactionManager.run {
+        val count = it
+          .createQuery(CalendarData.CHECK_IF_CLASS_EXISTS)
+          .bind(CalendarData.CAL_TERM, calendarTerm)
+          .bind(CalendarData.ID, courseId)
+          .mapTo(Integer::class.java)
+          .one()
+          .toInt()
+
+        if (count == 0) {
+          throw ResourceNotFoundException("There is no class for the course with id $courseId at the calendar term $calendarTerm.")
         }
 
-        return Calendar(
-            ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
-            Version(),
-            null,
-            null,
-            components
-        )
+        CalendarData.calendarFromClassQuery(it, courseId, calendarTerm, filters)
+          .map(componentMapper)
+          .list()
+      }
+
+      return Calendar(
+        ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
+        Version(),
+        null,
+        null,
+        components
+      )
     }
 
     override fun getClassSectionCalendar(
-        courseId: Int,
-        calendarTerm: String,
-        classSectionId: String,
-        filters: MultiValueMap<String, String>
+      courseId: Int,
+      calendarTerm: String,
+      classSectionId: String,
+      filters: MultiValueMap<String, String>
     ): Calendar? {
-        val components = transactionManager.run {
-            CalendarData.calendarFromClassSectionQuery(it, courseId, calendarTerm, classSectionId, filters)
-                .map(componentMapper)
-                .list()
+      val components = transactionManager.run {
+        val count = it
+          .createQuery(CalendarData.CHECK_IF_CLASS_SECTION_EXISTS)
+          .bind(CalendarData.CAL_TERM, calendarTerm)
+          .bind(CalendarData.ID, courseId)
+          .bind(CalendarData.CAS_ID, classSectionId)
+          .mapTo(Integer::class.java)
+          .one()
+          .toInt()
+
+        if (count == 0) {
+          throw ResourceNotFoundException("There is no classSection $classSectionId for the course with id $courseId at the calendar term $calendarTerm.")
         }
 
-        return Calendar(
-            ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
-            Version(),
-            null,
-            null,
-            components
-        )
+        CalendarData.calendarFromClassSectionQuery(it, courseId, calendarTerm, classSectionId, filters)
+          .map(componentMapper)
+          .list()
+      }
+
+      return Calendar(
+        ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
+        Version(),
+        null,
+        null,
+        components
+      )
     }
 
     override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
         try {
             val component = transactionManager.run {
-                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
-                    .bind(CalendarData.COURSE, courseId)
-                    .bind(CalendarData.CAL_TERM, calendarTerm)
-                    .bind(CalendarData.UID, componentId)
-                    .map(componentMapper)
-                    .one()
+              it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
+                .bind(CalendarData.COURSE_ID, courseId)
+                .bind(CalendarData.CAL_TERM, calendarTerm)
+                .bind(CalendarData.UID, componentId)
+                .map(componentMapper)
+                .one()
             }
 
             return Calendar(
-                ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
-                Version(),
-                null,
-                null,
-                mutableListOf(
-                    component
-                )
+              ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
+              Version(),
+              null,
+              null,
+              mutableListOf(component)
             )
 
         } catch (e: IllegalStateException) {
@@ -85,34 +109,31 @@ class CalendarRepoImpl(
     }
 
     override fun getClassSectionCalendarComponent(
-        courseId: Int,
-        calendarTerm: String,
-        classSectionId: String,
-        componentId: Int
+      courseId: Int,
+      calendarTerm: String,
+      classSectionId: String,
+      componentId: Int
     ): Calendar? {
         try {
             val component = transactionManager.run {
-                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
-                    .bind(CalendarData.COURSE, courseId)
-                    .bind(CalendarData.CAL_TERM, calendarTerm)
-                    .bind(CalendarData.ID, classSectionId)
-                    .bind(CalendarData.UID, componentId)
-                    .map(componentMapper)
-                    .one()
+              it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
+                .bind(CalendarData.COURSE_ID, courseId)
+                .bind(CalendarData.CAL_TERM, calendarTerm)
+                .bind(CalendarData.ID, classSectionId)
+                .bind(CalendarData.UID, componentId)
+                .map(componentMapper)
+                .one()
             }
 
             return Calendar(
-                ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
-                Version(),
-                null,
-                null,
-                mutableListOf(
-                    component
-                )
+              ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
+              Version(),
+              null,
+              null,
+              mutableListOf(component)
             )
         } catch (e: IllegalStateException) {
             return null
         }
-
     }
 }
