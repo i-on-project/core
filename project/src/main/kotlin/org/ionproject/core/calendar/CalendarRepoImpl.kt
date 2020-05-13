@@ -62,7 +62,7 @@ class CalendarRepoImpl(
             val component = transactionManager.run {
                 it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
                     .bind(CalendarData.COURSE, courseId)
-                    .bind(CalendarData.TERM, calendarTerm)
+                    .bind(CalendarData.CAL_TERM, calendarTerm)
                     .bind(CalendarData.UID, componentId)
                     .map(componentMapper)
                     .one()
@@ -94,7 +94,7 @@ class CalendarRepoImpl(
             val component = transactionManager.run {
                 it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
                     .bind(CalendarData.COURSE, courseId)
-                    .bind(CalendarData.TERM, calendarTerm)
+                    .bind(CalendarData.CAL_TERM, calendarTerm)
                     .bind(CalendarData.ID, classSectionId)
                     .bind(CalendarData.UID, componentId)
                     .map(componentMapper)

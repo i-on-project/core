@@ -1,47 +1,42 @@
 package org.ionproject.core.calendar.sql
 
 import org.ionproject.core.bind
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Attachment
-import org.ionproject.core.calendar.icalendar.types.DateTime
-import org.ionproject.core.calendar.icalendar.types.Time
-import org.ionproject.core.calendar.icalendar.types.Uri
 import org.ionproject.core.common.querybuilder.*
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.statement.Query
 import org.springframework.util.MultiValueMap
-import java.sql.ResultSet
-import java.time.OffsetDateTime
-import org.ionproject.core.calendar.icalendar.types.Date as DateType
 
 object CalendarData {
-        // Name of Calendar component view and of calendar property columns
-    private const val CALENDAR_COMPONENT = "dbo.v_ComponentsAll"
-    const val UID = "uid"
-    private const val CALENDARS = "calendars"
-    const val TYPE = "type"
-    const val SUMMARIES = "summaries"
-    private const val SUMMARIES_LANGUAGE = "summaries_language"
-    const val DESCRIPTIONS = "descriptions"
-    private const val DESCRIPTIONS_LANGUAGE = "descriptions_language"
-    const val CATEGORIES = "categories"
-    const val DTSTAMP = "dtstamp"
-    const val CREATED = "created"
-    const val ATTACHMENTS = "attachments"
-    const val DTSTART = "dtstart"
-    const val DTEND = "dtend"
-    const val BYDAY = "byday"
-    const val DUE = "due"
+  // Name of Calendar component view and of calendar property columns
+  private const val CALENDAR_COMPONENT = "dbo.v_ComponentsAll"
+  const val UID = "uid"
+  private const val CALENDARS = "calendars"
+  const val TYPE = "type"
+  const val SUMMARIES = "summaries"
+  private const val SUMMARIES_LANGUAGE = "summaries_language"
+  const val DESCRIPTIONS = "descriptions"
+  private const val DESCRIPTIONS_LANGUAGE = "descriptions_language"
+  const val CATEGORIES = "categories"
+  const val DTSTAMP = "dtstamp"
+  const val CREATED = "created"
+  const val ATTACHMENTS = "attachments"
+  const val DTSTART = "dtstart"
+  const val DTEND = "dtend"
+  const val BYDAY = "byday"
+  const val DUE = "due"
 
-    // Class and ClassSection table and column names
-    private const val CLASS = "dbo.Class"
-    private const val CLASS_SECTION = "dbo.ClassSection"
-    private const val CALENDAR = "calendar"
-    const val COURSE = "courseId"
-    const val TERM = "term"
-    const val ID = "id"
+  // Class and ClassSection table and column names
+  private const val CLASS = "dbo.Class"
+  const val CLASS_TABLE_ID = "id"
+  private const val CLASS_SECTION = "dbo.ClassSection"
+  private const val CALENDAR = "calendar"
+  const val COURSE = "courseId"
+  const val CAL_TERM = "calendarterm"
+  const val CLASS_ID = "classid"
+  const val ID = "id"
 
-    // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
-    private const val SELECT = """
+  // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
+  private const val SELECT = """
     select 
         $UID,
         $TYPE,
@@ -69,10 +64,10 @@ object CalendarData {
         $BYDAY"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY =
-        """with calendar_id as (
+      """with calendar_id as (
                     select $CLASS.$CALENDAR
                     from $CLASS
-                    where $CLASS.$COURSE = :$COURSE and $CLASS.$TERM = :$TERM
+                    where $CLASS.$COURSE = :$COURSE and $CLASS.$CAL_TERM = :$CAL_TERM
                 )
             $SELECT
             from 
@@ -84,15 +79,17 @@ object CalendarData {
             $GROUP_BY"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY =
-        """with calendar_id as (
+      """with calendar_id as (
                     select 
                         $CLASS_SECTION.$CALENDAR
                     from 
                         $CLASS_SECTION
+                    join
+                        $CLASS on $CLASS.$CLASS_TABLE_ID=$CLASS_SECTION.$CLASS_ID
                     where 
-                        $CLASS_SECTION.$COURSE = :$COURSE 
+                        $CLASS.$COURSE = :$COURSE 
                         and
-                        $CLASS_SECTION.$TERM = :$TERM
+                        $CLASS.$CAL_TERM = :$CAL_TERM
                         and
                         $CLASS_SECTION.$ID = :$ID
                 )
@@ -130,7 +127,7 @@ object CalendarData {
             .with("""with calendar_id as (
                     select $CLASS.$CALENDAR
                     from $CLASS
-                    where $CLASS.$COURSE = :$COURSE and $CLASS.$TERM = :$TERM
+                    where $CLASS.$COURSE = :$COURSE and $CLASS.$CAL_TERM = :$CAL_TERM
                 )""")
             .select(
                 UID,
@@ -164,8 +161,8 @@ object CalendarData {
             ).build()
 
         val query = handle.createQuery(queryString)
-            .bind(COURSE, courseId)
-            .bind(TERM, calendarTerm)
+          .bind(COURSE, courseId)
+          .bind(CAL_TERM, calendarTerm)
             .bind(QUERY_FILTERS, filters)
 
         return query
@@ -184,10 +181,12 @@ object CalendarData {
                         $CLASS_SECTION.$CALENDAR
                     from 
                         $CLASS_SECTION
+                    join
+                        $CLASS on $CLASS.$CLASS_TABLE_ID=$CLASS_SECTION.$CLASS_ID
                     where 
-                        $CLASS_SECTION.$COURSE = :$COURSE 
+                        $CLASS.$COURSE = :$COURSE 
                         and
-                        $CLASS_SECTION.$TERM = :$TERM
+                        $CLASS.$CAL_TERM = :$CAL_TERM
                         and
                         $CLASS_SECTION.$ID = :$ID
                 )""")
@@ -223,8 +222,8 @@ object CalendarData {
             ).build()
 
         val query = handle.createQuery(queryString)
-            .bind(COURSE, courseId)
-            .bind(TERM, calendarTerm)
+          .bind(COURSE, courseId)
+          .bind(CAL_TERM, calendarTerm)
             .bind(ID, classSectionId)
             .bind(QUERY_FILTERS, filters)
 
