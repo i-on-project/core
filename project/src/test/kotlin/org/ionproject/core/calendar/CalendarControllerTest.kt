@@ -12,7 +12,6 @@ import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.StringReader
 import java.net.URI
 
 
@@ -89,7 +88,7 @@ internal class CalendarControllerTest : ControllerTester() {
          *
          * https://github.com/ical4j/ical4j
          */
-        fun buildCalendarForClass() : Calendar {
+        fun buildCalendarForClass(): Calendar {
             val calendar = Calendar()   //ical4j calendar (not the one implemented by the group)
             calendar.getProperties().add(ProdId("/v0/courses/1/classes/1718v"))
             calendar.getProperties().add(Version.VERSION_2_0)
@@ -112,7 +111,7 @@ internal class CalendarControllerTest : ControllerTester() {
                     )
             )
 
-            val journal =  VJournal(journalProperties)
+            val journal = VJournal(journalProperties)
 
             //Build ToDo Component
             val todo1Properties = PropertyList<Property>()
@@ -155,7 +154,7 @@ internal class CalendarControllerTest : ControllerTester() {
                     listOf(
                             Uid("4"),
                             DtStamp("20200511T162630Z"),
-                            Summary(buildParameterList(Language("en-US")),"1st exam WAD") ,
+                            Summary(buildParameterList(Language("en-US")), "1st exam WAD"),
                             Description(buildParameterList(Language("en-US")), "Normal season exam for WAD-1920v"),
                             Created("20200511T162630Z"),
                             Categories(buildParameterList(Language("en-GB")), "EXAM"),
@@ -174,7 +173,7 @@ internal class CalendarControllerTest : ControllerTester() {
         }
 
         //Adds parameters to a component property
-        fun buildParameterList(param: Parameter) : ParameterList {
+        fun buildParameterList(param: Parameter): ParameterList {
             val paramList = ParameterList()
             paramList.add(param)
             return paramList
@@ -205,7 +204,6 @@ internal class CalendarControllerTest : ControllerTester() {
 //    }
 
 
-
     /**
      * text/calendar content-type is generated from the
      * JSON object with the use of the calendar message converter
@@ -213,7 +211,7 @@ internal class CalendarControllerTest : ControllerTester() {
     @Test
     fun getCalendarByClass_And_Compare() {
         val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-            {accept = Media.MEDIA_TEXT_CALENDAR}
+        { accept = Media.MEDIA_TEXT_CALENDAR }
                 .andReturn()
                 .response
                 .contentAsString
@@ -226,25 +224,23 @@ internal class CalendarControllerTest : ControllerTester() {
          * in all situation the following regex removes all lines and spaces
          * from the strings.
          */
-        val expected : String = calendarByClass.replace("\\s".toRegex(), "")
-        val obtained : String = result.replace("\\s".toRegex(), "")
+        val expected: String = calendarByClass.replace("\\s".toRegex(), "")
+        val obtained: String = result.replace("\\s".toRegex(), "")
         Assertions.assertEquals(expected, obtained)
     }
 
     @Test
     fun getCalendarByClassSection_And_Compare() {
         val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-            {accept = Media.MEDIA_TEXT_CALENDAR}
+        { accept = Media.MEDIA_TEXT_CALENDAR }
                 .andReturn()
                 .response
                 .contentAsString
 
-        val expected : String = calendarByClassSection.replace("\\s".toRegex(), "")
-        val obtained : String = result.replace("\\s".toRegex(), "")
+        val expected: String = calendarByClassSection.replace("\\s".toRegex(), "")
+        val obtained: String = result.replace("\\s".toRegex(), "")
         Assertions.assertEquals(expected, obtained)
     }
-
-
 
 
     /**
@@ -254,8 +250,7 @@ internal class CalendarControllerTest : ControllerTester() {
     fun checkIfValidCalClass() {
         //Get the core calendar representation
         val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-        {accept = Media.MEDIA_TEXT_CALENDAR}.
-                andReturn()
+        { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
                 .response.contentAsString
 
         Assertions.assertEquals(classCalendarCal4j.toString(), result)
@@ -268,8 +263,7 @@ internal class CalendarControllerTest : ControllerTester() {
         calendar.getProperties().add(Version.VERSION_2_0)
 
         val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-        {accept = Media.MEDIA_TEXT_CALENDAR}.
-                andReturn()
+        { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
                 .response.contentAsString
 
         Assertions.assertEquals(calendar.toString(), result)
@@ -296,16 +290,15 @@ internal class CalendarControllerTest : ControllerTester() {
                         Attach(URI("https://www.google.com")),
                         DtStart("20200410T140000Z"),
                         Created("20200511T162630Z"),
-                        Categories(buildParameterList(Language("pt-PT")),"EXAME"),
-                        Categories(buildParameterList(Language("en-US")),"EXAM"),
-                        Categories(buildParameterList(Language("en-GB")),"EXAM")
+                        Categories(buildParameterList(Language("pt-PT")), "EXAME"),
+                        Categories(buildParameterList(Language("en-US")), "EXAM"),
+                        Categories(buildParameterList(Language("en-GB")), "EXAM")
                 )
         )
         calendar.getComponents().add(VJournal(properties))
 
         val result = doGet(Uri.forCalendarComponentByClass(courseID, calTerm, "1"))
-        {accept = Media.MEDIA_TEXT_CALENDAR}.
-                andReturn()
+        { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
                 .response.contentAsString
 
         Assertions.assertEquals(calendar.toString(), result)

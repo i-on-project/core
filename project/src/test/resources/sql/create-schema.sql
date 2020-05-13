@@ -1,57 +1,55 @@
 CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
-create table dbo.Programme(
-	id   		INT generated always as identity primary key,
-	acronym 	VARCHAR(10) unique,				
-	name		VARCHAR(100) UNIQUE,			-- It may be null in this phase
-	termSize	INT					
+------- PHY Model --------
+CREATE TABLE dbo.Programme(
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	acronym         VARCHAR(10) UNIQUE,				
+	name            VARCHAR(100) UNIQUE,			-- It may be NULL in this phase
+	termSize        INT					
 );
 
-create table dbo.Calendar (
-	id   int generated always as identity primary key
+CREATE TABLE dbo.Calendar (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 );
 
-create table dbo.Course (
-	id   	 INT generated always as identity primary key,
-	acronym  varchar(10) unique,	
-	name     varchar(100) unique				-- It may be null in this phase
+CREATE TABLE dbo.Course (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	acronym         VARCHAR(10) UNIQUE,	
+	name            VARCHAR(100) UNIQUE				-- It may be NULL in this phase
 );
 
-
-create table dbo.ProgrammeOffer(
-	id   	 		INT generated always as identity,
-	programmeId 		INT REFERENCES dbo.Programme(id),
-	courseId 		INT REFERENCES dbo.Course(id),
-	termNumber		INT, 
-	optional		BOOLEAN,
+CREATE TABLE dbo.ProgrammeOffer(
+	id              INT GENERATED ALWAYS AS IDENTITY,
+	programmeId     INT REFERENCES dbo.Programme(id),
+	courseId        INT REFERENCES dbo.Course(id),
+	termNumber      INT, 
+	optional        BOOLEAN,
 	PRIMARY KEY(programmeId, courseId, termNumber)
 );
 
-create table dbo.CalendarTerm (
-	id         varchar(10) primary key, -- e.g. "1920v"
-	start_date timestamp,
-	end_date   timestamp check(end_date > start_date),
-	unique(start_date, end_date)
+CREATE TABLE dbo.CalendarTerm (
+	id         VARCHAR(20) PRIMARY KEY, -- e.g. "1920v"
+	start_date TIMESTAMP,
+	end_date   TIMESTAMP CHECK(end_date > start_date),
+	UNIQUE(start_date, end_date)
 );
 
-create table dbo.Class (
-	courseId INT references dbo.Course(id),
-	term     varchar(10) references dbo.CalendarTerm(id),
-	calendar int references dbo.Calendar(id),
-	primary key(courseId, term)
+CREATE TABLE dbo.Class (
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	courseId        INT REFERENCES dbo.Course(id),
+	calendarTerm    VARCHAR(20) REFERENCES dbo.CalendarTerm(id),
+	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+	UNIQUE(courseId, calendarTerm)
 );
 
-create table dbo.ClassSection (
-	id       varchar(10),
-	courseId   INT,
-	term     varchar(10),
-	calendar int references dbo.Calendar(id),
-	foreign key(courseId, term) references dbo.Class(courseId, term),
-	primary key(id, courseId, term)
+CREATE TABLE dbo.ClassSection (
+	id              VARCHAR(10),
+	classId         INT REFERENCES dbo.Class(id),
+	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+    PRIMARY KEY(id, classId)
 );
 
-
-------------- CALENDAR ----------------
+-- CALENDAR
 CREATE TABLE dbo.CalendarComponent (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     dtstamp         TIMESTAMP NOT NULL,
@@ -72,17 +70,17 @@ CREATE TABLE dbo.RecurrenceRule (
 	PRIMARY KEY (comp_id, byday)
 );
 
-CREATE TABLE dbo.ICalendarDataType (
+CREATE TABLE IF NOT EXISTS dbo.ICalendarDataType (
     id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name           VARCHAR(16) NOT NULL UNIQUE
 );
 
-CREATE TABLE dbo.Language(
+CREATE TABLE IF NOT EXISTS dbo.Language(
     id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name           VARCHAR(64) NOT NULL UNIQUE
 );
 
-CREATE TABLE dbo.Category(
+CREATE TABLE IF NOT EXISTS dbo.Category(
 	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name           VARCHAR(64) NOT NULL,
 	language       INT REFERENCES dbo.Language(id),
@@ -90,55 +88,54 @@ CREATE TABLE dbo.Category(
 );
 
 -- some iCal property types
-CREATE TABLE dbo.Description (
+CREATE TABLE IF NOT EXISTS dbo.Description (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     value          VARCHAR(200),
     language       INT REFERENCES dbo.Language(id),
 	PRIMARY KEY(comp_id, value, language)
 );
 
-CREATE TABLE dbo.Summary (
+CREATE TABLE IF NOT EXISTS dbo.Summary (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     value          VARCHAR(50) NOT NULL,
     language       INT REFERENCES dbo.Language(id),
 	PRIMARY KEY(comp_id, value, language)
 );
 
-CREATE TABLE dbo.Attachment (
+CREATE TABLE IF NOT EXISTS dbo.Attachment (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     value          VARCHAR(128) NOT NULL,
 	PRIMARY KEY(comp_id, value)
 );
 
-CREATE TABLE dbo.Due (
+CREATE TABLE IF NOT EXISTS dbo.Due (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
-CREATE TABLE dbo.Dtend (
+CREATE TABLE IF NOT EXISTS dbo.Dtend (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
-CREATE TABLE dbo.Dtstart (
+CREATE TABLE IF NOT EXISTS dbo.Dtstart (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
-CREATE TABLE dbo.Categories (
+CREATE TABLE IF NOT EXISTS dbo.Categories (
     comp_id        INT REFERENCES dbo.CalendarComponent(id),
     value          INT REFERENCES dbo.Category(id),
 	PRIMARY KEY(comp_id, value)
 );
 
--- component views
-CREATE VIEW dbo.v_ComponentsCommon AS
+CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 	SELECT DISTINCT
 		Comp.id AS uid,
 		CalComp.calendar_id AS calendars,
@@ -150,20 +147,21 @@ CREATE VIEW dbo.v_ComponentsCommon AS
 		Comp.dtstamp,
         Comp.created,
         Cat.value AS categories
-    FROM
+    FROM 
 		dbo.CalendarComponent AS Comp
-    JOIN
+    JOIN 
 		dbo.CalendarComponents AS CalComp ON CalComp.comp_id=Comp.id
-    JOIN
+    JOIN 
 		dbo.Summary AS Summ ON Comp.id = Summ.comp_id
-    JOIN
+    JOIN 
 		dbo.Description AS Descr ON Comp.id = Descr.comp_id
-    JOIN
+    JOIN 
 		dbo.Categories AS Cat ON Comp.id = Cat.comp_id
-	ORDER BY
+	ORDER BY 
 		uid;
 
-CREATE VIEW dbo.v_ComponentsAll AS
+-- Mashup of all component types
+CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS 
 	SELECT DISTINCT
 		Comp.*,
 		Att.value AS attachments,
@@ -174,39 +172,43 @@ CREATE VIEW dbo.v_ComponentsAll AS
 		RR.byday,
 		D.value AS due,
         D.type AS due_value_data_type
-	FROM
+	FROM 
 		dbo.v_ComponentsCommon AS Comp
-    LEFT JOIN
+    LEFT JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
 	LEFT JOIN
 		dbo.Due AS D ON Comp.uid=D.comp_id
-	LEFT JOIN
+	LEFT JOIN 
 		dbo.Dtstart as DS ON Comp.uid = DS.comp_id
 	LEFT JOIN
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
-	ORDER BY
+	ORDER BY 
 		uid;
+		
 
-CREATE VIEW dbo.v_Todo AS
+---- these views will retrieve all the relevant Calendar Property types for a given calendar component
+-- VTODO
+CREATE OR REPLACE VIEW dbo.v_Todo AS 
     SELECT DISTINCT
 		Comp.*,
 		Att.value AS attachments,
 		D.value AS due,
         D.type AS due_value_data_type
-    FROM
+    FROM 
 		dbo.v_ComponentsCommon AS Comp
-    LEFT JOIN
+    LEFT JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
 	JOIN
 		dbo.Due AS D ON Comp.uid=D.comp_id
-    WHERE
+    WHERE 
 		Comp.type = 'T'
-	ORDER BY
+	ORDER BY 
 		uid;
 
-CREATE VIEW dbo.v_Event AS
+-- VEVENT
+CREATE OR REPLACE VIEW dbo.v_Event AS 
     SELECT DISTINCT
 		Comp.*,
         DS.value AS dtstart,
@@ -214,76 +216,41 @@ CREATE VIEW dbo.v_Event AS
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
 		RR.byday
-    FROM
+    FROM 
 		dbo.v_ComponentsCommon AS Comp
-    JOIN
+    JOIN 
 		dbo.Dtstart as DS ON Comp.uid = DS.comp_id
 	JOIN
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
-    WHERE
+    WHERE 
 		Comp.type = 'E'
-	ORDER BY
+	ORDER BY 
 		uid;
 
-CREATE VIEW dbo.v_Journal AS
+-- VJOURNAL
+CREATE OR REPLACE VIEW dbo.v_Journal AS 
     SELECT DISTINCT
 		Comp.*,
 		Att.value AS attachments,
         DS.value AS dtstart,
         DS.type AS dtstart_value_data_type
-    FROM
+    FROM 
 		dbo.v_ComponentsCommon AS Comp
-    JOIN
+    JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
-    JOIN
+    JOIN 
 		dbo.Dtstart as DS ON Comp.uid = DS.comp_id
-    WHERE
+    WHERE 
 		Comp.type = 'J'
-	ORDER BY
+	ORDER BY 
 		uid;
 
----------------------- VIEWS -----------------------
-
-DROP VIEW IF EXISTS courseWithTerm;
-CREATE VIEW courseWithTerm AS
-	SELECT co.*, cl.term FROM
-		(SELECT coI.id,coI.acronym,coI.name FROM dbo.Course AS coI
-			INNER JOIN dbo.Class AS clI ON coI.id=clI.courseId GROUP BY coI.id) AS co
-		INNER JOIN
-		(SELECT DISTINCT ON (clI.courseId) clI.courseId,clI.term, ctI.start_date FROM dbo.class AS clI
-                        INNER JOIN dbo.CalendarTerm AS ctI ON clI.term=ctI.id
-				ORDER BY clI.courseId,ctI.start_date DESC) AS cl
-		ON co.id=cl.courseId;
-
--- When creating a Class, give it a new Calendar
-create or replace procedure dbo.sp_classCalendarCreate (calterm varchar(200), courseid integer)
-AS $$
-#print_strict_params on
-DECLARE
-calid int;
-BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.Class(courseid, term, calendar) values
-		(courseid, calterm, calid);
-END
-$$ LANGUAGE plpgsql;
-
--- When creating a ClassSection, give it a new Calendar
-create or replace procedure dbo.sp_classSectionCalendarCreate (calterm varchar(200), courseid integer, sid varchar(200))
-AS $$
-#print_strict_params on
-DECLARE
-calid int;
-BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.ClassSection(id, courseid, term, calendar) values
-		(sid, courseid, calterm, calid);
-END
-$$ LANGUAGE plpgsql;
-
-CREATE PROCEDURE dbo.newEvent(
+---- for creation of calendar components
+---- these will verify constraints and insert in the appropriate tables
+-- VEVENT
+CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	cid INT,
 	summary VARCHAR(50)[],
 	summary_language INT[],
@@ -306,29 +273,29 @@ BEGIN
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
-
+	
     INSERT INTO dbo.Summary (comp_id, value, language)
 	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
-
+	
 	INSERT INTO dbo.Description (comp_id, value, language)
 	SELECT component_id, UNNEST(description), UNNEST(description_language);
-
+	
 	INSERT INTO dbo.Categories (comp_id, value)
 	SELECT component_id, UNNEST(category);
-
+	
 	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtstart);
-
+	
     INSERT INTO dbo.Dtend (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtend);
-
+	
 	IF byday IS NOT NULL THEN
 		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday) VALUES (component_id, 'WEEKLY', byday);
 	END IF;
-
+	
 END
 $$ LANGUAGE PLpgSQL;
 
 -- VTODO
-CREATE PROCEDURE dbo.newTodo(
+CREATE OR REPLACE PROCEDURE dbo.newTodo(
 	cid INT,
 	summary VARCHAR(50)[],
 	summary_language INT[],
@@ -353,22 +320,22 @@ BEGIN
 
     INSERT INTO dbo.Summary (comp_id, value, language)
 	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
-
+	
 	INSERT INTO dbo.Description (comp_id, value, language)
 	SELECT component_id, UNNEST(description), UNNEST(description_language);
-
+	
 	INSERT INTO dbo.Categories (comp_id, value)
 	SELECT component_id, UNNEST(category);
-
+	
 	INSERT INTO dbo.Attachment (comp_id, value)
 	SELECT component_id, UNNEST(attachment);
-
+	
 	INSERT INTO dbo.Due (comp_id, type, value) VALUES (component_id, due_value_type, due);
 END
 $$ LANGUAGE PLpgSQL;
 
 -- VJOURNAL
-CREATE PROCEDURE dbo.newJournal(
+CREATE OR REPLACE PROCEDURE dbo.newJournal(
 	cid INT,
 	summary VARCHAR(50)[],
 	summary_language INT[],
@@ -390,28 +357,67 @@ BEGIN
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
-
+	
     INSERT INTO dbo.Summary (comp_id, value, language)
 	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
-
+	
 	INSERT INTO dbo.Description (comp_id, value, language)
 	SELECT component_id, UNNEST(description), UNNEST(description_language);
-
+	
 	INSERT INTO dbo.Categories (comp_id, value)
 	SELECT component_id, UNNEST(category);
-
+	
 	INSERT INTO dbo.Attachment (comp_id, value)
 	SELECT component_id, UNNEST(attachment);
-
+	
 	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_value_type, dtstart);
-
+	
 END
 $$ LANGUAGE PLpgSQL;
 
+------- UTILS --------
 CREATE FUNCTION MERGE_LANGUAGE_TEXT(language INT, text VARCHAR)
 RETURNS VARCHAR
 LANGUAGE PLpgSQL AS $$
 BEGIN
 	RETURN language || ':' || text;
 END;
-$$
+$$;
+
+------- VIEWS --------
+CREATE VIEW courseWithTerm AS 
+	SELECT co.*, cl.calendarterm FROM 
+		(SELECT coI.id,coI.acronym,coI.name FROM dbo.Course AS coI 
+			INNER JOIN dbo.Class AS clI ON coI.id=clI.courseId GROUP BY coI.id) AS co
+		INNER JOIN
+		(SELECT DISTINCT ON (clI.courseId) clI.courseId,clI.calendarterm, ctI.start_date FROM dbo.class AS clI
+                        INNER JOIN dbo.CalendarTerm AS ctI ON clI.calendarterm=ctI.id 
+				ORDER BY clI.courseId,ctI.start_date DESC) AS cl
+		ON co.id=cl.courseId;
+
+------- SPs --------
+-- When creating a Class, give it a new Calendar 
+create or replace procedure dbo.sp_classCalendarCreate (calterm varchar(200), courseid integer)
+AS $$
+#print_strict_params on
+DECLARE
+calid int;
+BEGIN
+	insert into dbo.Calendar values (default) returning id into calid;
+	insert into dbo.Class(courseid, calendarterm, calendar) values
+		(courseid, calterm, calid);
+END
+$$ LANGUAGE plpgsql;
+
+-- When creating a ClassSection, give it a new Calendar 
+create or replace procedure dbo.sp_classSectionCalendarCreate (classId integer, sid varchar(200))
+AS $$
+#print_strict_params on
+DECLARE
+calid int;
+BEGIN
+	insert into dbo.Calendar values (default) returning id into calid;
+	insert into dbo.ClassSection(id, classId, calendar) values
+		(sid, classId, calid);
+END
+$$ LANGUAGE plpgsql;

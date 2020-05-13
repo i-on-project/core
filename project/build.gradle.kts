@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.lang.Thread.sleep
 
 plugins {
     id("org.springframework.boot") version "2.2.6.RELEASE"
@@ -57,3 +58,16 @@ tasks.register<PgDropDb>("pgDropDb")
 tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
+
+tasks.register("setupDb") {
+    val startTask = "pgStart"
+    val createDbTask = "pgCreateDb"
+    val initSchemaTask = "pgInitSchema"
+    val addDataTask = "pgAddData"
+
+    dependsOn(startTask, createDbTask, initSchemaTask, addDataTask)
+
+    tasks[createDbTask].mustRunAfter(startTask).doFirst { sleep(1000) }
+    tasks[initSchemaTask].mustRunAfter(createDbTask)
+    tasks[addDataTask].mustRunAfter(initSchemaTask)
+}

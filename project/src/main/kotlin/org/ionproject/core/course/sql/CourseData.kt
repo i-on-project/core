@@ -6,7 +6,7 @@ internal object CourseData {
     const val ID = "id"
     const val ACR = "acronym"
     const val NAME = "name"
-    const val CAL_TERM = "term"
+    const val CAL_TERM = "calendarterm"
     const val LIMIT = "lim"
     const val OFFSET = "offset"
 
