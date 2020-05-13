@@ -52,6 +52,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.register<PgStart>("pgStart")
 tasks.register<PgStop>("pgStop")
+tasks.register<PgToggle>("pgToggle")
 tasks.register<PgDropDb>("pgDropDb")
 tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgInitSchema>("pgInitSchema")
