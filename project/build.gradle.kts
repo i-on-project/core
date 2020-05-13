@@ -33,6 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
+    implementation("org.mnode.ical4j:ical4j:3.0.+")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

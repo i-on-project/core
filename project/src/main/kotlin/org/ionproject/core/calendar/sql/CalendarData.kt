@@ -1,17 +1,10 @@
 package org.ionproject.core.calendar.sql
 
 import org.ionproject.core.bind
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Attachment
-import org.ionproject.core.calendar.icalendar.types.DateTime
-import org.ionproject.core.calendar.icalendar.types.Time
-import org.ionproject.core.calendar.icalendar.types.Uri
 import org.ionproject.core.common.querybuilder.*
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.statement.Query
 import org.springframework.util.MultiValueMap
-import java.sql.ResultSet
-import java.time.OffsetDateTime
-import org.ionproject.core.calendar.icalendar.types.Date as DateType
 
 object CalendarData {
         // Name of Calendar component view and of calendar property columns
@@ -33,12 +26,16 @@ object CalendarData {
     const val DUE = "due"
 
     // Class and ClassSection table and column names
+
+    private const val COURSE_TABLE = "dbo.Course"
     private const val CLASS = "dbo.Class"
     private const val CLASS_SECTION = "dbo.ClassSection"
     private const val CALENDAR = "calendar"
+
     const val COURSE = "courseId"
     const val TERM = "term"
     const val ID = "id"
+    const val CAS_ID="cas_id"
 
     // Desired columns from the $CALENDAR_COMPONENT table/view when querying to get desired mapping functionality
     private const val SELECT = """
@@ -230,4 +227,17 @@ object CalendarData {
 
         return query
     }
+
+    const val CHECK_IF_CLASS_EXISTS = """
+        select count(*) from $COURSE_TABLE as CO
+        inner join $CLASS as CA on CO.$ID=CA.$COURSE
+        where $TERM=:$TERM AND $ID=:$ID
+        """
+
+    const val CHECK_IF_CLASS_SECTION_EXISTS = """
+        select count(*) from $COURSE_TABLE as CO
+        inner join $CLASS as CA on CO.$ID=CA.$COURSE
+        inner join $CLASS_SECTION as CAS on CO.$ID=CAS.$COURSE
+        where CA.$TERM=:$TERM AND CO.$ID=:$ID AND CAS.$ID=:$CAS_ID
+        """
 }

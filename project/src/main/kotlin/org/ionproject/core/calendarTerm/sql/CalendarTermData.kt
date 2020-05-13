@@ -27,6 +27,6 @@ internal object CalendarTermData {
     const val CLASSES_QUERY = """
         select *
         from $SCHEMA.$CLASS
-        where $CLASS_CAL_TERM=:$ID offset :$OFFSET limit :$LIMIT"
+        where $CLASS_CAL_TERM=:$ID offset :$OFFSET limit :$LIMIT
     """
 }
