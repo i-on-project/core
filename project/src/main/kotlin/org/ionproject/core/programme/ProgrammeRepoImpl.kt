@@ -5,6 +5,7 @@ import org.ionproject.core.programme.sql.ProgrammeMapper
 import org.ionproject.core.programme.sql.ProgrammeOfferMapper
 import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.programme.model.ProgrammeOffer
+import org.ionproject.core.programme.sql.ProgrammeData
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,14 +16,14 @@ class ProgrammeRepoImpl(
 ) : ProgrammeRepo {
 
     override fun getProgrammes(): List<Programme> = tm.run { handle ->
-        handle.createQuery("SELECT * FROM dbo.programme")
+        handle.createQuery(ProgrammeData.GET_PROGRAMMES_QUERY)
             .map(programmeMapper)
             .list()
     } as List<Programme>
 
     override fun getProgrammeById(id: Int): Programme? = tm.run { handle ->
-        val res = handle.createQuery("SELECT id, acronym, name, termsize FROM dbo.programme WHERE id= :id")
-            .bind("id", id)
+        val res = handle.createQuery(ProgrammeData.GET_PROGRAMME_BY_ID_QUERY)
+            .bind(ProgrammeData.ID, id)
             .map(programmeMapper)
             .findOne()
 
@@ -30,14 +31,8 @@ class ProgrammeRepoImpl(
 
         if (res.isPresent) {
             programme = res.get()
-            val offers = handle.createQuery(
-                """ SELECT po.*,co.acronym AS courseAcr FROM dbo.programmeOffer AS po INNER JOIN dbo.course AS co
-                        ON po.courseId=co.id
-                        WHERE programmeId = :id 
-                        ORDER BY po.id
-                        """.trimIndent()
-            )
-                .bind("id", id)
+            val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY)
+                .bind(ProgrammeData.ID, id)
                 .map(offerMapper)
                 .list()
 
@@ -47,9 +42,9 @@ class ProgrammeRepoImpl(
     }
 
     override fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer? = tm.run { handle ->
-        handle.createQuery("select po.id as id, acronym as courseAcr, programmeid, courseid, termnumber, optional from dbo.programmeoffer po join dbo.course c on po.courseid=c.id where po.id=:id and programmeid=:programmeid;")
-            .bind("id", idOffer)
-            .bind("programmeid", idProgramme)
+        handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
+            .bind(ProgrammeData.ID, idOffer)
+            .bind(ProgrammeData.PROGRAMME_ID, idProgramme)
             .map(offerMapper)
             .firstOrNull()
     }
