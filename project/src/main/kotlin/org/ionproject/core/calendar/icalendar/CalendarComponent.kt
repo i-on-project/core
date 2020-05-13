@@ -5,13 +5,13 @@ import org.ionproject.core.calendar.icalendar.properties.components.change_manag
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 
 abstract class CalendarComponent(
-    val uid: UniqueIdentifier,
-    val dtStamp: DateTimeStamp,
-    vararg properties: Property?
+  val uid: UniqueIdentifier,
+  val dtStamp: DateTimeStamp,
+  vararg properties: Property?
 ) : Iterable<Property> {
-    val properties = listOfNotNull(uid, dtStamp, *properties)
+  val properties = listOfNotNull(uid, dtStamp, *properties)
 
-    override fun iterator(): Iterator<Property> = properties.iterator()
+  override fun iterator(): Iterator<Property> = properties.iterator()
 
-    abstract val componentName: String
+  abstract val componentName: String
 }

@@ -16,39 +16,39 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class CourseController(private val courseServices: CourseServices) {
 
-    @GetMapping(Uri.courses)
-    fun getCourses(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") limit: Int
-    ): ResponseEntity<Siren> {
-        val courses = courseServices.getCourses(page, limit)
-        val siren = courses.courseToListRepr(page, limit)
+  @GetMapping(Uri.courses)
+  fun getCourses(
+    @RequestParam(defaultValue = "0") page: Int,
+    @RequestParam(defaultValue = "10") limit: Int
+  ): ResponseEntity<Siren> {
+    val courses = courseServices.getCourses(page, limit)
+    val siren = courses.courseToListRepr(page, limit)
 
-        return ResponseEntity.ok(siren)
-    }
+    return ResponseEntity.ok(siren)
+  }
 
-    @GetMapping(Uri.courseById)
-    fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
-        val course = courseServices.getCourseById(cid)
+  @GetMapping(Uri.courseById)
+  fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
+    val course = courseServices.getCourseById(cid)
 
-        course?.let { return ResponseEntity.ok(it.courseToDetailRepr()) }
-        return ResponseEntity.notFound().build()
-    }
+    course?.let { return ResponseEntity.ok(it.courseToDetailRepr()) }
+    return ResponseEntity.notFound().build()
+  }
 
-    /*
-     * Annotation `RequiresAuth` serves as an indication
-     * that to use this endpoint credentials must be
-     * provided.
-     */
-    @DeleteMapping(Uri.courseById)
-    @RequiresAuthentication
-    fun deleteCourse(@PathVariable id: Int) {
-        TODO("Waiting write API")
-    }
+  /*
+   * Annotation `RequiresAuth` serves as an indication
+   * that to use this endpoint credentials must be
+   * provided.
+   */
+  @DeleteMapping(Uri.courseById)
+  @RequiresAuthentication
+  fun deleteCourse(@PathVariable id: Int) {
+    TODO("Waiting write API")
+  }
 
-    @PatchMapping(Uri.courseById)
-    @RequiresAuthentication
-    fun editCourse(@PathVariable id: Int) {
-        TODO("Waiting write API")
-    }
+  @PatchMapping(Uri.courseById)
+  @RequiresAuthentication
+  fun editCourse(@PathVariable id: Int) {
+    TODO("Waiting write API")
+  }
 }

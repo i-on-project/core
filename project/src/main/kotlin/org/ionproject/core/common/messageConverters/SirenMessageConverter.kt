@@ -11,23 +11,23 @@ import java.io.PrintWriter
 import java.lang.reflect.Type
 
 class SirenMessageConverter(private val converter: MappingJackson2HttpMessageConverter) :
-    AbstractGenericHttpMessageConverter<Any>(Media.MEDIA_SIREN) {
+  AbstractGenericHttpMessageConverter<Any>(Media.MEDIA_SIREN) {
 
-    override fun supports(clazz: Class<*>): Boolean {
-        return (clazz == Siren::class.java || clazz == Calendar::class.java)
+  override fun supports(clazz: Class<*>): Boolean {
+    return (clazz == Siren::class.java || clazz == Calendar::class.java)
+  }
+
+  override fun writeInternal(t: Any, type: Type?, outputMessage: HttpOutputMessage) {
+    PrintWriter(outputMessage.body).apply {
+      converter.write(t, Media.MEDIA_SIREN, outputMessage)
+      close()
     }
+  }
 
-    override fun writeInternal(t: Any, type: Type?, outputMessage: HttpOutputMessage) {
-        PrintWriter(outputMessage.body).apply {
-            converter.write(t, Media.MEDIA_SIREN, outputMessage)
-            close()
-        }
-    }
+  override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Any =
+    throw UnsupportedOperationException("This converter can't read.")
 
-    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Any =
-        throw UnsupportedOperationException("This converter can't read.")
-
-    override fun readInternal(clazz: Class<out Any>, inputMessage: HttpInputMessage): Any =
-        throw UnsupportedOperationException("This converter can't read.")
+  override fun readInternal(clazz: Class<out Any>, inputMessage: HttpInputMessage): Any =
+    throw UnsupportedOperationException("This converter can't read.")
 
 }

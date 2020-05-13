@@ -13,25 +13,25 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
 
-    @GetMapping(Uri.calendarTerms)
-    fun getTerms(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") limit: Int
-    ): ResponseEntity<Siren> {
-        val calTerms = calendarTermServices.getTerms(page, limit)
+  @GetMapping(Uri.calendarTerms)
+  fun getTerms(
+    @RequestParam(defaultValue = "0") page: Int,
+    @RequestParam(defaultValue = "10") limit: Int
+  ): ResponseEntity<Siren> {
+    val calTerms = calendarTermServices.getTerms(page, limit)
 
-        return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
-    }
+    return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
+  }
 
-    @GetMapping(Uri.calendarTermById)
-    fun getCalendarTerm(
-        @PathVariable calterm: String,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") limit: Int
-    ): ResponseEntity<Siren> {
-        val calTerm = calendarTermServices.getTermByCalId(calterm, page, limit)
+  @GetMapping(Uri.calendarTermById)
+  fun getCalendarTerm(
+    @PathVariable calterm: String,
+    @RequestParam(defaultValue = "0") page: Int,
+    @RequestParam(defaultValue = "10") limit: Int
+  ): ResponseEntity<Siren> {
+    val calTerm = calendarTermServices.getTermByCalId(calterm, page, limit)
 
-        calTerm?.let { return ResponseEntity.ok(it.toCalendarTermDetailRepr(page, limit)) }
-        return ResponseEntity.notFound().build()
-    }
+    calTerm?.let { return ResponseEntity.ok(it.toCalendarTermDetailRepr(page, limit)) }
+    return ResponseEntity.notFound().build()
+  }
 }

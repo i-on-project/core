@@ -8,13 +8,13 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Location(
-    value: String,
-    val alternateTextRepresentation: AlternateTextRepresentation? = null,
-    val language: Language? = null
+  value: String,
+  val alternateTextRepresentation: AlternateTextRepresentation? = null,
+  val language: Language? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter>
-        get() = listOfNotNull(alternateTextRepresentation, language)
-    override val name: String
-        get() = "LOCATION"
-    override val value: Text = value.toText()
+  override val parameters: List<PropertyParameter>
+    get() = listOfNotNull(alternateTextRepresentation, language)
+  override val name: String
+    get() = "LOCATION"
+  override val value: Text = value.toText()
 }

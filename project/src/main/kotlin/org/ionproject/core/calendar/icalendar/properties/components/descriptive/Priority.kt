@@ -4,14 +4,14 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.Integer
 
 class Priority(
-    value: Int = 0
+  value: Int = 0
 ) : Property {
-    override val value: Integer = Integer(value)
+  override val value: Integer = Integer(value)
 
-    init {
-        if (value < 0 || value > 9) throw IllegalArgumentException("Priority values must be between 0 and 9")
-    }
+  init {
+    if (value < 0 || value > 9) throw IllegalArgumentException("Priority values must be between 0 and 9")
+  }
 
-    override val name: String
-        get() = "PRIORITY"
+  override val name: String
+    get() = "PRIORITY"
 }

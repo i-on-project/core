@@ -10,23 +10,23 @@ import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 import org.ionproject.core.calendar.icalendar.types.Uri
 
 class Attachment private constructor(
-    override val value: ICalendarDataType,
-    val inlineEncoding: InlineEncoding?,
-    val valueDataType: ValueDataType?,
-    val formatType: FormatType?
+  override val value: ICalendarDataType,
+  val inlineEncoding: InlineEncoding?,
+  val valueDataType: ValueDataType?,
+  val formatType: FormatType?
 ) : ParameterizedProperty {
 
-    constructor(uri: Uri) : this(uri, null, null, null)
-    constructor(binary: Binary, formatType: FormatType? = null) : this(
-        binary,
-        InlineEncoding(InlineEncoding.Type.BASE64),
-        ValueDataType(binary),
-        formatType
-    )
+  constructor(uri: Uri) : this(uri, null, null, null)
+  constructor(binary: Binary, formatType: FormatType? = null) : this(
+    binary,
+    InlineEncoding(InlineEncoding.Type.BASE64),
+    ValueDataType(binary),
+    formatType
+  )
 
-    override val parameters: List<PropertyParameter>
-        get() = listOfNotNull(inlineEncoding, valueDataType, formatType)
+  override val parameters: List<PropertyParameter>
+    get() = listOfNotNull(inlineEncoding, valueDataType, formatType)
 
-    override val name: String
-        get() = "ATTACH"
+  override val name: String
+    get() = "ATTACH"
 }

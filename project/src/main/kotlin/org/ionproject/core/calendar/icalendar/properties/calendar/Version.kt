@@ -6,15 +6,15 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Version(
-    value: String = iCalendarVersion
+  value: String = iCalendarVersion
 ) : Property {
 
-    override val value: Text = value.toText()
+  override val value: Text = value.toText()
 
-    override val name: String
-        get() = iCalName
+  override val name: String
+    get() = iCalName
 
-    companion object {
-        private const val iCalName = "VERSION"
-    }
+  companion object {
+    private const val iCalName = "VERSION"
+  }
 }

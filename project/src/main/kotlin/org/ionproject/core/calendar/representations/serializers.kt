@@ -7,7 +7,7 @@ import org.ionproject.core.calendar.icalendar.Calendar
 
 class CalendarSerializer(klass: Class<Calendar>? = null) : StdSerializer<Calendar>(klass) {
 
-    override fun serialize(value: Calendar, gen: JsonGenerator, provider: SerializerProvider) {
-        gen.writeObject(value.toSiren())
-    }
+  override fun serialize(value: Calendar, gen: JsonGenerator, provider: SerializerProvider) {
+    gen.writeObject(value.toSiren())
+  }
 }

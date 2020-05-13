@@ -8,37 +8,37 @@ import org.springframework.http.HttpMethod
  * Siren representation generators
  */
 fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
-    SirenBuilder()
-        .klass("calendar-term", "collection")
-        .entities(this.map { calendarTerm -> calendarTerm.toEmbed() })
-        .action(
-            Action(
-                name = "Search",
-                title = "Search Items",
-                method = HttpMethod.GET,
-                href = Uri.pagingCalendarTerms,
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "limit", type = "number", klass = "param/limit"),
-                    Field(name = "page", type = "number", klass = "param/page")
-                )
-            )
+  SirenBuilder()
+    .klass("calendar-term", "collection")
+    .entities(this.map { calendarTerm -> calendarTerm.toEmbed() })
+    .action(
+      Action(
+        name = "Search",
+        title = "Search Items",
+        method = HttpMethod.GET,
+        href = Uri.pagingCalendarTerms,
+        isTemplated = true,
+        type = Media.SIREN_TYPE,
+        fields = listOf(
+          Field(name = "limit", type = "number", klass = "param/limit"),
+          Field(name = "page", type = "number", klass = "param/page")
         )
-        .link("self", href = Uri.forPagingCalTerms(page, limit))
-        .link("next", href = Uri.forPagingCalTerms(page + 1, limit))
-        .let {
-            {
-                if (page > 0)
-                    it.link("previous", href = Uri.forPagingCalTerms(page - 1, limit))
-                it
-            }()
-        }.toSiren()
+      )
+    )
+    .link("self", href = Uri.forPagingCalTerms(page, limit))
+    .link("next", href = Uri.forPagingCalTerms(page + 1, limit))
+    .let {
+      {
+        if (page > 0)
+          it.link("previous", href = Uri.forPagingCalTerms(page - 1, limit))
+        it
+      }()
+    }.toSiren()
 
 private fun CalendarTerm.toEmbed() =
-    SirenBuilder(CalendarTermOutputModel(calTermId))
-        .klass("term")
-        .rel("item")
-        .link("self", href = Uri.forCalTermById(calTermId))
-        .link("collection", href = Uri.forCalTerms())
-        .toEmbed()
+  SirenBuilder(CalendarTermOutputModel(calTermId))
+    .klass("term")
+    .rel("item")
+    .link("self", href = Uri.forCalTermById(calTermId))
+    .link("collection", href = Uri.forCalTerms())
+    .toEmbed()

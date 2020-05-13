@@ -4,8 +4,8 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.UTCOffset
 
 class TimeZoneOffsetTo(
-    override val value: UTCOffset
+  override val value: UTCOffset
 ) : Property {
-    override val name: String
-        get() = "TZOFFSETTO"
+  override val name: String
+    get() = "TZOFFSETTO"
 }

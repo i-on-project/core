@@ -7,5 +7,5 @@ package org.ionproject.core.programme.representations
  * are valid.
  */
 class ProgrammeInputModel() {
-    fun toProgramme() = Unit
+  fun toProgramme() = Unit
 }

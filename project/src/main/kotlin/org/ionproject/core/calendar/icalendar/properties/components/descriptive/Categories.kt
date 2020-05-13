@@ -9,18 +9,18 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Categories(
-    vararg categories: String,
-    val language: Language? = null
+  vararg categories: String,
+  val language: Language? = null
 ) : ParameterizedProperty, MultiValuedProperty<Text> {
 
-    constructor(categories: List<String>, language: Language?) : this(*categories.toTypedArray(), language = language)
+  constructor(categories: List<String>, language: Language?) : this(*categories.toTypedArray(), language = language)
 
-    override val parameters: List<PropertyParameter>
-        get() = listOfNotNull(language)
+  override val parameters: List<PropertyParameter>
+    get() = listOfNotNull(language)
 
-    override val name: String
-        get() = "CATEGORIES"
+  override val name: String
+    get() = "CATEGORIES"
 
-    override val value: MultiValue<Text> = MultiValue(*categories.toText())
+  override val value: MultiValue<Text> = MultiValue(*categories.toText())
 }
 

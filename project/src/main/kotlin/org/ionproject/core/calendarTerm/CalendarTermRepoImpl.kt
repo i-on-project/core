@@ -15,57 +15,57 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CalendarTermRepoImpl(
-    private val tm: TransactionManager,
-    private val calendarTermMapper: CalendarTermMapper,
-    private val classMapper: KlassReducedMapper
+  private val tm: TransactionManager,
+  private val calendarTermMapper: CalendarTermMapper,
+  private val classMapper: KlassReducedMapper
 ) : CalendarTermRepo {
 
-    override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
-        val result = tm.run { handle ->
-            handle.createQuery(CALENDAR_TERMS_QUERY)
-                .bind(OFFSET, page * limit)
-                .bind(LIMIT, limit)
-                .map(calendarTermMapper)
-                .list()
-        } as List<CalendarTerm>
+  override fun getTerms(page: Int, limit: Int): List<CalendarTerm> {
+    val result = tm.run { handle ->
+      handle.createQuery(CALENDAR_TERMS_QUERY)
+        .bind(OFFSET, page * limit)
+        .bind(LIMIT, limit)
+        .map(calendarTermMapper)
+        .list()
+    } as List<CalendarTerm>
 
-        if (result.isEmpty()) {
-            if (page > 0)
-                throw ResourceNotFoundException("No results for page $page with limit $limit.")
-        }
-
-        return result
+    if (result.isEmpty()) {
+      if (page > 0)
+        throw ResourceNotFoundException("No results for page $page with limit $limit.")
     }
 
-    override fun getTermByCalId(calId: String, page: Int, limit: Int): CalendarTerm? {
-        val result = tm.run { handle ->
-            val res = handle.createQuery(CALENDAR_TERM_QUERY)
-                .bind(ID, calId)
-                .map(calendarTermMapper)
-                .findOne()
+    return result
+  }
 
-            var term: CalendarTerm? = null
-            if (res.isPresent) {
-                term = res.get()
+  override fun getTermByCalId(calId: String, page: Int, limit: Int): CalendarTerm? {
+    val result = tm.run { handle ->
+      val res = handle.createQuery(CALENDAR_TERM_QUERY)
+        .bind(ID, calId)
+        .map(calendarTermMapper)
+        .findOne()
 
-                val classes = handle
-                    .createQuery(CLASSES_QUERY)
-                    .bind(ID, calId)
-                    .bind(OFFSET, page * limit)
-                    .bind(LIMIT, limit)
-                    .map(classMapper)
-                    .list()
+      var term: CalendarTerm? = null
+      if (res.isPresent) {
+        term = res.get()
 
-                term.classes.addAll(classes)
-            }
-            term
-        }
+        val classes = handle
+          .createQuery(CLASSES_QUERY)
+          .bind(ID, calId)
+          .bind(OFFSET, page * limit)
+          .bind(LIMIT, limit)
+          .map(classMapper)
+          .list()
 
-        if (result == null) {
-            if (page > 0)
-                throw ResourceNotFoundException("No results for page $page with limit $limit.")
-        }
-
-        return result
+        term.classes.addAll(classes)
+      }
+      term
     }
+
+    if (result == null) {
+      if (page > 0)
+        throw ResourceNotFoundException("No results for page $page with limit $limit.")
+    }
+
+    return result
+  }
 }

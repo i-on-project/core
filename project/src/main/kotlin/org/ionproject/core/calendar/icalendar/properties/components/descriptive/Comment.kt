@@ -7,15 +7,15 @@ import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyPara
 import org.ionproject.core.calendar.toText
 
 class Comment(
-    value: String,
-    val alternateTextRepresentation: AlternateTextRepresentation? = null,
-    val language: Language? = null
+  value: String,
+  val alternateTextRepresentation: AlternateTextRepresentation? = null,
+  val language: Language? = null
 ) : ParameterizedProperty {
 
-    override val value = value.toText()
+  override val value = value.toText()
 
-    override val parameters: List<PropertyParameter>
-        get() = listOfNotNull(alternateTextRepresentation, language)
-    override val name: String
-        get() = "COMMENT"
+  override val parameters: List<PropertyParameter>
+    get() = listOfNotNull(alternateTextRepresentation, language)
+  override val name: String
+    get() = "COMMENT"
 }

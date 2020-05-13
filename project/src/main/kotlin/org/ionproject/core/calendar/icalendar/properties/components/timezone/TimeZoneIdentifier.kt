@@ -5,11 +5,11 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class TimeZoneIdentifier(
-    value: String
+  value: String
 ) : Property {
 
-    override val value: Text = value.toText()
+  override val value: Text = value.toText()
 
-    override val name: String
-        get() = "TZID"
+  override val name: String
+    get() = "TZID"
 }

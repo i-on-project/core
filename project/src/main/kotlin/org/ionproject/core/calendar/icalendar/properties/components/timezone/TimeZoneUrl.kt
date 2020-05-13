@@ -4,8 +4,8 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.Uri
 
 class TimeZoneUrl(
-    override val value: Uri
+  override val value: Uri
 ) : Property {
-    override val name: String
-        get() = "TZURL"
+  override val name: String
+    get() = "TZURL"
 }

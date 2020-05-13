@@ -8,18 +8,18 @@ import java.sql.ResultSet
 
 @Component
 class ProgrammeMapper : RowMapper<Programme> {
-    /**
-     * OfferList is not always needed, in such cases it uses an empty list,
-     * in others the same method fills the list that was initialized here accordingly.
-     */
-    override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
-        return Programme(
-            rs.getInt("id"),
-            rs.getString("name"),
-            rs.getString("acronym"),
-            rs.getInt("termSize"),
-            mutableListOf()
-        )
-    }
+  /**
+   * OfferList is not always needed, in such cases it uses an empty list,
+   * in others the same method fills the list that was initialized here accordingly.
+   */
+  override fun map(rs: ResultSet, ctx: StatementContext?): Programme {
+    return Programme(
+      rs.getInt("id"),
+      rs.getString("name"),
+      rs.getString("acronym"),
+      rs.getInt("termSize"),
+      mutableListOf()
+    )
+  }
 
 }

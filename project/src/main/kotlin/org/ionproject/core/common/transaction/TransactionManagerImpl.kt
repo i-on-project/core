@@ -13,39 +13,39 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
-    /**
-     * Jdbi instance wraps a JDBC DataSource
-     */
-    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
+  /**
+   * Jdbi instance wraps a JDBC DataSource
+   */
+  private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
 
-    /**
-     * Executes the transaction passed as parameter with the
-     * isolation level specified against the database
-     * configured by DataSource.
-     * The object `jdbi` contains a factory of connections
-     * to the database.
-     */
-    override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
-        var handle: Handle? = null
-        try {
-            handle = jdbi.open() //Obtaining a handle wrapper to the datasource
+  /**
+   * Executes the transaction passed as parameter with the
+   * isolation level specified against the database
+   * configured by DataSource.
+   * The object `jdbi` contains a factory of connections
+   * to the database.
+   */
+  override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
+    var handle: Handle? = null
+    try {
+      handle = jdbi.open() //Obtaining a handle wrapper to the datasource
 
-            handle.begin() //Initiates the transaction
-            handle.setTransactionIsolation(isolationLevel)
-            val result = transaction(handle) //Executing transaction code
+      handle.begin() //Initiates the transaction
+      handle.setTransactionIsolation(isolationLevel)
+      val result = transaction(handle) //Executing transaction code
 
-            handle.commit()
-            return result
-        } catch (e: ConnectionException) {
-            logger.error(e.localizedMessage)
-            throw InternalServerErrorException("Was not possible to establish a database connection")
-        } catch (e: Exception) {
-            handle?.rollback()
-            logger.error(e.localizedMessage)
-            throw e // propagate
-        } finally {
-            handle?.close()
-        }
+      handle.commit()
+      return result
+    } catch (e: ConnectionException) {
+      logger.error(e.localizedMessage)
+      throw InternalServerErrorException("Was not possible to establish a database connection")
+    } catch (e: Exception) {
+      handle?.rollback()
+      logger.error(e.localizedMessage)
+      throw e // propagate
+    } finally {
+      handle?.close()
     }
+  }
 
 }

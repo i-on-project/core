@@ -6,11 +6,11 @@ import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyPara
 import org.ionproject.core.calendar.icalendar.types.PeriodOfTime
 
 class FreeBusyTime(
-    override val value: PeriodOfTime,
-    val freeBusyTimeType: FreeBusyTimeType? = null
+  override val value: PeriodOfTime,
+  val freeBusyTimeType: FreeBusyTimeType? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter>
-        get() = listOfNotNull(freeBusyTimeType)
-    override val name: String
-        get() = "FREEBUSY"
+  override val parameters: List<PropertyParameter>
+    get() = listOfNotNull(freeBusyTimeType)
+  override val name: String
+    get() = "FREEBUSY"
 }

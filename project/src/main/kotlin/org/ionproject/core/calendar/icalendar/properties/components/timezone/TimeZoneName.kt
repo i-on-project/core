@@ -7,13 +7,13 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class TimeZoneName(
-    value: String,
-    val language: Language? = null
+  value: String,
+  val language: Language? = null
 ) : ParameterizedProperty {
-    override val parameters: List<PropertyParameter> = listOfNotNull(language)
+  override val parameters: List<PropertyParameter> = listOfNotNull(language)
 
-    override val name: String
-        get() = "TZNAME"
+  override val name: String
+    get() = "TZNAME"
 
-    override val value: Text = value.toText()
+  override val value: Text = value.toText()
 }

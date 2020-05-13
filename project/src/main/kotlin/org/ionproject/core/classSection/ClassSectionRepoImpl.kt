@@ -11,17 +11,17 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ClassSectionRepoImplementation(
-    private val tm: TransactionManager,
-    private val classSectionMapper: ClassSectionMapper
+  private val tm: TransactionManager,
+  private val classSectionMapper: ClassSectionMapper
 ) : ClassSectionRepo {
-    override fun get(cid: Int, calendarTerm: String, id: String): ClassSection? =
-        tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
-            handle
-                .createQuery(CLASS_SECTION_QUERY)
-                .bind(CID, cid)
-                .bind(ID, id.toUpperCase())
-                .bind(CAL_TERM, calendarTerm)
-                .map(classSectionMapper)
-                .firstOrNull()
-        }
+  override fun get(cid: Int, calendarTerm: String, id: String): ClassSection? =
+    tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
+      handle
+        .createQuery(CLASS_SECTION_QUERY)
+        .bind(CID, cid)
+        .bind(ID, id.toUpperCase())
+        .bind(CAL_TERM, calendarTerm)
+        .map(classSectionMapper)
+        .firstOrNull()
+    }
 }

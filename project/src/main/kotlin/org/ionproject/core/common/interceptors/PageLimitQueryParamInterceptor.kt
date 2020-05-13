@@ -12,28 +12,28 @@ import javax.servlet.http.HttpServletResponse
  */
 
 class PageLimitQueryParamInterceptor : HandlerInterceptorAdapter() {
-    companion object {
-        const val MAX_LIMIT = 100   //It's unlikely to have anything above it but just in case a limit is established.
+  companion object {
+    const val MAX_LIMIT = 100   //It's unlikely to have anything above it but just in case a limit is established.
+  }
+
+  override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    val pageValue = request.getParameter("page")
+    val limitValue = request.getParameter("limit")
+
+    if (pageValue != null) {            //If its null, user didn't use query params and there is nothing to test
+      val page = pageValue.toInt()
+      if (page < 0) {
+        throw IncorrectParametersException("The parameter page can't be negative, page=$page")
+      }
     }
 
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val pageValue = request.getParameter("page")
-        val limitValue = request.getParameter("limit")
-
-        if (pageValue != null) {            //If its null, user didn't use query params and there is nothing to test
-            val page = pageValue.toInt()
-            if (page < 0) {
-                throw IncorrectParametersException("The parameter page can't be negative, page=$page")
-            }
-        }
-
-        if (limitValue != null) {
-            val limit = limitValue.toInt()
-            if (limit < 0 || limit > MAX_LIMIT) {
-                throw IncorrectParametersException("The parameter limit can't be negative or above the limit, limit=$limit")
-            }
-        }
-
-        return true
+    if (limitValue != null) {
+      val limit = limitValue.toInt()
+      if (limit < 0 || limit > MAX_LIMIT) {
+        throw IncorrectParametersException("The parameter limit can't be negative or above the limit, limit=$limit")
+      }
     }
+
+    return true
+  }
 }

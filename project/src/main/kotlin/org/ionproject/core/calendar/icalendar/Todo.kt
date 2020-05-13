@@ -10,19 +10,19 @@ import org.ionproject.core.calendar.icalendar.properties.components.descriptive.
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 
 class Todo(
-    uniqueIdentifier: UniqueIdentifier,
-    summary: Array<Summary>,
-    description: Array<Description>,
-    attachment: Array<Attachment>,
-    dateTimeStamp: DateTimeStamp,
-    created: DateTimeCreated,
-    due: DateTimeDue,
-    categories: Array<Categories>
+  uniqueIdentifier: UniqueIdentifier,
+  summary: Array<Summary>,
+  description: Array<Description>,
+  attachment: Array<Attachment>,
+  dateTimeStamp: DateTimeStamp,
+  created: DateTimeCreated,
+  due: DateTimeDue,
+  categories: Array<Categories>
 ) : CalendarComponent(uniqueIdentifier, dateTimeStamp, *summary, *description, *attachment, created, due, *categories) {
-    override val componentName: String
-        get() = iCalName
+  override val componentName: String
+    get() = iCalName
 
-    companion object {
-        private const val iCalName = "VTODO"
-    }
+  companion object {
+    private const val iCalName = "VTODO"
+  }
 }

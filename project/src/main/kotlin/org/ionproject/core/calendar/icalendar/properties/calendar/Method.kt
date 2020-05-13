@@ -5,15 +5,15 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Method(
-    text: String
+  text: String
 ) : Property {
 
-    override val value: Text = text.toText()
+  override val value: Text = text.toText()
 
-    override val name: String
-        get() = iCalName
+  override val name: String
+    get() = iCalName
 
-    companion object {
-        private const val iCalName = "METHOD"
-    }
+  companion object {
+    private const val iCalName = "METHOD"
+  }
 }

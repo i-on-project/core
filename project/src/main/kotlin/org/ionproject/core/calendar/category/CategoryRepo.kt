@@ -6,38 +6,38 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface CategoryRepo {
-    fun byId(id: Int): Category?
+  fun byId(id: Int): Category?
 }
 
 @Repository
 class CategoryRepoImpl(
-    private val transactionManager: TransactionManager,
-    private val categoryMapper: CategoryData.CategoryMapper
+  private val transactionManager: TransactionManager,
+  private val categoryMapper: CategoryData.CategoryMapper
 ) : CategoryRepo {
 
-    private val categories = hashMapOf<Int, Category>()
+  private val categories = hashMapOf<Int, Category>()
 
-    init {
-        populateCategoryMap()
+  init {
+    populateCategoryMap()
+  }
+
+  private fun populateCategoryMap() {
+    transactionManager.run {
+      it
+        .createQuery(ALL_CATEGORIES_QUERY)
+        .map(categoryMapper)
+        .list()
+    }?.forEach {
+      categories += it
     }
+  }
 
-    private fun populateCategoryMap() {
-        transactionManager.run {
-            it
-                .createQuery(ALL_CATEGORIES_QUERY)
-                .map(categoryMapper)
-                .list()
-        }?.forEach {
-            categories += it
-        }
-    }
-
-    override fun byId(id: Int): Category? =
-        categories[id]
+  override fun byId(id: Int): Category? =
+    categories[id]
 
 }
 
 class Category(
-    val value: String,
-    val language: Language
+  val value: String,
+  val language: Language
 )

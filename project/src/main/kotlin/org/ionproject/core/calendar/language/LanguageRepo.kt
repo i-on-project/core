@@ -5,34 +5,34 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface LanguageRepo {
-    fun byId(id: Int): Language?
+  fun byId(id: Int): Language?
 }
 
 @Repository
 class LanguagaRepoImpl(
-    private val transactionManager: TransactionManager,
-    private val languageMapper: LanguageData.LanguageMapper
+  private val transactionManager: TransactionManager,
+  private val languageMapper: LanguageData.LanguageMapper
 ) : LanguageRepo {
 
-    private val languages = hashMapOf<Int, Language>()
+  private val languages = hashMapOf<Int, Language>()
 
-    init {
-        populateLanguageMap()
+  init {
+    populateLanguageMap()
+  }
+
+  private fun populateLanguageMap() {
+    val languages = transactionManager.run {
+      it
+        .createQuery(LanguageData.ALL_LANGUAGES_QUERY)
+        .map(languageMapper)
+        .list()
     }
-
-    private fun populateLanguageMap() {
-        val languages = transactionManager.run {
-            it
-                .createQuery(LanguageData.ALL_LANGUAGES_QUERY)
-                .map(languageMapper)
-                .list()
-        }
-        languages?.forEach {
-            this.languages += it
-        }
+    languages?.forEach {
+      this.languages += it
     }
+  }
 
-    override fun byId(id: Int): Language? =
-        languages[id]
+  override fun byId(id: Int): Language? =
+    languages[id]
 
 }

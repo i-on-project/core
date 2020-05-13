@@ -19,26 +19,26 @@ private const val apiName = "i-on Core"
 @RestController
 class JsonHomeController {
 
-    @GetMapping("/")
-    fun getRoot(): ResponseEntity<JsonHome> =
-        ResponseEntity.ok(
-            JsonHomeBuilder(apiName)
-                .link("describedBy", specUri)
-                // course resource
-                .newResource("courses")
-                .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
-                .hrefVar("limit", URI("/api-docs/params/limit"))
-                .hrefVar("page", URI("/api-docs/params/page"))
-                .docs(coursesSpecUri)
-                .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
-                .toResourceObject()
-                .newResource("calendar-terms")
-                .hrefTemplate(Uri.pagingCalendarTerms)
-                .hrefVar("limit", URI("/api-docs/params/limit"))
-                .hrefVar("page", URI("/api-docs/params/page"))
-                .docs(calendarTermsSpecUri)
-                .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
-                .toResourceObject()
-                .toJsonHome()
-        )
+  @GetMapping("/")
+  fun getRoot(): ResponseEntity<JsonHome> =
+    ResponseEntity.ok(
+      JsonHomeBuilder(apiName)
+        .link("describedBy", specUri)
+        // course resource
+        .newResource("courses")
+        .hrefTemplate(UriTemplate("${Uri.forCourses()}${Uri.rfcPagingQuery}"))
+        .hrefVar("limit", URI("/api-docs/params/limit"))
+        .hrefVar("page", URI("/api-docs/params/page"))
+        .docs(coursesSpecUri)
+        .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+        .toResourceObject()
+        .newResource("calendar-terms")
+        .hrefTemplate(Uri.pagingCalendarTerms)
+        .hrefVar("limit", URI("/api-docs/params/limit"))
+        .hrefVar("page", URI("/api-docs/params/page"))
+        .docs(calendarTermsSpecUri)
+        .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+        .toResourceObject()
+        .toJsonHome()
+    )
 }

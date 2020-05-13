@@ -12,11 +12,11 @@ import java.sql.ResultSet
 
 @Component
 class ClassSectionMapper : RowMapper<ClassSection> {
-    override fun map(rs: ResultSet, ctx: StatementContext?): ClassSection {
-        return ClassSection(
-            rs.getInt(CID),
-            rs.getString(ACR),
-            rs.getString(CAL_TERM),
-            rs.getString(ID))
-    }
+  override fun map(rs: ResultSet, ctx: StatementContext?): ClassSection {
+    return ClassSection(
+      rs.getInt(CID),
+      rs.getString(ACR),
+      rs.getString(CAL_TERM),
+      rs.getString(ID))
+  }
 }

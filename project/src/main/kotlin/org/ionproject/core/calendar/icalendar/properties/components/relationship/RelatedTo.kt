@@ -7,14 +7,14 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class RelatedTo(
-    value: String,
-    val relationshipType: RelationshipType?
+  value: String,
+  val relationshipType: RelationshipType?
 ) : ParameterizedProperty {
 
-    override val value: Text = value.toText()
+  override val value: Text = value.toText()
 
-    override val parameters: List<PropertyParameter> = listOfNotNull(relationshipType)
+  override val parameters: List<PropertyParameter> = listOfNotNull(relationshipType)
 
-    override val name: String
-        get() = "RELATED-TO"
+  override val name: String
+    get() = "RELATED-TO"
 }

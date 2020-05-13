@@ -8,11 +8,11 @@ import java.sql.ResultSet
 
 @Component
 class KlassClassSectionMapper : RowMapper<ClassSection> {
-    override fun map(rs: ResultSet, ctx: StatementContext?): ClassSection {
-        return ClassSection(
-            rs.getInt(KlassData.CID),
-            rs.getString(KlassData.ACR),
-            rs.getString(KlassData.CAL_TERM),
-            rs.getString(KlassData.SID))
-    }
+  override fun map(rs: ResultSet, ctx: StatementContext?): ClassSection {
+    return ClassSection(
+      rs.getInt(KlassData.CID),
+      rs.getString(KlassData.ACR),
+      rs.getString(KlassData.CAL_TERM),
+      rs.getString(KlassData.SID))
+  }
 }

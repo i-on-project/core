@@ -10,29 +10,29 @@ import org.ionproject.core.calendar.icalendar.properties.components.descriptive.
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 
 class Journal(
-    uniqueIdentifier: UniqueIdentifier,
-    summary: Array<Summary>,
-    description: Array<Description>,
-    attachment: Array<Attachment>,
-    dateTimeStamp: DateTimeStamp,
-    dateTimeStart: DateTimeStart,
-    created: DateTimeCreated,
-    categories: Array<Categories>
+  uniqueIdentifier: UniqueIdentifier,
+  summary: Array<Summary>,
+  description: Array<Description>,
+  attachment: Array<Attachment>,
+  dateTimeStamp: DateTimeStamp,
+  dateTimeStart: DateTimeStart,
+  created: DateTimeCreated,
+  categories: Array<Categories>
 ) : CalendarComponent(
-    uniqueIdentifier,
-    dateTimeStamp,
-    *summary,
-    *description,
-    *attachment,
-    dateTimeStart,
-    created,
-    *categories
+  uniqueIdentifier,
+  dateTimeStamp,
+  *summary,
+  *description,
+  *attachment,
+  dateTimeStart,
+  created,
+  *categories
 ) {
 
-    override val componentName: String
-        get() = iCalName
+  override val componentName: String
+    get() = iCalName
 
-    companion object {
-        private const val iCalName = "VJOURNAL"
-    }
+  companion object {
+    private const val iCalName = "VJOURNAL"
+  }
 }

@@ -10,37 +10,37 @@ import org.ionproject.core.calendar.icalendar.types.DateTime
 import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 
 class RecurrenceId private constructor(
-    override val value: ICalendarDataType,
-    val valueDataType: ValueDataType? = null,
-    val timeZoneIdentifier: TimeZoneIdentifier? = null,
-    val recurrenceIdentifierRange: RecurrenceIdentifierRange? = null
+  override val value: ICalendarDataType,
+  val valueDataType: ValueDataType? = null,
+  val timeZoneIdentifier: TimeZoneIdentifier? = null,
+  val recurrenceIdentifierRange: RecurrenceIdentifierRange? = null
 ) : ParameterizedProperty {
 
-    constructor(
-        dateTime: DateTime,
-        timeZoneIdentifier: TimeZoneIdentifier?,
-        recurrenceIdentifierRange: RecurrenceIdentifierRange?
-    ) : this(
-        dateTime,
-        null,
-        timeZoneIdentifier,
-        recurrenceIdentifierRange
-    )
+  constructor(
+    dateTime: DateTime,
+    timeZoneIdentifier: TimeZoneIdentifier?,
+    recurrenceIdentifierRange: RecurrenceIdentifierRange?
+  ) : this(
+    dateTime,
+    null,
+    timeZoneIdentifier,
+    recurrenceIdentifierRange
+  )
 
-    constructor(
-        date: Date,
-        timeZoneIdentifier: TimeZoneIdentifier?,
-        recurrenceIdentifierRange: RecurrenceIdentifierRange?
-    ) : this(
-        date,
-        ValueDataType(date),
-        timeZoneIdentifier,
-        recurrenceIdentifierRange
-    )
+  constructor(
+    date: Date,
+    timeZoneIdentifier: TimeZoneIdentifier?,
+    recurrenceIdentifierRange: RecurrenceIdentifierRange?
+  ) : this(
+    date,
+    ValueDataType(date),
+    timeZoneIdentifier,
+    recurrenceIdentifierRange
+  )
 
-    override val parameters: List<PropertyParameter> =
-        listOfNotNull(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
+  override val parameters: List<PropertyParameter> =
+    listOfNotNull(valueDataType, timeZoneIdentifier, recurrenceIdentifierRange)
 
-    override val name: String
-        get() = "RECURRENCE-ID"
+  override val name: String
+    get() = "RECURRENCE-ID"
 }

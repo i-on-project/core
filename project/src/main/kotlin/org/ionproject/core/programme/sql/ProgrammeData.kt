@@ -12,7 +12,7 @@ internal object ProgrammeData {
   const val PROGRAMME_ID = "programmeid"
   const val ACRONYM = "acronym"
   const val NAME = "name"
-  const val TERM_SIZE="termsize"
+  const val TERM_SIZE = "termsize"
   const val TERM_NUMBER = "termnumber"
   const val OPTIONAL = "optional"
 

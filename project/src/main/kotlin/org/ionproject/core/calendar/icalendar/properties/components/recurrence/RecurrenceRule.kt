@@ -4,8 +4,8 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.Recur
 
 class RecurrenceRule(
-    override val value: Recur
+  override val value: Recur
 ) : Property {
-    override val name: String
-        get() = "RRULE"
+  override val name: String
+    get() = "RRULE"
 }

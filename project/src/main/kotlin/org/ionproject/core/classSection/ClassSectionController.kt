@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ClassSectionController(private val repo: ClassSectionRepo) {
 
-    @GetMapping(Uri.classSectionById)
-    fun get(
-        @PathVariable cid: Int,
-        @PathVariable calterm: String,
-        @PathVariable sid: String
-    ): ResponseEntity<Siren> {
+  @GetMapping(Uri.classSectionById)
+  fun get(
+    @PathVariable cid: Int,
+    @PathVariable calterm: String,
+    @PathVariable sid: String
+  ): ResponseEntity<Siren> {
 
-        val cs = repo.get(cid, calterm, sid)
+    val cs = repo.get(cid, calterm, sid)
 
-        cs?.let { return ResponseEntity.ok(it.toSiren()) }
-        return ResponseEntity.notFound().build()
-    }
+    cs?.let { return ResponseEntity.ok(it.toSiren()) }
+    return ResponseEntity.notFound().build()
+  }
 }

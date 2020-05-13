@@ -13,41 +13,41 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ProgrammeController(private val programmeServices: ProgrammeServices) {
 
-    @GetMapping(Uri.programmes)
-    fun getProgrammes(): ResponseEntity<Siren> {
-        val programmes = programmeServices.getProgrammes()
+  @GetMapping(Uri.programmes)
+  fun getProgrammes(): ResponseEntity<Siren> {
+    val programmes = programmeServices.getProgrammes()
 
-        return ResponseEntity.ok(programmes.programmesListRepr())
-    }
+    return ResponseEntity.ok(programmes.programmesListRepr())
+  }
 
-    @GetMapping(Uri.programmesById)
-    fun getProgramme(@PathVariable id: Int): ResponseEntity<Siren> {
-        val programme = programmeServices.getProgrammeById(id)
+  @GetMapping(Uri.programmesById)
+  fun getProgramme(@PathVariable id: Int): ResponseEntity<Siren> {
+    val programme = programmeServices.getProgrammeById(id)
 
-        programme?.let { return ResponseEntity.ok(it.programmeToDetailRepr()) }
-        return ResponseEntity.notFound().build()
-    }
+    programme?.let { return ResponseEntity.ok(it.programmeToDetailRepr()) }
+    return ResponseEntity.notFound().build()
+  }
 
-    @GetMapping(Uri.programmeOfferById)
-    fun getOffer(@PathVariable idProgramme: Int, @PathVariable idOffer: Int): ResponseEntity<Siren> {
-        val offer = programmeServices.getOfferById(idOffer, idProgramme)
+  @GetMapping(Uri.programmeOfferById)
+  fun getOffer(@PathVariable idProgramme: Int, @PathVariable idOffer: Int): ResponseEntity<Siren> {
+    val offer = programmeServices.getOfferById(idOffer, idProgramme)
 
-        offer?.let { return ResponseEntity.ok(it.offerToDetailRepr()) }
-        return ResponseEntity.notFound().build()
-    }
+    offer?.let { return ResponseEntity.ok(it.offerToDetailRepr()) }
+    return ResponseEntity.notFound().build()
+  }
 
-    @PutMapping(Uri.programmesById)
-    fun editProgramme(programme: Programme) {
-        TODO("Write API")
-    }
+  @PutMapping(Uri.programmesById)
+  fun editProgramme(programme: Programme) {
+    TODO("Write API")
+  }
 
-    @PostMapping(Uri.programmes)
-    fun addProgramme(programme: Programme) {
-        TODO("Write API")
-    }
+  @PostMapping(Uri.programmes)
+  fun addProgramme(programme: Programme) {
+    TODO("Write API")
+  }
 
-    @PostMapping(Uri.programmeByIdOffer)
-    fun addOffer(id: Int, offer: ProgrammeOffer) {
-        TODO("Write API")
-    }
+  @PostMapping(Uri.programmeByIdOffer)
+  fun addOffer(id: Int, offer: ProgrammeOffer) {
+    TODO("Write API")
+  }
 }

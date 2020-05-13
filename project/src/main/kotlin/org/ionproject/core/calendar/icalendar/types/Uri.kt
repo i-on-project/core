@@ -1,10 +1,10 @@
 package org.ionproject.core.calendar.icalendar.types
 
 class Uri(
-    override val value: String
+  override val value: String
 ) : ICalendarDataType {
-    override val name: String
-        get() = "URI"
+  override val name: String
+    get() = "URI"
 
-    override fun toString(): String = value
+  override fun toString(): String = value
 }

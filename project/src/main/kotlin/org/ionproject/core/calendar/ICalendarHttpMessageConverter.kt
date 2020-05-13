@@ -17,77 +17,77 @@ import java.lang.reflect.Type
 class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(Media.MEDIA_TEXT_CALENDAR) {
 
 
-    override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
+  override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
 
-    override fun supports(clazz: Class<*>): Boolean = clazz == Calendar::class.java
+  override fun supports(clazz: Class<*>): Boolean = clazz == Calendar::class.java
 
-    override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Calendar =
-        throw UnsupportedOperationException("This message converter can't read.")
+  override fun read(type: Type, contextClass: Class<*>?, inputMessage: HttpInputMessage): Calendar =
+    throw UnsupportedOperationException("This message converter can't read.")
 
-    override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        PrintWriter(outputMessage.body).apply {
-            writeCalendar(t, this)
-            close()
-        }
+  override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
+    PrintWriter(outputMessage.body).apply {
+      writeCalendar(t, this)
+      close()
+    }
+  }
+
+  override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar =
+    throw UnsupportedOperationException("This message converter can't read.")
+
+  private fun writeCalendar(calendar: Calendar, writer: Writer) {
+    writer.writeICalendar("BEGIN:VCALENDAR")
+
+    calendar.apply {
+      writeProperty(prod, writer)
+      writeProperty(version, writer)
+      if (scale != null) {
+        writeProperty(scale, writer)
+      }
+
+      if (method != null) {
+        writeProperty(method, writer)
+      }
+
+      forEach {
+        writeComponent(it, writer)
+      }
     }
 
-    override fun readInternal(clazz: Class<out Calendar>, inputMessage: HttpInputMessage): Calendar =
-        throw UnsupportedOperationException("This message converter can't read.")
+    writer.writeICalendar("END:VCALENDAR")
+  }
 
-    private fun writeCalendar(calendar: Calendar, writer: Writer) {
-        writer.writeICalendar("BEGIN:VCALENDAR")
+  private fun writeComponent(calendarComponent: CalendarComponent, writer: Writer) {
+    calendarComponent.apply {
+      writer.writeICalendar("BEGIN:$componentName")
 
-        calendar.apply {
-            writeProperty(prod, writer)
-            writeProperty(version, writer)
-            if (scale != null) {
-                writeProperty(scale, writer)
-            }
+      properties.forEach {
+        writeProperty(it, writer)
+      }
 
-            if (method != null) {
-                writeProperty(method, writer)
-            }
-
-            forEach {
-                writeComponent(it, writer)
-            }
-        }
-
-        writer.writeICalendar("END:VCALENDAR")
+      writer.writeICalendar("END:$componentName")
     }
+  }
 
-    private fun writeComponent(calendarComponent: CalendarComponent, writer: Writer) {
-        calendarComponent.apply {
-            writer.writeICalendar("BEGIN:$componentName")
+  private fun writeProperty(property: Property, writer: Writer) {
+    property.apply {
+      val parameters = if (this is ParameterizedProperty) {
+        parameters.map { ";${it.name}=${it.values.joinToString(",")}" }
+          .let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
+      } else ""
 
-            properties.forEach {
-                writeProperty(it, writer)
-            }
+      val value = if (this is MultiValuedProperty<*>) {
+        value.joinToString(",")
+      } else value.toString()
 
-            writer.writeICalendar("END:$componentName")
-        }
+      writer.writeICalendar("$name$parameters:$value")
     }
-
-    private fun writeProperty(property: Property, writer: Writer) {
-        property.apply {
-            val parameters = if (this is ParameterizedProperty) {
-                parameters.map { ";${it.name}=${it.values.joinToString(",")}" }
-                    .let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
-            } else ""
-
-            val value = if (this is MultiValuedProperty<*>) {
-                value.joinToString(",")
-            } else value.toString()
-
-            writer.writeICalendar("$name$parameters:$value")
-        }
-    }
+  }
 }
 
 private fun Writer.writeln(obj: Any) {
-    write(obj.toString() + "\r\n")
+  write(obj.toString() + "\r\n")
 }
 
 private fun Writer.writeICalendar(string: String) {
-    writeln(string.iCalendarFold())
+  writeln(string.iCalendarFold())
 }

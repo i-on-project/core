@@ -9,27 +9,27 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 class LoggerInterceptor : HandlerInterceptorAdapter() {
 
-    override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val startTime = System.currentTimeMillis()
-        logger.info(
-            "IP:${request.remoteAddr} | Method:${request.method} | Endpoint:${request.requestURI} | Timestamp:${startTime}"
-        )
-        request.setAttribute("startTime", startTime)
-        return true
-    }
+  override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    val startTime = System.currentTimeMillis()
+    logger.info(
+      "IP:${request.remoteAddr} | Method:${request.method} | Endpoint:${request.requestURI} | Timestamp:${startTime}"
+    )
+    request.setAttribute("startTime", startTime)
+    return true
+  }
 
-    override fun afterCompletion(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        handler: Any,
-        ex: Exception?
-    ) {
-        val startTime: Long = request.getAttribute("startTime") as Long
-        val endTime: Long = System.currentTimeMillis()
-        logger.info(
-            """
+  override fun afterCompletion(
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+    handler: Any,
+    ex: Exception?
+  ) {
+    val startTime: Long = request.getAttribute("startTime") as Long
+    val endTime: Long = System.currentTimeMillis()
+    logger.info(
+      """
                     Total time taken to proccess request in milliseconds: ${endTime - startTime} ms
                 """.trimIndent()
-        )
-    }
+    )
+  }
 }

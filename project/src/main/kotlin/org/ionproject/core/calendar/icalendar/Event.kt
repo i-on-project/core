@@ -12,6 +12,19 @@ import org.ionproject.core.calendar.icalendar.properties.components.recurrence.R
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 
 class Event private constructor(
+  uid: UniqueIdentifier,
+  summary: Array<Summary>,
+  description: Array<Description>,
+  stamp: DateTimeStamp,
+  created: DateTimeCreated,
+  categories: Array<Categories>,
+  start: DateTimeStart,
+  end: DateTimeEnd?,
+  duration: Duration?,
+  recurrenceRule: RecurrenceRule?
+) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, recurrenceRule) {
+
+  constructor(
     uid: UniqueIdentifier,
     summary: Array<Summary>,
     description: Array<Description>,
@@ -19,35 +32,22 @@ class Event private constructor(
     created: DateTimeCreated,
     categories: Array<Categories>,
     start: DateTimeStart,
-    end: DateTimeEnd?,
-    duration: Duration?,
-    recurrenceRule: RecurrenceRule?
-) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, recurrenceRule) {
+    duration: Duration,
+    recurrenceRule: RecurrenceRule? = null
+  ) : this(uid, summary, description, stamp, created, categories, start, null, duration, recurrenceRule)
 
-    constructor(
-        uid: UniqueIdentifier,
-        summary: Array<Summary>,
-        description: Array<Description>,
-        stamp: DateTimeStamp,
-        created: DateTimeCreated,
-        categories: Array<Categories>,
-        start: DateTimeStart,
-        duration: Duration,
-        recurrenceRule: RecurrenceRule? = null
-    ) : this(uid, summary, description, stamp, created, categories, start, null, duration, recurrenceRule)
+  constructor(
+    uid: UniqueIdentifier,
+    summary: Array<Summary>,
+    description: Array<Description>,
+    stamp: DateTimeStamp,
+    created: DateTimeCreated,
+    categories: Array<Categories>,
+    start: DateTimeStart,
+    end: DateTimeEnd,
+    recurrenceRule: RecurrenceRule? = null
+  ) : this(uid, summary, description, stamp, created, categories, start, end, null, recurrenceRule)
 
-    constructor(
-        uid: UniqueIdentifier,
-        summary: Array<Summary>,
-        description: Array<Description>,
-        stamp: DateTimeStamp,
-        created: DateTimeCreated,
-        categories: Array<Categories>,
-        start: DateTimeStart,
-        end: DateTimeEnd,
-        recurrenceRule: RecurrenceRule? = null
-    ) : this(uid, summary, description, stamp, created, categories, start, end, null, recurrenceRule)
-
-    override val componentName: String
-        get() = "VEVENT"
+  override val componentName: String
+    get() = "VEVENT"
 }

@@ -4,8 +4,8 @@ import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.types.DateTime
 
 class DateTimeStamp(
-    override val value: DateTime
+  override val value: DateTime
 ) : Property {
-    override val name: String
-        get() = "DTSTAMP"
+  override val name: String
+    get() = "DTSTAMP"
 }

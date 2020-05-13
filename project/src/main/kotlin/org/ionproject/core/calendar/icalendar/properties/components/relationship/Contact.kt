@@ -8,19 +8,19 @@ import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.calendar.toText
 
 class Contact(
-    value: String,
-    val alternateTextRepresentation: AlternateTextRepresentation? = null,
-    val language: Language? = null
+  value: String,
+  val alternateTextRepresentation: AlternateTextRepresentation? = null,
+  val language: Language? = null
 ) : ParameterizedProperty {
 
-    override val value: Text = value.toText()
+  override val value: Text = value.toText()
 
-    override val parameters: List<PropertyParameter> = listOfNotNull(alternateTextRepresentation, language)
+  override val parameters: List<PropertyParameter> = listOfNotNull(alternateTextRepresentation, language)
 
-    override val name: String
-        get() = iCalName
+  override val name: String
+    get() = iCalName
 
-    companion object {
-        private const val iCalName = "CONTACT"
-    }
+  companion object {
+    private const val iCalName = "CONTACT"
+  }
 }
