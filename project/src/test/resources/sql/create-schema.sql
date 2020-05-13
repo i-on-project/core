@@ -397,27 +397,29 @@ CREATE VIEW courseWithTerm AS
 
 ------- SPs --------
 -- When creating a Class, give it a new Calendar 
-create or replace procedure dbo.sp_classCalendarCreate (calterm varchar(200), courseid integer)
+CREATE OR REPLACE PROCEDURE dbo.sp_classCalendarCreate (calterm VARCHAR(200), courseid INT)
 AS $$
 #print_strict_params on
 DECLARE
-calid int;
+calid INT;
 BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.Class(courseid, calendarterm, calendar) values
-		(courseid, calterm, calid);
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.Class(courseid, calendarterm, calendar) VALUES
+	(courseid, calterm, calid);
 END
 $$ LANGUAGE plpgsql;
 
 -- When creating a ClassSection, give it a new Calendar 
-create or replace procedure dbo.sp_classSectionCalendarCreate (classId integer, sid varchar(200))
+CREATE OR REPLACE PROCEDURE dbo.sp_classSectionCalendarCreate (classId INT, sid VARCHAR(200))
 AS $$
 #print_strict_params on
 DECLARE
-calid int;
+calid INT;
 BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.ClassSection(id, classId, calendar) values
-		(sid, classId, calid);
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.ClassSection(id, classId, calendar) VALUES
+	(sid, classId, calid);
 END
 $$ LANGUAGE plpgsql;
