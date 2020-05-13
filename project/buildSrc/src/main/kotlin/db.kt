@@ -98,6 +98,7 @@ open class PgInitSchema : AbstractTask() {
                 "-U", pgPrms.user,
                 "-d", pgPrms.db,
                 "-w",
+                "-1",
                 "-f", "src/test/resources/sql/create-schema.sql")
 
             environment("PGPASSWORD", pgPrms.password)
@@ -115,6 +116,7 @@ open class PgAddData : AbstractTask() {
                 "-U", pgPrms.user,
                 "-d", pgPrms.db,
                 "-w",
+                "-1",
                 "-f", "src/test/resources/sql/insert.sql")
 
             environment("PGPASSWORD", pgPrms.password)
