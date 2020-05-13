@@ -33,6 +33,7 @@ internal object KlassData {
         join $SCHEMA.$CLASS_SECTION as CS on C.$CID=CS.$CLASS_SECTION_CID and C.$CAL_TERM=CS.$CLASS_SECTION_CAL_TERM
         join $SCHEMA.$COURSE as CR on CR.$COURSE_ID=C.$CID
         where C.$CID=:$CID and C.$CAL_TERM=:$CAL_TERM
+        order by $SID
     """
 
     const val GET_CLASSES_QUERY = """
