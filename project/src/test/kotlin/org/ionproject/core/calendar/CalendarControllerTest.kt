@@ -213,12 +213,22 @@ internal class CalendarControllerTest : ControllerTester() {
     @Test
     fun getCalendarByClass_And_Compare() {
         val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-            {accept = Media.MEDIA_TEXT_CALENDAR}.
-                andReturn()
-                .response.contentAsString
-                .replace("\\s".toRegex(), "")
+            {accept = Media.MEDIA_TEXT_CALENDAR}
+                .andReturn()
+                .response
+                .contentAsString
 
-        Assertions.assertEquals(calendarByClass.replace("\\s".toRegex(), ""), result)
+        /**
+         * Had a small problem with the way the messageConverter
+         * added newlines, the way obtained by the browser depending on the
+         * oparating system and the
+         * way multiline strings added new lines, for compatibility
+         * in all situation the following regex removes all lines and spaces
+         * from the strings.
+         */
+        val expected : String = calendarByClass.replace("\\s".toRegex(), "")
+        val obtained : String = result.replace("\\s".toRegex(), "")
+        Assertions.assertEquals(expected, obtained)
     }
 
     @Test
@@ -228,9 +238,10 @@ internal class CalendarControllerTest : ControllerTester() {
                 .andReturn()
                 .response
                 .contentAsString
-                .replace("\\s".toRegex(), "")
 
-        Assertions.assertEquals(calendarByClassSection.replace("\\s".toRegex(), ""), result)
+        val expected : String = calendarByClassSection.replace("\\s".toRegex(), "")
+        val obtained : String = result.replace("\\s".toRegex(), "")
+        Assertions.assertEquals(expected, obtained)
     }
 
 
