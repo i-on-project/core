@@ -151,7 +151,7 @@ class CalendarComponentMapper(
             val list = List(values.size) { idx ->
                 val str = values[idx]
                 if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"")
+                    str.removeSurrounding("\"").replace("""\\""", """\""")
                 } else {
                     str.toInt()
                 }

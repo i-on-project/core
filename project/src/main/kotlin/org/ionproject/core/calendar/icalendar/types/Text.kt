@@ -6,8 +6,8 @@ class Text(
     override val value: String
 
     init {
-        var temp = text.replace(",", "\\,")
-        temp = temp.replace(";", "\\;")
+        var temp = text.replace(Regex("[^\\\\],"), "\\,")
+        temp = temp.replace(Regex("[^\\\\];"), "\\;")
         value = temp
     }
 
