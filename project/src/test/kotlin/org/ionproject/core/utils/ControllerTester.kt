@@ -4,8 +4,10 @@ import org.ionproject.core.common.Media
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.MockHttpServletRequestDsl
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 import java.net.URI
 
 @SpringBootTest
@@ -22,5 +24,10 @@ internal class ControllerTester {
         jsonPath("$.links") { exists() }
         jsonPath("$.actions") { exists() }
     }
+
+    fun doGet(uri: URI, dsl: MockHttpServletRequestDsl.() -> Unit = {}) = mocker.get(uri, dsl)
+
+    fun doPost(uri: URI, dsl: MockHttpServletRequestDsl.() -> Unit = {}) = mocker.post(uri, dsl)
+
 }
 

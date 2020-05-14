@@ -34,31 +34,15 @@ fun Calendar.toSiren(): Siren =
                 )
             )
         )
-        .action(
-            Action(
-                name = "add-item",
-                title = "Add  Item",
-                method = HttpMethod.POST,
-                href = UriTemplate("${prod.value}/calendar"),
-                isTemplated = false,
-                type = Media.APPLICATION_JSON,
-                fields = listOf()
-            )
-        )
-        .action(
-            Action(
-                name = "batch-delete",
-                title = "Delete multiple items",
-                method = HttpMethod.DELETE,
-                isTemplated = true,
-                href = UriTemplate("${prod.value}/calendar"),
-                fields = listOf(
-                    Field(name = "type", type = "text", klass = "https://example.org/param/free-text-query")
-                )
-            )
-        )
         .link("self", href = URI("${prod.value}/calendar"))
         .link("about", href = URI("${prod.value}"))
+        .toSiren()
+
+fun CalendarComponent.toSiren(about: URI) : Siren =
+    SirenBuilder(sirenProperties)
+        .klass(this::class.java.simpleName.toLowerCase())
+        .link("self", href = URI.create("$about/calendar/${uid.value.value}"))
+        .link("about", href = about)
         .toSiren()
 
 
@@ -76,16 +60,20 @@ private val Calendar.properties: Map<String, Any>
             VERSION to version.toSiren(),
             PRODID to prod.toSiren()
         ),
-        SUB_COMPONENTS to components.map(CalendarComponent::toSiren)
+        SUB_COMPONENTS to components.map(CalendarComponent::asSubComponentSirenProperties)
     )
 
-private fun CalendarComponent.toSiren(): Map<String, Any> {
-    val type = this::class.java.simpleName.toLowerCase()
-    return mapOf(
-        TYPE to type,
+private val CalendarComponent.sirenProperties: Map<String, Any>
+    get() = mapOf(
         PROPERTIES to properties.toMap()
     )
-}
+
+private val CalendarComponent.asSubComponentSirenProperties: Map<String, Any>
+    get() = mapOf(
+        TYPE to this::class.java.simpleName.toLowerCase(),
+        PROPERTIES to properties.toMap()
+    )
+
 
 private fun Iterable<Property>.toMap(): Map<String, Any> =
     this
