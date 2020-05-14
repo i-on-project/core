@@ -1,7 +1,10 @@
 package org.ionproject.core.utils
 
+import net.fortuna.ical4j.data.CalendarOutputter
 import net.fortuna.ical4j.model.*
 import net.fortuna.ical4j.model.component.CalendarComponent
+import java.io.ByteArrayOutputStream
+import java.io.PrintWriter
 
 fun ParameterList(vararg parameters: Parameter) : ParameterList =
     ParameterList(false).apply {
@@ -21,3 +24,11 @@ fun ComponentList(vararg components: CalendarComponent): ComponentList<CalendarC
     ComponentList<CalendarComponent>(components.size).apply {
         addAll(components)
     }
+
+fun Calendar.output(): String {
+    val stream = ByteArrayOutputStream()
+
+    CalendarOutputter().output(this, PrintWriter(stream))
+
+    return stream.toString("utf-8")
+}
