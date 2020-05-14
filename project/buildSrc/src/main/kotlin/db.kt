@@ -1,4 +1,3 @@
-
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
@@ -6,7 +5,6 @@ import java.io.ByteArrayOutputStream
 import java.net.URI
 
 object Postgres {
-
     data class PgDb(
       val host: String,
       val port: String,
@@ -45,6 +43,8 @@ object Docker {
     const val CONTAINER_NAME = "pg-container"
     const val CONTAINER_PORT = 5432
     const val HOST_PORT = 5432
+    const val HOST_MOUNT_DIR = "src/test/resources/docker"
+    const val CONTAINER_MOUNT_DIR = "/mnt"
 
     fun isContainerRunning(project: Project): Boolean {
         val pipe = ByteArrayOutputStream()
@@ -52,7 +52,7 @@ object Docker {
             commandLine("docker", "ps",
               "-a",
               "-q",
-              "-f", "name=${Docker.CONTAINER_NAME}")
+              "-f", "name=$CONTAINER_NAME")
 
             standardOutput = pipe
         }
@@ -69,12 +69,14 @@ open class PgStart : AbstractTask() {
             println("Container \"${Docker.CONTAINER_NAME}\" already exists. Skipping \"docker run\"...")
             return
         }
+        println("${project.buildDir.absolutePath}/${Docker.HOST_MOUNT_DIR}")
         val pgPrms = Postgres.pgPrms
         project.exec {
             commandLine("docker", "run",
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${pgPrms.password}",
               "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
         }
     }
@@ -115,6 +117,7 @@ open class PgToggle : AbstractTask() {
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${pgPrms.password}",
               "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
         }
     }
@@ -125,10 +128,11 @@ open class PgDropDb : AbstractTask() {
     fun run() {
         val pgPrms = Postgres.pgPrms
         project.exec {
-            commandLine("dropdb", "--if-exists",
-                "-h", pgPrms.host,
-                "-U", pgPrms.user,
-                "-w", pgPrms.db)
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+              "dropdb", "--if-exists",
+              "-h", pgPrms.host,
+              "-U", pgPrms.user,
+              "-w", pgPrms.db)
 
             environment("PGPASSWORD", pgPrms.password)
         }
@@ -140,10 +144,11 @@ open class PgCreateDb : AbstractTask() {
     fun greet() {
         val pgPrms = Postgres.pgPrms
         project.exec {
-            commandLine("createdb",
-                "-h", pgPrms.host,
-                "-U", pgPrms.user,
-                "-w", pgPrms.db)
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+              "createdb",
+              "-h", pgPrms.host,
+              "-U", pgPrms.user,
+              "-w", pgPrms.db)
 
             environment("PGPASSWORD", pgPrms.password)
         }
@@ -155,13 +160,14 @@ open class PgInitSchema : AbstractTask() {
     fun run() {
         val pgPrms = Postgres.pgPrms
         project.exec {
-            commandLine("psql",
-                "-h", pgPrms.host,
-                "-U", pgPrms.user,
-                "-d", pgPrms.db,
-                "-w",
-                "-1",
-                "-f", "src/test/resources/sql/create-schema.sql")
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+              "psql",
+              "-h", pgPrms.host,
+              "-U", pgPrms.user,
+              "-d", pgPrms.db,
+              "-w",
+              "-1",
+              "-f", "${Docker.CONTAINER_MOUNT_DIR}/sql/create-schema.sql")
 
             environment("PGPASSWORD", pgPrms.password)
         }
@@ -173,22 +179,17 @@ open class PgAddData : AbstractTask() {
     fun run() {
         val pgPrms = Postgres.pgPrms
         project.exec {
-            commandLine("psql",
-                "-h", pgPrms.host,
-                "-U", pgPrms.user,
-                "-d", pgPrms.db,
-                "-w",
-                "-1",
-                "-f", "src/test/resources/sql/insert.sql")
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+              "psql",
+              "-h", pgPrms.host,
+              "-U", pgPrms.user,
+              "-d", pgPrms.db,
+              "-w",
+              "-1",
+              "-f", "${Docker.CONTAINER_MOUNT_DIR}/sql/insert.sql")
 
             environment("PGPASSWORD", pgPrms.password)
         }
     }
 }
 
-open class PgRun : AbstractTask() {
-    @TaskAction
-    fun run() {
-      println("Setup finished successfully.")
-    }
-}
