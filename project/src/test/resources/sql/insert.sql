@@ -348,27 +348,31 @@ CALL dbo.newJournal(1,
     ARRAY[1, 2, 3], -- categories
     ARRAY['https://www.google.com'], -- attachments
     TIMESTAMP '2020-04-10 14:00:00', -- DTstart
-    4); -- DTStart value type
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newTodo(1,
-    ARRAY['do the thing'],
+-- WAD 1718v Class
+CALL dbo.newTodo(2,
+    ARRAY['[WAD]: Assignment #1'],
     ARRAY[8],
-    ARRAY['I have to do the thing soon enough'],
+    ARRAY['The first assignment. The goal is to implement an HTTP API...'],
     ARRAY[8],
     ARRAY[1,2],
-    ARRAY['https://www.google.com'],
-    TIMESTAMP '2021-06-19 14:00:00', -- due
-    4); -- due type
+    ARRAY['https://tools.ietf.org/html/rfc7231'],
+    TIMESTAMP '2021-04-19 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newTodo(1,
-    ARRAY['don''t do the thing'],
-    ARRAY[2],
-    ARRAY['I have to do the thing soon enough'],
-    ARRAY[2],
+CALL dbo.newTodo(2,
+    ARRAY['[WAD]: Assignment #2'],
+    ARRAY[8],
+    ARRAY['The second assignment. The goal is to implement a Web Client for the API...'],
+    ARRAY[8],
     ARRAY[1,2],
     NULL,
-    TIMESTAMP '2021-06-19 14:00:00',
-    1);
+    TIMESTAMP '2021-06-12 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
 
 CALL dbo.newEvent(2,
     ARRAY['1st Exam WAD'],
@@ -379,7 +383,8 @@ CALL dbo.newEvent(2,
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
-    'FR'); -- byday
+    'FR', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
 
 CALL dbo.newEvent(2,
     ARRAY['2st Exam WAD'],
@@ -390,26 +395,179 @@ CALL dbo.newEvent(2,
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
-    'WE'); -- byday
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
 
+-- WAD 1718v 1D
 CALL dbo.newEvent(28,
     ARRAY['WAD Monday Lecture'],
     ARRAY[8],
-    ARRAY['Monday Lecture of the WAD curricular unit'],
+    ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[8],
     ARRAY[8],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
-    'MO'); -- byday
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
 
 CALL dbo.newEvent(28,
     ARRAY['WAD Wednesday Lecture'],
     ARRAY[8],
-    ARRAY['Wednesday Lecture of the WAD curricular unit'],
+    ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[8],
     ARRAY[8],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
-    'WE'); -- byday
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- WAD 1718v 2D
+CALL dbo.newEvent(29,
+    ARRAY['WAD Monday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(29,
+    ARRAY['WAD Wednesday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the WAD curricular unit, for the 1718v-2D Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- WAD 1718v 1N
+CALL dbo.newEvent(30,
+    ARRAY['WAD Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-11 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'TU,WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- SL 1718v Class
+CALL dbo.newTodo(1,
+    ARRAY['[SL]: Assignment #1'],
+    ARRAY[8],
+    ARRAY['The first assignment. The goal is to implement a CLI...'],
+    ARRAY[8],
+    ARRAY[1,2],
+    ARRAY['https://tools.ietf.org/html/rfc7231'],
+    TIMESTAMP '2021-04-08 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(1,
+    ARRAY['[SL]: Assignment #2'],
+    ARRAY[8],
+    ARRAY['The second assignment. The goal is to implement a Web Client for the API...'],
+    ARRAY[8],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2021-06-20 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(1,
+    ARRAY['1st Exam SL'],
+    ARRAY[8],
+    ARRAY['Normal season exam for SL-1718v'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-06-10 18:00:00', -- dtstart
+    TIMESTAMP '2020-06-10 19:30:00', -- dtend
+    2, -- dtstart dtend type
+    'FR', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(1,
+    ARRAY['2st Exam SL'],
+    ARRAY[8],
+    ARRAY['Second season exam for SL-1718v'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-06-24 10:00:00', -- dtstart
+    TIMESTAMP '2020-07-24 12:30:00', -- dtend
+    2, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- SL 1718v 1D
+CALL dbo.newEvent(25,
+    ARRAY['SL Monday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(25,
+    ARRAY['SL Wednesday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- SL 1718v 2D
+CALL dbo.newEvent(26,
+    ARRAY['SL Monday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(26,
+    ARRAY['SL Wednesday Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the SL curricular unit, for the 1718v-2D Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+
+-- SL 1718v 1N
+CALL dbo.newEvent(27,
+    ARRAY['SL Lecture'],
+    ARRAY[8],
+    ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
+    ARRAY[8],
+    ARRAY[8],
+    TIMESTAMP '2020-02-11 10:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'TU,WE', -- days of week when this event repeats
+    TIMESTAMP '2020-01-01 16:35:30');
+

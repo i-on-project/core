@@ -33,6 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
+    implementation("org.mnode.ical4j:ical4j:3.0.+")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
@@ -64,7 +65,7 @@ tasks.register<PgAddData>("pgAddData")
  * After issuing a command to create or remove a container,
  * the process exits before the changes take complete effect in the Docker daemon.
  */
-val dockerDelay = 2000L
+val dockerDelay = 4000L
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,

@@ -49,7 +49,8 @@ object Docker {
     fun isContainerRunning(project: Project): Boolean {
         val pipe = ByteArrayOutputStream()
         project.exec {
-            commandLine("docker", "container", "ls",
+            commandLine("docker", "ps",
+              "-a",
               "-q",
               "-f", "name=${Docker.CONTAINER_NAME}")
 

@@ -260,16 +260,15 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	dtstart TIMESTAMP,
     dtend TIMESTAMP,
     dtstart_dtend_type INT,
-    byday VARCHAR(20)
+    byday VARCHAR(20),
+    stamp_time TIMESTAMP default now()
 ) AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
-	time TIMESTAMP;
 BEGIN
-	time := now();
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('E', time, time)
+    ('E', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
@@ -304,16 +303,15 @@ CREATE OR REPLACE PROCEDURE dbo.newTodo(
 	category INT[],
 	attachment VARCHAR(128)[],
 	due TIMESTAMP,
-	due_value_type INT
+	due_value_type INT,
+    stamp_time TIMESTAMP default now()
 ) AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
-	time TIMESTAMP;
 BEGIN
-	time := now();
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('T', time, time)
+    ('T', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
@@ -344,16 +342,15 @@ CREATE OR REPLACE PROCEDURE dbo.newJournal(
 	category INT[],
 	attachment VARCHAR(128)[],
 	dtstart TIMESTAMP,
-	dtstart_value_type INT
+	dtstart_value_type INT,
+	stamp_time TIMESTAMP default now()
 ) AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
-	time TIMESTAMP;
 BEGIN
-	time := now();
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('J', time, time)
+    ('J', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);

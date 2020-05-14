@@ -10,7 +10,7 @@ internal object CalendarTermData {
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
 
-    const val CLASS_CAL_TERM = "term"
+    const val CLASS_CAL_TERM = "calendarterm"
 
     const val CALENDAR_TERMS_QUERY = """
         select $ID, $START_DATE, $END_DATE
@@ -27,6 +27,6 @@ internal object CalendarTermData {
     const val CLASSES_QUERY = """
         select *
         from $SCHEMA.$CLASS
-        where $CLASS_CAL_TERM=:$ID offset :$OFFSET limit :$LIMIT"
+        where $CLASS_CAL_TERM=:$ID offset :$OFFSET limit :$LIMIT
     """
 }
