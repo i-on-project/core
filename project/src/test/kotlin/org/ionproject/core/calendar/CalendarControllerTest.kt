@@ -16,6 +16,7 @@ import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.PropertyList
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.test.web.servlet.get
 import java.net.URI
 
 
@@ -246,12 +247,24 @@ internal class CalendarControllerTest : ControllerTester() {
 
     @Test
     fun getCalendarComponentByClass() {
-        isValidSiren(Uri.forCalendarComponentByClass(courseID, calTerm, componentID))
+        mocker.get(Uri.forCalendarComponentByClass(courseID, calTerm, componentID)) {
+            accept = Media.MEDIA_SIREN
+        }.andExpect {
+            status { isOk }
+            content { contentType("application/vnd.siren+json") }
+            jsonPath("$.links") { exists() }
+        }
     }
 
     @Test
     fun getCalendarComponentByClassSection() {
-        isValidSiren(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5"))
+        mocker.get(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5")) {
+            accept = Media.MEDIA_SIREN
+        }.andExpect {
+            status { isOk }
+            content { contentType("application/vnd.siren+json") }
+            jsonPath("$.links") { exists() }
+        }
     }
 
 
