@@ -2,14 +2,18 @@ package org.ionproject.core.calendar
 
 
 import net.fortuna.ical4j.model.*
+import org.ionproject.core.utils.ParameterList
+import org.ionproject.core.utils.ComponentList
 import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.component.VJournal
 import net.fortuna.ical4j.model.component.VToDo
 import net.fortuna.ical4j.model.parameter.Language
 import net.fortuna.ical4j.model.property.*
+import org.ionproject.core.calendar.icalendar.Journal
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.PropertyList
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.net.URI
@@ -77,9 +81,22 @@ internal class CalendarControllerTest : ControllerTester() {
                 """BEGIN:VCALENDAR
                 PRODID:/v0/courses/1/classes/1718v/1D
                 VERSION:2.0
+                BEGIN:VJOURNAL
+                UID:5
+                DTSTAMP:20200511T162630Z
+                SUMMARY;LANGUAGE=pt-PT:uma sinopse
+                DESCRIPTION;LANGUAGE=en-US:this is a description
+                ATTACH:https://www.example.com
+                DTSTART:20200514T121300Z
+                CREATED:20200511T162630Z
+                CATEGORIES;LANGUAGE=pt-PT:EXAME
+                CATEGORIES;LANGUAGE=en-US:EXAM
+                CATEGORIES;LANGUAGE=en-GB:EXAM
+                END:VJOURNAL
                 END:VCALENDAR"""
 
         val classCalendarCal4j = buildCalendarForClass()
+        val classSectionCalendarCal4j = buildCalendarForClassSection()
 
         /**
          * Builds a cal4j calendar with the data defined by the Read API
@@ -90,8 +107,8 @@ internal class CalendarControllerTest : ControllerTester() {
          */
         fun buildCalendarForClass(): Calendar {
             val calendar = Calendar()   //ical4j calendar (not the one implemented by the group)
-            calendar.getProperties().add(ProdId("/v0/courses/1/classes/1718v"))
-            calendar.getProperties().add(Version.VERSION_2_0)
+            calendar.properties.add(ProdId("/v0/courses/1/classes/1718v"))
+            calendar.properties.add(Version.VERSION_2_0)
 
             //Build Journal Component
             val journalProperties = PropertyList<Property>()
@@ -166,10 +183,44 @@ internal class CalendarControllerTest : ControllerTester() {
             val event = VEvent(eventProperties)
 
             //Add the components to the calendar
-            calendar.getComponents().addAll(listOf(journal, todo1, todo2, event))
+            calendar.components.addAll(listOf(journal, todo1, todo2, event))
 
-            print(event.getProperties())
+            print(event.properties)
             return calendar
+        }
+
+        fun buildCalendarForClassSection(): Calendar {
+            return Calendar(
+                PropertyList(
+                    ProdId("/v0/courses/1/classes/1718v/1D"),
+                    Version.VERSION_2_0
+                ),
+                ComponentList(
+                    VJournal(
+                        PropertyList(
+                            Uid("5"),
+                            DtStamp("20200511T162630Z"),
+                            Summary(ParameterList(Language("pt-PT")), "uma sinopse"),
+                            Description(ParameterList(Language("en-US")), "this is a description"),
+                            Attach(URI("https://www.example.com")),
+                            DtStart("20200514T121300Z"),
+                            Created("20200511T162630Z"),
+                            Categories(
+                                ParameterList(Language("pt-PT")),
+                                "EXAME"
+                            ),
+                            Categories(
+                                ParameterList(Language("en-US")),
+                                "EXAM"
+                            ),
+                            Categories(
+                                ParameterList(Language("en-GB")),
+                                "EXAM"
+                            )
+                        )
+                    )
+                )
+            )
         }
 
         //Adds parameters to a component property
@@ -198,10 +249,10 @@ internal class CalendarControllerTest : ControllerTester() {
         isValidSiren(Uri.forCalendarComponentByClass(courseID, calTerm, componentID))
     }
 
-//    @Test NO DATA FOR THIS TEST (yet)
-//    fun getCalendarComponentByClassSection() {
-//        isValidSiren(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, componentID))
-//    }
+    @Test
+    fun getCalendarComponentByClassSection() {
+        isValidSiren(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5"))
+    }
 
 
     /**
@@ -258,44 +309,38 @@ internal class CalendarControllerTest : ControllerTester() {
 
     @Test
     fun checkIfValidCalClassSection() {
-        val calendar = Calendar()   //ical4j calendar (not the one implemented by the group)
-        calendar.getProperties().add(ProdId("/v0/courses/1/classes/1718v/1D"))
-        calendar.getProperties().add(Version.VERSION_2_0)
-
         val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
         { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
                 .response.contentAsString
 
-        Assertions.assertEquals(calendar.toString(), result)
+        Assertions.assertEquals(classSectionCalendarCal4j.toString(), result)
     }
 
     @Test
     fun checkIfValidComponentClass() {
         val calendar = Calendar()
-        calendar.getProperties().addAll(
+        calendar.properties.addAll(
                 listOf(
                         ProdId("/v0/courses/1/classes/1718v"),
                         Version.VERSION_2_0
                 )
         )
 
-        val properties = PropertyList<Property>()
-        properties.addAll(
-                listOf(
-                        Uid("1"),
-                        DtStamp("20200511T162630Z"),
-                        Summary(buildParameterList(Language("pt-PT")), "uma sinopse"),
-                        Summary(buildParameterList(Language("en-US")), "some summary"),
-                        Description(buildParameterList(Language("en-US")), "this is a description"),
-                        Attach(URI("https://www.google.com")),
-                        DtStart("20200410T140000Z"),
-                        Created("20200511T162630Z"),
-                        Categories(buildParameterList(Language("pt-PT")), "EXAME"),
-                        Categories(buildParameterList(Language("en-US")), "EXAM"),
-                        Categories(buildParameterList(Language("en-GB")), "EXAM")
-                )
+        val properties = PropertyList(
+            Uid("1"),
+            DtStamp("20200511T162630Z"),
+            Summary(buildParameterList(Language("pt-PT")), "uma sinopse"),
+            Summary(buildParameterList(Language("en-US")), "some summary"),
+            Description(buildParameterList(Language("en-US")), "this is a description"),
+            Attach(URI("https://www.google.com")),
+            DtStart("20200410T140000Z"),
+            Created("20200511T162630Z"),
+            Categories(buildParameterList(Language("pt-PT")), "EXAME"),
+            Categories(buildParameterList(Language("en-US")), "EXAM"),
+            Categories(buildParameterList(Language("en-GB")), "EXAM")
         )
-        calendar.getComponents().add(VJournal(properties))
+
+        calendar.components.add(VJournal(properties))
 
         val result = doGet(Uri.forCalendarComponentByClass(courseID, calTerm, "1"))
         { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
