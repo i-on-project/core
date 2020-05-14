@@ -1,17 +1,18 @@
 package org.ionproject.core.calendar
 
 import org.ionproject.core.calendar.icalendar.Calendar
+import org.ionproject.core.calendar.representations.toSiren
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.hexStringToInt
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.util.MultiValueMap
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-
+import org.springframework.web.bind.annotation.*
+import java.net.URI
+import java.util.*
 
 
 @RestController
@@ -54,14 +55,23 @@ class CalendarController(private val repository: CalendarRepo) {
     fun fromClassCalendar(
         @PathVariable cid: Int,
         @PathVariable calterm: String,
-        @PathVariable cmpid: String
-    ): ResponseEntity<Calendar> {
+        @PathVariable cmpid: String,
+        @RequestHeader("accept", required = false) acceptHeader: Array<String>?
+    ): ResponseEntity<Any> {
         val calendar =
             repository.getClassCalendarComponent(cid, calterm, cmpid.hexStringToInt())
-        return if (calendar != null)
-            ResponseEntity.ok(calendar)
-        else
-            ResponseEntity.notFound().build()
+        return if (calendar != null) {
+
+            val component: Any =
+                formatComponent(
+                    calendar,
+                    acceptHeader,
+                    Uri.forKlassByCalTerm(cid, calterm)
+                ) ?: return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build()
+
+            ResponseEntity.ok(component)
+        } else
+            throw ResourceNotFoundException("This component doesn't exist.")
     }
 
     @GetMapping(Uri.componentByClassSectionCalendar)
@@ -69,8 +79,9 @@ class CalendarController(private val repository: CalendarRepo) {
         @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int,
-        @PathVariable cmpid: String
-    ): ResponseEntity<Calendar> {
+        @PathVariable cmpid: String,
+        @RequestHeader("accept", required = false) acceptHeader: Array<String>?
+    ): ResponseEntity<Any> {
         val calendar = repository.getClassSectionCalendarComponent(
             cid,
             calterm,
@@ -78,8 +89,38 @@ class CalendarController(private val repository: CalendarRepo) {
             cmpid.hexStringToInt()
         )
         return if (calendar != null) {
-            ResponseEntity.ok(calendar)
+
+            val component: Any =
+                formatComponent(
+                    calendar,
+                    acceptHeader,
+                    Uri.forClassSectionById(cid, calterm, sid)
+                ) ?: return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build()
+
+            ResponseEntity.ok(component)
         } else
-            ResponseEntity.notFound().build()
+            throw ResourceNotFoundException("This component doesn't exist.")
     }
+
+    /**
+     * This can return [Calendar] or [CalendarComponent] depending on Accept-header.
+     * If the Accept header has something that isn't application/vnd.siren+json or text/calendar
+     * the response will be null
+     */
+    private fun formatComponent(calendar: Calendar, acceptHeader: Array<String>?, path: URI) : Any? =
+        if (acceptHeader.isNullOrEmpty())
+                calendar
+            else {
+                acceptHeader.forEach {
+                    when(it) {
+                        Media.SIREN_TYPE -> {
+                            return calendar.components[0].toSiren(path)
+                        }
+                        Media.CALENDAR -> {
+                            return calendar
+                        }
+                    }
+                }
+                null
+            }
 }
