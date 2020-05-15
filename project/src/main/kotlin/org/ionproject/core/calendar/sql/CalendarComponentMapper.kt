@@ -20,6 +20,7 @@ import org.ionproject.core.calendar.icalendar.types.*
 import org.ionproject.core.calendar.language.LanguageRepo
 import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.ionproject.core.common.customExceptions.UnknownCalendarComponentTypeException
+import org.ionproject.core.split
 import org.ionproject.core.startsAndEndsWith
 import org.ionproject.core.toHexString
 import org.jdbi.v3.core.mapper.RowMapper
@@ -146,12 +147,12 @@ class CalendarComponentMapper(
                 value = value.removeSurrounding("(", ")")
             }
 
-            val values = pgObject.value.split(',')
+            val values = pgObject.value.split(Regex("[^\\\\],"), count = 1)
 
             val list = List(values.size) { idx ->
                 val str = values[idx]
                 if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"")
+                    str.removeSurrounding("\"").replace("""\\""", """\""")
                 } else {
                     str.toInt()
                 }
@@ -211,3 +212,4 @@ class CalendarComponentMapper(
         return attachments.toTypedArray()
     }
 }
+

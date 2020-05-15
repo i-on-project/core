@@ -3,7 +3,7 @@ package org.ionproject.core.calendar
 import org.ionproject.core.calendar.icalendar.types.Text
 
 fun String.iCalendarFold(): String {
-    val iCalendarMaxContentLineLength = 75
+    val iCalendarMaxContentLineLength = 73
     val chunks = chunkedSequence(iCalendarMaxContentLineLength)
     return chunks.joinToString("\r\n ")
 }
