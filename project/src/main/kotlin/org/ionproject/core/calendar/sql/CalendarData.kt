@@ -23,6 +23,7 @@ object CalendarData {
   const val DTSTART = "dtstart"
   const val DTEND = "dtend"
   const val BYDAY = "byday"
+  const val UNTIL = "until"
   const val DUE = "due"
 
   // Tables
@@ -52,7 +53,8 @@ object CalendarData {
         $DTSTART,
         $DTEND,
         $DUE,
-        $BYDAY
+        $BYDAY,
+        $UNTIL
     """
 
     // This group by is necessary when queries use $SELECT, otherwise the use of array_agg will launch an SQL exception
@@ -64,7 +66,8 @@ object CalendarData {
         $DTSTART,
         $DTEND,
         $DUE,
-        $BYDAY"""
+        $BYDAY,
+        $UNTIL"""
 
     const val CALENDAR_COMPONENT_FROM_CLASS_QUERY =
       """with calendar_id as (
@@ -133,35 +136,37 @@ object CalendarData {
                     where $CLASS.$COURSE_ID = :$COURSE_ID and $CLASS.$CAL_TERM = :$CAL_TERM
                 )""")
             .select(
-                UID,
-                TYPE,
-                "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
-                "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
-                "array_agg(distinct $CATEGORIES) as $CATEGORIES",
-                "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
-                DTSTAMP,
-                CREATED,
-                DTSTART,
-                DTEND,
-                DUE,
-                BYDAY
+              UID,
+              TYPE,
+              "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
+              "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
+              "array_agg(distinct $CATEGORIES) as $CATEGORIES",
+              "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
+              DTSTAMP,
+              CREATED,
+              DTSTART,
+              DTEND,
+              DUE,
+              BYDAY,
+              UNTIL
             ).from(
-                CALENDAR_COMPONENT
-            ).where(
-                "$CALENDARS = (select * from calendar_id)"
-            ).where(
-                QUERY_FILTERS,
-                filters
-            ).groupBy(
-                UID,
-                TYPE,
-                DTSTAMP,
-                CREATED,
-                DTSTART,
-                DTEND,
-                DUE,
-                BYDAY
-            ).build()
+            CALENDAR_COMPONENT
+          ).where(
+            "$CALENDARS = (select * from calendar_id)"
+          ).where(
+            QUERY_FILTERS,
+            filters
+          ).groupBy(
+            UID,
+            TYPE,
+            DTSTAMP,
+            CREATED,
+            DTSTART,
+            DTEND,
+            DUE,
+            BYDAY,
+            UNTIL
+          ).build()
 
         val query = handle.createQuery(queryString)
           .bind(COURSE_ID, courseId)
@@ -194,18 +199,19 @@ object CalendarData {
                         $CLASS_SECTION.$ID = :$ID
                 )""")
             .select(
-                UID,
-                TYPE,
-                "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
-                "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
-                "array_agg(distinct $CATEGORIES) as $CATEGORIES",
-                "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
-                DTSTAMP,
-                CREATED,
-                DTSTART,
-                DTEND,
-                DUE,
-                BYDAY
+              UID,
+              TYPE,
+              "array_agg(distinct ($SUMMARIES_LANGUAGE, $SUMMARIES)) as $SUMMARIES",
+              "array_agg(distinct ($DESCRIPTIONS_LANGUAGE, $DESCRIPTIONS)) as $DESCRIPTIONS",
+              "array_agg(distinct $CATEGORIES) as $CATEGORIES",
+              "array_agg(distinct $ATTACHMENTS) as $ATTACHMENTS",
+              DTSTAMP,
+              CREATED,
+              DTSTART,
+              DTEND,
+              DUE,
+              BYDAY,
+              UNTIL
             ).from(
                 CALENDAR_COMPONENT
             ).where(
@@ -221,7 +227,8 @@ object CalendarData {
             DTSTART,
             DTEND,
             DUE,
-            BYDAY
+            BYDAY,
+            UNTIL
           ).build()
 
       val query = handle.createQuery(queryString)

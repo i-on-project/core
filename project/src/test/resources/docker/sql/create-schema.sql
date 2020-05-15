@@ -67,6 +67,7 @@ CREATE TABLE dbo.RecurrenceRule (
 	comp_id     	INT REFERENCES dbo.CalendarComponent(id),
 	freq            VARCHAR(20),
 	byday           VARCHAR(20),
+	until           TIMESTAMP,
 	PRIMARY KEY (comp_id, byday)
 );
 
@@ -170,6 +171,7 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
 		RR.byday,
+		RR.until,
 		D.value AS due,
         D.type AS due_value_data_type
 	FROM 
@@ -215,7 +217,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
         DS.type AS dtstart_value_data_type,
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
-		RR.byday
+		RR.byday,
+		RR.until
     FROM 
 		dbo.v_ComponentsCommon AS Comp
     JOIN 
@@ -261,14 +264,15 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
     dtend TIMESTAMP,
     dtstart_dtend_type INT,
     byday VARCHAR(20),
-    stamp_time TIMESTAMP default now()
+    until TIMESTAMP,
+    stamp_time TIMESTAMP DEFAULT now()
 ) AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
 BEGIN
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('E', stamp_time, stamp_time)
+    ('E', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
@@ -282,12 +286,15 @@ BEGIN
 	INSERT INTO dbo.Categories (comp_id, value)
 	SELECT component_id, UNNEST(category);
 	
-	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtstart);
+	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES
+    (component_id, dtstart_dtend_type, dtstart);
 	
-    INSERT INTO dbo.Dtend (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtend);
+    INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
+    (component_id, dtstart_dtend_type, dtend);
 	
 	IF byday IS NOT NULL THEN
-		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday) VALUES (component_id, 'WEEKLY', byday);
+		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday, until) VALUES
+        (component_id, 'WEEKLY', byday, until);
 	END IF;
 	
 END
@@ -311,7 +318,7 @@ DECLARE
 	component_id INT;
 BEGIN
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('T', stamp_time, stamp_time)
+    ('T', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
@@ -350,7 +357,7 @@ DECLARE
 	component_id INT;
 BEGIN
     INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
-        ('J', stamp_time, stamp_time)
+    ('J', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
@@ -394,27 +401,29 @@ CREATE VIEW courseWithTerm AS
 
 ------- SPs --------
 -- When creating a Class, give it a new Calendar 
-create or replace procedure dbo.sp_classCalendarCreate (calterm varchar(200), courseid integer)
+CREATE OR REPLACE PROCEDURE dbo.sp_classCalendarCreate (calterm VARCHAR(200), courseid INT)
 AS $$
 #print_strict_params on
 DECLARE
-calid int;
+calid INT;
 BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.Class(courseid, calendarterm, calendar) values
-		(courseid, calterm, calid);
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.Class(courseid, calendarterm, calendar) VALUES
+	(courseid, calterm, calid);
 END
 $$ LANGUAGE plpgsql;
 
 -- When creating a ClassSection, give it a new Calendar 
-create or replace procedure dbo.sp_classSectionCalendarCreate (classId integer, sid varchar(200))
+CREATE OR REPLACE PROCEDURE dbo.sp_classSectionCalendarCreate (classId INT, sid VARCHAR(200))
 AS $$
 #print_strict_params on
 DECLARE
-calid int;
+calid INT;
 BEGIN
-	insert into dbo.Calendar values (default) returning id into calid;
-	insert into dbo.ClassSection(id, classId, calendar) values
-		(sid, classId, calid);
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.ClassSection(id, classId, calendar) VALUES
+	(sid, classId, calid);
 END
 $$ LANGUAGE plpgsql;

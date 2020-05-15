@@ -20,6 +20,7 @@ import org.ionproject.core.calendar.icalendar.types.*
 import org.ionproject.core.calendar.language.LanguageRepo
 import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.ionproject.core.common.customExceptions.UnknownCalendarComponentTypeException
+import org.ionproject.core.split
 import org.ionproject.core.startsAndEndsWith
 import org.ionproject.core.toHexString
 import org.jdbi.v3.core.mapper.RowMapper
@@ -129,10 +130,11 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getRecurrenceRule(columnName: String): RecurrenceRule? {
         val weekDays = getString(columnName)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
+        val until = getNullableDatetime(CalendarData.UNTIL)
 
         return if (weekDays == null) null
         else RecurrenceRule(
-            Recur(byDay = weekDays)
+          Recur(byDay = weekDays, until = until)
         )
     }
 
@@ -145,12 +147,12 @@ class CalendarComponentMapper(
                 value = value.removeSurrounding("(", ")")
             }
 
-            val values = pgObject.value.split(',')
+            val values = pgObject.value.split(Regex("[^\\\\],"), count = 1)
 
-            val list = List(values.size) {
-                val str = values[it]
+            val list = List(values.size) { idx ->
+                val str = values[idx]
                 if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"")
+                    str.removeSurrounding("\"").replace("""\\""", """\""")
                 } else {
                     str.toInt()
                 }
@@ -163,16 +165,34 @@ class CalendarComponentMapper(
     private fun ResultSet.getDatetime(columnName: String): DateTime {
         val offsetTime = getObject(columnName, OffsetDateTime::class.java)
         return DateTime(
-            Date(
-                offsetTime.year,
-                offsetTime.monthValue,
-                offsetTime.dayOfMonth
-            ),
-            Time(
-                offsetTime.hour,
-                offsetTime.minute,
-                offsetTime.second // TODO("Add offset")
-            )
+          Date(
+            offsetTime.year,
+            offsetTime.monthValue,
+            offsetTime.dayOfMonth
+          ),
+          Time(
+            offsetTime.hour,
+            offsetTime.minute,
+            offsetTime.second // TODO("Add offset")
+          )
+        )
+    }
+
+    private fun ResultSet.getNullableDatetime(columnName: String): DateTime? {
+        val offsetTime = getObject(columnName, OffsetDateTime::class.java)
+          ?: return null
+
+        return DateTime(
+          Date(
+            offsetTime.year,
+            offsetTime.monthValue,
+            offsetTime.dayOfMonth
+          ),
+          Time(
+            offsetTime.hour,
+            offsetTime.minute,
+            offsetTime.second // TODO("Add offset")
+          )
         )
     }
 
@@ -192,3 +212,4 @@ class CalendarComponentMapper(
         return attachments.toTypedArray()
     }
 }
+

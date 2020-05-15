@@ -48,3 +48,34 @@ fun <K, V, NK, NV> Map<K, V>.mapEntries(oper: (Map.Entry<K, V>) -> Pair<NK, NV>)
         it
     }
 }
+
+fun String.removeWhitespace() =
+  replace("\\s".toRegex(), "")
+
+/**
+ * [regex] - regular expression used for comparison
+ * [count] - how many characters to remove counting from the end
+ */
+fun String.split(regex: Regex, count: Int = 1, limit: Int = 0): ArrayList<String> {
+    val array = arrayListOf<String>()
+
+    var actualLimit = if (limit == 0) length else limit
+    var lastIndex = 0
+    var result = regex.find(this, lastIndex)
+
+    while (result != null && actualLimit > 0) {
+        --actualLimit
+
+        val nextLastIndex = result.range.last + 1
+
+        array.add(this.substring(lastIndex, nextLastIndex - count))
+
+        lastIndex = nextLastIndex
+
+        result = regex.find(this, lastIndex)
+    }
+
+    if (actualLimit > 0) array.add(substring(lastIndex))
+
+    return array
+}
