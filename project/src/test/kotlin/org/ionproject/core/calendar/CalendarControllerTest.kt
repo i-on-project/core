@@ -16,84 +16,48 @@ import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.PropertyList
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.test.web.servlet.get
 import java.net.URI
 
 
 internal class CalendarControllerTest : ControllerTester() {
     companion object {
-        val courseID = 1
+        val courseID = 2
         val calTerm = "1718v"
         val classSection = "1D"
         val componentID = "1"
 
         val calendarByClass = """
-                BEGIN:VCALENDAR
-                PRODID:/v0/courses/1/classes/1718v
-                VERSION:2.0
-                BEGIN:VJOURNAL
-                UID:1
-                DTSTAMP:20200511T162630Z
-                SUMMARY;LANGUAGE=pt-PT:uma sinopse
-                SUMMARY;LANGUAGE=en-US:some summary
-                DESCRIPTION;LANGUAGE=en-US:this is a description
-                ATTACH:https://www.google.com
-                DTSTART:20200410T140000Z
-                CREATED:20200511T162630Z
-                CATEGORIES;LANGUAGE=pt-PT:EXAME
-                CATEGORIES;LANGUAGE=en-US:EXAM
-                CATEGORIES;LANGUAGE=en-GB:EXAM
-                END:VJOURNAL
-                BEGIN:VTODO
-                UID:2
-                DTSTAMP:20200511T162630Z
-                SUMMARY;LANGUAGE=en-US:do the thing
-                DESCRIPTION;LANGUAGE=en-US:I have to do the thing soon enough
-                ATTACH:https://www.google.com
-                CREATED:20200511T162630Z
-                DUE:20210619T140000Z
-                CATEGORIES;LANGUAGE=pt-PT:EXAME
-                CATEGORIES;LANGUAGE=en-US:EXAM
-                END:VTODO
-                BEGIN:VTODO
-                UID:3
-                DTSTAMP:20200511T162630Z
-                SUMMARY;LANGUAGE=en-US:don't do the thing
-                DESCRIPTION;LANGUAGE=en-US:I have to do the thing soon enough
-                CREATED:20200511T162630Z
-                DUE:20210619T140000Z
-                CATEGORIES;LANGUAGE=pt-PT:EXAME
-                CATEGORIES;LANGUAGE=en-US:EXAM
-                END:VTODO
-                BEGIN:VEVENT
-                UID:4
-                DTSTAMP:20200511T162630Z
-                SUMMARY;LANGUAGE=en-US:1st exam WAD
-                DESCRIPTION;LANGUAGE=en-US:Normal season exam for WAD-1920v
-                CREATED:20200511T162630Z
-                CATEGORIES;LANGUAGE=en-GB:EXAM
-                DTSTART:20200619T140000Z
-                DTEND:20200619T150000Z
-                END:VEVENT
-                END:VCALENDAR
-                """
+"""
 
-        val calendarByClassSection =
-                """BEGIN:VCALENDAR
-                PRODID:/v0/courses/1/classes/1718v/1D
-                VERSION:2.0
-                BEGIN:VJOURNAL
-                UID:5
-                DTSTAMP:20200511T162630Z
-                SUMMARY;LANGUAGE=pt-PT:uma sinopse
-                DESCRIPTION;LANGUAGE=en-US:this is a description
-                ATTACH:https://www.example.com
-                DTSTART:20200514T121300Z
-                CREATED:20200511T162630Z
-                CATEGORIES;LANGUAGE=pt-PT:EXAME
-                CATEGORIES;LANGUAGE=en-US:EXAM
-                CATEGORIES;LANGUAGE=en-GB:EXAM
-                END:VJOURNAL
-                END:VCALENDAR"""
+        val calendarByClassSection = """BEGIN:VCALENDAR
+PRODID:/v0/courses/2/classes/1718v/1D
+VERSION:2.0
+BEGIN:VEVENT
+UID:5
+DTSTAMP:20200101T163530Z
+SUMMARY;LANGUAGE=en-US:WAD Monday Lecture
+DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 1718
+ v-1D Class section
+CREATED:20200101T163530Z
+CATEGORIES;LANGUAGE=en-GB:Exam
+DTSTART:20200210T100000Z
+DTEND:20200210T123000Z
+RRULE:FREQ=WEEKLY;BYDAY=MO
+END:VEVENT
+BEGIN:VEVENT
+UID:6
+DTSTAMP:20200101T163530Z
+SUMMARY;LANGUAGE=en-US:WAD Wednesday Lecture
+DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 1718
+ v-1D Class section
+CREATED:20200101T163530Z
+CATEGORIES;LANGUAGE=en-GB:Exam
+DTSTART:20200212T100000Z
+DTEND:20200212T123000Z
+RRULE:FREQ=WEEKLY;BYDAY=WE
+END:VEVENT
+END:VCALENDAR"""
 
         val classCalendarCal4j = buildCalendarForClass()
         val classSectionCalendarCal4j = buildCalendarForClassSection()
@@ -105,7 +69,7 @@ internal class CalendarControllerTest : ControllerTester() {
          *
          * https://github.com/ical4j/ical4j
          */
-        fun buildCalendarForClass(): Calendar {
+        private fun buildCalendarForClass(): Calendar {
             val calendar = Calendar()   //ical4j calendar (not the one implemented by the group)
             calendar.properties.add(ProdId("/v0/courses/1/classes/1718v"))
             calendar.properties.add(Version.VERSION_2_0)
@@ -246,12 +210,24 @@ internal class CalendarControllerTest : ControllerTester() {
 
     @Test
     fun getCalendarComponentByClass() {
-        isValidSiren(Uri.forCalendarComponentByClass(courseID, calTerm, componentID))
+        mocker.get(Uri.forCalendarComponentByClass(courseID, calTerm, componentID)) {
+            accept = Media.MEDIA_SIREN
+        }.andExpect {
+            status { isOk }
+            content { contentType("application/vnd.siren+json") }
+            jsonPath("$.links") { exists() }
+        }
     }
 
     @Test
     fun getCalendarComponentByClassSection() {
-        isValidSiren(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5"))
+        mocker.get(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5")) {
+            accept = Media.MEDIA_SIREN
+        }.andExpect {
+            status { isOk }
+            content { contentType("application/vnd.siren+json") }
+            jsonPath("$.links") { exists() }
+        }
     }
 
 

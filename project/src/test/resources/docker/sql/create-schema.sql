@@ -67,6 +67,7 @@ CREATE TABLE dbo.RecurrenceRule (
 	comp_id     	INT REFERENCES dbo.CalendarComponent(id),
 	freq            VARCHAR(20),
 	byday           VARCHAR(20),
+	until           TIMESTAMP,
 	PRIMARY KEY (comp_id, byday)
 );
 
@@ -170,6 +171,7 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
 		RR.byday,
+		RR.until,
 		D.value AS due,
         D.type AS due_value_data_type
 	FROM 
@@ -215,7 +217,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
         DS.type AS dtstart_value_data_type,
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
-		RR.byday
+		RR.byday,
+		RR.until
     FROM 
 		dbo.v_ComponentsCommon AS Comp
     JOIN 
@@ -261,7 +264,8 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
     dtend TIMESTAMP,
     dtstart_dtend_type INT,
     byday VARCHAR(20),
-    stamp_time TIMESTAMP default now()
+    until TIMESTAMP,
+    stamp_time TIMESTAMP DEFAULT now()
 ) AS $$
 #print_strict_params ON
 DECLARE
@@ -282,12 +286,15 @@ BEGIN
 	INSERT INTO dbo.Categories (comp_id, value)
 	SELECT component_id, UNNEST(category);
 	
-	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtstart);
+	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES
+    (component_id, dtstart_dtend_type, dtstart);
 	
-    INSERT INTO dbo.Dtend (comp_id, type, value) VALUES (component_id, dtstart_dtend_type, dtend);
+    INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
+    (component_id, dtstart_dtend_type, dtend);
 	
 	IF byday IS NOT NULL THEN
-		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday) VALUES (component_id, 'WEEKLY', byday);
+		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday, until) VALUES
+        (component_id, 'WEEKLY', byday, until);
 	END IF;
 	
 END

@@ -56,6 +56,7 @@ tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't 
 tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
 tasks.register<PgDropDb>("pgDropDb")
 tasks.register<PgCreateDb>("pgCreateDb")
+tasks.register<PgCreateUser>("pgCreateUser")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
 
@@ -65,7 +66,7 @@ tasks.register<PgAddData>("pgAddData")
  * After issuing a command to create or remove a container,
  * the process exits before the changes take complete effect in the Docker daemon.
  */
-val dockerDelay = 4000L
+val dockerDelay = 1500L
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,
@@ -74,11 +75,13 @@ val dockerDelay = 4000L
 tasks.register("pgSetupDb") {
     val startTask = "pgStart"
     val createDbTask = "pgCreateDb"
+    val createUserTask = "pgCreateUser"
     val initSchemaTask = "pgInitSchema"
     val addDataTask = "pgAddData"
 
-    dependsOn(startTask, createDbTask, initSchemaTask, addDataTask)
-    tasks[createDbTask].mustRunAfter(startTask).doFirst { sleep(dockerDelay) }
+    dependsOn(startTask, createDbTask, createUserTask, initSchemaTask, addDataTask)
+    tasks[createUserTask].mustRunAfter(startTask).doFirst { sleep(dockerDelay) }
+    tasks[createDbTask].mustRunAfter(createUserTask)
     tasks[initSchemaTask].mustRunAfter(createDbTask)
     tasks[addDataTask].mustRunAfter(initSchemaTask)
 }

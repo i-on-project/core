@@ -129,10 +129,11 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getRecurrenceRule(columnName: String): RecurrenceRule? {
         val weekDays = getString(columnName)?.split(",")?.map { WeekDay(WeekDay.Weekday.valueOf(it), null) }
+        val until = getNullableDatetime(CalendarData.UNTIL)
 
         return if (weekDays == null) null
         else RecurrenceRule(
-            Recur(byDay = weekDays)
+          Recur(byDay = weekDays, until = until)
         )
     }
 
@@ -163,16 +164,34 @@ class CalendarComponentMapper(
     private fun ResultSet.getDatetime(columnName: String): DateTime {
         val offsetTime = getObject(columnName, OffsetDateTime::class.java)
         return DateTime(
-            Date(
-                offsetTime.year,
-                offsetTime.monthValue,
-                offsetTime.dayOfMonth
-            ),
-            Time(
-                offsetTime.hour,
-                offsetTime.minute,
-                offsetTime.second // TODO("Add offset")
-            )
+          Date(
+            offsetTime.year,
+            offsetTime.monthValue,
+            offsetTime.dayOfMonth
+          ),
+          Time(
+            offsetTime.hour,
+            offsetTime.minute,
+            offsetTime.second // TODO("Add offset")
+          )
+        )
+    }
+
+    private fun ResultSet.getNullableDatetime(columnName: String): DateTime? {
+        val offsetTime = getObject(columnName, OffsetDateTime::class.java)
+          ?: return null
+
+        return DateTime(
+          Date(
+            offsetTime.year,
+            offsetTime.monthValue,
+            offsetTime.dayOfMonth
+          ),
+          Time(
+            offsetTime.hour,
+            offsetTime.minute,
+            offsetTime.second // TODO("Add offset")
+          )
         )
     }
 
