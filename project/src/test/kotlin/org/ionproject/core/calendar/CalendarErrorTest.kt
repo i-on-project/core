@@ -9,18 +9,37 @@ import org.junit.jupiter.api.Test
 internal class CalendarErrorTest : ControllerTester() {
 
     companion object {
-        val calendarByCalTerm = Uri.forCalendarByClass(1, "1718v")
-        val calendarByClassSection = Uri.forCalendarByClassSection(1, "1718v", "1D")
-        val calendarComponentByCalTerm = Uri.forCalendarComponentByClass(1, "1718v", "1")
-        val calendarComponentByClassSection = Uri.forCalendarComponentByClassSection(1, "1718v", "1D", "1")
-        val validLinks = listOf(calendarByCalTerm, calendarByClassSection, calendarComponentByCalTerm)
+      val cid = 2
+      val calterm = "1718v"
+      val sid = "1D"
+      val calendarByCalTerm =
+        Uri.forCalendarByClass(cid, calterm)
+      val calendarByClassSection =
+        Uri.forCalendarByClassSection(cid, calterm, sid)
+      val calendarComponentByCalTerm =
+        Uri.forCalendarComponentByClass(cid, calterm, "1")
+      val calendarComponentByClassSection =
+        Uri.forCalendarComponentByClassSection(cid, calterm, sid, "1")
 
+      val validLinks = listOf(
+        calendarByCalTerm,
+        calendarByClassSection,
+        calendarComponentByCalTerm)
 
-        val notFoundCalendarByCalTerm = Uri.forCalendarByClass(1, "5050505050")
-        val notFoundCalendarByClassSection = Uri.forCalendarByClassSection(-1, "1718v", "1D")
-        val notFoundCalendarComponentByCalTerm = Uri.forCalendarComponentByClass(1, "1718v", "-1")
-        val notFoundCalendarComponentByClassSection = Uri.forCalendarComponentByClassSection(1, "1718v", "impossibleClassName", "1")
-        val invalidLinks = listOf(notFoundCalendarByCalTerm, notFoundCalendarByClassSection, notFoundCalendarComponentByCalTerm, notFoundCalendarComponentByClassSection)
+      val notFoundCalendarByCalTerm =
+        Uri.forCalendarByClass(cid, "5050505050")
+      val notFoundCalendarByClassSection =
+        Uri.forCalendarByClassSection(-1, calterm, sid)
+      val notFoundCalendarComponentByCalTerm =
+        Uri.forCalendarComponentByClass(cid, calterm, "-1")
+      val notFoundCalendarComponentByClassSection =
+        Uri.forCalendarComponentByClassSection(cid, calterm, "impossibleClassName", "1")
+
+      val invalidLinks = listOf(
+        notFoundCalendarByCalTerm,
+        notFoundCalendarByClassSection,
+        notFoundCalendarComponentByCalTerm,
+        notFoundCalendarComponentByClassSection)
     }
 
     /**

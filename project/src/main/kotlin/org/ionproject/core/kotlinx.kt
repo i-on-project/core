@@ -48,3 +48,6 @@ fun <K, V, NK, NV> Map<K, V>.mapEntries(oper: (Map.Entry<K, V>) -> Pair<NK, NV>)
         it
     }
 }
+
+fun String.removeWhitespace() =
+  replace("\\s".toRegex(), "")
