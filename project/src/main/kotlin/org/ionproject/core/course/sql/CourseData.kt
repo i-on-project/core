@@ -2,7 +2,7 @@ package org.ionproject.core.course.sql
 
 internal object CourseData {
     const val SCHEMA = "dbo"
-    const val COURSE = "CourseWithTerm"
+    const val COURSE = "$SCHEMA.CourseWithTerm"
     const val ID = "id"
     const val ACR = "acronym"
     const val NAME = "name"
