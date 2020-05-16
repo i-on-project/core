@@ -389,7 +389,7 @@ END;
 $$;
 
 ------- VIEWS --------
-CREATE VIEW courseWithTerm AS 
+CREATE VIEW dbo.courseWithTerm AS
 	SELECT co.*, cl.calendarterm FROM 
 		(SELECT coI.id,coI.acronym,coI.name FROM dbo.Course AS coI 
 			INNER JOIN dbo.Class AS clI ON coI.id=clI.courseId GROUP BY coI.id) AS co
