@@ -1,7 +1,9 @@
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.process.internal.ExecException
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.net.URI
 
 object Postgres {
@@ -10,7 +12,7 @@ object Postgres {
 
     data class PgDb(
       val host: String,
-      val port: String,
+      val port: Int,
       val db: String,
       val user: String,
       val password: String)
@@ -32,7 +34,7 @@ object Postgres {
           .map { it[0] to it[1] }
           .toMap()
 
-        val prms = PgDb(pgUri.host, pgUri.port.toString(), pgUri.path.substring(1),
+        val prms = PgDb(pgUri.host, pgUri.port.toInt(), pgUri.path.substring(1),
           pgMap["user"] ?: error("missing user on "),
           pgMap["password"] ?: error("missing password"))
 
@@ -46,7 +48,6 @@ object Docker {
     const val IMAGE_NAME = "postgres"
     const val CONTAINER_NAME = "pg-container"
     const val CONTAINER_PORT = 5432
-    const val HOST_PORT = 5432
     const val HOST_MOUNT_DIR = "src/test/resources/docker"
     const val CONTAINER_MOUNT_DIR = "/mnt"
 
@@ -63,6 +64,25 @@ object Docker {
 
         // the pipe will be empty if the container does not exist
         return pipe.size() > 0
+    }
+
+    fun tryConnectDb(project: Project): Boolean = try {
+        project.exec {
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+              "psql",
+              "-h", Postgres.pgParams.host,
+              "-U", Postgres.SUPER_USER,
+              "-w",
+              "-1",
+              "-c", "select")
+
+            // sink
+            errorOutput = DevNull()
+            standardOutput = DevNull()
+        }
+        true
+    } catch (e: ExecException) {
+        false
     }
 }
 
@@ -82,9 +102,17 @@ open class PgStart : AbstractTask() {
             commandLine("docker", "run",
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${Postgres.pgParams.password}",
-              "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-p", "${Postgres.pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
               "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
+
+            standardOutput = DevNull()
+        }
+
+        val tick = 250L
+        while (!Docker.tryConnectDb(project)) {
+            println("Polling for DBMS availability...")
+            Thread.sleep(tick)
         }
     }
 }
@@ -96,6 +124,7 @@ open class PgStop : AbstractTask() {
             println("Removing container \"${Docker.CONTAINER_NAME}\"")
             project.exec {
                 commandLine("docker", "rm", "--force", Docker.CONTAINER_NAME)
+                standardOutput = DevNull()
             }
             return
         }
@@ -114,6 +143,7 @@ open class PgToggle : AbstractTask() {
             println("Detected running container \"${Docker.CONTAINER_NAME}\". Removing...")
             project.exec {
                 commandLine("docker", "rm", "--force", Docker.CONTAINER_NAME)
+                standardOutput = DevNull()
             }
             return
         }
@@ -123,10 +153,12 @@ open class PgToggle : AbstractTask() {
             commandLine("docker", "run",
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${pgParams.password}",
-              "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-p", "${pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
               "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}" +
               ":${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
+
+            standardOutput = DevNull()
         }
     }
 }
@@ -232,3 +264,8 @@ open class PgAddData : AbstractTask() {
     }
 }
 
+class DevNull : OutputStream() {
+    override fun write(p0: Int) {
+        // sink
+    }
+}

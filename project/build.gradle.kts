@@ -61,14 +61,6 @@ tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
 
 /**
- * Delay in milliseconds.
- *
- * After issuing a command to create or remove a container,
- * the process exits before the changes take complete effect in the Docker daemon.
- */
-val dockerDelay = 1500L
-
-/**
  * Will execute all the tasks needed to setup the database running in a container,
  * in the proper order.
  */
@@ -80,7 +72,7 @@ tasks.register("pgSetupDb") {
     val addDataTask = "pgAddData"
 
     dependsOn(startTask, createDbTask, createUserTask, initSchemaTask, addDataTask)
-    tasks[createUserTask].mustRunAfter(startTask).doFirst { sleep(dockerDelay) }
+    tasks[createUserTask].mustRunAfter(startTask)
     tasks[createDbTask].mustRunAfter(createUserTask)
     tasks[initSchemaTask].mustRunAfter(createDbTask)
     tasks[addDataTask].mustRunAfter(initSchemaTask)
@@ -95,5 +87,5 @@ tasks.register("pgReset") {
     val stopTask = "pgStop"
 
     dependsOn(setupTask, stopTask)
-    tasks[setupTask].mustRunAfter(stopTask).doFirst { sleep(dockerDelay) }
+    tasks[setupTask].mustRunAfter(stopTask)
 }
