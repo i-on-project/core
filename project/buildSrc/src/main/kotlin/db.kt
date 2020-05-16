@@ -46,7 +46,6 @@ object Docker {
     const val IMAGE_NAME = "postgres"
     const val CONTAINER_NAME = "pg-container"
     const val CONTAINER_PORT = 5432
-    const val HOST_PORT = 5432
     const val HOST_MOUNT_DIR = "src/test/resources/docker"
     const val CONTAINER_MOUNT_DIR = "/mnt"
 
@@ -82,7 +81,7 @@ open class PgStart : AbstractTask() {
             commandLine("docker", "run",
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${Postgres.pgParams.password}",
-              "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-p", "${Postgres.pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
               "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
         }
@@ -123,7 +122,7 @@ open class PgToggle : AbstractTask() {
             commandLine("docker", "run",
               "--name", Docker.CONTAINER_NAME,
               "-e", "POSTGRES_PASSWORD=${pgParams.password}",
-              "-p", "${Docker.HOST_PORT}:${Docker.CONTAINER_PORT}/tcp",
+              "-p", "${pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
               "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}" +
               ":${Docker.CONTAINER_MOUNT_DIR}",
               "-d", Docker.IMAGE_NAME)
