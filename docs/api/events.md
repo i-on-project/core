@@ -6,6 +6,18 @@ iCalendar components(`Event`, `Journal` and `Todo`) support sub-components or in
 
 __Not all properties mentioned in the RFC are supported by this API, only the ones mentioned below. All properties parameters are supported.__
 
+# Index
+- [Date Format](#date-format)
+- [Date Intervals](#date-intervals)
+- [Object format](#object-format)
+- [Components](#calendar)
+  - [Calendar](#calendar)
+  - [Event](#event)
+  - [Todo](#todo)
+  - [Journal](#journal)
+- [Properties](#all-properties)
+- [Data types](#data-types)
+
 # Date Format
 Date formatting is done according to [RFC3339](https://tools.ietf.org/html/rfc3339) which is an Internet profile of the [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html).
 
@@ -422,7 +434,7 @@ A Todo representation:
 } 
 ```
 
-# Properties
+# All Properties
 ## `version`
 The unique version of [iCalendar](#icalendar) being used
 
