@@ -27,13 +27,16 @@ repositories {
 }
 
 dependencies {
+    // main dependencies
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
-    implementation("org.mnode.ical4j:ical4j:3.0.+")
+
+    // test dependencies
+    testImplementation("org.mnode.ical4j:ical4j:3.0.+")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
