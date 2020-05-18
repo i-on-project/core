@@ -5,6 +5,8 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
+import org.ionproject.core.calendar.icalendar.types.MultiValue
+import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.common.Media
 import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
@@ -75,12 +77,29 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
                     .let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
             } else ""
 
-            val value = if (this is MultiValuedProperty<*>) {
-                value.joinToString(",")
-            } else value.toString()
+            val value =
+                if (this is MultiValuedProperty<*>) {
+                    val type = value.values[0]::class.java
+                    if (type == Text::class.java) {
+                        value.map {
+                            (it as Text).iCalendarFormat()
+                        }.joinToString()
+                    }
+                    else value.joinToString()
+                } else
+                if (value is Text) {
+                    (value as Text).iCalendarFormat()
+                }
+                else value.toString()
 
             writer.writeICalendar("$name$parameters:$value")
         }
+    }
+
+    private fun Text.iCalendarFormat() : String {
+        var text = value
+        text = text.replace(",", "\\,")
+        return text.replace(";", "\\;")
     }
 }
 

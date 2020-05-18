@@ -143,11 +143,8 @@ class CalendarComponentMapper(
 
         return array.map {
             val pgObject = it as PGobject
-            pgObject.apply {
-                value = value.removeSurrounding("(", ")")
-            }
 
-            val values = pgObject.value.split(Regex("[^\\\\],"), count = 1)
+            val values = pgObject.split()
 
             val list = List(values.size) { idx ->
                 val str = values[idx]
