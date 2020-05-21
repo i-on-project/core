@@ -581,7 +581,7 @@ CALL dbo.newEvent(27,
 
 -- <LI61D lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(39,
+CALL dbo.newEvent(63,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -594,7 +594,7 @@ CALL dbo.newEvent(39,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(39,
+CALL dbo.newEvent(63,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -609,7 +609,7 @@ CALL dbo.newEvent(39,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(37,
+CALL dbo.newEvent(61,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -622,7 +622,7 @@ CALL dbo.newEvent(37,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(37,
+CALL dbo.newEvent(61,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -631,13 +631,13 @@ CALL dbo.newEvent(37,
     TIMESTAMP '2020-02-11 11:00:00', -- dtstart
     TIMESTAMP '2020-02-11 14:00:00', -- dtend
     5, -- dtstart dtend type
-    'THR', -- days of week when this event repeats
+    'TH', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(41,
+CALL dbo.newEvent(65,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -650,7 +650,7 @@ CALL dbo.newEvent(41,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(41,
+CALL dbo.newEvent(65,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -670,7 +670,7 @@ CALL dbo.newEvent(41,
 
 -- <LI61N lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(40,
+CALL dbo.newEvent(64,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -683,7 +683,7 @@ CALL dbo.newEvent(40,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(40,
+CALL dbo.newEvent(64,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -698,7 +698,7 @@ CALL dbo.newEvent(40,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(38,
+CALL dbo.newEvent(62,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -707,11 +707,11 @@ CALL dbo.newEvent(38,
     TIMESTAMP '2020-02-11 18:30:00', -- dtstart
     TIMESTAMP '2020-02-11 20:00:00', -- dtend
     5, -- dtstart dtend type
-    'THR', -- days of week when this event repeats
+    'TH', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(38,
+CALL dbo.newEvent(62,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -726,7 +726,7 @@ CALL dbo.newEvent(38,
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(42,
+CALL dbo.newEvent(66,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
@@ -739,7 +739,7 @@ CALL dbo.newEvent(42,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(42,
+CALL dbo.newEvent(66,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
