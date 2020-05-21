@@ -18,7 +18,7 @@ internal class ClassSectionControllerTest : ControllerTester() {
      */
     @Test
     fun getClassSection_shouldRespondWithSirenType() {
-        isValidSiren(Uri.forClassSectionById(1, "1920v", "1D")).andReturn()
+        isValidSiren(Uri.forClassSectionById(1, "2021v", "1D")).andReturn()
     }
 
     @Test

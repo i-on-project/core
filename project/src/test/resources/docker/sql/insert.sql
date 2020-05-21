@@ -15,12 +15,16 @@ INSERT INTO dbo.CalendarTerm(id, start_date, end_date) VALUES
 INSERT INTO dbo.Course(acronym, name) values
 ('SL',  'Software Laboratory'),
 ('WAD', 'Web Applications Development'),
-('DM',  'Discrete Mathematics');
+('DM',  'Discrete Mathematics'),
+('PS', 'Project and Seminary'),
+('CC', 'Cloud computing');
 	
 INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
 (1, 2, TRUE,  3),
-(1, 1, FALSE, 4),
+(1, 1, FALSE, 6),
 (1, 3, FALSE, 1),
+(1, 4, TRUE, 6),
+(1, 5, FALSE, 6),
 (2, 3, FALSE, 1);
 
 CALL dbo.sp_classCalendarCreate('1718v', 1);
@@ -35,9 +39,9 @@ CALL dbo.sp_classCalendarCreate('1819v', 3);
 CALL dbo.sp_classCalendarCreate('1819i', 1);
 CALL dbo.sp_classCalendarCreate('1819i', 2);
 CALL dbo.sp_classCalendarCreate('1819i', 3);
-CALL dbo.sp_classCalendarCreate('1920v', 1);
-CALL dbo.sp_classCalendarCreate('1920v', 2);
-CALL dbo.sp_classCalendarCreate('1920v', 3);
+CALL dbo.sp_classCalendarCreate('1920v', 2);	-- calendar nº13 WAD
+CALL dbo.sp_classCalendarCreate('1920v', 4);	-- calendar nº14 PS
+CALL dbo.sp_classCalendarCreate('1920v', 5);	-- calendar nº15 CC
 CALL dbo.sp_classCalendarCreate('1920i', 1);
 CALL dbo.sp_classCalendarCreate('1920i', 2);
 CALL dbo.sp_classCalendarCreate('1920i', 3);
@@ -84,15 +88,12 @@ CALL dbo.sp_classSectionCalendarCreate(11, '1N');
 CALL dbo.sp_classSectionCalendarCreate(12, '1D');
 CALL dbo.sp_classSectionCalendarCreate(12, '2D');
 CALL dbo.sp_classSectionCalendarCreate(12, '1N');
-CALL dbo.sp_classSectionCalendarCreate(13, '1D');
-CALL dbo.sp_classSectionCalendarCreate(13, '2D');
-CALL dbo.sp_classSectionCalendarCreate(13, '1N');
-CALL dbo.sp_classSectionCalendarCreate(14, '1D');
-CALL dbo.sp_classSectionCalendarCreate(14, '2D');
-CALL dbo.sp_classSectionCalendarCreate(14, '1N');
-CALL dbo.sp_classSectionCalendarCreate(15, '1D');
-CALL dbo.sp_classSectionCalendarCreate(15, '2D');
-CALL dbo.sp_classSectionCalendarCreate(15, '1N');
+CALL dbo.sp_classSectionCalendarCreate(13, 'LI61D');	--classSection WAD calendar nº37
+CALL dbo.sp_classSectionCalendarCreate(13, 'LI61N');	--classSection WAD calendar nº38
+CALL dbo.sp_classSectionCalendarCreate(14, 'LI61D');	--classSection PS Dia calendar nº39
+CALL dbo.sp_classSectionCalendarCreate(14, 'LI61N');	--classSection PS Noite calendar nº40
+CALL dbo.sp_classSectionCalendarCreate(15, 'LI61D');	--classSection CC calendar nº41
+CALL dbo.sp_classSectionCalendarCreate(15, 'LI61N');	--classSection CC calendar nº42
 CALL dbo.sp_classSectionCalendarCreate(16, '1D');
 CALL dbo.sp_classSectionCalendarCreate(16, '2D');
 CALL dbo.sp_classSectionCalendarCreate(16, '1N');
@@ -120,6 +121,7 @@ CALL dbo.sp_classSectionCalendarCreate(23, '1N');
 CALL dbo.sp_classSectionCalendarCreate(24, '1D');
 CALL dbo.sp_classSectionCalendarCreate(24, '2D');
 CALL dbo.sp_classSectionCalendarCreate(24, '1N');
+
 
 INSERT INTO dbo.Language(name) VALUES
 ('pt-PT'),
@@ -573,4 +575,402 @@ CALL dbo.newEvent(27,
     'TU,WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
+
+
+-- 1920v calendar information --
+
+-- <LI61D lectures> --
+-- <PS lectures> --
+CALL dbo.newEvent(39,
+    ARRAY['PS Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 12:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    5, -- dtstart dtend type
+    'TU', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(39,
+    ARRAY['PS Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </PS lectures> --
+
+-- <WAD lectures> --
+CALL dbo.newEvent(37,
+    ARRAY['WAD Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(37,
+    ARRAY['WAD Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    5, -- dtstart dtend type
+    'THR', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </WAD lecture> --
+
+-- <CC lectures> --
+CALL dbo.newEvent(41,
+    ARRAY['CC Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 09:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 11:00:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(41,
+    ARRAY['CC Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 09:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    5, -- dtstart dtend type
+    'FR', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </CC lectures> --
+
+-- </LI61D lectures> --
+
+
+
+-- <LI61N lectures> --
+-- <PS lectures> --
+CALL dbo.newEvent(40,
+    ARRAY['PS Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(40,
+    ARRAY['PS Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </PS lectures> --
+
+-- <WAD lectures> --
+CALL dbo.newEvent(38,
+    ARRAY['WAD Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    5, -- dtstart dtend type
+    'THR', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(38,
+    ARRAY['WAD Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    5, -- dtstart dtend type
+    'FR', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </WAD lecture> --
+
+-- <CC lectures> --
+CALL dbo.newEvent(42,
+    ARRAY['CC Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
+    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    5, -- dtstart dtend type
+    'MO', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(42,
+    ARRAY['CC Lecture'],
+    ARRAY[2],
+    ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
+    ARRAY[2],
+    ARRAY[9],
+    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
+    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    5, -- dtstart dtend type
+    'WE', -- days of week when this event repeats
+    TIMESTAMP '2020-06-12 23:50:00',
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </CC lectures> --
+-- </LI61N lectures> --
+
+
+-- <Assignments> --
+
+-- <WAD Assignments> --
+CALL dbo.newTodo(13,
+    ARRAY['[WAD]: Assignment #1'],
+    ARRAY[2],
+    ARRAY['The first assignment. The goal is to implement an HTTP API...'],
+    ARRAY[2],
+    ARRAY[1,2],
+    ARRAY['https://tools.ietf.org/html/rfc7231'],
+    TIMESTAMP '2020-04-19 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(13,
+    ARRAY['[WAD]: Assignment #2'],
+    ARRAY[2],
+    ARRAY['The second assignment. The goal is to implement a Web Client for the API...'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-05-25 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </WAD Assignments> --
+
+-- <CC Assignments> --
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Virtual Machines with GCP'],
+    ARRAY[2],
+    ARRAY['Creation of virtual machines using Google Cloud Platform.'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-03-31 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Distributed Services'],
+    ARRAY[2],
+    ARRAY['Development of distributed services using RMI and gRPC.'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-04-17 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Google Cloud Storage API'],
+    ARRAY[2],
+    ARRAY['Using the GCP API.'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-05-03 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Google Firestore Service'],
+    ARRAY[2],
+    ARRAY['Acessing Google Firestore Service using Java API.'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-05-10 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Google Pub/Sub Service'],
+    ARRAY[2],
+    ARRAY['Acessing Google Pub/Sub Service using Java API.'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-05-17 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Instances management'],
+    ARRAY[2],
+    ARRAY['Managing instances and firewall rules...'],
+    ARRAY[2],
+    ARRAY[11],
+    NULL,
+    TIMESTAMP '2020-05-17 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-05-28 16:35:30');
+
+CALL dbo.newTodo(15,
+    ARRAY['[CC]: Final Assignment'],
+    ARRAY[2],
+    ARRAY['Implementing a system for task execution...'],
+    ARRAY[2],
+    ARRAY[15],
+    NULL,
+    TIMESTAMP '2020-06-20 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </CC Assignments> --
+
+-- <PS Dates> --
+CALL dbo.newTodo(14,
+    ARRAY['[PS]: Poster and beta version'],
+    ARRAY[2],
+    ARRAY['Delivery of the project poster and beta version.'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-06-15 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(14,
+    ARRAY['[PS]: Final Version'],
+    ARRAY[2],
+    ARRAY['Delivery of the project final version.'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-09-12 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(14,
+    ARRAY['[PS]: Final Version Special Season'],
+    ARRAY[2],
+    ARRAY['Delivery of the project final version during special season.'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-09-26 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </PS Dates> --
+
+-- <Assignments> --
+
+
+-- <Exams> --
+
+-- <WAD Exams> --
+CALL dbo.newEvent(13,
+    ARRAY['1st Exam WAD'],
+    ARRAY[2],
+    ARRAY['Normal season exam for WAD-1718v'],
+    ARRAY[2],
+    ARRAY[7],
+    TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
+    TIMESTAMP '2020-06-19 19:30:00', -- dtend
+    2, -- dtstart dtend type
+    NULL,
+    NULL,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newEvent(13,
+    ARRAY['2nd Exam WAD'],
+    ARRAY[2],
+    ARRAY['Second season exam for WAD-1718v'],
+    ARRAY[2],
+    ARRAY[7],
+    TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
+    TIMESTAMP '2020-07-01 12:30:00', -- dtend
+    2, -- dtstart dtend type
+    NULL,
+    NULL,
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </WAD Exams> --
+
+-- <CC Exams> --
+CALL dbo.newEvent(15,
+    ARRAY['Exam CC'],
+    ARRAY[2],
+    ARRAY['Exam for CC-1920v'],
+    ARRAY[2],
+    ARRAY[7],
+    TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
+    TIMESTAMP '2020-07-01 12:30:00', -- dtend
+    2, -- dtstart dtend type
+    NULL,
+    NULL,
+    TIMESTAMP '2020-01-01 16:35:30');
+-- </CC Exams> --
+-- </Exams> --
+
+
+-- End of 1920v calendar information --
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
