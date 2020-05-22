@@ -13,8 +13,7 @@ enum class Status {
 
 // Immutables
 class ApiObject(
-    val title: String,
-    val links: Map<String, URI>? = null
+    val title: String, val links: Map<String, URI>? = null
 )
 
 /**
@@ -50,8 +49,7 @@ class ResourceObject(
 )
 
 class AuthenticationScheme(
-    val scheme: String,
-    val realms: List<String>
+    val scheme: String, val realms: List<String>
 )
 
 // Mutables
@@ -75,24 +73,13 @@ class JsonHomeBuilder(
         return this
     }
 
-    /**
-     * This method will start the building process of a resource object.
-     * The terminal function of said factory will return this [JsonHomeBuilder] back to
-     * continue the flow.
-     *
-     * e.g. JsonHomeBuilder("ion")
-     *        .newResource("myNewResourceObj") // returns ResourceBuilder
-     *        .toResourceObject()              // returns parent JsonHomeBuilder
-     *        .toJsonHome()                    // returns immutable JsonHome
-     *
-     * @return a Json Home Resource object factory.
-     */
-    fun newResource(name: String): ResourceBuilder =
-        ResourceBuilder(this, name)
+    fun newResource(name: String, build: (ResourceBuilder) -> ResourceObject): JsonHomeBuilder {
+        val rb = ResourceBuilder(name)
+        val resource = build(rb)
+        putResource(name, resource)
+        return this
+    }
 
-    /**
-     * Will be used by the Resource object factory before returning the [JsonHomeBuilder]
-     */
     fun putResource(name: String, resource: ResourceObject): JsonHomeBuilder {
         if (resources == null) {
             resources = mutableMapOf()
@@ -106,13 +93,11 @@ class JsonHomeBuilder(
      * @return an immutable [JsonHome].
      */
     fun toJsonHome(): JsonHome = JsonHome(
-        ApiObject(title, links),
-        resources
+        ApiObject(title, links), resources
     )
 }
 
 class ResourceBuilder(
-    private val parent: JsonHomeBuilder,
     private val name: String,
     private var href: URI? = null,
     private var hrefTemplate: UriTemplate? = null,
@@ -146,11 +131,11 @@ class ResourceBuilder(
      * Configure the resource object with a templated URI.
      * You cannot call the [href] function, from here on out.
      */
-    fun hrefTemplate(uriTemplate: UriTemplate): ResourceBuilder {
+    fun hrefTemplate(uri: UriTemplate): ResourceBuilder {
         if (href != null) {
             throw JsonHomeBuilderException("In JSON Home, you can specify href for static URIs, or hrefTemplate+hrefVars for URI Templates, but not both.")
         }
-        this.hrefTemplate = uriTemplate
+        this.hrefTemplate = uri
         return this
     }
 
@@ -246,13 +231,10 @@ class ResourceBuilder(
     }
 
     /**
-     * Terminal function of the resource object factory.
-     * Some constraints will be checked; an immutable [ResourceObject] will be created; the [ResourceObject] will
-     * be embedded into the parent [JsonHome] object.
-     *
-     * @return the JSON Home object factory, preserving the building flow.
+     * Terminal function.
+     * @return an immutable [ResourceObject].
      */
-    fun toResourceObject(): JsonHomeBuilder {
+    fun toResourceObject(): ResourceObject {
         if (hrefTemplate != null && hrefVars == null) {
             throw JsonHomeBuilderException("When using hrefTemplate, you must then specify its variables.")
         }
@@ -272,6 +254,6 @@ class ResourceBuilder(
                 docs
             )
         }
-        return parent.putResource(name, ResourceObject(href, hrefTemplate, hrefVars, authSchemes, hints))
+        return ResourceObject(href, hrefTemplate, hrefVars, authSchemes, hints)
     }
 }
