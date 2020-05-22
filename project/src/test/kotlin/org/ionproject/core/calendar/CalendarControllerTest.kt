@@ -88,7 +88,7 @@ BEGIN:VEVENT
 UID:5
 DTSTAMP:20200101T163530Z
 SUMMARY;LANGUAGE=en-US:WAD Monday Lecture
-DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 1718
+DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
 CATEGORIES;LANGUAGE=en-US:Exam
@@ -100,7 +100,7 @@ BEGIN:VEVENT
 UID:6
 DTSTAMP:20200101T163530Z
 SUMMARY;LANGUAGE=en-US:WAD Wednesday Lecture
-DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 1718
+DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
 CATEGORIES;LANGUAGE=en-US:Exam
@@ -191,7 +191,7 @@ END:VCALENDAR"""
             Uid("5"),
             DtStamp("20200101T163530Z"),
             Summary(enLang, "WAD Monday Lecture"),
-            Description(enLang, "Lectures of the WAD curricular unit for the 1718v-1D Class section"),
+            Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
             Categories(enLang, "Exam"),
             DtStart("20200210T100000Z"),
@@ -203,7 +203,7 @@ END:VCALENDAR"""
             Uid("6"),
             DtStamp("20200101T163530Z"),
             Summary(enLang, "WAD Wednesday Lecture"),
-            Description(enLang, "Lectures of the WAD curricular unit for the 1718v-1D Class section"),
+            Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
             Categories(enLang, "Exam"),
             DtStart("20200212T100000Z"),
