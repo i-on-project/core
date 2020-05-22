@@ -119,6 +119,9 @@ class CalendarController(private val repository: CalendarRepo) {
                         Media.CALENDAR -> {
                             return calendar
                         }
+                        Media.ALL -> {
+                            return calendar
+                        }
                     }
                 }
                 null
