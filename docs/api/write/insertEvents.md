@@ -1,5 +1,8 @@
+This document informs the clients on how to insert events for Class or Class Section resources.
 
-# General
+# HTTP
+
+# Message Format
 * usually properties are property-value pairs, in which the value has a defined type/format
     - e.g. `beginTime: 14:00:00`
 * *object* typed properties may have a variable number of properties, depending on weather sufficient information was extracted from external sources
@@ -7,7 +10,6 @@
     - if one of these properties is missing the message is still acceptable
     - `school`'s properties and types must be defined in this specification
 
-# Timetable
 ## Properties
 ### `school`
 * *object* type
@@ -91,6 +93,7 @@
     "programme": {
         "name": "Licenciatura Engenharia Informática e Computadores"
     },
+    "calendarTerm": "1718v",
     "calendarSection": "LI11D",
     "courses": [
         {
