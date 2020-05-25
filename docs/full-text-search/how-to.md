@@ -23,7 +23,7 @@ Example _Course_ Table:
 | 2 | WAD | Web App Development |
 | 3 | DM | Discrete Mathematics |
 
-If we wanted to search for courses with `Spring MVC` in the About column the query we would need to make is:
+If we wanted to search for courses with `Software` and `Development` in the Name column the queries we would need to make are:
 
 ```sql
 SELECT * FROM dbo.course WHERE to_tsvector(course.name) @@ plainto_tsquery('Software');
@@ -43,7 +43,7 @@ SELECT * FROM dbo.course WHERE to_tsvector(course.name) @@ plainto_tsquery('Deve
 
 Full text searching in PostgreSQL is based on the match operator @@, which returns true if a _tsvector_  matches a _tsquery_ . It doesn't matter which data type is written first.
 
-The datatype _tsvector_ is a normalization of text. This normalization is done with a [_Dictionary_](https://www.postgresql.org/docs/current/textsearch-dictionaries.html) which removes common words, reduces words down to their root words, such as `development -> develop`, and creates (word, word position) pairs.
+The datatype _tsvector_ is a normalization of text and pairing of words with their position. This normalization is done with a [_Dictionary_](https://www.postgresql.org/docs/current/textsearch-dictionaries.html) which removes common words, reduces words down to their root words, such as `development -> develop`.
 
 The following examples show the result of the normalization and vectorization of strings
 
