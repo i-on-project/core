@@ -1,0 +1,77 @@
+{
+  "definitions": {
+    "academicObject": {
+      "$id": "#academicObject",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "acr": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 10
+        }
+      },
+      "anyOf": [
+        { "required": [ "name" ] },
+        { "required": [ "acr" ] }
+      ],
+      "additionalProperties": false
+    },
+
+    "event": {
+      "$id": "#event",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "beginTime": { "type": "string" },
+        "duration": { "type": "string" },
+        "weekday": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [ "MO", "TU", "WE", "TH", "FR", "SA", "SU" ]
+          }
+        }
+      },
+      "required": [ "title", "beginTime", "duration" ],
+      "additionalProperties": false
+    },
+
+    "course": {
+      "$id": "#course",
+      "properties": {
+        "label": { "$ref": "#academicObject" },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#event" }
+        }
+      },
+      "required": [ "label", "events" ],
+      "additionalProperties": false
+    }
+  },
+
+  "$id": "#root",
+  "type": "object",
+  "properties": {
+    "school": { "$ref": "#academicObject" },
+    "programme": { "$ref": "#academicObject" },
+    "calendarSection": { "type": "string" },
+    "calendarTerm": { "type": "string" },
+    "courses": {
+      "type": "array",
+      "items": { "$ref": "#course" }
+    }
+  },
+  "required": [ "school", "programme", "courses", "calendarTerm" ],
+  "additionalProperties": false
+} 

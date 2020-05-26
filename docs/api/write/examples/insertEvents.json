@@ -1,0 +1,50 @@
+{
+    "school": {
+        "name": "INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA",
+        "acr": "ISEL"
+    },
+    "programme": {
+        "name": "Licenciatura Engenharia Informática e Computadores"
+    },
+    "calendarTerm": "1718v",
+    "calendarSection": "LI11D",
+    "courses": [
+        {
+            "label": {
+              "acr": "ALGA[I]"
+            },
+            "events": [
+                {
+                    "title": "Aula de ALGA",
+                    "description": "Aulas teoricas de ALGA",
+                    "location": [ "E.1.31" ],
+                    "beginTime": "14:00:00",
+                    "duration": "1:30:00",
+                    "weekday": [ "MO" ]
+                }
+            ]
+        },
+        {
+            "label": {
+              "acr": "M2[I]",
+              "name": "Matemática II"
+            },
+            "events": [
+                {
+                    "title": "Aula de M2",
+                    "location": [ "G.2.30" ],
+                    "beginTime": "14:00:00",
+                    "duration": "1:30:00",
+                    "weekday": [ "TU" ]
+                },
+                {
+                    "title": "Aula de M2",
+                    "location": [ "G.2.30" ],
+                    "beginTime": "14:00:00",
+                    "duration": "1:30:00",
+                    "weekday": [ "FR" ]
+                }
+            ]
+        }
+    ]
+}
