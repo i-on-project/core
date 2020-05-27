@@ -24,6 +24,7 @@ Important considerations for clients:
 Available "entry point" resources:
 * `courses`
 * `calendar-terms`
+* `search`
 
 ## Example
 ```javascript
@@ -61,6 +62,22 @@ Available "entry point" resources:
           "application/vnd.siren+json" : { }
         },
         "docs" : "https://github.com/i-on-project/core/tree/master/docs/api/calendar-terms.md"
+      }
+    },
+    "search": {
+      "hrefTemplate" : "/v0/search{?query,types,page,limit}",
+      "hrefVars" : {
+        "query" : "/api-docs/params/query",
+        "types" : "/api-docs/params/types",
+        "limit" : "/api-docs/params/limit",
+        "page" : "/api-docs/params/page"
+      },
+      "hints" : {
+        "allow" : [ "GET" ],
+        "formats" : {
+          "application/vnd.siren+json" : { }
+        },
+        "docs" : "https://github.com/i-on-project/core/tree/master/docs/api/search.md"
       }
     }
   }
