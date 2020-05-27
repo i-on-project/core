@@ -1,10 +1,23 @@
 This document informs the clients on how to insert events for Class or Class Section resources.
 
 # HTTP
+## Usage
+* you must use the `PUT HTTP Request`
+  - this operation is **idempotent**
+
+* use the `/v0/insertEvents` path
+  - clients need not use hypermedia navigation in order to find this resource's location
+
 
 # Message Format
-* usually properties are property-value pairs, in which the value has a defined type/format
-    - e.g. `beginTime: 14:00:00`
+The scope of this section is to define the constraints over the JSON objects received as requests for this operation.
+This is meant to be a more toned down version of the request's [JSON schema]().
+
+* each property-value pair is described as follows:
+  - the value has a *type*
+  - further constraints may be set on the contents of the value itself (e.g. *string* with a minimum of 2 characters)
+  - may be **required** or **optional**
+
 * *object* typed properties may have a variable number of properties, depending on weather sufficient information was extracted from external sources
     - e.g. `school: { name: "Instituto superior...", acr: "ISEL" }`
     - if one of these properties is missing the message is still acceptable
@@ -16,10 +29,14 @@ This document informs the clients on how to insert events for Class or Class Sec
 * `name`
     - *string* type
     - extensive name of
+    - minimum number of characters: 2
+    - maximum number of characters: 50
     - e.g. `Instituto Superior de Engenharia de Lisboa`
 * `acr`
     - *string* type
     - acronym 
+    - minimum number of characters: 2
+    - maximum number of characters: 10
     - e.g. `ISEL`
 * **required**
     - at least one of `name` or `acr` must be included in the message
@@ -29,10 +46,14 @@ This document informs the clients on how to insert events for Class or Class Sec
 * `name`
     - *string* type
     - extensive name of 
+    - minimum number of characters: 2
+    - maximum number of characters: 50
     - e.g. `Licenciatura de Engenharia de Lisboa`
 * `acr`
     - *string* type
     - acronym
+    - minimum number of characters: 2
+    - maximum number of characters: 10
     - e.g. `LEIC`
 * **required**
     - at least one of `name` or `acr` must be included in the message
@@ -41,96 +62,47 @@ This document informs the clients on how to insert events for Class or Class Sec
 * *string* type
 * e.g. `LI11D`
 * **optional**
-    - the timetable information will be applied to the whole `class` if this property is not present
+    - the `events` information will be applied to the whole `class` if this property is not present
 
 ### `courses`
 * *array[object]* type
-* `name`
-    - *string* type
-    - extensive name of 
-    - e.g. `Algebra Linear e Geometria Analitica`
-* `acr`
-    - *string* type
-    - acronym 
-    - e.g. `ALGA`
-* `timetable`
+* `label`
+    - *object* type
+    - has the `name` and `acr` properties similar to the `programme` and `school` properties, with the same constraints
+    - e.g. `label: { name: "Linear Algebra and Analythic Geometry", acr: "LAAG" }`
+* `events`
     - *array[object]* type
-    - timetable information to be stored in the Core, type defined later on
+    - events to be stored in the Core, type defined later on
     - size: **0..N**
 * **required**
-    - at least one of `name` or `acr` must be included in the message
-    - `timetable` must exist but may be empty, in which case the Core will attempt to store the rest of the received properties
+    - `label` (at least one of `name` or `acr` must be included in this object)
+    - `events` must exist but may be empty, in which case the Core will attempt to store the rest of the received properties
 
-### `timetable`
+### `event`
 * *object* type
-* `type`
-    - *char* type
-    - from `[a-z]`
-    - indicator of the type of event
-    - e.g. `t`
-* `location`
+* `title`
     - *string* type
-    - e.g. `A.2.1`
+    - e.g. `ALGA Lecture`
+* `description`
+    - *string* type
+    - e.g. `ALGA Theorical Lectures`
+* `location`
+    - *array[string]* type
+    - e.g. `[ "A.2.1", "G.0.21 ]`
     - this value does not have a strict format, since other languages may require the use of special characters for identifying locations (e.g. Mandarin Chinese)
 * `beginTime`
-    - *time* type
-* `endTime`
     - *time* type
 * `duration`
     - *time* type
 * `weekday`
     - *array[string]*
-    - must be one of the following: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat`, `Sun`
+    - must be one of the following: `MO`, `TU`, `WE`, `TH`, `FR`, `SA`, `SU`
     - size: **1..7**
+* **required**
+    - `title`, `beginTime` and `duration`
+* **optional**
+    - `description` and `location`
+    - if `weekday` is not present, the `event` will not repeat
 
 ## Example message body
-```
-{
-    "school": {
-        "name": "INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA",
-        "acr": "ISEL"
-    },
-    "programme": {
-        "name": "Licenciatura Engenharia Informática e Computadores"
-    },
-    "calendarTerm": "1718v",
-    "calendarSection": "LI11D",
-    "courses": [
-        {
-            "acr": "ALGA[I]",
-            "timetable": [
-                {
-                    "type": "t",
-                    "location": "E.1.31",
-                    "beginTime": "14:00:00",
-                    "endTime": "15:30:00",
-                    "duration": "1:30:00",
-                    "weekday": [ "Monday" ]
-                }
-            ]
-        },
-        {
-            "acr": "M2[I]",
-            "name": "Matemática II",
-            "timetable": [
-                {
-                    "type": "t",
-                    "location": "G.2.30",
-                    "beginTime": "14:00:00",
-                    "endTime": "15:30:00",
-                    "duration": "1:30:00",
-                    "weekday": [ "Tuesday" ]
-                },
-                {
-                    "location": "G.2.30",
-                    "beginTime": "14:00:00",
-                    "endTime": "15:30:00",
-                    "duration": "1:30:00",
-                    "weekday": [ "Friday" ]
-                }
-            ]
-        }
-    ]
-}
-```
-
+See `/docs/api/write/examples/insertEvents.json`.
