@@ -8,15 +8,37 @@ The way we can query multiple tables is by using the UNION keyword to avoid mult
 ```sql
 set query '''Soft:*'''
 
-SELECT 'course' as type, id, name FROM dbo.course WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query) 
+SELECT 
+    'course' as type,
+    id,
+    name
+FROM dbo.course
+WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query) 
 UNION
-SELECT 'programme' as type, id, name FROM dbo.programme WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query);
+SELECT
+    'programme' as type,
+    id,
+    name
+FROM dbo.programme
+WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query);
   type  | id |        name
 --------+----+---------------------
  course |  1 | Software Laboratory
 (1 row)
 
-SELECT 2 as type, id, name FROM dbo.course WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query) UNION SELECT 1 as type, id, name FROM dbo.programme WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query);
+SELECT 
+    2 as type,
+    id,
+    name
+FROM dbo.course
+WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query) 
+UNION
+SELECT
+    1 as type,
+    id,
+    name
+FROM dbo.programme
+WHERE to_tsvector(name || ' ' || acronym) @@ to_tsquery(:query);
  type | id |        name
 ------+----+---------------------
     2 |  1 | Software Laboratory
