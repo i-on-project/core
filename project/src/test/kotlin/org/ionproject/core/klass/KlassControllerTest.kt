@@ -42,7 +42,7 @@ internal class KlassControllerTest : ControllerTester() {
      */
     @Test
     fun getClass_shouldRespondWithSirenType() {
-        isValidSiren(Uri.forKlassByCalTerm(1, "1920v")).andReturn()
+        isValidSiren(Uri.forKlassByCalTerm(1, "2021v")).andReturn()
     }
 
     @Test
