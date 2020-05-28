@@ -1,17 +1,14 @@
-This document informs the clients on how to insert events for Class or Class Section resources.
+This document informs the clients on how to insert events for `Class Section` resources.
 
 # HTTP
 ## Usage
-* you must use the `PUT HTTP Request`
+* `PUT /v0/write/insertClassSectionEvents`
   - this operation is **idempotent**
-
-* use the `/v0/insertEvents` path
   - clients need not use hypermedia navigation in order to find this resource's location
-
 
 # Message Format
 The scope of this section is to define the constraints over the JSON objects received as requests for this operation.
-This is meant to be a more toned down version of the request's [JSON schema]().
+This is meant to be a more toned down version of the request's JSON schema.
 
 * each property-value pair is described as follows:
   - the value has a *type*
@@ -61,8 +58,7 @@ This is meant to be a more toned down version of the request's [JSON schema]().
 ### `calendarSection`
 * *string* type
 * e.g. `LI11D`
-* **optional**
-    - the `events` information will be applied to the whole `class` if this property is not present
+* **required**
 
 ### `courses`
 * *array[object]* type
@@ -92,8 +88,12 @@ This is meant to be a more toned down version of the request's [JSON schema]().
     - this value does not have a strict format, since other languages may require the use of special characters for identifying locations (e.g. Mandarin Chinese)
 * `beginTime`
     - *time* type
+    - `hh:mm` format 
+    - e.g. `14:00`
 * `duration`
     - *time* type
+    - `hh:mm` format 
+    - e.g. `01:30`
 * `weekday`
     - *array[string]*
     - must be one of the following: `MO`, `TU`, `WE`, `TH`, `FR`, `SA`, `SU`
@@ -104,5 +104,6 @@ This is meant to be a more toned down version of the request's [JSON schema]().
     - `description` and `location`
     - if `weekday` is not present, the `event` will not repeat
 
-## Example message body
-See `/docs/api/write/examples/insertEvents.json`.
+## Links
+* [JSON Schema](https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/schemas/insertClassSectionEvents.json)
+* [Example message](https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/examples/insertClassSectionEvents.json)

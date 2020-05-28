@@ -5,7 +5,7 @@ This document describes the implementation decisions for the Write API's `insert
   - the message format and contents undergo a number of server-side verifications
   - the client need not navigate through the read API to find the needed operations
 
-* `PUT /v0/rpc/insertEvents`
+* `PUT /v0/write/insertClassSectionEvents`
   - analogous to `function insertEvents(message: JSON): JSON`
   - the message format is described in [this document](../../api/write/insertEvents.md)
 
@@ -29,7 +29,7 @@ When a request arrives at the server's appropriate controller, the following ste
   - *may* check the contents of values (e.g. number of characters of a string, Regex pattern matching a string, range of integers, etc)
 * database transaction
   - attempt to insert or replace the specified `School`, `Programme` and `Calendar Term`
-  - attempt to insert or replace `Class`, `Class Sections` (if any) and `Courses`
+  - attempt to insert or replace `Class`, `Class Sections` and `Courses`
   - insert or replace `Events`
 * send HTTP response
   - Useful information to include?
@@ -41,22 +41,22 @@ This means that the server will have to arrange the incoming messages so that al
 
 By allowing clients to make use of a simpler interface, they do not need to delve into all the details of the underlying physical model.
 
-* `Events` apply to `Classes` and `Class Sections`
-  - failing to determine what `Class` or `Class Section` any of the `Events` refer to will abort the operation
+* `Events` apply to `Class Sections`
+  - failing to determine what `Class Section` any of the `Events` refer to will abort the operation
 
-* The granularity of a `Class` or a `Class Section` is different from the one in the physical model
+* The granularity of a `Class Section` is different from the one in the physical model
   - in the database's PHY model, `WAD 1718v` and `LS 1718v` are different `Classes` unrelated to any `Programme`
   - in the Write API, a `Class` is the group of `Programme Offers` of the same semester. So, `WAD 1718v` and `LS 1718v` could belong to the same `Class` if they belong to the same `Programme` (e.g. `LEIC`).
 
 # Database interactions
 Before inserting `Events` on to the database, we must first guarantee that the target `School`, `Programme`, `Class`, `Class Section`, `Calendar Term` and `Courses` are created or else we would be violating foreign key constraints.
 
+The following steps will be implemented in separated stored procedures, which will be called from the controller:
 * The `School`, `Programme` and `Calendar Term` entities may be created/updated in the beginning of the transaction once (to prevent repeated insertions when iterating through the events)
 
 * While iterating through the collection of `courses`, the following steps are to be achieved:
-  - inserting/updating the `Class`, `Class Section` (if `calendarSection` is present) and `Course`
+  - inserting/updating the `Class`, `Class Section` and `Course`
   - iterate through the `events` collection and insert/update each and every `Event`
-  - the `Events` belong to the whole `Class` if the `calendarSection` was not provided
 
 * If some constraint fails, the whole transaction aborts (rolling back any changes)
   - otherwise, commit all changes

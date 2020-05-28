@@ -18,8 +18,8 @@
                     "title": "Aula de ALGA",
                     "description": "Aulas teoricas de ALGA",
                     "location": [ "E.1.31" ],
-                    "beginTime": "14:00:00",
-                    "duration": "1:30:00",
+                    "beginTime": "14:00",
+                    "duration": "01:30",
                     "weekday": [ "MO" ]
                 }
             ]
@@ -33,15 +33,15 @@
                 {
                     "title": "Aula de M2",
                     "location": [ "G.2.30" ],
-                    "beginTime": "14:00:00",
-                    "duration": "1:30:00",
+                    "beginTime": "14:00",
+                    "duration": "01:30",
                     "weekday": [ "TU" ]
                 },
                 {
                     "title": "Aula de M2",
                     "location": [ "G.2.30" ],
-                    "beginTime": "14:00:00",
-                    "duration": "1:30:00",
+                    "beginTime": "14:00",
+                    "duration": "01:30",
                     "weekday": [ "FR" ]
                 }
             ]

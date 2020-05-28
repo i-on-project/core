@@ -72,6 +72,6 @@
       "items": { "$ref": "#course" }
     }
   },
-  "required": [ "school", "programme", "courses", "calendarTerm" ],
+  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
   "additionalProperties": false
 } 
