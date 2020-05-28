@@ -53,7 +53,7 @@ The output format of a search for `Lab` could be something along the lines of
 
 ```json
 {
-    "class": [ "collection" ],
+    "class": [ "search", "result","collection" ],
     "entities": [
         {
             "class": [ "course", "search", "result" ],
@@ -127,8 +127,12 @@ The output format of a search for `Lab` could be something along the lines of
     ],
     "links": [
         {
+            "rel": [ "self" ],
+            "href": "/v0/search?query=Lab&limit=5"
+        },
+        {
             "rel": [ "next" ],
-            "href": "/v0/search?limit=5&page=2"
+            "href": "/v0/search?query=Lab&limit=5&page=2"
         }
     ]
 }

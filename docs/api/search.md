@@ -4,6 +4,7 @@
     - [Properties](#properties)
       - [Schema](#schema)
     - [Links](#links)
+  - [Links](#links-1)
   - [Example Representation](#example-representation)
 
 # Search
@@ -55,10 +56,16 @@ All the sub-entities will have the same `properties` schema, which will be:
 Since the sub-entity is more of a link to a resource than a representation of one a `link`  with the `self` relation doesn't exist. Consequently, a `link` object with `rel` equal to the `class` minus `"search"` & `"result"`, will provide a `href` to the resource.
 Example: `"class": [ "class", "section", "search", "result" ]` means that to fetch this resource the link with `"rel": [ "class", "section" ]` is the one whose `href` is needed.
 
+## Links
+The collection provides some `links`
+* `self` - link to the current page of the collection
+* `previous` - link to the previous page. Will not appear if self links to the first page of the collection
+* `next` - link to the next page. Will not appear if self links to the last page of the collection
+
 ## Example Representation
 ```json
 {
-    "class": [ "collection" ],
+    "class": [ "search", "result", "collection" ],
     "entities": [
         {
             "class": [ "course", "search", "result" ],
@@ -132,8 +139,12 @@ Example: `"class": [ "class", "section", "search", "result" ]` means that to fet
     ],
     "links": [
         {
+            "rel": [ "self" ],
+            "href": "/v0/search?query=Lab&limit=5"
+        },
+        {
             "rel": [ "next" ],
-            "href": "/v0/search?limit=5&page=2"
+            "href": "/v0/search?query=Lab&limit=5&page=2"
         }
     ]
 }
