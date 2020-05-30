@@ -48,7 +48,6 @@ If the token is valid (not revoked, not expired, sufficient privileges...) the p
 In case the token is invalid (the authorization header is missing, ...) an error response message will be returned.
 
 
-E.g. Error responses
 ## Invalid Request:
 Occurs when the requests uses a token include type that is not supported (something else besides "Bearer" type).
 
@@ -64,7 +63,7 @@ Content-Type: application/problem+json
 ```
 
 ## Invalid Token:
-Occurs when token is not valid (revoked, expired...)
+Occurs when the token is invalid (revoked, expired...).
 
 ```
 HTTP/1.1 401 Unauthorized

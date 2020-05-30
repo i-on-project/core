@@ -63,9 +63,13 @@ Based on the request "GET: /courses", the PDP will successfully verify that the 
 Possible list of policies to verify on a request:
 
 1º Is that client blocked from making requests? (E.g. IP banned for security)
+
 2º Does the token exist?
+
 3º Is the token revoked?
+
 4º Is the token expired?
+
 5º Is the client allowed to do that?
 
 Those policies are just an example does not mean they will be implemented.
