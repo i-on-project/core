@@ -401,7 +401,7 @@ CREATE VIEW dbo.courseWithTerm AS
 
 ------- SPs --------
 -- When creating a Class, give it a new Calendar 
-CREATE OR REPLACE PROCEDURE dbo.sp_classCalendarCreate (calterm VARCHAR(200), courseid INT)
+CREATE OR REPLACE PROCEDURE dbo.sp_classCalendarCreate (calterm VARCHAR(200), courseid INT, classid INOUT INT = NULL)
 AS $$
 #print_strict_params on
 DECLARE
@@ -410,7 +410,7 @@ BEGIN
 	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
 
 	INSERT INTO dbo.Class(courseid, calendarterm, calendar) VALUES
-	(courseid, calterm, calid);
+  (courseid, calterm, calid) RETURNING id INTO classid;
 END
 $$ LANGUAGE plpgsql;
 
@@ -425,5 +425,146 @@ BEGIN
 
 	INSERT INTO dbo.ClassSection(id, classId, calendar) VALUES
 	(sid, classId, calid);
+END
+$$ LANGUAGE plpgsql;
+
+
+-----------------------------------------------------
+-- Write API
+
+CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceSchool (
+  schoolName VARCHAR(100),
+  schoolAcr VARCHAR(50),
+  programmeName VARCHAR(100),
+  programmeAcr VARCHAR(50),
+  programmeTermSize INT,
+  calendarTerm VARCHAR(50))
+AS $$
+#print_strict_params ON
+BEGIN
+  IF (schoolName IS NULL AND schoolAcr IS NULL) OR (programmeAcr IS NULL AND programmeName IS NULL) THEN
+    RAISE 'For the School and Programme parameters, you must provide at least a "name" or an "acronym"';
+  END IF;
+
+  -- Insert or update Programme
+  -- coalesce: if any of the supplied parameters is null, use the previous value of the column instead
+  UPDATE
+    dbo.programme
+  SET
+    name     = COALESCE(programmeName, name),
+    acronym  = COALESCE(programmeAcr, acronym),
+    termSize = COALESCE(programmeTermSize, termSize)
+  WHERE
+    name = programmeName OR acronym = programmeAcr;
+
+  INSERT INTO
+    dbo.Programme(name, acronym, termSize)
+  SELECT
+    programmeName, programmeAcr, programmeTermSize
+  WHERE
+    NOT EXISTS(
+      SELECT id FROM dbo.Programme p
+      WHERE p.name = programmeName OR p.acronym=programmeAcr
+    );
+
+  -- Insert or update CalendarTerm
+  INSERT INTO
+    dbo.CalendarTerm(id, start_date, end_date)
+  SELECT
+    calendarTerm, NULL, NULL
+  WHERE
+    NOT EXISTS(
+      SELECT id FROM dbo.CalendarTerm c WHERE c.id=id
+    );
+
+END
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceCourse (
+  courseName VARCHAR(100),
+  courseAcr VARCHAR(50),
+  calendarSection VARCHAR(50),
+  calTerm VARCHAR(50))
+AS $$
+#print_strict_params ON
+DECLARE
+	classId INT;
+	cid INT;
+	classCalId INT;
+BEGIN
+  IF (courseName IS NULL AND courseAcr IS NULL) THEN
+    RAISE 'For the Course parameters, you must provide at least a "name" or an "acronym"';
+  END IF;
+
+  -- Insert or update Programme
+  -- coalesce: if any of the supplied parameters is null, use the previous value of the column instead
+  UPDATE
+    dbo.course
+  SET
+    name     = COALESCE(courseName, name),
+    acronym  = COALESCE(courseAcr, acronym)
+  WHERE
+    name = courseName OR acronym = courseAcr;
+
+  INSERT INTO
+    dbo.Course(name, acronym)
+  SELECT
+    courseName, courseAcr
+  WHERE
+    NOT EXISTS(
+      SELECT id FROM dbo.course
+      WHERE name = courseName OR acronym = courseAcr
+    );
+
+  SELECT id INTO cid FROM dbo.Course WHERE name = courseName OR acronym = courseAcr;
+
+  -- Creating the Class
+  -- At this point, the Class table does not have changeable columns
+  INSERT INTO dbo.Calendar DEFAULT VALUES
+  RETURNING id INTO classCalId;
+
+  INSERT INTO
+    dbo.Class (courseId, calendarTerm, calendar)
+  SELECT
+    cid,
+    calTerm,
+    classCalId
+  WHERE
+    NOT EXISTS(
+      SELECT id FROM dbo.Class
+      WHERE courseId = cid AND calendarTerm = calTerm
+    );
+    
+  SELECT id INTO classId FROM dbo.Class WHERE courseId = cid AND calendarTerm = calTerm;
+
+  raise notice '% course, % class', cid, classId;
+
+--     
+-- 
+-- CREATE TABLE dbo.Class (
+-- 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+-- 	courseId        INT REFERENCES dbo.Course(id),
+-- 	calendarTerm    VARCHAR(20) REFERENCES dbo.CalendarTerm(id),
+-- 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+-- 	UNIQUE(courseId, calendarTerm)
+-- );
+-- 
+-- CREATE TABLE dbo.ClassSection (
+-- 	id              VARCHAR(10),
+-- 	classId         INT REFERENCES dbo.Class(id),
+-- 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+--     PRIMARY KEY(id, classId)
+-- );
+
+--	INSERT INTO
+--    dbo.Calendar
+--  VALUES
+--    (DEFAULT) returning id INTO calid;
+--
+--	INSERT INTO
+--    dbo.Class(courseid, calendarterm, calendar)
+--  VALUES
+--	  (courseid, calterm, calid) RETURNING id INTO classid;
+
 END
 $$ LANGUAGE plpgsql;
