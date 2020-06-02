@@ -4,8 +4,6 @@ The goal of this document is to specify and represent the HTTP requests in the c
 
 In this initial phase the token issuing endpoint is not used as the client applications have the tokens statically coded.
 
-Also, the HTTP Exchanges between the Integration team and the Core backend with the Write API using the access token are unsafe as there is no protection in the transport and network layers (TLS/SSL), the write token can be eavesdropped.
-
 A final point, the write Access Token used by the Integration should not be present in the code that is uploaded to the public repository.
 
 

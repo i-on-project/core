@@ -30,30 +30,20 @@ E.g. structure of token table:
 ```
 CREATE TABLE dbo.Token(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    hash CHAR(64) UNIQUE, -- 64 hexa chars * 4 bits per char = 256 bits hash
-    isValid BOOLEAN,
-    scope_id INT REFERENCES dbo.scopes(id)
+    hash CHAR(64) UNIQUE,   -- 64 hexa chars * 4 bits per char = 256 bits hash
+    isValid BOOLEAN,        -- revocation status
+    claims VARCHAR(1000)    -- JSON claims, e.g. expiration time, creation date, scope...
 )
 ```
 
-# Claims Structures
-
-Associated to the token there can be a set of claims that provide additional information.
-e.g. issued at, expire time, subject...
-
-The token claims structures:
+E.g. claims object:
 ```
-CREATE TABLE dbo.iat (
-    token_id INT PRIMARY KEY REFERENCES dbo.Token(id),
-    issuedAt BIGINT -- miliseconds from creation since Unix epoch January 1 1970
-)
-```
-
-```
-CREATE TABLE dbo.exp (
-    token_id INT REFERENCES dbo.Token(id),
-    expireTime BIGINT 
-)
+{
+    "iat": 1591121200           -- The time at which the token was issued 
+    "exp": 1591121207,          -- The time of expiration (token should not be processed after)
+    "client_id": "s6BhdRkqt3",  -- Identifies the client that requested the token
+    "scope": "urn:org:ionproject:scopes:api:read"
+}
 ```
 
 
