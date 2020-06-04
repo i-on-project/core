@@ -1,10 +1,15 @@
 package org.ionproject.core.klass.sql
 
+import org.ionproject.core.common.Uri
+import org.ionproject.core.search.SearchableEntities
+import org.ionproject.core.search.sql.SearchData
+
 internal object KlassData {
     const val SCHEMA = "dbo"
     const val CLASS = "class"
 
     const val ID = "id"
+    const val DOCUMENT = "document"
     const val CID = "courseid"
     const val SID = "sid"
     const val ACR = "acronym"
@@ -19,6 +24,17 @@ internal object KlassData {
     const val CLASS_SECTION = "classSection"
     const val CLASS_SECTION_ID = "id"
     const val CLASS_SECTION_CLASS_ID = "classid"
+
+    const val SEARCH_CLASSES = """
+        select
+            '${SearchableEntities.CLASS}' as ${SearchData.TYPE}
+            CL.$ID as ${SearchData.ID},
+            CR.$COURSE_ACR || ' ' || $CAL_TERM as ${SearchData.NAME},
+            '${Uri.courses}' || CR.$ID || '/classes/' || CL.$CAL_TERM as ${SearchData.HREF} 
+        from $SCHEMA.$CLASS CL
+        join $SCHEMA.$COURSE CR on CL.$CID=CR.$COURSE_ID
+        where CL.$DOCUMENT @@ :query
+    """
 
     const val GET_CLASS_QUERY = """
         select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM

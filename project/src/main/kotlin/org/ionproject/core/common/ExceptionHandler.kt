@@ -1,7 +1,6 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
-import org.jdbi.v3.core.statement.UnableToCreateStatementException
 import org.postgresql.util.PSQLException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler

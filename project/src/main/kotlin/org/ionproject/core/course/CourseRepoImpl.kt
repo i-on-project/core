@@ -2,12 +2,12 @@ package org.ionproject.core.course
 
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.course.model.Course
 import org.ionproject.core.course.sql.CourseData.GET_COURSES_QUERY
 import org.ionproject.core.course.sql.CourseData.GET_COURSE_QUERY
 import org.ionproject.core.course.sql.CourseData.ID
 import org.ionproject.core.course.sql.CourseData.LIMIT
 import org.ionproject.core.course.sql.CourseData.OFFSET
-import org.ionproject.core.course.model.Course
 import org.ionproject.core.course.sql.CourseMapper
 import org.springframework.stereotype.Component
 

@@ -1,5 +1,9 @@
 package org.ionproject.core.programme.sql
 
+import org.ionproject.core.common.Uri
+import org.ionproject.core.search.SearchableEntities
+import org.ionproject.core.search.sql.SearchData
+
 internal object ProgrammeData {
   const val SCHEMA = "dbo"
   const val PROGRAMME = "programme"
@@ -8,6 +12,7 @@ internal object ProgrammeData {
   const val COURSE = "course"
   const val COURSE_ID = "courseid"
   const val COURSE_ACR = "courseAcr"
+  const val DOCUMENT = "document"
   const val ID = "id"
   const val PROGRAMME_ID = "programmeid"
   const val ACRONYM = "acronym"
@@ -15,6 +20,16 @@ internal object ProgrammeData {
   const val TERM_SIZE = "termsize"
   const val TERM_NUMBER = "termnumber"
   const val OPTIONAL = "optional"
+
+  const val SEARCH_PROGRAMMES = """
+    select
+      '${SearchableEntities.PROGRAMME}' as ${SearchData.TYPE},
+      $PROGRAMME_ID as ${SearchData.ID},
+      $NAME as ${SearchData.NAME},
+      '${Uri.programmes}/' || $PROGRAMME_ID as ${SearchData.HREF},
+    from $SCHEMA.$PROGRAMME
+    where $DOCUMENT @@ :query
+  """
 
   const val GET_PROGRAMMES_QUERY = """
     SELECT * FROM $SCHEMA.$PROGRAMME

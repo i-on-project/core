@@ -1,5 +1,6 @@
 package org.ionproject.core.common
 
+import org.ionproject.core.search.model.SearchQuery
 import org.springframework.web.util.UriTemplate
 import java.net.URI
 
@@ -90,6 +91,14 @@ object Uri {
 
     fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) =
         componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
+
+
+    // Search
+    const val search = "$version/search{?query,types,limit,page}"
+    val searchTemplate = UriTemplate(search)
+    fun forSearch(query: SearchQuery) : URI = searchTemplate.expand(query.query, query.types, query.limit, query.page)
+
+
 
     // custom link rel
     const val relClass = "/rel/class"
