@@ -3,7 +3,7 @@ name: Deploy Core on Google Compute Engine
 on:
   push:
     branches:
-      - release
+      - release/*
 
 env:
   GCP_PROJECT_ID: ${{ secrets.GCP_PROJ_ID }}
