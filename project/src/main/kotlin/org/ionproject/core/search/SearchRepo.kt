@@ -16,6 +16,8 @@ object SearchableEntities {
     const val CLASS = "class"
     const val CLASS_SECTION = "class-section"
     const val CALENDAR_TERM = "calendar-term"
+
+    val ALL = listOf(PROGRAMME, COURSE, CLASS, CLASS_SECTION, CALENDAR_TERM)
 }
 
 
