@@ -6,7 +6,8 @@ import org.ionproject.core.search.sql.SearchData
 
 internal object CourseData {
     const val SCHEMA = "dbo"
-    const val COURSE = "$SCHEMA.CourseWithTerm"
+    const val COURSE = "course"
+    const val COURSE_WITH_TERM = "$SCHEMA.CourseWithTerm"
     const val ID = "id"
     const val ACR = "acronym"
     const val DOCUMENT = "document"
@@ -17,21 +18,22 @@ internal object CourseData {
 
     const val SEARCH_COURSES = """
         select
-            '${SearchableEntities.COURSE}' as ${SearchData.TYPE}
-            $ID as ${SearchData.ID},
+            '${SearchableEntities.COURSE}' as ${SearchData.TYPE},
+            $ID::VARCHAR(32) as ${SearchData.ID},
             $NAME as ${SearchData.NAME},
-            '${Uri.courses}/' || $ID as ${SearchData.HREF}
+            '${Uri.courses}/' || $ID as ${SearchData.HREF},
+            ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
         from $SCHEMA.$COURSE
-        where $DOCUMENT @@ : query
+        where $DOCUMENT @@ ${SearchData.QUERY}
             
     """
 
     const val GET_COURSES_QUERY = """select $ID, $ACR, $NAME, $CAL_TERM
-        from $COURSE
+        from $COURSE_WITH_TERM
         order by $ID
         offset :$OFFSET limit :$LIMIT"""
 
     const val GET_COURSE_QUERY = """select $ID, $ACR, $NAME, $CAL_TERM
-        from $COURSE
+        from $COURSE_WITH_TERM
         where $ID=:$ID"""
 }

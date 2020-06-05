@@ -8,24 +8,18 @@ class SearchQuery private constructor(
     val limit: Int,
     val page: Int
 ) {
+    val args: List<String> by lazy {
+        query.split(' ').filter{ it.isNotEmpty() }.map { wildcard(it) }
+    }
+
     companion object {
-        operator fun invoke(query: String, types: List<String>, limit: Int, page: Int) : SearchQuery {
-
-            val validTypes = types.map {
-                try {
-                    SearchableEntity.valueOf(it)
-                } catch (e: IllegalArgumentException) {
-                    throw InvalidSearchTypeException(it)
-                }
-            }
-
-            return SearchQuery(
-                wildcard(query), validTypes, limit, page
+        operator fun invoke(query: String, types: List<String>, limit: Int, page: Int) : SearchQuery =
+            SearchQuery(
+                query, types.map { SearchableEntity.parse(it) }, limit, page
             )
-        }
 
         private fun wildcard(orig: String) : String {
-            return orig.replace(" ",":* ")
+            return "$orig:*"
         }
     }
 }

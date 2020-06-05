@@ -1,6 +1,7 @@
 package org.ionproject.core.calendarTerm.sql
 
 import org.ionproject.core.common.Uri
+import org.ionproject.core.course.sql.CourseData
 import org.ionproject.core.search.SearchableEntities
 import org.ionproject.core.search.sql.SearchData
 
@@ -19,12 +20,13 @@ internal object CalendarTermData {
 
     const val SEARCH_CALENDAR_TERMS = """
         select
-            '${SearchableEntities.CALENDAR_TERM}' as ${SearchData.TYPE}
-            $ID as ${SearchData.ID},
+            '${SearchableEntities.CALENDAR_TERM}' as ${SearchData.TYPE},
+            $ID::VARCHAR(32) as ${SearchData.ID},
             $ID as ${SearchData.NAME},
-            '${Uri.calendarTerms}/' || $ID as ${SearchData.HREF}
+            '${Uri.calendarTerms}/' || $ID as ${SearchData.HREF},
+            ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
         from $SCHEMA.$CALENDAR_TERM
-        where $DOCUMENT @@ :query
+        where $DOCUMENT @@ ${SearchData.QUERY}
     """
 
     const val CALENDAR_TERMS_QUERY = """

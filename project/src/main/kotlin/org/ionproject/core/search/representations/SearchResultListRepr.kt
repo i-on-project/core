@@ -12,6 +12,8 @@ private const val ITEM = "item"
 private const val SELF = "self"
 private const val SEARCH = "search"
 private const val RESULT = "result"
+private const val ID = "id"
+private const val NAME = "name"
 
 fun SearchResultCollection.toSearchResultListRepr(): Siren =
     SirenBuilder()
@@ -20,14 +22,14 @@ fun SearchResultCollection.toSearchResultListRepr(): Siren =
             map { it.toSearchResultListItemRepr() }
         )
         .link(SELF, href = Uri.forSearch(resultOf))
-            // TODO
+        // TODO("Next and previous relations")
         .toSiren()
 
 fun SearchResult.toSearchResultListItemRepr() : EmbeddedRepresentation =
     SirenBuilder(
         mapOf(
-            "id" to id,
-            "name" to name
+            ID to id,
+            NAME to name
         )
     )
         .klass(type, SEARCH, RESULT)

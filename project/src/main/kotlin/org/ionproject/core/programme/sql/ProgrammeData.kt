@@ -24,11 +24,12 @@ internal object ProgrammeData {
   const val SEARCH_PROGRAMMES = """
     select
       '${SearchableEntities.PROGRAMME}' as ${SearchData.TYPE},
-      $PROGRAMME_ID as ${SearchData.ID},
+      $ID::VARCHAR(32) as ${SearchData.ID},
       $NAME as ${SearchData.NAME},
-      '${Uri.programmes}/' || $PROGRAMME_ID as ${SearchData.HREF},
+      '${Uri.programmes}/' || $ID as ${SearchData.HREF},
+      ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
     from $SCHEMA.$PROGRAMME
-    where $DOCUMENT @@ :query
+    where $DOCUMENT @@ ${SearchData.QUERY}
   """
 
   const val GET_PROGRAMMES_QUERY = """
