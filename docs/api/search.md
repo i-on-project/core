@@ -11,8 +11,8 @@
 
 ## Sub-entities
 ### Class
-All search results will be sub-entities with both `"search"` and `"result"` strings in their `class`. The remaining strings will dictate what kind of resource the result represents.
-For example, a sub-entity with `"class" : [ "course", "search", "result" ]` is a `Course` search result.
+Will dictate what kind of resource the result represents.
+For example, a sub-entity with `"class" : [ "course" ]` is a `Course` search result.
 
 ### Properties
 #### Schema
@@ -30,7 +30,6 @@ All the sub-entities will have the same `properties` schema, which will be:
             "type": "integer",
             "title": "Id of the entity",
             "description": "The id of the entity represented in the search result.",
-            "default": 0,
             "examples": [
                 12
             ]
@@ -53,8 +52,7 @@ All the sub-entities will have the same `properties` schema, which will be:
 ```
 
 ### Links
-Since the sub-entity is more of a link to a resource than a representation of one a `link`  with the `self` relation doesn't exist. Consequently, a `link` object with `rel` equal to the `class` minus `"search"` & `"result"`, will provide a `href` to the resource.
-Example: `"class": [ "class", "section", "search", "result" ]` means that to fetch this resource the link with `"rel": [ "class", "section" ]` is the one whose `href` is needed.
+The sub-entity will have a link to the resource with the `self` relation.
 
 ## Links
 The collection provides some `links`
@@ -76,7 +74,7 @@ The collection provides some `links`
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/1"
                 }
             ]
@@ -90,7 +88,7 @@ The collection provides some `links`
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4"
                 }
             ]
@@ -104,7 +102,7 @@ The collection provides some `links`
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "class" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4/classes/1920i"
                 }
             ]
@@ -117,7 +115,7 @@ The collection provides some `links`
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/5"
                 }
             ]
@@ -131,7 +129,7 @@ The collection provides some `links`
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "todo" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4/21D/calendar/545"
                 }
             ]

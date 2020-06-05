@@ -56,7 +56,7 @@ The output format of a search for `Lab` could be something along the lines of
     "class": [ "search", "result","collection" ],
     "entities": [
         {
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
                 "id": 1,
                 "name": "Software Laboratory"
@@ -64,13 +64,13 @@ The output format of a search for `Lab` could be something along the lines of
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/1"
                 }
             ]
         },
         {
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
                 "id": 4,
                 "name": "Hardware Laboratory"
@@ -78,13 +78,13 @@ The output format of a search for `Lab` could be something along the lines of
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4"
                 }
             ]
         },
         {
-            "class": [ "class", "search", "result" ],
+            "class": [ "class" ],
             "properties": {
                 "id": 56,
                 "name": "Hardware Laboratory 1920i"
@@ -92,12 +92,12 @@ The output format of a search for `Lab` could be something along the lines of
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "class" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4/classes/1920i"
                 }
             ]
         },{
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
                 "id": 5,
                 "name": "Computer IT Laboratory"
@@ -105,13 +105,13 @@ The output format of a search for `Lab` could be something along the lines of
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "course" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/5"
                 }
             ]
         },
         {
-            "class": [ "todo", "search", "result" ],
+            "class": [ "todo" ],
             "properties": {
                 "id": 545,
                 "name": "Hardware Laboratory - First assignment"
@@ -119,7 +119,7 @@ The output format of a search for `Lab` could be something along the lines of
             "rel": [ "item" ],
             "links": [
                 {
-                    "rel": [ "todo" ],
+                    "rel": [ "self" ],
                     "href": "/v0/courses/4/21D/calendar/545"
                 }
             ]
