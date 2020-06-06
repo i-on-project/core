@@ -19,6 +19,10 @@ cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
 # Gen schema diff
 migra --unsafe "$DB_URL" "$DEV_DB_URL" | tee "$schema_diff_file"
 
+echo "create table dbo.course(id int primary key);" >"$schema_diff_file"
+cat "$schema_diff_file"
+
+
 if [ -n "$1" ] && [ "$1" = "apply" ]; then
     psql -Atx "$DB_URL" -1 -f "$schema_diff_file"
 fi
