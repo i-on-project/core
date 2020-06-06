@@ -5,7 +5,9 @@ class SearchResultCollection(
     val results: List<SearchResult>
 ) : Iterable<SearchResult> {
 
-    override fun iterator(): Iterator<SearchResult> = results.iterator()
+    override fun iterator(): Iterator<SearchResult> =
+        results.iterator()
 }
 
-fun searchResultsOf(searchQuery: SearchQuery, vararg results: SearchResult) : SearchResultCollection = SearchResultCollection(searchQuery, results.toList())
+fun searchResultsOf(searchQuery: SearchQuery, vararg results: SearchResult): SearchResultCollection =
+    SearchResultCollection(searchQuery, results.toList())

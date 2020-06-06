@@ -25,7 +25,7 @@ fun SearchResultCollection.toSearchResultListRepr(): Siren =
         // TODO("Next and previous relations")
         .toSiren()
 
-fun SearchResult.toSearchResultListItemRepr() : EmbeddedRepresentation =
+fun SearchResult.toSearchResultListItemRepr(): EmbeddedRepresentation =
     SirenBuilder(
         mapOf(
             ID to id,

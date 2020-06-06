@@ -7,16 +7,15 @@ import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.search.model.SearchResultCollection
 import org.ionproject.core.search.representations.toSearchResultListRepr
 import org.ionproject.core.utils.assertSiren
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-private const val COLLECTION = "collection"
-private const val ITEM = "item"
-private const val SELF = "self"
-private const val SEARCH = "search"
-private const val RESULT = "result"
-private const val ID = "id"
-private const val NAME = "name"
+const val COLLECTION = "collection"
+const val ITEM = "item"
+const val SELF = "self"
+const val SEARCH = "search"
+const val RESULT = "result"
+const val ID = "id"
+const val NAME = "name"
 
 class SearchSirenTest {
 

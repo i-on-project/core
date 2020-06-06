@@ -31,7 +31,7 @@ internal object KlassData {
             '${SearchableEntities.CLASS}' as ${SearchData.TYPE},
             CL.$ID::VARCHAR(32) as ${SearchData.ID},
             CR.$COURSE_ACR || ' ' || $CAL_TERM as ${SearchData.NAME},
-            '${Uri.courses}' || CR.$ID || '/classes/' || CL.$CAL_TERM as ${SearchData.HREF},
+            '${Uri.courses}/' || CR.$ID || '/classes/' || CL.$CAL_TERM as ${SearchData.HREF},
             ts_rank(CR.$DOCUMENT || CL.$DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
         from $SCHEMA.$CLASS CL
         join $SCHEMA.$COURSE CR on CL.$CID=CR.$COURSE_ID

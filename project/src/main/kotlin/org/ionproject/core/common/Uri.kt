@@ -95,8 +95,8 @@ object Uri {
 
     // Search
     const val search = "$version/search"
-    val searchTemplate = UriTemplate("$search?query={query}&types={types}&limit={limit}&page={page}}")
-    fun forSearch(query: SearchQuery) : URI = searchTemplate.expand(query.query, query.types, query.limit, query.page)
+    val searchTemplate = UriTemplate("$search?query={query}&types={types}&limit={limit}&page={page}")
+    fun forSearch(query: SearchQuery) : URI = searchTemplate.expand(query.query, query.types.joinToString(","), query.limit, query.page)
 
 
 

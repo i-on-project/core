@@ -12,7 +12,7 @@ object SearchData {
     const val RANK = "rank"
     const val QUERY = "(SELECT * FROM q)"
 
-    fun buildSearchQuery(searchQuery: SearchQuery) : String =
+    fun buildSearchQuery(searchQuery: SearchQuery): String =
         buildString {
             appendln(" WITH q AS ( SELECT to_tsquery(:query) )")
 
@@ -27,7 +27,7 @@ object SearchData {
             appendln("LIMIT :limit")
         }
 
-    fun Query.bindSearchQuery(searchQuery: SearchQuery) : Query {
+    fun Query.bindSearchQuery(searchQuery: SearchQuery): Query {
         bind("query", searchQuery.query.replace(" ", ":* | ") + ":*")
         bind("offset", (searchQuery.page - 1) * searchQuery.limit)
         bind("limit", searchQuery.limit)

@@ -8,7 +8,6 @@ import org.ionproject.core.programme.sql.ProgrammeData
 import org.ionproject.core.search.model.InvalidSearchTypeException
 import org.ionproject.core.search.model.SearchQuery
 import org.ionproject.core.search.model.SearchResultCollection
-import java.lang.IllegalArgumentException
 
 object SearchableEntities {
     const val PROGRAMME = "programme"
@@ -20,7 +19,6 @@ object SearchableEntities {
     val ALL = listOf(PROGRAMME, COURSE, CLASS, CLASS_SECTION, CALENDAR_TERM)
 }
 
-
 enum class SearchableEntity(
     private val alternateName: String
 ) {
@@ -30,10 +28,12 @@ enum class SearchableEntity(
     CLASS_SECTION(SearchableEntities.CLASS_SECTION),
     CALENDAR_TERM(SearchableEntities.CALENDAR_TERM);
 
-    override fun toString(): String = alternateName
+    override fun toString(): String =
+        alternateName
 
     companion object {
-        const val ALL = "${SearchableEntities.PROGRAMME},${SearchableEntities.COURSE},${SearchableEntities.CLASS},${SearchableEntities.CLASS_SECTION},${SearchableEntities.CALENDAR_TERM}"
+        const val ALL =
+            "${SearchableEntities.PROGRAMME},${SearchableEntities.COURSE},${SearchableEntities.CLASS},${SearchableEntities.CLASS_SECTION},${SearchableEntities.CALENDAR_TERM}"
         val QUERY_MAP = mapOf(
             PROGRAMME to ProgrammeData.SEARCH_PROGRAMMES,
             COURSE to CourseData.SEARCH_COURSES,
@@ -41,10 +41,12 @@ enum class SearchableEntity(
             CLASS_SECTION to ClassSectionData.SEARCH_CLASS_SECTIONS,
             CALENDAR_TERM to CalendarTermData.SEARCH_CALENDAR_TERMS
         )
-        fun parse(name: String): SearchableEntity = values().find { it.alternateName == name } ?: throw InvalidSearchTypeException(name)
+
+        fun parse(name: String): SearchableEntity =
+            values().find { it.alternateName == name } ?: throw InvalidSearchTypeException(name)
     }
 }
 
 interface SearchRepo {
-    fun search(query: SearchQuery) : SearchResultCollection
+    fun search(query: SearchQuery): SearchResultCollection
 }
