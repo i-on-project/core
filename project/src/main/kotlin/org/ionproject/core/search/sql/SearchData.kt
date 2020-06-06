@@ -22,7 +22,7 @@ object SearchData {
                 }.joinToString("UNION\n")
             )
 
-            appendln("order by $RANK desc, $NAME asc")
+            appendln("order by $RANK desc, $HREF asc")
             appendln("OFFSET :offset")
             appendln("LIMIT :limit")
         }

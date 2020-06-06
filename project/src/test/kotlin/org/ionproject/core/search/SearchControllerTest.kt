@@ -15,6 +15,7 @@ internal class SearchControllerTest : ControllerTester() {
         const val defaultLimit = 10
         const val defaultPage = 1
         val results = listOf(
+            SearchResult(SearchableEntities.COURSE, "1", "Software Laboratory", URI.create("/v0/courses/1")),
             SearchResult(SearchableEntities.CLASS, "4", "SL 1718i", URI.create("/v0/courses/1/classes/1718i")),
             SearchResult(SearchableEntities.CLASS_SECTION, "1D", "SL 1718i 1D", URI.create("/v0/courses/1/classes/1718i/1D")),
             SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1718i 1N", URI.create("/v0/courses/1/classes/1718i/1N")),
@@ -33,8 +34,7 @@ internal class SearchControllerTest : ControllerTester() {
             SearchResult(SearchableEntities.CLASS_SECTION, "2D", "SL 1819v 2D", URI.create("/v0/courses/1/classes/1819v/2D")),
             SearchResult(SearchableEntities.CLASS, "16", "SL 1920i", URI.create("/v0/courses/1/classes/1920i")),
             SearchResult(SearchableEntities.CLASS_SECTION, "1D", "SL 1920i 1D", URI.create("/v0/courses/1/classes/1920i/1D")),
-            SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1920i 1N", URI.create("/v0/courses/1/classes/1920i/1N")),
-            SearchResult(SearchableEntities.CLASS_SECTION, "2D", "SL 1920i 2D", URI.create("/v0/courses/1/classes/1920i/2D"))
+            SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1920i 1N", URI.create("/v0/courses/1/classes/1920i/1N"))
         )
     }
 
