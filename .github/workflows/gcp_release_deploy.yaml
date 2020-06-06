@@ -71,7 +71,7 @@ jobs:
             chmod +x cloud_sql_proxy &&\
             ./cloud_sql_proxy -instances=$DB_INSTANCE=tcp:$DB_PROXY_PORT &
 
-      - name: Schema diff
+      - name: Schema Migration Attempt
         working-directory: ./project/src/test/resources/schema_diff
         run: |
           docker build -t $SCHEMA_DIFF_IMG . &&\
@@ -79,7 +79,7 @@ jobs:
               -e DEV_DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_DEV_NAME?user=$DB_USER&password=$DB_PASS" \
               -e DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" \
               -v "$(pwd)/../docker:/mnt" \
-              $SCHEMA_DIFF_IMG apply 2>/dev/null
+              $SCHEMA_DIFF_IMG apply
 
       - name: Kill proxy
         run: pkill cloud_sql_proxy

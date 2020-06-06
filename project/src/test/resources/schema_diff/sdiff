@@ -13,6 +13,7 @@ scripts_dir="/mnt/sql"
 psql -Atx "$DB_URL" -1 -c "select" >/dev/null
 psql -Atx "$DEV_DB_URL" -1 -c "select" >/dev/null
 
+printf "Building the most recent schema in the development DB\n" >&2
 cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
   psql -Atx "$DEV_DB_URL" -1 >&2
 
@@ -20,10 +21,6 @@ cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
 printf "\\set ON_ERROR_STOP on\n" >"$schema_diff_file"
 migra --unsafe "$DB_URL" "$DEV_DB_URL" | tee -a "$schema_diff_file"
 
-printf "\\set ON_ERROR_STOP on \n create table dbo.course(id int primary key);\n" >"$schema_diff_file"
-cat "$schema_diff_file"
-
-
 if [ -n "$1" ] && [ "$1" = "apply" ]; then
-    psql -Atx "$DB_URL" -1 -f "$schema_diff_file"
+    psql -Atx "$DB_URL" -1 -f "$schema_diff_file" >&2
 fi
