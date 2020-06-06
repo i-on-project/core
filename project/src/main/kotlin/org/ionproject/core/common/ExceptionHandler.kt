@@ -1,8 +1,8 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
-import org.jdbi.v3.core.statement.UnableToCreateStatementException
 import org.postgresql.util.PSQLException
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -19,6 +19,20 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
+
+    @ExceptionHandler(value = [BadRequestException::class])
+    private fun handleBadRequestException(
+      ex: BadRequestException,
+      request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+          "",
+          "Bad request",
+          400,
+          ex.localizedMessage,
+          request.requestURI
+        )
+    }
 
     @ExceptionHandler(value = [PSQLException::class])
     private fun handleUnableToCreateStatementException(
@@ -104,15 +118,39 @@ class ExceptionHandler {
      * tries to access a restricted resource.
      */
     @ExceptionHandler(value = [UnauthenticatedUserException::class])
-    private fun handleUnauthenticatedAccess() {
+    private fun handleUnauthenticatedAccess(
+        ex: UnauthenticatedUserException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        val headers = HttpHeaders()
+        headers.add("WWW-Authenticate", "Bearer realm=\"I-ON\"")
+
+        return handleResponse(
+            "",
+            "UNAUTHORIZED",
+            401,
+            ex.localizedMessage,
+            request.requestURI,
+            headers
+        )
     }
 
     /*
      * Occurs when an Authenticated User
      * tries to access a resource that has no permissions for.
      */
-    @ExceptionHandler(value = [ProhibitedUserException::class])
-    private fun handleProhibitedAccess() {
+    @ExceptionHandler(value = [ForbiddenActionException::class])
+    private fun handleForbiddenActionException(
+      ex: ForbiddenActionException,
+      request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+          "",
+          "FORBIDDEN",
+          403,
+          ex.localizedMessage,
+          request.requestURI
+        )
     }
 
     private fun handleResponse(
@@ -120,11 +158,14 @@ class ExceptionHandler {
         title: String,
         status: Int,
         detail: String,
-        instance: String
+        instance: String,
+        customHeaders: HttpHeaders = HttpHeaders()
     ): ResponseEntity<ProblemJson> {
+        customHeaders.add("Content-Type", Media.PROBLEM_JSON)
+
         return ResponseEntity
             .status(status)
-            .header("Content-Type", Media.PROBLEM_JSON)
+            .headers(customHeaders)
             .body(ProblemJson(type, title, status, detail, instance))
     }
 

@@ -8,6 +8,7 @@ import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
+import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
@@ -69,6 +70,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LoggerInterceptor())
+        registry.addInterceptor(ControlAccessInterceptor())
         registry.addInterceptor(PageLimitQueryParamInterceptor())
             .addPathPatterns("/v?/calendar-terms*")
             .addPathPatterns("/v?/courses/**")

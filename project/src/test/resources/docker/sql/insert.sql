@@ -27,6 +27,73 @@ INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALU
 (1, 5, FALSE, 6),
 (2, 3, FALSE, 1);
 
+
+-- Access Manager Mock Data for beta version
+--Notes:
+--exp: 1691121207 on first 2 tokens is around the year 2023 
+--client id holds no meaning for now as there is no registration/authentication method
+-- last 2 tokens are expired and revoked for testing purposes
+
+INSERT INTO dbo.Token (hash, isValid, claims) VALUES 
+('6fa0d86dc9c0ffd02621c6e04c1ec2fce530a959337c010e96b48eded287dffd', TRUE, 
+'{"iat": 1591121200, "exp":1691121207, "client_id":1, "scope": "urn:org:ionproject:scopes:api:read"}'),
+('ab4989539d8d4215650e89865e1338b9b2de000007690dcbe1e9c2ea0ad4f17d', TRUE, 
+'{"iat": 1591121200, "exp":1691121207, "client_id":2, "scope": "urn:org:ionproject:scopes:api:write"}'),
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 
+'{"iat": 1591121200, "exp":1591121207, "client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE,
+'{"iat": 1591121200, "exp":1691121207, "client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}');
+
+
+INSERT INTO dbo.scopes (scope) VALUES
+('urn:org:ionproject:scopes:api:read'),
+('urn:org:ionproject:scopes:api:write'),
+('urn:org:ionproject:scopes:token:issue');
+
+/*
+* Don't use wildcards in the paths
+* e.g. /v0/courses which a user may have permission to access
+* can be tricked into accepting a request to a resource he is not allowed.
+* e.g. GET "/v0/courses/../programmes"
+* if the code accepts anything towards "/v0/courses*"
+*/
+INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
+(1, 'GET', '*','/'),
+(1, 'GET', 'v0', 'courses'),
+(1, 'GET', 'v0', 'courses/{id}'),
+(1, 'GET', 'v0', 'courses/{id}/classes'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}/{sid}'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}/calendar'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}/{sid}/calendar'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}/calendar/{cmpid}'),
+(1, 'GET', 'v0', 'courses/{id}/classes/{calterm}/{sid}/calendar/{cmpid}'),
+(1, 'GET', 'v0', 'programmes'),
+(1, 'GET', 'v0', 'programmes/{id}'),
+(1, 'GET', 'v0', 'programmes/{id}/offers'),
+(1, 'GET', 'v0', 'programmes/{id}/offers/{id}'),
+(1, 'GET', 'v0', 'calendar-terms'),
+(1, 'GET', 'v0', 'calendar-terms/{calterm}'),
+(2, 'POST', 'v0', 'courses'),
+(2, 'POST', 'v0', 'courses/{id}'),
+(2, 'POST', 'v0', 'courses/{id}/classes'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}/{sid}'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}/calendar'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}/{sid}/calendar'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}/calendar/{cmpid}'),
+(2, 'POST', 'v0', 'courses/{id}/classes/{calterm}/{sid}/calendar/{cmpid}'),
+(2, 'POST', 'v0', 'programmes'),                                            
+(2, 'POST', 'v0', 'programmes/{id}'),                                       
+(2, 'POST', 'v0', 'programmes/{id}/offers'),
+(2, 'POST', 'v0', 'programmes/{id}/offers/{id}'),
+(2, 'POST', 'v0', 'calendar-terms'),
+(2, 'POST', 'v0', 'calendar-terms/{calterm}');
+
+
+
+
+
 CALL dbo.sp_classCalendarCreate('1718v', 1);
 CALL dbo.sp_classCalendarCreate('1718v', 2);
 CALL dbo.sp_classCalendarCreate('1718v', 3);
@@ -946,31 +1013,3 @@ CALL dbo.newEvent(15,
 
 
 -- End of 1920v calendar information --
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
