@@ -11,6 +11,13 @@ env:
   GCP_INSTANCE_ZONE: europe-west2-c
   GCP_REPO: eu.gcr.io
   IMAGE_NAME: core-release-img
+  SCHEMA_DIFF_IMG: schema-diff-img
+  DB_PROXY_PORT: 10025
+  DB_DEV_NAME: ${{ secrets.DB_DEV_NAME }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB_INSTANCE: ${{ secrets.DB_INSTANCE }}
 
 jobs:
   build:
@@ -57,6 +64,21 @@ jobs:
 
       - name: Configure docker auth
         run: gcloud auth configure-docker
+
+      - name: Set DB Proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy &&\
+            chmod +x cloud_sql_proxy &&\
+            ./cloud_sql_proxy -instances=$DB_INSTANCE=tcp:$DB_PROXY_PORT &
+
+      - name: Schema diff
+        working-directory: ./project/src/test/resources/schema_diff
+        run: |
+          docker build -t $SCHEMA_DIFF_IMG . &&\
+            docker run --rm --network="host" -e DEV_DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_DEV_NAME?user=$DB_USER&password=$DB_PASS" -e DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" -v "$(pwd)/../docker:/mnt" $SCHEMA_DIFF_IMG
+
+      - name: Kill proxy
+        run: pkill cloud_sql_proxy
 
       # Docker steps:
       - name: Rebuild docker image

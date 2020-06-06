@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Argument $1 == "apply" -> Apply the generated schema diff to the main DB
+# Evvar $DEV_DB_URL -> URL to the dev DB
+# Evvar $DB_URL     -> URL to the release DB
+
+set -e
+
+schema_diff_file="/tmp/schema_diff"
+scripts_dir="/mnt/sql"
+
+# Test connection
+psql -Atx "$DB_URL" -1 -c "select" >/dev/null
+psql -Atx "$DEV_DB_URL" -1 -c "select" >/dev/null
+
+cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
+  psql -Atx "$DEV_DB_URL" -1 >&2
+
+# Gen schema diff
+migra --unsafe "$DB_URL" "$DEV_DB_URL" | tee "$schema_diff_file"
+
+if [ -n "$1" ] && [ "$1" = "apply" ]; then
+    psql -Atx "$DB_URL" -1 -f "$schema_diff_file"
+fi
