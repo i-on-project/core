@@ -1,7 +1,6 @@
 package org.ionproject.core.search
 
 import org.ionproject.core.common.Media
-import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
@@ -80,24 +79,7 @@ internal class SearchControllerTest : ControllerTester() {
         types: List<String> = SearchableEntities.ALL,
         uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI)
     {
-        val expected = SirenBuilder()
-            .klass(SEARCH, RESULT, COLLECTION)
-            .entities(
-                results.filter { types.contains(it.type) }.drop((page - 1) * limit).take(limit).map {
-                    SirenBuilder(
-                        mapOf(
-                            ID to it.id,
-                            NAME to it.name
-                        )
-                    )
-                        .klass(it.type, SEARCH, RESULT)
-                        .rel(ITEM)
-                        .link(SELF, href = it.href)
-                        .toEmbed()
-                }
-            )
-            .link(SELF, href = URI.create("/v0/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
-            .toSiren()
+        val expected = SearchSirenTest.buildSiren(search, limit, page, types, results.filter { types.contains(it.type) }.drop((page - 1) * limit).take(limit))
 
         mocker.get(uriBuilder(search, limit, page, types))
             .andDo { print() }

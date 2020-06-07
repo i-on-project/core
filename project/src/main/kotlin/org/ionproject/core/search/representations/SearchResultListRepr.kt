@@ -32,7 +32,7 @@ fun SearchResult.toSearchResultListItemRepr(): EmbeddedRepresentation =
             NAME to name
         )
     )
-        .klass(type, SEARCH, RESULT)
+        .klass(type)
         .rel(ITEM)
         .link(SELF, href = href)
         .toEmbed()

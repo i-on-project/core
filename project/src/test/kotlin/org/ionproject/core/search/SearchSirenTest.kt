@@ -1,5 +1,6 @@
 package org.ionproject.core.search
 
+import org.ionproject.core.common.Siren
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
 import org.ionproject.core.search.model.SearchQuery
@@ -8,6 +9,7 @@ import org.ionproject.core.search.model.SearchResultCollection
 import org.ionproject.core.search.representations.toSearchResultListRepr
 import org.ionproject.core.utils.assertSiren
 import org.junit.jupiter.api.Test
+import java.net.URI
 
 const val COLLECTION = "collection"
 const val ITEM = "item"
@@ -19,7 +21,7 @@ const val NAME = "name"
 
 class SearchSirenTest {
 
-    private companion object {
+    companion object {
         val genericQuery = SearchQuery(
             "Test",
             SearchableEntities.ALL,
@@ -46,7 +48,11 @@ class SearchSirenTest {
 
         val noResultsSiren = buildSiren(noResultsQuery, noResultsResults)
 
-        fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>) =
+        fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>) : Siren {
+            return buildSiren(searchQuery.query, searchQuery.limit, searchQuery.page, searchQuery.types.map { it.toString() }, results)
+        }
+
+        fun buildSiren(search: String, limit: Int, page: Int, types: List<String>, results: List<SearchResult>) : Siren =
             SirenBuilder()
                 .klass(SEARCH, RESULT, COLLECTION)
                 .entities(
@@ -57,13 +63,13 @@ class SearchSirenTest {
                                 NAME to it.name
                             )
                         )
-                            .klass(it.type, SEARCH, RESULT)
+                            .klass(it.type)
                             .rel(ITEM)
                             .link(SELF, href = it.href)
                             .toEmbed()
                     }
                 )
-                .link(SELF, href = Uri.forSearch(searchQuery))
+                .link(SELF, href = URI.create("/v0/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
                 .toSiren()
     }
 
