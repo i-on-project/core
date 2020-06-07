@@ -20,18 +20,20 @@ All the sub-entities will have the same `properties` schema, which will be:
 ```json
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://github.com/i-on-project/core/docs/api/search.md#schema",
+    "$id": "https://github.com/i-on-project/core/blob/master/docs/api/search.md#schema",
     "type": "object",
     "title": "Search Result properties schema",
     "description": "This is the schema for Search Result properties.",
     "properties": {
         "id": {
             "$id": "#/properties/id",
-            "type": "integer",
+            "type": "string",
             "title": "Id of the entity",
             "description": "The id of the entity represented in the search result.",
             "examples": [
-                12
+                "12",
+                "1D",
+                "1819v"
             ]
         },
         "name": {
@@ -66,9 +68,9 @@ The collection provides some `links`
     "class": [ "search", "result", "collection" ],
     "entities": [
         {
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
-                "id": 1,
+                "id": "1",
                 "name": "Software Laboratory"
             },
             "rel": [ "item" ],
@@ -80,9 +82,9 @@ The collection provides some `links`
             ]
         },
         {
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
-                "id": 4,
+                "id": "4",
                 "name": "Hardware Laboratory"
             },
             "rel": [ "item" ],
@@ -94,10 +96,10 @@ The collection provides some `links`
             ]
         },
         {
-            "class": [ "class", "search", "result" ],
+            "class": [ "class" ],
             "properties": {
-                "id": 56,
-                "name": "Hardware Laboratory 1920i"
+                "id": "56",
+                "name": "HL 1920i"
             },
             "rel": [ "item" ],
             "links": [
@@ -107,9 +109,9 @@ The collection provides some `links`
                 }
             ]
         },{
-            "class": [ "course", "search", "result" ],
+            "class": [ "course" ],
             "properties": {
-                "id": 5,
+                "id": "5",
                 "name": "Computer IT Laboratory"
             },
             "rel": [ "item" ],
@@ -121,9 +123,9 @@ The collection provides some `links`
             ]
         },
         {
-            "class": [ "todo", "search", "result" ],
+            "class": [ "todo" ],
             "properties": {
-                "id": 545,
+                "id": "545",
                 "name": "Hardware Laboratory - First assignment"
             },
             "rel": [ "item" ],
