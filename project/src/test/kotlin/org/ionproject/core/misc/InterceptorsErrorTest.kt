@@ -20,7 +20,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun badQueryParamsTest() {
-        doGet(badQueryParamsRequest)
+        doGet(badQueryParamsRequest) {
+          header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -29,7 +31,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun goodQueryParamsTest() {
-        doGet(goodQueryParamsRequest)
+        doGet(goodQueryParamsRequest) {
+          header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isOk}
@@ -38,7 +42,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun excedingQueryParamsLimits() {
-        doGet(excedingQueryParamsLimit)
+        doGet(excedingQueryParamsLimit) {
+          header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isBadRequest}

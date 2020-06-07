@@ -243,6 +243,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClass() {
         mocker.get(Uri.forCalendarComponentByClass(courseID, calTerm, componentID)) {
             accept = Media.MEDIA_SIREN
+            header("Authorization", read_token)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -254,6 +255,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClassSection() {
         mocker.get(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5")) {
             accept = Media.MEDIA_SIREN
+            header("Authorization", read_token)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -268,7 +270,10 @@ END:VCALENDAR"""
     @Test
     fun getCalendarByClass_And_Compare() {
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-      { accept = Media.MEDIA_TEXT_CALENDAR }
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", read_token)
+      }
         .andReturn()
         .response
         .contentAsString
@@ -289,7 +294,10 @@ END:VCALENDAR"""
     @Test
     fun getCalendarByClassSection_And_Compare() {
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-      { accept = Media.MEDIA_TEXT_CALENDAR }
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", read_token)
+      }
         .andReturn()
         .response
         .contentAsString
@@ -306,7 +314,10 @@ END:VCALENDAR"""
     fun checkIfValidCalClass() {
       //Get the core calendar representation
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-      { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", read_token)
+      }.andReturn()
         .response.contentAsString
 
       Assertions.assertEquals(
@@ -317,7 +328,10 @@ END:VCALENDAR"""
     @Test
     fun checkIfValidCalClassSection() {
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-      { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", read_token)
+      }.andReturn()
         .response.contentAsString
 
       Assertions.assertEquals(

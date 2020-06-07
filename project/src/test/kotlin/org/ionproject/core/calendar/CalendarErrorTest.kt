@@ -49,7 +49,9 @@ internal class CalendarErrorTest : ControllerTester() {
     @Test
     fun getInvalidCalendar() {
         for (link in invalidLinks) {
-            doGet(link)
+            doGet(link) {
+              header("Authorization", read_token)
+            }
                     .andDo { print() }
                     .andExpect {
                         status { isNotFound }
@@ -65,7 +67,10 @@ internal class CalendarErrorTest : ControllerTester() {
     @Test
     fun getCalendarWithInvalidContentType() {
         for (link in validLinks) {
-            doGet(link) { accept = Media.MEDIA_HOME }
+            doGet(link) {
+              accept = Media.MEDIA_HOME
+              header("Authorization", read_token)
+            }
                     .andDo { print() }
                     .andExpect { status { isNotAcceptable } }
                     .andReturn()

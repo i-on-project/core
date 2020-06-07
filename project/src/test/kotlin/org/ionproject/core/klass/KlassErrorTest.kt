@@ -26,7 +26,9 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidKlass() {
-        doGet(notFoundUriByCourseId)
+        doGet(notFoundUriByCourseId) {
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -39,7 +41,10 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getKlassWithInvalidContentType() {
-        doGet(validUriByCourseId) { accept = Media.MEDIA_HOME }
+        doGet(validUriByCourseId) {
+            accept = Media.MEDIA_HOME
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
                 .andReturn()
@@ -50,7 +55,9 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getKlassWithBadRequest() {
-        doGet(badRequestUri)
+        doGet(badRequestUri) {
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()
@@ -61,7 +68,9 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidKlassByCalTerm() {
-        doGet(notFoundUriByCalTerm)
+        doGet(notFoundUriByCalTerm) {
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -73,7 +82,10 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getKlassCalTermWithInvalidContentType() {
-        doGet(validUriByCalTerm) { accept = Media.MEDIA_HOME }
+        doGet(validUriByCalTerm) {
+            accept = Media.MEDIA_HOME
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
                 .andReturn()
@@ -84,7 +96,9 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getKlassCalTermBadRequest() {
-        doGet(badRequestUriCalTerm)
+        doGet(badRequestUriCalTerm) {
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()
@@ -95,7 +109,9 @@ internal class KlassErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidKlassWithCalTermBadCID() {
-        doGet(notFoundUriByCalTermWithBadCID)
+        doGet(notFoundUriByCalTermWithBadCID) {
+            header("Authorization", read_token)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
