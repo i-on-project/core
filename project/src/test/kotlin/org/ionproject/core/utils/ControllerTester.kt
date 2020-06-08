@@ -17,14 +17,10 @@ internal class ControllerTester {
     lateinit var mocker: MockMvc
 
     /**
-     * This is the same token as the one used by the android client,
-     * its read from a file to not leak it. (It may be unnecessary as the token will be present in the APK anyways)
+     * This is the same token as the one used by the android client and its public, for extra safety
+     * it could be read from a file but it would fail the github CI/CD tests.
      */
-    val read_token = "Bearer "+ loadReadToken()
-
-    private final fun loadReadToken(): String {
-        return File("read_token.txt").readLines()[0]
-    }
+    val read_token = "Bearer OHdZS3dhUVZtdTdzSlBHcVlUdXFrS0tNVmhQOW5PcXg="
 
     fun isValidSiren(uri: URI) = mocker.get(uri) {
         accept = Media.MEDIA_SIREN
