@@ -584,28 +584,63 @@ BEGIN
       c.id = categoryid AND ccs.calendar_id = cscal
   ) AND type = 'E';
 
-  RAISE NOTICE '% course, % class, % section, % category, % language', cid, clid, calendarSection, categoryid, langid;
+  RAISE NOTICE '% course, % class, % section, % category, % language, % calendar', cid, clid, calendarSection, categoryid, langid, cscal;
 END
 $$ LANGUAGE plpgsql;
 
--- CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
---   courseName VARCHAR(100),
---   courseAcr VARCHAR(50),
---   calendarSection VARCHAR(50),
---   calTerm VARCHAR(50),
--- 	summary VARCHAR(50),
--- 	description VARCHAR(200),
---   language VARCHAR(10),
--- 	category VARCHAR(100),
--- 	dtstart TIMESTAMP,
---   dtend TIMESTAMP,
---   week_days VARCHAR(20),
--- ) AS $$
--- #print_strict_params ON
--- DECLARE
--- 	component_id INT;
--- BEGIN
--- 	
--- END
--- $$ LANGUAGE PLpgSQL;
+CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
+  courseName VARCHAR(100),
+  courseAcr VARCHAR(50),
+  calendarSection VARCHAR(50),
+  calTerm VARCHAR(50),
+	summary VARCHAR(50),
+	description VARCHAR(200),
+  lang VARCHAR(10),
+	categ VARCHAR(100),
+	dtstart TIMESTAMP,
+  dtend TIMESTAMP,
+  week_days VARCHAR(20)
+) AS $$
+#print_strict_params ON
+DECLARE
+	calid INT;
+	component_id INT;
+  langid INT;
+  categoryid INT;
+  dttype INT;
+BEGIN
+
+  -- get target calendar ID (the class section's calendar)
+  SELECT
+    CS.calendar INTO calid
+  FROM
+    dbo.Course C JOIN
+    dbo.Class CL ON C.id = CL.courseid JOIN
+    dbo.ClassSection CS ON CS.classid = CL.id
+  WHERE
+    ( C.acronym = courseAcr OR C.name = courseName )
+    AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
+
+  SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang; 
+  SELECT C.id INTO categoryid FROM dbo.Category C WHERE C.name = categ AND C.language = langid;
+
+  -- get the DATE TIME icalendar type
+  SELECT id INTO dttype FROM dbo.icalendardatatype WHERE name = 'DATE-TIME';
+
+  raise notice '% cal, % category, % lang', calid, categoryid, langid;
+	
+  CALL dbo.newEvent(calid,
+      ARRAY[summary],
+      ARRAY[langid],
+      ARRAY[description],
+      ARRAY[langid],
+      ARRAY[categoryid],
+      dtstart,
+      dtend,
+      dttype, -- dtstart dtend type
+      week_days, -- by day
+      NULL -- until
+  );
+END
+$$ LANGUAGE PLpgSQL;
 
