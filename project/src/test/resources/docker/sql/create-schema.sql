@@ -428,6 +428,40 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION dbo.f_classCalendarCreate (calterm VARCHAR(200), courseid INT)
+RETURNS INT
+AS $$
+#print_strict_params on
+DECLARE
+calid INT;
+classid INT;
+BEGIN
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.Class(courseid, calendarterm, calendar) VALUES
+  (courseid, calterm, calid) RETURNING id INTO classid;
+
+  RETURN classid;
+END
+$$ LANGUAGE plpgsql;
+
+-- When creating a ClassSection, give it a new Calendar 
+CREATE OR REPLACE FUNCTION dbo.f_classSectionCalendarCreate (classId INT, sid VARCHAR(200))
+RETURNS VARCHAR(200)
+AS $$
+#print_strict_params on
+DECLARE
+calid INT;
+csid VARCHAR(200);
+BEGIN
+	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
+
+	INSERT INTO dbo.ClassSection(id, classId, calendar) VALUES
+	(sid, classId, calid) RETURNING id INTO csid;
+
+  RETURN csid;
+END
+$$ LANGUAGE plpgsql;
 
 -----------------------------------------------------
 -- Write API
@@ -474,7 +508,7 @@ BEGIN
     calendarTerm, NULL, NULL
   WHERE
     NOT EXISTS(
-      SELECT id FROM dbo.CalendarTerm c WHERE c.id=id
+      SELECT id FROM dbo.CalendarTerm c WHERE c.id=calendarTerm
     );
 
 END
@@ -488,9 +522,9 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceCourse (
 AS $$
 #print_strict_params ON
 DECLARE
-	classId INT;
+	clid INT;
+	csid VARCHAR(200);
 	cid INT;
-	classCalId INT;
 BEGIN
   IF (courseName IS NULL AND courseAcr IS NULL) THEN
     RAISE 'For the Course parameters, you must provide at least a "name" or an "acronym"';
@@ -519,25 +553,29 @@ BEGIN
   SELECT id INTO cid FROM dbo.Course WHERE name = courseName OR acronym = courseAcr;
 
   -- Creating the Class
-  -- At this point, the Class table does not have changeable columns
-  INSERT INTO dbo.Calendar DEFAULT VALUES
-  RETURNING id INTO classCalId;
-
-  INSERT INTO
-    dbo.Class (courseId, calendarTerm, calendar)
-  SELECT
-    cid,
-    calTerm,
-    classCalId
+  PERFORM
+    dbo.f_classCalendarCreate (calTerm, cid)
   WHERE
     NOT EXISTS(
       SELECT id FROM dbo.Class
       WHERE courseId = cid AND calendarTerm = calTerm
     );
     
-  SELECT id INTO classId FROM dbo.Class WHERE courseId = cid AND calendarTerm = calTerm;
+  SELECT id INTO clid FROM dbo.Class WHERE courseId = cid AND calendarTerm = calTerm;
 
-  raise notice '% course, % class', cid, classId;
+-- Creating the Class
+  PERFORM
+    dbo.f_classSectionCalendarCreate (clid, calendarSection)
+  WHERE
+    NOT EXISTS(
+      SELECT id FROM dbo.ClassSection C
+      WHERE C.classid = clid AND C.id = calendarSection
+    );
+    
+  SELECT id INTO csid FROM dbo.ClassSection C WHERE C.classid = clid AND C.id = calendarSection;
+
+
+  raise notice '% course, % class, % section', cid, clid, csid;
 
 --     
 -- 
