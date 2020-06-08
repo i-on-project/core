@@ -59,12 +59,12 @@ CREATE TABLE dbo.CalendarComponent (
 
 CREATE TABLE dbo.CalendarComponents (
 	calendar_id     INT REFERENCES dbo.Calendar(id),
-	comp_id         INT REFERENCES dbo.CalendarComponent(id),
+	comp_id         INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
 	PRIMARY KEY (calendar_id, comp_id)
 );
 
 CREATE TABLE dbo.RecurrenceRule (
-	comp_id     	INT REFERENCES dbo.CalendarComponent(id),
+	comp_id     	INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
 	freq            VARCHAR(20),
 	byday           VARCHAR(20),
 	until           TIMESTAMP,
@@ -83,55 +83,55 @@ CREATE TABLE IF NOT EXISTS dbo.Language(
 
 CREATE TABLE IF NOT EXISTS dbo.Category(
 	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name           VARCHAR(64) NOT NULL,
+  name           VARCHAR(64) NOT NULL,
 	language       INT REFERENCES dbo.Language(id),
 	UNIQUE(name, language)
 );
 
 -- some iCal property types
 CREATE TABLE IF NOT EXISTS dbo.Description (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     value          VARCHAR(200),
     language       INT REFERENCES dbo.Language(id),
 	PRIMARY KEY(comp_id, value, language)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Summary (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     value          VARCHAR(50) NOT NULL,
     language       INT REFERENCES dbo.Language(id),
 	PRIMARY KEY(comp_id, value, language)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Attachment (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     value          VARCHAR(128) NOT NULL,
 	PRIMARY KEY(comp_id, value)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Due (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Dtend (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Dtstart (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     type           INT REFERENCES dbo.ICalendarDataType(id),
     value          TIMESTAMP,
 	PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Categories (
-    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     value          INT REFERENCES dbo.Category(id),
 	PRIMARY KEY(comp_id, value)
 );
@@ -261,23 +261,23 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	description_language INT[],
 	category INT[],
 	dtstart TIMESTAMP,
-    dtend TIMESTAMP,
-    dtstart_dtend_type INT,
-    byday VARCHAR(20),
-    until TIMESTAMP,
-    stamp_time TIMESTAMP DEFAULT now()
+  dtend TIMESTAMP,
+  dtstart_dtend_type INT,
+  byday VARCHAR(20),
+  until TIMESTAMP,
+  stamp_time TIMESTAMP DEFAULT now()
 ) AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
 BEGIN
-    INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
+  INSERT INTO dbo.CalendarComponent(type, dtstamp, created) VALUES
     ('E', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
 	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
 	
-    INSERT INTO dbo.Summary (comp_id, value, language)
+  INSERT INTO dbo.Summary (comp_id, value, language)
 	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
 	
 	INSERT INTO dbo.Description (comp_id, value, language)
@@ -289,7 +289,7 @@ BEGIN
 	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES
     (component_id, dtstart_dtend_type, dtstart);
 	
-    INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
+  INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
     (component_id, dtstart_dtend_type, dtend);
 	
 	IF byday IS NOT NULL THEN
@@ -489,17 +489,36 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceCourse (
   courseName VARCHAR(100),
   courseAcr VARCHAR(50),
   calendarSection VARCHAR(50),
-  calTerm VARCHAR(50))
+  calTerm VARCHAR(50),
+  lang VARCHAR(10),
+	categ VARCHAR(100))
 AS $$
 #print_strict_params ON
 DECLARE
 	clid INT;
-	csid VARCHAR(200);
 	cid INT;
+	cscal INT;
+  langid INT;
+  categoryid INT;
 BEGIN
   IF (courseName IS NULL AND courseAcr IS NULL) THEN
     RAISE 'For the Course parameters, you must provide at least a "name" or an "acronym"';
   END IF;
+
+  SELECT id INTO langid FROM dbo.Language WHERE name = lang;
+  IF (langid IS NULL) THEN
+    RAISE 'Language does not exist';
+  END IF;
+
+  INSERT INTO
+    dbo.Category(name, language)
+  SELECT
+    categ, langid
+  WHERE NOT EXISTS (
+    SELECT id from dbo.Category C
+    WHERE C.name = categ AND language = langid
+  );
+  SELECT id INTO categoryid FROM dbo.Category WHERE name = categ AND language = langid;
 
   -- Insert or update Programme
   -- coalesce: if any of the supplied parameters is null, use the previous value of the column instead
@@ -534,7 +553,7 @@ BEGIN
     
   SELECT id INTO clid FROM dbo.Class WHERE courseId = cid AND calendarTerm = calTerm;
 
--- Creating the Class
+  -- Creating the Class
   PERFORM
     dbo.f_classSectionCalendarCreate (clid, calendarSection)
   WHERE
@@ -543,8 +562,50 @@ BEGIN
       WHERE C.classid = clid AND C.id = calendarSection
     );
     
-  SELECT id INTO csid FROM dbo.ClassSection C WHERE C.classid = clid AND C.id = calendarSection;
+  -- Store ClassSection's ID and Calendar
+  SELECT
+    calendar INTO cscal
+  FROM
+    dbo.ClassSection C
+  WHERE
+    C.classid = clid AND C.id = calendarSection;
+  
+  -- Deletes all of the Class Section's events related to this operation
+  DELETE FROM
+    dbo.CalendarComponent
+  WHERE id IN (
+    SELECT
+      ccs.comp_id
+    FROM
+      dbo.category c JOIN
+      dbo.categories cs ON c.id=cs.value JOIN
+      dbo.calendarcomponents ccs ON ccs.comp_id=cs.comp_id
+    WHERE
+      c.id = categoryid AND ccs.calendar_id = cscal
+  ) AND type = 'E';
 
-  raise notice '% course, % class, % section', cid, clid, csid;
+  RAISE NOTICE '% course, % class, % section, % category, % language', cid, clid, calendarSection, categoryid, langid;
 END
 $$ LANGUAGE plpgsql;
+
+-- CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
+--   courseName VARCHAR(100),
+--   courseAcr VARCHAR(50),
+--   calendarSection VARCHAR(50),
+--   calTerm VARCHAR(50),
+-- 	summary VARCHAR(50),
+-- 	description VARCHAR(200),
+--   language VARCHAR(10),
+-- 	category VARCHAR(100),
+-- 	dtstart TIMESTAMP,
+--   dtend TIMESTAMP,
+--   week_days VARCHAR(20),
+-- ) AS $$
+-- #print_strict_params ON
+-- DECLARE
+-- 	component_id INT;
+-- BEGIN
+-- 	
+-- END
+-- $$ LANGUAGE PLpgSQL;
+

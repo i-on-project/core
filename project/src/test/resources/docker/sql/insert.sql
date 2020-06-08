@@ -370,7 +370,7 @@ CALL dbo.newEvent(2,
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -383,7 +383,7 @@ CALL dbo.newEvent(2,
     ARRAY[2],
     ARRAY['Second season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -397,7 +397,7 @@ CALL dbo.newEvent(28,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -410,7 +410,7 @@ CALL dbo.newEvent(28,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -424,7 +424,7 @@ CALL dbo.newEvent(29,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -437,7 +437,7 @@ CALL dbo.newEvent(29,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -451,7 +451,7 @@ CALL dbo.newEvent(30,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -487,7 +487,7 @@ CALL dbo.newEvent(1,
     ARRAY[2],
     ARRAY['Normal season exam for SL-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-06-10 18:00:00', -- dtstart
     TIMESTAMP '2020-06-10 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -500,7 +500,7 @@ CALL dbo.newEvent(1,
     ARRAY[2],
     ARRAY['Second season exam for SL-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-06-24 10:00:00', -- dtstart
     TIMESTAMP '2020-07-24 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -514,7 +514,7 @@ CALL dbo.newEvent(25,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -527,7 +527,7 @@ CALL dbo.newEvent(25,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -541,7 +541,7 @@ CALL dbo.newEvent(26,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -554,7 +554,7 @@ CALL dbo.newEvent(26,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -568,7 +568,7 @@ CALL dbo.newEvent(27,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -906,7 +906,7 @@ CALL dbo.newEvent(13,
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -919,7 +919,7 @@ CALL dbo.newEvent(13,
     ARRAY[2],
     ARRAY['Second season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -934,7 +934,7 @@ CALL dbo.newEvent(15,
     ARRAY[2],
     ARRAY['Exam for CC-1920v'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
