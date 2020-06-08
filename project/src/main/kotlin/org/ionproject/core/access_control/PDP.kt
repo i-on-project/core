@@ -93,16 +93,12 @@ class PDP {
           var match = true
 
           for (segment in policyUri) {
-            if (segment == "?") {
+            if (segment == "?" || segment == uriRequest[i]) {
               i++
-              continue
-            }
-
-            if(segment != uriRequest[i]) {
+            } else {
               match = false
               break
-            } else
-              i++
+            }
           }
 
           if(match)

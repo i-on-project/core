@@ -42,14 +42,16 @@ INSERT INTO dbo.Token (hash, isValid, claims) VALUES
 ('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 
 '{"iat": 1591544539044, "exp":1591544539045, "client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
 ('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE,
-'{"iat": 1591544539044, "exp":1691544539044, "client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}');
+'{"iat": 1591544539044, "exp":1691544539044, "client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE,
+'{"iat": 1591544539044, "exp":1691544539044, "client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
 
 
 INSERT INTO dbo.scopes (scope) VALUES
 ('urn:org:ionproject:scopes:api:read'),
 ('urn:org:ionproject:scopes:api:write'),
 ('urn:org:ionproject:scopes:token:issue'),
-('urn:org:ionproject:scopes:token:read_restricted');
+('urn:org:ionproject:scopes:api:read_restricted');
 
 /*
 * Don't use wildcards in the paths
@@ -94,8 +96,8 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (2, 'PUT,POST', 'v0', 'programmes/?/offers/?'),
 (2, 'PUT,POST', 'v0', 'calendar-terms'),
 (2, 'PUT,POST', 'v0', 'calendar-terms/?'),
-(4, 'GET', 'v0', 'programmes'); --Testing read restricted scope
-
+(4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
+(4, 'GET', 'v0', 'programmes/?');
 
 
 
