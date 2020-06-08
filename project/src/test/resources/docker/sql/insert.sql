@@ -27,100 +27,100 @@ INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALU
 (1, 5, FALSE, 6),
 (2, 3, FALSE, 1);
 
-CALL dbo.sp_classCalendarCreate('1718v', 1);
-CALL dbo.sp_classCalendarCreate('1718v', 2);
-CALL dbo.sp_classCalendarCreate('1718v', 3);
-CALL dbo.sp_classCalendarCreate('1718i', 1);
-CALL dbo.sp_classCalendarCreate('1718i', 2);
-CALL dbo.sp_classCalendarCreate('1718i', 3);
-CALL dbo.sp_classCalendarCreate('1819v', 1);
-CALL dbo.sp_classCalendarCreate('1819v', 2);
-CALL dbo.sp_classCalendarCreate('1819v', 3);
-CALL dbo.sp_classCalendarCreate('1819i', 1);
-CALL dbo.sp_classCalendarCreate('1819i', 2);
-CALL dbo.sp_classCalendarCreate('1819i', 3);
-CALL dbo.sp_classCalendarCreate('1920v', 2);	-- calendar nº13 WAD
-CALL dbo.sp_classCalendarCreate('1920v', 4);	-- calendar nº14 PS
-CALL dbo.sp_classCalendarCreate('1920v', 5);	-- calendar nº15 CC
-CALL dbo.sp_classCalendarCreate('1920i', 1);
-CALL dbo.sp_classCalendarCreate('1920i', 2);
-CALL dbo.sp_classCalendarCreate('1920i', 3);
-CALL dbo.sp_classCalendarCreate('2021v', 1);
-CALL dbo.sp_classCalendarCreate('2021v', 2);
-CALL dbo.sp_classCalendarCreate('2021v', 3);
-CALL dbo.sp_classCalendarCreate('2021i', 1);
-CALL dbo.sp_classCalendarCreate('2021i', 2);
-CALL dbo.sp_classCalendarCreate('2021i', 3);
+SELECT dbo.f_classCalendarCreate('1718v', 1);
+SELECT dbo.f_classCalendarCreate('1718v', 2);
+SELECT dbo.f_classCalendarCreate('1718v', 3);
+SELECT dbo.f_classCalendarCreate('1718i', 1);
+SELECT dbo.f_classCalendarCreate('1718i', 2);
+SELECT dbo.f_classCalendarCreate('1718i', 3);
+SELECT dbo.f_classCalendarCreate('1819v', 1);
+SELECT dbo.f_classCalendarCreate('1819v', 2);
+SELECT dbo.f_classCalendarCreate('1819v', 3);
+SELECT dbo.f_classCalendarCreate('1819i', 1);
+SELECT dbo.f_classCalendarCreate('1819i', 2);
+SELECT dbo.f_classCalendarCreate('1819i', 3);
+SELECT dbo.f_classCalendarCreate('1920v', 2);	-- calendar nº13 WAD
+SELECT dbo.f_classCalendarCreate('1920v', 4);	-- calendar nº14 PS
+SELECT dbo.f_classCalendarCreate('1920v', 5);	-- calendar nº15 CC
+SELECT dbo.f_classCalendarCreate('1920i', 1);
+SELECT dbo.f_classCalendarCreate('1920i', 2);
+SELECT dbo.f_classCalendarCreate('1920i', 3);
+SELECT dbo.f_classCalendarCreate('2021v', 1);
+SELECT dbo.f_classCalendarCreate('2021v', 2);
+SELECT dbo.f_classCalendarCreate('2021v', 3);
+SELECT dbo.f_classCalendarCreate('2021i', 1);
+SELECT dbo.f_classCalendarCreate('2021i', 2);
+SELECT dbo.f_classCalendarCreate('2021i', 3);
 
-CALL dbo.sp_classSectionCalendarCreate(1,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(1,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(1,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(2,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(2,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(2,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(3,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(3,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(3,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(4,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(4,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(4,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(5,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(5,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(5,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(6,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(6,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(6,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(7,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(7,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(7,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(8,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(8,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(8,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(9,  '1D');
-CALL dbo.sp_classSectionCalendarCreate(9,  '2D');
-CALL dbo.sp_classSectionCalendarCreate(9,  '1N');
-CALL dbo.sp_classSectionCalendarCreate(10, '1D');
-CALL dbo.sp_classSectionCalendarCreate(10, '2D');
-CALL dbo.sp_classSectionCalendarCreate(10, '1N');
-CALL dbo.sp_classSectionCalendarCreate(11, '1D');
-CALL dbo.sp_classSectionCalendarCreate(11, '2D');
-CALL dbo.sp_classSectionCalendarCreate(11, '1N');
-CALL dbo.sp_classSectionCalendarCreate(12, '1D');
-CALL dbo.sp_classSectionCalendarCreate(12, '2D');
-CALL dbo.sp_classSectionCalendarCreate(12, '1N');
-CALL dbo.sp_classSectionCalendarCreate(13, 'LI61D');	--classSection WAD calendar nº37
-CALL dbo.sp_classSectionCalendarCreate(13, 'LI61N');	--classSection WAD calendar nº38
-CALL dbo.sp_classSectionCalendarCreate(14, 'LI61D');	--classSection PS Dia calendar nº39
-CALL dbo.sp_classSectionCalendarCreate(14, 'LI61N');	--classSection PS Noite calendar nº40
-CALL dbo.sp_classSectionCalendarCreate(15, 'LI61D');	--classSection CC calendar nº41
-CALL dbo.sp_classSectionCalendarCreate(15, 'LI61N');	--classSection CC calendar nº42
-CALL dbo.sp_classSectionCalendarCreate(16, '1D');
-CALL dbo.sp_classSectionCalendarCreate(16, '2D');
-CALL dbo.sp_classSectionCalendarCreate(16, '1N');
-CALL dbo.sp_classSectionCalendarCreate(17, '1D');
-CALL dbo.sp_classSectionCalendarCreate(17, '2D');
-CALL dbo.sp_classSectionCalendarCreate(17, '1N');
-CALL dbo.sp_classSectionCalendarCreate(18, '1D');
-CALL dbo.sp_classSectionCalendarCreate(18, '2D');
-CALL dbo.sp_classSectionCalendarCreate(18, '1N');
-CALL dbo.sp_classSectionCalendarCreate(19, '1D');
-CALL dbo.sp_classSectionCalendarCreate(19, '2D');
-CALL dbo.sp_classSectionCalendarCreate(19, '1N');
-CALL dbo.sp_classSectionCalendarCreate(20, '1D');
-CALL dbo.sp_classSectionCalendarCreate(20, '2D');
-CALL dbo.sp_classSectionCalendarCreate(20, '1N');
-CALL dbo.sp_classSectionCalendarCreate(21, '1D');
-CALL dbo.sp_classSectionCalendarCreate(21, '2D');
-CALL dbo.sp_classSectionCalendarCreate(21, '1N');
-CALL dbo.sp_classSectionCalendarCreate(22, '1D');
-CALL dbo.sp_classSectionCalendarCreate(22, '2D');
-CALL dbo.sp_classSectionCalendarCreate(22, '1N');
-CALL dbo.sp_classSectionCalendarCreate(23, '1D');
-CALL dbo.sp_classSectionCalendarCreate(23, '2D');
-CALL dbo.sp_classSectionCalendarCreate(23, '1N');
-CALL dbo.sp_classSectionCalendarCreate(24, '1D');
-CALL dbo.sp_classSectionCalendarCreate(24, '2D');
-CALL dbo.sp_classSectionCalendarCreate(24, '1N');
+SELECT dbo.f_classSectionCalendarCreate(1,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(1,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(1,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(2,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(2,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(2,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(3,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(3,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(3,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(4,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(4,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(4,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(5,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(5,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(5,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(6,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(6,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(6,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(7,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(7,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(7,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(8,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(8,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(8,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(9,  '1D');
+SELECT dbo.f_classSectionCalendarCreate(9,  '2D');
+SELECT dbo.f_classSectionCalendarCreate(9,  '1N');
+SELECT dbo.f_classSectionCalendarCreate(10, '1D');
+SELECT dbo.f_classSectionCalendarCreate(10, '2D');
+SELECT dbo.f_classSectionCalendarCreate(10, '1N');
+SELECT dbo.f_classSectionCalendarCreate(11, '1D');
+SELECT dbo.f_classSectionCalendarCreate(11, '2D');
+SELECT dbo.f_classSectionCalendarCreate(11, '1N');
+SELECT dbo.f_classSectionCalendarCreate(12, '1D');
+SELECT dbo.f_classSectionCalendarCreate(12, '2D');
+SELECT dbo.f_classSectionCalendarCreate(12, '1N');
+SELECT dbo.f_classSectionCalendarCreate(13, 'LI61D');	--classSection WAD calendar nº37
+SELECT dbo.f_classSectionCalendarCreate(13, 'LI61N');	--classSection WAD calendar nº38
+SELECT dbo.f_classSectionCalendarCreate(14, 'LI61D');	--classSection PS Dia calendar nº39
+SELECT dbo.f_classSectionCalendarCreate(14, 'LI61N');	--classSection PS Noite calendar nº40
+SELECT dbo.f_classSectionCalendarCreate(15, 'LI61D');	--classSection CC calendar nº41
+SELECT dbo.f_classSectionCalendarCreate(15, 'LI61N');	--classSection CC calendar nº42
+SELECT dbo.f_classSectionCalendarCreate(16, '1D');
+SELECT dbo.f_classSectionCalendarCreate(16, '2D');
+SELECT dbo.f_classSectionCalendarCreate(16, '1N');
+SELECT dbo.f_classSectionCalendarCreate(17, '1D');
+SELECT dbo.f_classSectionCalendarCreate(17, '2D');
+SELECT dbo.f_classSectionCalendarCreate(17, '1N');
+SELECT dbo.f_classSectionCalendarCreate(18, '1D');
+SELECT dbo.f_classSectionCalendarCreate(18, '2D');
+SELECT dbo.f_classSectionCalendarCreate(18, '1N');
+SELECT dbo.f_classSectionCalendarCreate(19, '1D');
+SELECT dbo.f_classSectionCalendarCreate(19, '2D');
+SELECT dbo.f_classSectionCalendarCreate(19, '1N');
+SELECT dbo.f_classSectionCalendarCreate(20, '1D');
+SELECT dbo.f_classSectionCalendarCreate(20, '2D');
+SELECT dbo.f_classSectionCalendarCreate(20, '1N');
+SELECT dbo.f_classSectionCalendarCreate(21, '1D');
+SELECT dbo.f_classSectionCalendarCreate(21, '2D');
+SELECT dbo.f_classSectionCalendarCreate(21, '1N');
+SELECT dbo.f_classSectionCalendarCreate(22, '1D');
+SELECT dbo.f_classSectionCalendarCreate(22, '2D');
+SELECT dbo.f_classSectionCalendarCreate(22, '1N');
+SELECT dbo.f_classSectionCalendarCreate(23, '1D');
+SELECT dbo.f_classSectionCalendarCreate(23, '2D');
+SELECT dbo.f_classSectionCalendarCreate(23, '1N');
+SELECT dbo.f_classSectionCalendarCreate(24, '1D');
+SELECT dbo.f_classSectionCalendarCreate(24, '2D');
+SELECT dbo.f_classSectionCalendarCreate(24, '1N');
 
 
 INSERT INTO dbo.Language(name) VALUES

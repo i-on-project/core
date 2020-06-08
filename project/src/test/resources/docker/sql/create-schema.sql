@@ -399,35 +399,6 @@ CREATE VIEW dbo.courseWithTerm AS
 				ORDER BY clI.courseId,ctI.start_date DESC) AS cl
 		ON co.id=cl.courseId;
 
-------- SPs --------
--- When creating a Class, give it a new Calendar 
-CREATE OR REPLACE PROCEDURE dbo.sp_classCalendarCreate (calterm VARCHAR(200), courseid INT, classid INOUT INT = NULL)
-AS $$
-#print_strict_params on
-DECLARE
-calid INT;
-BEGIN
-	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
-
-	INSERT INTO dbo.Class(courseid, calendarterm, calendar) VALUES
-  (courseid, calterm, calid) RETURNING id INTO classid;
-END
-$$ LANGUAGE plpgsql;
-
--- When creating a ClassSection, give it a new Calendar 
-CREATE OR REPLACE PROCEDURE dbo.sp_classSectionCalendarCreate (classId INT, sid VARCHAR(200))
-AS $$
-#print_strict_params on
-DECLARE
-calid INT;
-BEGIN
-	INSERT INTO dbo.Calendar VALUES (DEFAULT) returning id INTO calid;
-
-	INSERT INTO dbo.ClassSection(id, classId, calendar) VALUES
-	(sid, classId, calid);
-END
-$$ LANGUAGE plpgsql;
-
 CREATE OR REPLACE FUNCTION dbo.f_classCalendarCreate (calterm VARCHAR(200), courseid INT)
 RETURNS INT
 AS $$
@@ -574,35 +545,6 @@ BEGIN
     
   SELECT id INTO csid FROM dbo.ClassSection C WHERE C.classid = clid AND C.id = calendarSection;
 
-
   raise notice '% course, % class, % section', cid, clid, csid;
-
---     
--- 
--- CREATE TABLE dbo.Class (
--- 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
--- 	courseId        INT REFERENCES dbo.Course(id),
--- 	calendarTerm    VARCHAR(20) REFERENCES dbo.CalendarTerm(id),
--- 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
--- 	UNIQUE(courseId, calendarTerm)
--- );
--- 
--- CREATE TABLE dbo.ClassSection (
--- 	id              VARCHAR(10),
--- 	classId         INT REFERENCES dbo.Class(id),
--- 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
---     PRIMARY KEY(id, classId)
--- );
-
---	INSERT INTO
---    dbo.Calendar
---  VALUES
---    (DEFAULT) returning id INTO calid;
---
---	INSERT INTO
---    dbo.Class(courseid, calendarterm, calendar)
---  VALUES
---	  (courseid, calterm, calid) RETURNING id INTO classid;
-
 END
 $$ LANGUAGE plpgsql;
