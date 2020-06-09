@@ -472,7 +472,7 @@ CALL dbo.newEvent(28,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -485,7 +485,7 @@ CALL dbo.newEvent(28,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -499,7 +499,7 @@ CALL dbo.newEvent(29,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -512,7 +512,7 @@ CALL dbo.newEvent(29,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -526,7 +526,7 @@ CALL dbo.newEvent(30,
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -589,7 +589,7 @@ CALL dbo.newEvent(25,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -602,7 +602,7 @@ CALL dbo.newEvent(25,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -616,7 +616,7 @@ CALL dbo.newEvent(26,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -629,7 +629,7 @@ CALL dbo.newEvent(26,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -643,7 +643,7 @@ CALL dbo.newEvent(27,
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
-    ARRAY[7],
+    ARRAY[9],
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
@@ -1020,4 +1020,3 @@ CALL dbo.newEvent(15,
 -- </Exams> --
 
 
--- End of 1920v calendar information --
