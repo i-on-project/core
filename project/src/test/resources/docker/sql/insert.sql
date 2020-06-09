@@ -370,7 +370,7 @@ CALL dbo.newEvent(2,
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -383,7 +383,7 @@ CALL dbo.newEvent(2,
     ARRAY[2],
     ARRAY['Second season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -487,7 +487,7 @@ CALL dbo.newEvent(1,
     ARRAY[2],
     ARRAY['Normal season exam for SL-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-06-10 18:00:00', -- dtstart
     TIMESTAMP '2020-06-10 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -500,7 +500,7 @@ CALL dbo.newEvent(1,
     ARRAY[2],
     ARRAY['Second season exam for SL-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-06-24 10:00:00', -- dtstart
     TIMESTAMP '2020-07-24 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -906,7 +906,7 @@ CALL dbo.newEvent(13,
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
@@ -919,7 +919,7 @@ CALL dbo.newEvent(13,
     ARRAY[2],
     ARRAY['Second season exam for WAD-1718v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
@@ -934,7 +934,7 @@ CALL dbo.newEvent(15,
     ARRAY[2],
     ARRAY['Exam for CC-1920v'],
     ARRAY[2],
-    ARRAY[9],
+    ARRAY[7],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
