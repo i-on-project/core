@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Argument $1 == "apply" -> Apply the generated schema diff to the main DB
+# Evvar $DEV_DB_URL -> URL to the dev DB
+# Evvar $DB_URL     -> URL to the release DB
+
+set -e
+
+schema_diff_file="/tmp/schema_diff"
+scripts_dir="/mnt/sql"
+
+# Test connection
+psql -Atx "$DB_URL" -1 -c "select" >/dev/null
+psql -Atx "$DEV_DB_URL" -1 -c "select" >/dev/null
+
+printf "Building the most recent schema in the development DB\n" >&2
+cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
+  psql -Atx "$DEV_DB_URL" -1 >&2
+
+# Gen schema diff
+printf "\\set ON_ERROR_STOP on\n" >"$schema_diff_file"
+migra "$DB_URL" "$DEV_DB_URL" | tee -a "$schema_diff_file"
+
+if [ -n "$1" ] && [ "$1" = "apply" ]; then
+    psql -Atx "$DB_URL" -1 -f "$schema_diff_file" >&2
+fi
