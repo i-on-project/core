@@ -76,7 +76,7 @@ internal class SearchControllerTest : ControllerTester() {
         search: String,
         limit: Int = defaultLimit,
         page: Int = defaultPage,
-        types: List<String> = SearchableEntities.ALL,
+        types: List<String> = SearchableEntity.ALL.map { it.toString() },
         uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI)
     {
         val expected = SearchSirenTest.buildSiren(search, limit, page, types, results.filter { types.contains(it.type) }.drop((page - 1) * limit).take(limit))

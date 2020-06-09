@@ -16,7 +16,10 @@ object SearchableEntities {
     const val CLASS_SECTION = "class-section"
     const val CALENDAR_TERM = "calendar-term"
 
-    val ALL = listOf(PROGRAMME, COURSE, CLASS, CLASS_SECTION, CALENDAR_TERM)
+    const val ALL =
+        "$PROGRAMME,$COURSE,$CLASS,$CLASS_SECTION,$CALENDAR_TERM"
+
+
 }
 
 enum class SearchableEntity(
@@ -32,14 +35,20 @@ enum class SearchableEntity(
         alternateName
 
     companion object {
-        const val ALL =
-            "${SearchableEntities.PROGRAMME},${SearchableEntities.COURSE},${SearchableEntities.CLASS},${SearchableEntities.CLASS_SECTION},${SearchableEntities.CALENDAR_TERM}"
+
         val QUERY_MAP = mapOf(
             PROGRAMME to ProgrammeData.SEARCH_PROGRAMMES,
             COURSE to CourseData.SEARCH_COURSES,
             CLASS to KlassData.SEARCH_CLASSES,
             CLASS_SECTION to ClassSectionData.SEARCH_CLASS_SECTIONS,
             CALENDAR_TERM to CalendarTermData.SEARCH_CALENDAR_TERMS
+        )
+        val ALL = listOf(
+            PROGRAMME,
+            COURSE,
+            CLASS,
+            CLASS_SECTION,
+            CALENDAR_TERM
         )
 
         fun parse(name: String): SearchableEntity =

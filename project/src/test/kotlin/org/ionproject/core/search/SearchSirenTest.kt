@@ -24,12 +24,12 @@ class SearchSirenTest {
     companion object {
         val genericQuery = SearchQuery(
             "Test",
-            SearchableEntities.ALL,
+            SearchableEntity.ALL.map { it.toString() },
             3,
             1
         )
 
-        val genericResults = listOf<SearchResult>(
+        val genericResults = listOf(
             SearchResult(SearchableEntities.CALENDAR_TERM, "1920v", "1920v", Uri.forCalTermById("1920v")),
             SearchResult(SearchableEntities.PROGRAMME, "321", "Mestrado em Engenharia Informática", Uri.forProgrammesById(321)),
             SearchResult(SearchableEntities.COURSE, "5456", "Mathematics II", Uri.forCourseById(5456))
@@ -39,7 +39,7 @@ class SearchSirenTest {
 
         val noResultsQuery = SearchQuery(
             "Test",
-            SearchableEntities.ALL,
+            SearchableEntity.ALL.map { it.toString() },
             3,
             1
         )

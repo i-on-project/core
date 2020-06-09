@@ -18,7 +18,7 @@ class SearchController(
     @GetMapping(Uri.search)
     fun search(
         @RequestParam("query") query: String,
-        @RequestParam("types", required = false, defaultValue = SearchableEntity.ALL) types: List<String>,
+        @RequestParam("types", required = false, defaultValue = SearchableEntities.ALL) types: List<String>,
         @RequestParam("limit", required = false, defaultValue = "10") limit: Int,
         @RequestParam("page", required = false, defaultValue = "1") page: Int
     ): ResponseEntity<Any> {

@@ -32,7 +32,7 @@ class SearchModelTest {
     @Test
     fun validSearchQuery() {
         val query = "some query"
-        val types = SearchableEntities.ALL
+        val types = SearchableEntity.ALL.map { it.toString() }
         val limit = 0
         val page = 0
 
