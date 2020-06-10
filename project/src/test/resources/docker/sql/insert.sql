@@ -1018,6 +1018,3 @@ CALL dbo.newEvent(15,
     TIMESTAMP '2020-01-01 16:35:30');
 -- </CC Exams> --
 -- </Exams> --
-
-
--- End of 1920v calendar information --
