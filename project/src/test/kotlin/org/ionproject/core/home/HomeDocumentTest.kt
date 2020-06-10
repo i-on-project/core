@@ -2,7 +2,6 @@ package org.ionproject.core.home
 
 import org.ionproject.core.utils.ControllerTester
 import org.junit.jupiter.api.Test
-import org.springframework.test.web.client.match.MockRestRequestMatchers
 import java.net.URI
 
 internal class HomeDocumentTest : ControllerTester() {
@@ -45,7 +44,7 @@ internal class HomeDocumentTest : ControllerTester() {
     @Test
     fun getHomeDocument() {
         doGet(URI.create("/")) {
-          header("Authorization", read_token)
+          header("Authorization", readToken)
         }
             .andDo { print() }
             .andExpect {

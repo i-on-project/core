@@ -11,7 +11,7 @@ internal class AccessControlTest: ControllerTester() {
         /**
          * This token only allows to GET from "/programmes" and "/programmes/{id}"
          */
-        private const val read_restricted_token = "ODY0SXpvcnlHYUtJbmFsZ1RyM0pvakJQM3oxYk00dUQ="
+        private const val readRestrictedToken = "ODY0SXpvcnlHYUtJbmFsZ1RyM0pvakJQM3oxYk00dUQ="
         private const val includeBearer = "Bearer"
         private const val includeNotBearer = "notBearer"
 
@@ -25,8 +25,8 @@ internal class AccessControlTest: ControllerTester() {
         /**
          * Valid tokens (one of them has a wrong include type)
          */
-        const val tokenCorrect = "$includeBearer $read_restricted_token"
-        const val tokenIncorrect = "$includeNotBearer $read_restricted_token"
+        const val tokenCorrect = "$includeBearer $readRestrictedToken"
+        const val tokenIncorrect = "$includeNotBearer $readRestrictedToken"
 
         /**
          * Uri's for testing according to the tokens scopes
@@ -61,7 +61,7 @@ internal class AccessControlTest: ControllerTester() {
     @Test
     fun getHomeDocument() {
         doGet(homeDocumentUri) {
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect { status { isOk } }

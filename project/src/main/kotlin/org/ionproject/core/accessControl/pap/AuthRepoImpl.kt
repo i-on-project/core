@@ -1,10 +1,10 @@
-package org.ionproject.core.access_control.pap
+package org.ionproject.core.accessControl.pap
 
-import org.ionproject.core.access_control.pap.AuthRepoData.API_VERSION
-import org.ionproject.core.access_control.pap.AuthRepoData.GET_POLICIES_QUERY
-import org.ionproject.core.access_control.pap.AuthRepoData.GET_TOKEN_QUERY
-import org.ionproject.core.access_control.pap.AuthRepoData.SCOPE_URI
-import org.ionproject.core.access_control.pap.AuthRepoData.TOKEN
+import org.ionproject.core.accessControl.pap.AuthRepoData.API_VERSION
+import org.ionproject.core.accessControl.pap.AuthRepoData.GET_POLICIES_QUERY
+import org.ionproject.core.accessControl.pap.AuthRepoData.GET_TOKEN_QUERY
+import org.ionproject.core.accessControl.pap.AuthRepoData.SCOPE_URI
+import org.ionproject.core.accessControl.pap.AuthRepoData.TOKEN
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 

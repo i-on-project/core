@@ -160,7 +160,7 @@ internal class KlassControllerTest : ControllerTester() {
         var limit = 1
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = Media.MEDIA_SIREN
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -172,7 +172,7 @@ internal class KlassControllerTest : ControllerTester() {
         limit = 2
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = Media.MEDIA_SIREN
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }

@@ -1,4 +1,4 @@
-package org.ionproject.core.access_control.pap
+package org.ionproject.core.accessControl.pap
 
 internal object AuthRepoData {
   const val SCHEMA = "dbo"

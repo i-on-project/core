@@ -20,7 +20,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     @Test
     fun getInvalidCalTerm() {
         doGet(notFoundUriByWrongTerm) {
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect {
@@ -37,7 +37,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     fun getCalTermWithInvalidContentType() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
@@ -48,7 +48,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     fun getCalTermsInvalidContentType() {
         doGet(cals) {
             accept = Media.MEDIA_HOME
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }

@@ -24,7 +24,7 @@ internal class CourseErrorTest : ControllerTester() {
     @Test
     fun getInvalidCourse() {
         doGet(notFoundUri) {
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect {
@@ -40,7 +40,7 @@ internal class CourseErrorTest : ControllerTester() {
     fun getCourseWithInvalidContentType() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
@@ -53,7 +53,7 @@ internal class CourseErrorTest : ControllerTester() {
     @Test
     fun getCourseWithBadRequest() {
         doGet(badRequestUri) {
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }

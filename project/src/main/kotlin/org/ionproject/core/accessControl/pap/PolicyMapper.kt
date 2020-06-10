@@ -1,4 +1,4 @@
-package org.ionproject.core.access_control.pap
+package org.ionproject.core.accessControl.pap
 
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext

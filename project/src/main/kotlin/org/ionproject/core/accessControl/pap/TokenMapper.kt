@@ -1,4 +1,4 @@
-package org.ionproject.core.access_control.pap
+package org.ionproject.core.accessControl.pap
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.jdbi.v3.core.mapper.RowMapper

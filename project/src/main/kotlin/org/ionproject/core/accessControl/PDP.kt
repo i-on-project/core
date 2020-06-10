@@ -1,8 +1,8 @@
-package org.ionproject.core.access_control
+package org.ionproject.core.accessControl
 
-import org.ionproject.core.access_control.pap.AuthRepoImpl
-import org.ionproject.core.access_control.pap.Policy
-import org.ionproject.core.access_control.pap.TokenEntity
+import org.ionproject.core.accessControl.pap.AuthRepoImpl
+import org.ionproject.core.accessControl.pap.Policy
+import org.ionproject.core.accessControl.pap.TokenEntity
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -11,8 +11,6 @@ import org.ionproject.core.common.transaction.DataSourceHolder
 import org.ionproject.core.common.transaction.TransactionManagerImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.util.UriTemplate
-import java.net.URI
 
 private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 

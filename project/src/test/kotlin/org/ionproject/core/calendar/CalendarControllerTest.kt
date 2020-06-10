@@ -91,7 +91,7 @@ SUMMARY;LANGUAGE=en-US:WAD Monday Lecture
 DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=en-US:Lecture
+CATEGORIES;LANGUAGE=en-US:Exam
 DTSTART:20200210T100000Z
 DTEND:20200210T123000Z
 RRULE:FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=MO
@@ -103,7 +103,7 @@ SUMMARY;LANGUAGE=en-US:WAD Wednesday Lecture
 DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=en-US:Lecture
+CATEGORIES;LANGUAGE=en-US:Exam
 DTSTART:20200212T100000Z
 DTEND:20200212T123000Z
 RRULE:FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=WE
@@ -193,7 +193,7 @@ END:VCALENDAR"""
             Summary(enLang, "WAD Monday Lecture"),
             Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
-            Categories(enLang, "Lecture"),
+            Categories(enLang, "Exam"),
             DtStart("20200210T100000Z"),
             DtEnd("20200210T123000Z"),
             RRule("FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=MO")
@@ -205,7 +205,7 @@ END:VCALENDAR"""
             Summary(enLang, "WAD Wednesday Lecture"),
             Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
-            Categories(enLang, "Lecture"),
+            Categories(enLang, "Exam"),
             DtStart("20200212T100000Z"),
             DtEnd("20200212T123000Z"),
             RRule("FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=WE")
@@ -243,7 +243,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClass() {
         mocker.get(Uri.forCalendarComponentByClass(courseID, calTerm, componentID)) {
             accept = Media.MEDIA_SIREN
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -255,7 +255,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClassSection() {
         mocker.get(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5")) {
             accept = Media.MEDIA_SIREN
-            header("Authorization", read_token)
+            header("Authorization", readToken)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -272,7 +272,7 @@ END:VCALENDAR"""
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
       {
         accept = Media.MEDIA_TEXT_CALENDAR
-        header("Authorization", read_token)
+        header("Authorization", readToken)
       }
         .andReturn()
         .response
@@ -296,7 +296,7 @@ END:VCALENDAR"""
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
       {
         accept = Media.MEDIA_TEXT_CALENDAR
-        header("Authorization", read_token)
+        header("Authorization", readToken)
       }
         .andReturn()
         .response
@@ -316,7 +316,7 @@ END:VCALENDAR"""
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
       {
         accept = Media.MEDIA_TEXT_CALENDAR
-        header("Authorization", read_token)
+        header("Authorization", readToken)
       }.andReturn()
         .response.contentAsString
 
@@ -330,7 +330,7 @@ END:VCALENDAR"""
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
       {
         accept = Media.MEDIA_TEXT_CALENDAR
-        header("Authorization", read_token)
+        header("Authorization", readToken)
       }.andReturn()
         .response.contentAsString
 

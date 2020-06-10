@@ -1,8 +1,7 @@
 package org.ionproject.core.common.interceptors
 
-import org.ionproject.core.access_control.PDP
+import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.common.customExceptions.BadRequestException
-import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
@@ -23,22 +22,30 @@ data class Request(val method: String, val apiVersion: String, val resource: Str
  */
 class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        //Client doesn't include header "Authorization"
         val header = request.getHeader("Authorization")
                 ?: throw UnauthenticatedUserException("User not authenticated.")
         val pair = header.trim().split(" ")
 
+        //Client includes header "Authorization" with bad value e.g. "Bearer      "
+        if(pair.size != 2)
+            throw BadRequestException("Incorrect authorization header value.")
+
+        //Client include token type is different than "Bearer"
         val tokenIncludeType = pair[0].toLowerCase()
         if (tokenIncludeType != includeType)
             throw BadRequestException("Unsupported include token type.")
 
-        val tokenRef = decodeBase64(pair[1])
-        val tokenIndex = getHash(tokenRef)
+        //Transforms the base64url encoded value to the SHA-256 hashed value
+        val tokenBase64Decoded = decodeBase64(pair[1])
+        val tokenHash = getHash(tokenBase64Decoded)
 
+        //Sends the request with the token Hash down to the Policy Decision Point
         val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
-        if (PDP.evaluateRequest(tokenIndex, requestDescriptor))
+        if (PDP.evaluateRequest(tokenHash, requestDescriptor))
             return true
-        else
-            throw ForbiddenActionException("You Require higher privileges to do that.")
+
+        return false
     }
 
     private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
