@@ -2,6 +2,7 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -61,7 +62,7 @@ internal class AccessControlTest: ControllerTester() {
     @Test
     fun getHomeDocument() {
         doGet(homeDocumentUri) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status { isOk } }

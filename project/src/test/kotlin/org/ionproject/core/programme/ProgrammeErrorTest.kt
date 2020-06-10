@@ -3,6 +3,7 @@ package org.ionproject.core.programme
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -24,7 +25,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     @Test
     fun getInvalidProgramme() {
         doGet(notFoundUri) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -40,7 +41,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     fun getProgrammeWithInvalidContentType() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
@@ -53,7 +54,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     @Test
     fun getProgrammeWithBadRequest() {
         doGet(badRequestUri) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
@@ -66,7 +67,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     @Test
     fun getInvalidProgrammeOffer() {
         doGet(notFoundProgrammeOffer)  {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -80,7 +81,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     @Test
     fun getProgrammeOfferWithBadRequest() {
         doGet(badRequestProgrammeOffer) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }

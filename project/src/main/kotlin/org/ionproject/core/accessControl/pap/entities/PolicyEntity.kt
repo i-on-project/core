@@ -1,6 +1,6 @@
-package org.ionproject.core.accessControl.pap
+package org.ionproject.core.accessControl.pap.entities
 
-class Policy(
+class PolicyEntity(
   val scope_id: Int,
   val method: String,
   val version: String,

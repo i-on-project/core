@@ -1,13 +1,12 @@
 package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.PDP
+import org.ionproject.core.accessControl.TokenGenerator.Companion.decodeBase64
+import org.ionproject.core.accessControl.TokenGenerator.Companion.getHash
 import org.ionproject.core.common.customExceptions.BadRequestException
-import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
-import java.security.MessageDigest
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -50,18 +49,10 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
     private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
         val requestDescriptor: Request
+        val parts = pathInfo.substring(1).split("/")
 
-        /**
-         * Unexistent URI's e.g. "/foo/bar" without a controller associated are redirected
-         * to the endpoint "/error" by the spring framework, which will then hit the
-         * authentication interceptor.
-         * Should this request be terminated and avoid wasting resources like below or allow to be further processed?
-         */
-        if (pathInfo == "/error")
-            throw ResourceNotFoundException("That resource is unexistent...")
-
-        if (pathInfo == "/")     //Special case user is accessing the HOME document and there is no API version
-            requestDescriptor = Request(method, "*", "/")
+        if(parts.size == 1) //Special case user is accessing endpoint without version
+            requestDescriptor = Request(method, "*", pathInfo)
         else {
             val idxVersion = pathInfo.indexOf("/", 1)
             requestDescriptor = Request(method, pathInfo.substring(1, idxVersion), pathInfo.substring(idxVersion))
@@ -70,17 +61,5 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         return requestDescriptor
     }
 
-    private fun decodeBase64(tokenBase64: String): String {
-        val decoder = Base64.getDecoder().decode(tokenBase64)
-        return String(decoder)
-    }
 
-    private fun getHash(tokenRef: String): String {
-        val bytes = tokenRef.toByteArray()
-        val md = MessageDigest.getInstance("SHA-256")
-        val digest = md.digest(bytes)
-
-        //Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
-        return digest.fold("", { str, it -> str + "%02x".format(it) })
-    }
 }

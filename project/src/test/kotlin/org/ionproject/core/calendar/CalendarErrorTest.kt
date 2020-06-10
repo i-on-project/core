@@ -4,6 +4,7 @@ package org.ionproject.core.calendar
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 
 internal class CalendarErrorTest : ControllerTester() {
@@ -50,7 +51,7 @@ internal class CalendarErrorTest : ControllerTester() {
     fun getInvalidCalendar() {
         for (link in invalidLinks) {
             doGet(link) {
-              header("Authorization", readToken)
+              header("Authorization", readTokenTest)
             }
                     .andDo { print() }
                     .andExpect {
@@ -69,7 +70,7 @@ internal class CalendarErrorTest : ControllerTester() {
         for (link in validLinks) {
             doGet(link) {
               accept = Media.MEDIA_HOME
-              header("Authorization", readToken)
+              header("Authorization", readTokenTest)
             }
                     .andDo { print() }
                     .andExpect { status { isNotAcceptable } }

@@ -3,6 +3,7 @@ package org.ionproject.core.calendarTerm
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 
 internal class CalTermsErrorTest : ControllerTester() {
@@ -20,7 +21,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     @Test
     fun getInvalidCalTerm() {
         doGet(notFoundUriByWrongTerm) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -37,7 +38,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     fun getCalTermWithInvalidContentType() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
@@ -48,7 +49,7 @@ internal class CalTermsErrorTest : ControllerTester() {
     fun getCalTermsInvalidContentType() {
         doGet(cals) {
             accept = Media.MEDIA_HOME
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }

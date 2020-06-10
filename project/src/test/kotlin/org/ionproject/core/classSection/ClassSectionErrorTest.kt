@@ -3,6 +3,7 @@ package org.ionproject.core.classSection
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -26,7 +27,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     @Test
     fun getInvalidClassSectionByWrongCID() {
         doGet(notFoundUriByWrongCID) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -41,7 +42,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     @Test
     fun getInvalidClassSectionByWrongCalTerm() {
         doGet(notFoundUriByWrongCalTerm) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -56,7 +57,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     @Test
     fun getInvalidClassSectionByWrongSID() {
         doGet(notFoundUriByWrongSID) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect {
@@ -72,7 +73,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     fun getClassSectionWithInvalidContentType() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
@@ -85,7 +86,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     @Test
     fun getClassSectionWithBadRequest() {
         doGet(badRequestUri) {
-            header("Authorization", readToken)
+            header("Authorization", readTokenTest)
         }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }

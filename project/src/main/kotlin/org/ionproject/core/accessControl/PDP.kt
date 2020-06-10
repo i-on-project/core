@@ -1,8 +1,8 @@
 package org.ionproject.core.accessControl
 
-import org.ionproject.core.accessControl.pap.AuthRepoImpl
-import org.ionproject.core.accessControl.pap.Policy
-import org.ionproject.core.accessControl.pap.TokenEntity
+import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
+import org.ionproject.core.accessControl.pap.entities.PolicyEntity
+import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -19,38 +19,32 @@ class PDP {
   companion object {
     private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
 
-    fun evaluateRequest(tokenReference: String, requestDescriptor: Request): Boolean {
-      val tokenTable = pap.getTableToken(tokenReference)
+    fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Boolean {
+      val token = pap.getTableToken(tokenHash)
 
-      /**
-       * Checks if the token exists or is valid (not revoked)
-       */
-      if(tokenTable == null || !tokenTable.isValid) {
+      //Check if the token is valid or exists
+      if(token == null || !token.isValid) {
         logger.info("Access to ${requestDescriptor.method} was NOT AUTHORIZED on ${requestDescriptor.resource}")
         throw UnauthenticatedUserException("Token is not valid (revoked or unexistent)... try requesting a new one.")
       }
 
-      return checkPolicies(tokenTable, requestDescriptor)
+      return checkPolicies(token, requestDescriptor)
     }
 
     /**
-     * Checks if the user is allowed to do the action he is
-     * trying to do.
+     * Check if the user is allowed to do the action he requested
      */
-    fun checkPolicies(tokenTable: TokenEntity, requestDescriptor: Request): Boolean {
-      /**
-       * Check if the token is not expired.
-       */
-      if( System.currentTimeMillis() > tokenTable.claims.exp) {
-        logger.info("Client_id:${tokenTable.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
+    private fun checkPolicies(token: TokenEntity, requestDescriptor: Request): Boolean {
+      //Checks if the token is expired
+      if( System.currentTimeMillis() > token.expiresAt) {
+        logger.info("Client_id:${token.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
         throw UnauthenticatedUserException("Token expired... try requesting a new one.")
       }
 
-      val policies = pap.getPolicies(tokenTable.claims.scope, requestDescriptor.apiVersion)
+      val policies = pap.getPolicies(token.claims.scope, requestDescriptor.apiVersion)
 
       /**
-       * Checks if the scope associated has the correct method
-       * permissions to the specific path.
+       * Checks if the scope associated has the correct method permissions to the specific path.
        * e.g. ALLOW "GET /v0/courses"
        */
       val policy = matchPaths(requestDescriptor.resource, policies)
@@ -58,7 +52,7 @@ class PDP {
         //A path matched with the request, check the associated HTTP method
         val methods = policy.method
         if(methods.contains(requestDescriptor.method)) {
-          logger.info("Client_id:${tokenTable.claims.client_id} was AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
+          logger.info("Client_id:${token.claims.client_id} was AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
           return true
         }
       }
@@ -66,7 +60,7 @@ class PDP {
       /**No path match, or not the correct method or no policies associated with the scope
        * therefore user has no permission to access that resource
        */
-      logger.info("Client_id:${tokenTable.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
+      logger.info("Client_id:${token.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
       throw ForbiddenActionException("You Require higher privileges to do that.")
     }
 
@@ -78,7 +72,7 @@ class PDP {
      * If there is a match, it returns the associated policy for further processing
      * if there is no match it means that the scope used has no access to that resource.
      */
-    fun matchPaths(path: String, policies: List<Policy>): Policy? {
+    private fun matchPaths(path: String, policies: List<PolicyEntity>): PolicyEntity? {
       val uriRequest = path.replace("/", " ").trim().split(" ")
 
       for(policy in policies) {

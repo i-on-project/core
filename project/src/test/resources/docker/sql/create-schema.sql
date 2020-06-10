@@ -435,6 +435,8 @@ CREATE TABLE dbo.Token(
 	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	hash CHAR(64) UNIQUE,	--64 hexa chars = 256 bits hash
 	isValid BOOLEAN,
+	issuedAt BIGINT,
+	expiresAt BIGINT,
 	claims JSONB
 );
 

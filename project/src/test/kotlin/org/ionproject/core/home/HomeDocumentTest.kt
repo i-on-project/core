@@ -1,6 +1,7 @@
 package org.ionproject.core.home
 
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -44,7 +45,7 @@ internal class HomeDocumentTest : ControllerTester() {
     @Test
     fun getHomeDocument() {
         doGet(URI.create("/")) {
-          header("Authorization", readToken)
+          header("Authorization", readTokenTest)
         }
             .andDo { print() }
             .andExpect {

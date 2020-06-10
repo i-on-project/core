@@ -34,17 +34,13 @@ INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALU
 --client id holds no meaning for now as there is no registration/authentication method
 -- last 2 tokens are expired and revoked for testing purposes
 
-INSERT INTO dbo.Token (hash, isValid, claims) VALUES 
-('6fa0d86dc9c0ffd02621c6e04c1ec2fce530a959337c010e96b48eded287dffd', TRUE, 
-'{"iat": 1591544539044, "exp":1691544539044, "client_id":1, "scope": "urn:org:ionproject:scopes:api:read"}'),
-('ab4989539d8d4215650e89865e1338b9b2de000007690dcbe1e9c2ea0ad4f17d', TRUE, 
-'{"iat": 1591544539044, "exp":1691544539044, "client_id":2, "scope": "urn:org:ionproject:scopes:api:write"}'),
-('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 
-'{"iat": 1591544539044, "exp":1591544539045, "client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
-('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE,
-'{"iat": 1591544539044, "exp":1691544539044, "client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
-('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE,
-'{"iat": 1591544539044, "exp":1691544539044, "client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
+INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt, claims) VALUES 
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,
+'{"client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,
+'{"client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,
+'{"client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
 
 
 INSERT INTO dbo.scopes (scope) VALUES
@@ -97,7 +93,8 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (2, 'PUT,POST', 'v0', 'calendar-terms'),
 (2, 'PUT,POST', 'v0', 'calendar-terms/?'),
 (4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
-(4, 'GET', 'v0', 'programmes/?');
+(4, 'GET', 'v0', 'programmes/?'),
+(3, 'PUT', '*', 'issueToken'); --adicionar dps o revoke endpoint
 
 
 
