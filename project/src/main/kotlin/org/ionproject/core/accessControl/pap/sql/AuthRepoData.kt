@@ -30,4 +30,8 @@ internal object AuthRepoData {
   const val INSERT_TOKEN_QUERY = """
     INSERT INTO $SCHEMA.$TOKEN ($HASH,$IS_VALID,$ISSUED_AT,$EXPIRES_AT,$CLAIMS) VALUES (?,?,?,?,to_json(?::json))
   """
+
+  const val REVOKE_TOKEN_QUERY = """
+    UPDATE $SCHEMA.$TOKEN SET $IS_VALID=false WHERE $HASH=?
+  """
 }

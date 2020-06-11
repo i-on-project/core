@@ -26,7 +26,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+dependencies    {
     // main dependencies
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -62,6 +62,7 @@ tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgCreateUser>("pgCreateUser")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
+tasks.register<PgInsertMasterToken>("pgInsertMasterToken")
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,

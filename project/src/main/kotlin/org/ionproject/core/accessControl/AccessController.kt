@@ -2,6 +2,7 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
+import org.ionproject.core.accessControl.representations.TokenRevokedRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
@@ -22,8 +23,8 @@ class AccessController(private val services: AccessServices) {
      * token with the "urn:org:ionproject:scopes:token:issue" scope.
      */
     @PutMapping(Uri.issueToken, consumes=[Media.APPLICATION_JSON])
-    fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<Any> {
-        val token = services.generateToken(tokenIssueDetails.scope)
+    fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<TokenRepr> {
+        val token: TokenRepr = services.generateToken(tokenIssueDetails.scope)
         return ResponseEntity.ok(token)
     }
 
@@ -31,11 +32,11 @@ class AccessController(private val services: AccessServices) {
      * It receives the token that must be revoked in the Authorization Header
      *
      * All scopes are allowed to access this endpoint.
+     * If the token is valid the operation will always succeed.
      */
     @PutMapping(Uri.revokeToken)
-    fun revokeToken(@RequestHeader("Authorization") token : String) {
+    fun revokeToken(@RequestHeader("Authorization") token : String): ResponseEntity<TokenRevokedRepr> {
         services.revokeToken(token)
-        TODO()
+        return ResponseEntity.ok(TokenRevokedRepr("Token revoked."))
     }
-
 }

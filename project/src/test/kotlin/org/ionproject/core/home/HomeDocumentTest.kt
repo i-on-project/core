@@ -42,6 +42,7 @@ internal class HomeDocumentTest : ControllerTester() {
         )
     }
 
+
     @Test
     fun getHomeDocument() {
         doGet(URI.create("/")) {

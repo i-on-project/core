@@ -5,6 +5,8 @@ import org.gradle.process.internal.ExecException
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.net.URI
+import java.net.URL
+import java.net.URLClassLoader
 
 object Postgres {
     const val SUPER_USER = "postgres"
@@ -263,6 +265,16 @@ open class PgAddData : AbstractTask() {
         }
     }
 }
+
+open class PgInsertMasterToken : AbstractTask() {
+
+    @TaskAction
+    fun run() {
+        print("do something")
+    }
+}
+
+
 
 class DevNull : OutputStream() {
     override fun write(p0: Int) {

@@ -1,6 +1,5 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.accessControl.readToken
 import org.ionproject.core.common.Media
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -8,13 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.*
 import java.net.URI
 
-/**
- * This token must be outside any bean.
- * The initialization of the beans will occur before the initialization of the tokens filling
- * readToken with the wrong value and failing the tests.
- */
-val readTokenTest = readToken
-
+var readTokenTest = ""  //Used to allow tests to run or they will all fail with 400
+var issueTokenTest = "" //Used to test the issue of tokens in AccessControlTest
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,5 +30,6 @@ internal class ControllerTester {
 
     fun doPost(uri: URI, dsl: MockHttpServletRequestDsl.() -> Unit = {}) = mocker.post(uri, dsl)
 
+    fun doPut(uri: URI, dsl: MockHttpServletRequestDsl.() -> Unit = {}) = mocker.put(uri, dsl)
 }
 

@@ -18,7 +18,7 @@ class TokenGenerator {
 
         fun generateRandomString() : String {
             val randomString = (1..STRING_LENGTH)
-                    .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
+                    .map { kotlin.random.Random.nextInt(0, charPool.size) }
                     .map(charPool::get)
                     .joinToString("");
 
@@ -53,8 +53,8 @@ class TokenGenerator {
          *
          * client_id 0 in the beta phase of the access manager holds no special value
          */
-        fun buildToken(tokenHash: String, issueTime: Long, scope: String) : TokenEntity {
-            val claims = ClaimsEntity(0, scope)
+        fun buildToken(tokenHash: String, issueTime: Long, scope: String, clientId: Int) : TokenEntity {
+            val claims = ClaimsEntity(clientId, scope)
             return TokenEntity(tokenHash, true, issueTime, issueTime + TOKEN_DURATION, claims)
         }
     }

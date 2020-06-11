@@ -10,5 +10,5 @@ interface AuthRepo {
 
   fun storeToken(token: TokenEntity): Boolean
 
-  fun revokeToken(): Boolean
+  fun revokeToken(hash: String): Boolean
 }

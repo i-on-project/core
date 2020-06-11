@@ -94,7 +94,12 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (2, 'PUT,POST', 'v0', 'calendar-terms/?'),
 (4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
 (4, 'GET', 'v0', 'programmes/?'),
-(3, 'PUT', '*', 'issueToken'); --adicionar dps o revoke endpoint
+(3, 'PUT', '*', 'issueToken'),
+(1, 'PUT', '*', 'revokeToken'),
+(2, 'PUT', '*', 'revokeToken'),
+(3, 'PUT', '*', 'revokeToken'),
+(4, 'PUT', '*', 'revokeToken');
+
 
 
 

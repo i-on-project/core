@@ -9,8 +9,8 @@ import org.ionproject.core.accessControl.pap.sql.AuthRepoData.TOKEN
 import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.INSERT_TOKEN_QUERY
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_TOKEN_QUERY
 import org.ionproject.core.common.transaction.TransactionManager
-import org.postgresql.util.PGobject
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -43,7 +43,10 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
     }()
   }
 
-  override fun revokeToken(): Boolean {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  override fun revokeToken(hash: String): Boolean = tm.run {
+    handle -> {
+      val result = handle.execute(REVOKE_TOKEN_QUERY, hash)
+      result > 0
+    } ()
   }
 }

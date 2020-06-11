@@ -1,9 +1,12 @@
 package org.ionproject.core.accessControl
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.net.URI
 
 internal class AccessControlTest: ControllerTester() {
@@ -38,6 +41,9 @@ internal class AccessControlTest: ControllerTester() {
         val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()
         val homeDocumentUri = URI("/")
+        val issueTokenUri = URI(Uri.issueToken)
+        val revokeTokenUri = URI(Uri.revokeToken)
+
     }
     /**
      * Because all requests pass through the access control interceptor
@@ -181,6 +187,62 @@ internal class AccessControlTest: ControllerTester() {
         }
                 .andDo { print() }
                 .andExpect { status { isBadRequest } }
+                .andReturn()
+    }
+
+
+    /**
+     * Test issue token and then revoke it
+     */
+    @Test
+    fun issueTokenAndRevoke() {
+        val result = doPut(issueTokenUri) {
+            header("Authorization", issueTokenTest)
+            header("Content-Type", "application/json")
+
+            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
+        }
+                .andDo { print() }
+                .andExpect { status { isOk } }
+                .andReturn()
+                .response
+                .contentAsString
+
+        val mapper = jacksonObjectMapper()
+        val tokenToRevoke = mapper.readValue(result, TokenRepr::class.java).token
+
+        doPut(revokeTokenUri) {
+            header("Authorization", "Bearer $tokenToRevoke")
+        }.andDo { print() }
+                .andExpect { status { isOk } }
+                .andReturn()
+    }
+
+    /**
+     * Tries to issue a token, with an invalid token
+     */
+    @Test
+    fun putIssueTokenInvalid() {
+        doPut(issueTokenUri) {
+            header("Authorization", "Bearer lol")
+            header("Content-Type", "application/json")
+
+            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
+        }
+                .andDo { print() }
+                .andExpect { status { isUnauthorized } }
+                .andReturn()
+    }
+
+    /**
+     * Tries to revoke an invalid token
+     */
+    @Test
+    fun revokeTokenInvalid() {
+        doPut(revokeTokenUri) {
+            header("Authorization", "Bearer lol")
+        }.andDo { print() }
+                .andExpect { status { isUnauthorized } }
                 .andReturn()
     }
 
