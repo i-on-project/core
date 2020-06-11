@@ -1,0 +1,7 @@
+.gradle
+.dockerignore
+.gitignore
+gradlew.bat
+Dockerfile
+build
+

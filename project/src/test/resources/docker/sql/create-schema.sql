@@ -379,15 +379,6 @@ BEGIN
 END
 $$ LANGUAGE PLpgSQL;
 
-------- UTILS --------
-CREATE FUNCTION MERGE_LANGUAGE_TEXT(language INT, text VARCHAR)
-RETURNS VARCHAR
-LANGUAGE PLpgSQL AS $$
-BEGIN
-	RETURN language || ':' || text;
-END;
-$$;
-
 ------- VIEWS --------
 CREATE VIEW dbo.courseWithTerm AS
 	SELECT co.*, cl.calendarterm FROM 
