@@ -61,6 +61,6 @@ $ java -server -jar ./build/libs/core-0.1.jar
 ```
 
 If you previously ran the `build` task, you may skip `assemble`.
-The server will open port on `8080` which you may change by specifying an option (e.g `java -server -Dserver.port=10022 -jar ./build/libs/core-0.1.jar`)
+The server will open on port `8080` which you may change by specifying an option (e.g `java -server -Dserver.port=10022 -jar ./build/libs/core-0.1.jar`)
 
 
