@@ -35,7 +35,7 @@ $ # Stop the DB running in the background
 $ ./gradlew pgStop
 ```
 
-In Microsoft Window's shell the procedure should similar, with the exception of `export` being `SET` and paths `/` being `\`.
+In Microsoft Window's shell the procedure should be similar with the exception of `export` being `SET` and paths `/` being `\`.
 
 You may also connect to the database running in the container with `docker exec -it pq-container psql -h localhost -d ion -U unpriv` (you may also use `psql` locally).
 The parameters of the command may vary depending on the contents of the `JDBC_DATABASE_URL` variable you have defined earlier.
@@ -54,11 +54,13 @@ $
 $ # Generate JAR
 $ ./gradlew assemble
 $
+$ export JDBC_DATABASE_URL="jdbc:postgresql://10.0.2.15:10020/myrealdb?user=unpriv&password=realdbsafepw"
+$
 $ # Run server
 $ java -server -jar ./build/libs/core-0.1.jar
 ```
 
 If you previously ran the `build` task, you may skip `assemble`.
-The server will open port `8080` which you may change by specifying an option (e.g `java -server -Dserver.port=10022 -jar ./build/libs/core-0.1.jar`)
+The server will open port on `8080` which you may change by specifying an option (e.g `java -server -Dserver.port=10022 -jar ./build/libs/core-0.1.jar`)
 
 
