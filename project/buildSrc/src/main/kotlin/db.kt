@@ -5,8 +5,7 @@ import org.gradle.process.internal.ExecException
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.net.URI
-import java.net.URL
-import java.net.URLClassLoader
+
 
 object Postgres {
     const val SUPER_USER = "postgres"
@@ -267,10 +266,37 @@ open class PgAddData : AbstractTask() {
 }
 
 open class PgInsertMasterToken : AbstractTask() {
-
     @TaskAction
     fun run() {
-        print("do something")
+        val randomString = TokenGenerator.generateRandomString()
+        val base64Token = TokenGenerator.encodeBase64(randomString)
+        val tokenHash = TokenGenerator.getHash(randomString)
+
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+        val claims = "{\"client_id\":500, \"scope\": \"urn:org:ionproject:scopes:api:read\"}"
+
+        val insertQuery = """
+            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
+        """
+        print(insertQuery)
+
+        val pgParams = Postgres.pgParams
+        val result = project.exec {
+            commandLine("docker", "exec", Docker.CONTAINER_NAME,
+                    "psql",
+                    "-h", pgParams.host,
+                    "-U", pgParams.user,
+                    "-d", pgParams.db,
+                    "-w",
+                    "-1",
+                    "-c $insertQuery")
+
+            environment(Postgres.ENV_PASSWORD, pgParams.password)
+        }
+        result.assertNormalExitValue()
+
+        print("Your token is:$base64Token")
     }
 }
 
