@@ -19,6 +19,83 @@ INSERT INTO dbo.Course(acronym, name) values
 ('PS', 'Project and Seminary'),
 ('CC', 'Cloud computing');
 	
+-- Access Manager Mock Data for beta version
+--Notes:
+--exp: 1691121207 on first 2 tokens is around the year 2023 
+--client id holds no meaning for now as there is no registration/authentication method
+-- last 2 tokens are expired and revoked for testing purposes
+
+INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt, claims) VALUES 
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,
+'{"client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,
+'{"client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,
+'{"client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
+
+
+INSERT INTO dbo.scopes (scope) VALUES
+('urn:org:ionproject:scopes:api:read'),
+('urn:org:ionproject:scopes:api:write'),
+('urn:org:ionproject:scopes:token:issue'),
+('urn:org:ionproject:scopes:api:read_restricted');
+
+/*
+* Don't use wildcards in the paths
+* e.g. /v0/courses which a user may have permission to access
+* can be tricked into accepting a request to a resource he is not allowed.
+* e.g. GET "/v0/courses/../programmes"
+* if the code accepts anything towards "/v0/courses*"
+*
+*This way of representing permissions is very extensive and would exponentially
+*grow if all paths were repeated by each HTTP method, therefore the field
+*method is a list of methods allowed for each resource.
+*/
+INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
+(1, 'GET', '*','/'),
+(1, 'GET', 'v0', 'courses'),
+(1, 'GET', 'v0', 'courses/?'),
+(1, 'GET', 'v0', 'courses/?/classes'),
+(1, 'GET', 'v0', 'courses/?/classes/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/calendar'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar'),
+(1, 'GET', 'v0', 'courses/?/classes/?/calendar/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar/?'),
+(1, 'GET', 'v0', 'programmes'),
+(1, 'GET', 'v0', 'programmes/?'),
+(1, 'GET', 'v0', 'programmes/?/offers'),
+(1, 'GET', 'v0', 'programmes/?/offers/?'),
+(1, 'GET', 'v0', 'calendar-terms'),
+(1, 'GET', 'v0', 'calendar-terms/?'),
+(2, 'PUT,POST', 'v0', 'courses'),
+(2, 'PUT,POST', 'v0', 'courses/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar/?'),
+(2, 'PUT,POST', 'v0', 'programmes'),                                            
+(2, 'PUT,POST', 'v0', 'programmes/?'),                                       
+(2, 'PUT,POST', 'v0', 'programmes/?/offers'),
+(2, 'PUT,POST', 'v0', 'programmes/?/offers/?'),
+(2, 'PUT,POST', 'v0', 'calendar-terms'),
+(2, 'PUT,POST', 'v0', 'calendar-terms/?'),
+(4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
+(4, 'GET', 'v0', 'programmes/?'),
+(3, 'PUT', '*', 'issueToken'),
+(1, 'PUT', '*', 'revokeToken'),
+(2, 'PUT', '*', 'revokeToken'),
+(3, 'PUT', '*', 'revokeToken'),
+(4, 'PUT', '*', 'revokeToken');
+
+
+
+
+
+
 INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
 (1, 2, TRUE,  3),
 (1, 1, FALSE, 6),
