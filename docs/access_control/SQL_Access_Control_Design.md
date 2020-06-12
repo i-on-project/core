@@ -32,15 +32,15 @@ CREATE TABLE dbo.Token(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     hash CHAR(64) UNIQUE,   -- 64 hexa chars * 4 bits per char = 256 bits hash
     isValid BOOLEAN,        -- revocation status
-    claims VARCHAR(1000)    -- JSON claims, e.g. expiration time, creation date, scope...
+    issuedAt BIGINT,        -- time of issuing
+    expiresAt BIGINT,       -- expiration date
+    claims JSONB            -- JSON claims, e.g. clientId, scope...
 )
 ```
 
 E.g. claims object:
 ```
 {
-    "iat": 1591121200           -- The time at which the token was issued 
-    "exp": 1591121207,          -- The time of expiration (token should not be processed after)
     "client_id": "s6BhdRkqt3",  -- Identifies the client that requested the token
     "scope": "urn:org:ionproject:scopes:api:read"
 }
@@ -53,9 +53,11 @@ E.g. allowing GET methods for the resource /v0/courses
 
 ```
 CREATE TABLE dbo.policies (
-    scope_id INT PRIMARY KEY REFERENCES dbo.scopes(id), 
-    method VARCHAR(10),             -- GET, POST...
-    path VARCHAR(100)               -- /v0/courses?...
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	scope_id INT REFERENCES dbo.scopes(id),
+	method VARCHAR(10),		-- get, post...
+	version VARCHAR(10),	--	v0, v1...
+	path VARCHAR(100)		-- .../courses
 )
 ```
 

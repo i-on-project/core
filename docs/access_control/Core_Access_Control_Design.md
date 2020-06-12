@@ -41,17 +41,17 @@ Client ----> PEP -----> API
               PDP <----> PAP <---> Policy Store
 ```
 
-1ºPEP will intercept the request and ask the PDP component if it should allow the request to continue or reject it.
+1.PEP will intercept the request and ask the PDP component if it should allow the request to continue or reject it.
 
-2ºThe PDP will contact the PAP to obtain the list of policies. 
+2.The PDP will contact the PAP to obtain the list of policies. 
 
-3ºThe PAP will obtain the policies from the policy store and return them to the PDP. 
+3.The PAP will obtain the policies from the policy store and return them to the PDP. 
 
-4ºPDP will evaluate the policies based on the request content.
+4.PDP will evaluate the policies based on the request content.
 For example PAP could have returned "Allow: {GET: [/courses, /programmes]},...".
 Based on the request "GET: /courses", the PDP will successfully verify that the action is valid and return a positive decision to PEP. 
 
-5º PEP will then enforce the decision made by the PDP. (Allow to reach the API or reject the request)
+5.PEP will then enforce the decision made by the PDP. (Allow to reach the API or reject the request)
 
 
 # Notes:
@@ -62,14 +62,14 @@ Based on the request "GET: /courses", the PDP will successfully verify that the 
 # Possible policies to verify
 Possible list of policies to verify on a request:
 
-1º Is that client blocked from making requests? (E.g. IP banned for security)
+1.Is that client blocked from making requests? (E.g. IP banned for security)
 
-2º Does the token exist?
+2.Does the token exist?
 
-3º Is the token revoked?
+3.Is the token revoked?
 
-4º Is the token expired?
+4.Is the token expired?
 
-5º Is the client allowed to do that?
+5.Is the client allowed to do that?
 
-Those policies are just an example does not mean they will be implemented.
+(Note:Those policies are just an example does not mean they will be implemented.)
