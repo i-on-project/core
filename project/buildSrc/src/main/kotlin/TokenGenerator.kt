@@ -1,4 +1,5 @@
 import java.security.MessageDigest
+import java.security.SecureRandom
 import java.util.*
 
 class TokenGenerator {
@@ -12,8 +13,9 @@ class TokenGenerator {
         private val charPool = ('a'..'z') + ('A'..'Z') + ('0'..'9') //List of chars used in the random string generation
 
         fun generateRandomString() : String {
+            val secureRandom = SecureRandom()
             val randomString = (1..STRING_LENGTH)
-                    .map { kotlin.random.Random.nextInt(0, charPool.size) }
+                    .map { secureRandom.nextInt(charPool.size) }
                     .map(charPool::get)
                     .joinToString("");
 

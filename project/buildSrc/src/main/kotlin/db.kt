@@ -265,7 +265,7 @@ open class PgAddData : AbstractTask() {
     }
 }
 
-open class PgInsertMasterToken : AbstractTask() {
+open class PgInsertReadToken : AbstractTask() {
     @TaskAction
     fun run() {
         val randomString = TokenGenerator.generateRandomString()

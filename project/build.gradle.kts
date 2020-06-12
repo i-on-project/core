@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.lang.Thread.sleep
 
 plugins {
     id("org.springframework.boot") version "2.2.6.RELEASE"
@@ -62,7 +61,7 @@ tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgCreateUser>("pgCreateUser")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
-tasks.register<PgInsertMasterToken>("pgInsertMasterToken")
+tasks.register<PgInsertReadToken>("pgInsertReadToken")
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,
