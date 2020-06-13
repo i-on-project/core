@@ -81,7 +81,7 @@ class ExceptionHandler {
      * of a integer on a parameter. e.g. /v0/courses/BUG
      * or when is used an illegal character in a url. e.g. /v0/courses/ç/
      */
-    @ExceptionHandler(value = [NumberFormatException::class, IllegalArgumentException::class])
+    @ExceptionHandler(value = [NumberFormatException::class])
     private fun handleNumberFormatException(
         ex: NumberFormatException,
         request: HttpServletRequest
@@ -92,6 +92,20 @@ class ExceptionHandler {
             400,
             ex.localizedMessage,
             request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [IllegalArgumentException::class])
+    private fun handleIllegalArgumentException(
+            ex: NumberFormatException,
+            request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+                "",
+                "Bad request",
+                400,
+                ex.localizedMessage,
+                request.requestURI
         )
     }
 

@@ -2,6 +2,8 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
+import org.ionproject.core.common.customExceptions.BadRequestException
+import java.lang.IllegalArgumentException
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
@@ -33,8 +35,13 @@ class TokenGenerator {
         }
 
         fun decodeBase64(tokenBase64: String): String {
-            val decoder = Base64.getDecoder().decode(tokenBase64)
-            return String(decoder)
+            val decoder : ByteArray
+            try {
+                decoder = Base64.getDecoder().decode(tokenBase64)
+                return String(decoder)
+            } catch (ex: IllegalArgumentException) {
+                throw BadRequestException("The token value is incorrect")
+            }
         }
 
         /**
