@@ -36,6 +36,14 @@ internal class HomeDocumentTest : ControllerTester() {
                         mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
                         "https://github.com/i-on-project/core/tree/master/docs/api/calendar-terms.md"
                     )
+                ),
+                "programmes" to Resource(
+                    "/v0/programmes",
+                     Hints(
+                        listOf("GET"),
+                        mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
+                    "https://github.com/i-on-project/core/tree/master/docs/api/programme.md"
+                    )
                 )
             )
         )
@@ -58,6 +66,9 @@ internal class HomeDocumentTest : ControllerTester() {
                     exists()
                 }
                 jsonPath("$.resources.calendar-terms") {
+                    exists()
+                }
+                jsonPath("$.resources.programmes"){
                     exists()
                 }
                 jsonPath("$") {
