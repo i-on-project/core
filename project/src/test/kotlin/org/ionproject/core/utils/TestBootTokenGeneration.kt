@@ -17,13 +17,14 @@ import org.springframework.stereotype.Component
  * client_id -1 represents tokens created in test mode
  */
 @Component
-internal class TestBootTokenGeneration(private val authRepo: AuthRepo) {
+internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private val tokenGenerator: TokenGenerator) {
     val readScope = "urn:org:ionproject:scopes:api:read"
     val writeScope = "urn:org:ionproject:scopes:api:write"
     val issueScope = "urn:org:ionproject:scopes:token:issue"
 
     @EventListener(ApplicationReadyEvent::class)
     fun startup() {
+        //check the database for tokens before issuing
         generateTokens()
     }
 
@@ -42,11 +43,11 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo) {
      * Issues a token and stores it
      */
     private fun generateToken(scope: String, clientId: Int): String {
-        val tokenRaw = TokenGenerator.generateRandomString()
-        val tokenBase64 = TokenGenerator.encodeBase64(tokenRaw)
-        val tokenHash = TokenGenerator.getHash(tokenRaw)
+        val tokenRaw = tokenGenerator.generateRandomString()
+        val tokenBase64 = tokenGenerator.encodeBase64url(tokenRaw)
+        val tokenHash = tokenGenerator.getHash(tokenRaw)
 
-        val token = TokenGenerator.buildToken(tokenHash, System.currentTimeMillis(), scope, clientId)
+        val token = tokenGenerator.buildToken(tokenHash, System.currentTimeMillis(), scope, clientId)
         authRepo.storeToken(token)  //token needs to be stored so it can be used to issue other tokens
 
         return tokenBase64

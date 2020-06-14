@@ -268,18 +268,23 @@ open class PgAddData : AbstractTask() {
 open class PgInsertReadToken : AbstractTask() {
     @TaskAction
     fun run() {
-        val randomString = TokenGenerator.generateRandomString()
-        val base64Token = TokenGenerator.encodeBase64(randomString)
-        val tokenHash = TokenGenerator.getHash(randomString)
+       Token().create("urn:org:ionproject:scopes:api:read", project)
+    }
+}
 
-        val currTime = System.currentTimeMillis()
-        val expirationTime = currTime + 1000*60*60
-        val claims = "{\"client_id\":500, \"scope\": \"urn:org:ionproject:scopes:api:read\"}"
+open class PgInsertIssueToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:token:issue", project)
+    }
+}
 
-        val insertQuery = """
-            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
-        """
-        print(insertQuery)
+class Token {
+    fun create(scope: String, project: Project) {
+        val values = getTokenReferences(scope)
+
+        val insertQuery = values[0]
+        val base64Reference = values[1]
 
         val pgParams = Postgres.pgParams
         val result = project.exec {
@@ -295,10 +300,27 @@ open class PgInsertReadToken : AbstractTask() {
             environment(Postgres.ENV_PASSWORD, pgParams.password)
         }
         result.assertNormalExitValue()
+        print("Your token reference is $base64Reference")
+    }
 
-        print("Your token is:$base64Token")
+    private fun getTokenReferences(scope: String): List<String> {
+        val tokenGenerator = TokenGenerator()
+        val randomString = tokenGenerator.generateRandomString()
+        val base64Token = tokenGenerator.encodeBase64url(randomString)
+        val tokenHash = tokenGenerator.getHash(randomString)
+
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+        val claims = "{\"client_id\":500, \"scope\": \"$scope\"}"
+
+        val insertQuery = """
+            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
+        """
+
+        return listOf(insertQuery, base64Token)
     }
 }
+
 
 
 

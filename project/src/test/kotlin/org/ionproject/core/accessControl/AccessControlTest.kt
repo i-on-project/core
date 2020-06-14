@@ -196,7 +196,7 @@ internal class AccessControlTest: ControllerTester() {
      */
     @Test
     fun issueTokenAndRevoke() {
-        val result = doPut(issueTokenUri) {
+        val result = doPost(issueTokenUri) {
             header("Authorization", issueTokenTest)
             header("Content-Type", "application/json")
 
@@ -211,7 +211,7 @@ internal class AccessControlTest: ControllerTester() {
         val mapper = jacksonObjectMapper()
         val tokenToRevoke = mapper.readValue(result, TokenRepr::class.java).token
 
-        doPut(revokeTokenUri) {
+        doPost(revokeTokenUri) {
             header("Authorization", "Bearer $tokenToRevoke")
         }.andDo { print() }
                 .andExpect { status { isOk } }
@@ -222,8 +222,8 @@ internal class AccessControlTest: ControllerTester() {
      * Tries to issue a token, with an invalid token
      */
     @Test
-    fun putIssueTokenInvalid() {
-        doPut(issueTokenUri) {
+    fun postIssueTokenInvalid() {
+        doPost(issueTokenUri) {
             header("Authorization", "Bearer lol")
             header("Content-Type", "application/json")
 
@@ -239,7 +239,7 @@ internal class AccessControlTest: ControllerTester() {
      */
     @Test
     fun revokeTokenInvalid() {
-        doPut(revokeTokenUri) {
+        doPost(revokeTokenUri) {
             header("Authorization", "Bearer lol")
         }.andDo { print() }
                 .andExpect { status { isUnauthorized } }

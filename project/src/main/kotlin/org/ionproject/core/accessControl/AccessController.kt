@@ -6,10 +6,7 @@ import org.ionproject.core.accessControl.representations.TokenRevokedRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AccessController(private val services: AccessServices) {
@@ -22,7 +19,7 @@ class AccessController(private val services: AccessServices) {
      * This endpoint is accessible only to the client who presents the
      * token with the "urn:org:ionproject:scopes:token:issue" scope.
      */
-    @PutMapping(Uri.issueToken, consumes=[Media.APPLICATION_JSON])
+    @PostMapping(Uri.issueToken, consumes=[Media.APPLICATION_JSON])
     fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<TokenRepr> {
         val token: TokenRepr = services.generateToken(tokenIssueDetails.scope)
         return ResponseEntity.ok(token)
@@ -33,10 +30,15 @@ class AccessController(private val services: AccessServices) {
      *
      * All scopes are allowed to access this endpoint.
      * If the token is valid the operation will always succeed.
+     *
+     * According to [RFC 7009] , the body should be of content-type "application/x-wwww-form-urlencoded" and
+     * contain the token to revoke
+     * but in this beta access manager the token and client secret are the same, there is no point
+     * in adding extra info at the moment.
      */
-    @PutMapping(Uri.revokeToken)
-    fun revokeToken(@RequestHeader("Authorization") token : String): ResponseEntity<TokenRevokedRepr> {
+    @PostMapping(Uri.revokeToken)
+    fun revokeToken(@RequestHeader("Authorization") token : String) : ResponseEntity<Any> {
         services.revokeToken(token)
-        return ResponseEntity.ok(TokenRevokedRepr("Token revoked."))
+        return ResponseEntity.ok().build()
     }
 }

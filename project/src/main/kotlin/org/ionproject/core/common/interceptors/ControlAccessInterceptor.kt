@@ -1,12 +1,12 @@
 package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.PDP
-import org.ionproject.core.accessControl.TokenGenerator.Companion.decodeBase64
-import org.ionproject.core.accessControl.TokenGenerator.Companion.getHash
+import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -20,6 +20,13 @@ data class Request(val method: String, val apiVersion: String, val resource: Str
  * It will enforce the decision of the PDP
  */
 class ControlAccessInterceptor : HandlerInterceptorAdapter() {
+
+    @Resource
+    private val tokenGenerator : TokenGenerator = TokenGenerator()
+
+    @Resource
+    private val pdp: PDP = PDP()
+
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         //Client doesn't include header "Authorization"
         val header = request.getHeader("Authorization")
@@ -36,12 +43,12 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
             throw BadRequestException("Unsupported include token type.")
 
         //Transforms the base64url encoded value to the SHA-256 hashed value
-        val tokenBase64Decoded = decodeBase64(pair[1])
-        val tokenHash = getHash(tokenBase64Decoded)
+        val tokenBase64Decoded = tokenGenerator.decodeBase64url(pair[1])
+        val tokenHash = tokenGenerator.getHash(tokenBase64Decoded)
 
         //Sends the request with the token Hash down to the Policy Decision Point
         val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
-        if (PDP.evaluateRequest(tokenHash, requestDescriptor))
+        if (pdp.evaluateRequest(tokenHash, requestDescriptor))
             return true
 
         return false

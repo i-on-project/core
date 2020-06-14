@@ -16,7 +16,6 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class PDP {
-  companion object {
     private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
 
     fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Boolean {
@@ -100,5 +99,4 @@ class PDP {
 
       return null
     }
-  }
 }
