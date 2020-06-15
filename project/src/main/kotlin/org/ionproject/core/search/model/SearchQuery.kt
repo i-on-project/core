@@ -19,4 +19,21 @@ class SearchQuery private constructor(
     }
 }
 
-class InvalidSearchTypeException(val type: String) : Exception("An unsupported type was used.")
+class InvalidSearchTypeException(val type: String) : IllegalArgumentException("An unsupported type was used.")
+
+class InvalidSearchQuerySyntaxException : IllegalArgumentException {
+
+    companion object {
+        private val errorMessage = "The supplied query has invalid syntax."
+    }
+
+    val query: String
+
+    constructor(query: String, cause: Throwable) : super(errorMessage, cause) {
+        this.query = query
+    }
+
+    constructor(query: String) : super(errorMessage) {
+        this.query = query
+    }
+}

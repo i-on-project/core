@@ -30,4 +30,16 @@ internal class SearchErrorTest : ControllerTester() {
             }
             .andReturn()
     }
+
+    @Test
+    fun searchWithInvalidQuerySyntax() {
+        mocker.get("/v0/search?query=!") {
+            header("Authorization", readTokenTest)
+        }
+            .andDo { print() }
+            .andExpect {
+                status { isBadRequest }
+            }
+            .andReturn()
+    }
 }
