@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 private const val specLocation = "https://github.com/i-on-project/core/tree/master/docs/api"
@@ -14,7 +15,9 @@ private const val amSpecLocation = "https://github.com/i-on-project/core/tree/ma
 private val specUri = URI(specLocation)
 private val coursesSpecUri = URI("${specLocation}/courses.md")
 private val calendarTermsSpecUri = URI("$specLocation/calendar-terms.md")
+private val programmesSpecUri = URI("$specLocation/programme.md")
 private val accessManagerSpecUri = URI("$amSpecLocation/Http_Exchanges.md")
+
 
 private const val apiName = "i-on Core"
 
@@ -44,6 +47,14 @@ class JsonHomeController {
                     .docs(calendarTermsSpecUri)
                     .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
                     .toResourceObject()
+            }
+            .newResource("programmes") {
+             it
+               .href(Uri.forProgrammes())
+               .docs(programmesSpecUri)
+               .formats(Media.MEDIA_SIREN)
+               .allow(HttpMethod.GET)
+               .toResourceObject()
             }
             .newResource("issueToken"){
                 it
