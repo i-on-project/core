@@ -289,14 +289,17 @@ class Token {
 
         val pgParams = Postgres.pgParams
         val result = project.exec {
-            commandLine("docker", "exec", Docker.CONTAINER_NAME,
-                    "psql",
-                    "-h", pgParams.host,
-                    "-U", pgParams.user,
-                    "-d", pgParams.db,
-                    "-w",
-                    "-1",
-                    "-c $insertQuery")
+            commandLine("docker", "run",
+                "-e", "PGPASSWORD=${pgParams.password}",
+                "--rm", "--network=host", Docker.IMAGE_NAME,
+                "psql",
+                "-h", pgParams.host,
+                "-U", pgParams.user,
+                "-d", pgParams.db,
+                "-p", pgParams.port,
+                "-w",
+                "-1",
+                "-c $insertQuery")
 
             environment(Postgres.ENV_PASSWORD, pgParams.password)
         }
