@@ -2,6 +2,7 @@ package org.ionproject.core.accessControl
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.representations.TokenRepr
+import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.issueTokenTest
@@ -213,6 +214,8 @@ internal class AccessControlTest: ControllerTester() {
 
         doPost(revokeTokenUri) {
             header("Authorization", "Bearer $tokenToRevoke")
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=$tokenToRevoke"
         }.andDo { print() }
                 .andExpect { status { isOk } }
                 .andReturn()
@@ -236,13 +239,16 @@ internal class AccessControlTest: ControllerTester() {
 
     /**
      * Tries to revoke an invalid token
+     * the answer should be 200 OK as specified by [RFC 7009]
      */
     @Test
     fun revokeTokenInvalid() {
         doPost(revokeTokenUri) {
-            header("Authorization", "Bearer lol")
+            header("Authorization", readTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=ggdsiojgfsdfioj"
         }.andDo { print() }
-                .andExpect { status { isUnauthorized } }
+                .andExpect { status { isOk } }
                 .andReturn()
     }
 

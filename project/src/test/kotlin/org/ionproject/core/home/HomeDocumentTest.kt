@@ -37,6 +37,22 @@ internal class HomeDocumentTest : ControllerTester() {
                         mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
                         "https://github.com/i-on-project/core/tree/master/docs/api/calendar-terms.md"
                     )
+                ),
+                "issueToken" to Resource(
+                        "/issueToken",
+                        Hints(
+                                listOf("POST"),
+                                mapOf("application/json" to mapOf<String, Any>()),
+                                "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
+                        )
+                ),
+                "revokeToken" to Resource(
+                        "/revokeToken",
+                        Hints(
+                                listOf("POST"),
+                                mapOf("application/x-www-form-urlencoded" to mapOf<String, Any>()),
+                                "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
+                        )
                 )
             )
         )

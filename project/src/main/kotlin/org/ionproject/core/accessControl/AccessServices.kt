@@ -28,8 +28,7 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
      * at the moment its first checked during the PDP
      */
     fun revokeToken(token: String) {
-        val base64reference = token.split(" ")[1]
-        val hash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(base64reference))
+        val hash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(token))
         authRepo.revokeToken(hash)
     }
 }

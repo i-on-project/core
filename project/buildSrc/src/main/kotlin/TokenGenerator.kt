@@ -11,30 +11,35 @@ class TokenGenerator {
     private val HASH_ALGORITHM = "SHA-256"
     private val TOKEN_DURATION : Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
 
-    fun generateRandomString() : String {
+    fun generateRandomString() : ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
         SecureRandom().nextBytes(bytes)
 
-        return String(bytes)
+        return bytes
     }
 
-    fun encodeBase64url(rawValue : String) : String {
-        return Base64
+    fun encodeBase64url(tokenBytes : ByteArray) : String {
+        val token = Base64
                 .getUrlEncoder()                //replaces '+' , '/'  for '-' , '_'
                 .withoutPadding()               //Remove the '='
-                .encodeToString(rawValue.toByteArray(StandardCharsets.UTF_8))
+                .encodeToString(tokenBytes)
+
+        println("string token:$token")
+        return token
     }
 
     /**
      * Gets the hash of the string passed
      */
-    fun getHash(tokenRaw: String): String {
-        val bytes = tokenRaw.toByteArray()
+    fun getHash(tokenBytes: ByteArray): String {
         val md = MessageDigest.getInstance(HASH_ALGORITHM)
-        val digest = md.digest(bytes)
+        val digest = md.digest(tokenBytes)
 
         //Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
-        return digest.fold("", { str, it -> str + "%02x".format(it) })
+        val hash = digest.fold("", { str, it -> str + "%02x".format(it) })
+
+        println("hash:$hash")
+        return hash
     }
 
 }

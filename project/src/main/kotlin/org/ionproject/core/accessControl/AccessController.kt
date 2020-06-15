@@ -6,6 +6,7 @@ import org.ionproject.core.accessControl.representations.TokenRevokedRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -26,18 +27,22 @@ class AccessController(private val services: AccessServices) {
     }
 
     /**
-     * It receives the token that must be revoked in the Authorization Header
+     * According to [RFC 7009] , the body should be of content-type "application/x-wwww-form-urlencoded" and contain the token to revoke
+     * Invalid tokens revoke requests should also return 200 OK
      *
-     * All scopes are allowed to access this endpoint.
-     * If the token is valid the operation will always succeed.
+     * The only occasion the response of this handler is not 200 OK is when the body has not used the key token,
+     * which is a behavior not specified by the RFC.
      *
-     * According to [RFC 7009] , the body should be of content-type "application/x-wwww-form-urlencoded" and
-     * contain the token to revoke
-     * but in this beta access manager the token and client secret are the same, there is no point
-     * in adding extra info at the moment.
+     * When client secrets are added a new policy should be checked, if the token was issued by the client,
+     * if that validation fails the client should be informed.
+     *
      */
-    @PostMapping(Uri.revokeToken)
-    fun revokeToken(@RequestHeader("Authorization") token : String) : ResponseEntity<Any> {
+    @PostMapping(Uri.revokeToken, consumes =[Media.FORM_URLENCODED_VALUE])
+    fun revokeToken(@RequestParam body: Map<String,String>) : ResponseEntity<Any> {
+        val token = body["token"]
+        if(token.isNullOrEmpty())
+            return ResponseEntity.ok().body(TokenRevokedRepr("No token specified."))
+
         services.revokeToken(token)
         return ResponseEntity.ok().build()
     }

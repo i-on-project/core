@@ -89,7 +89,11 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (1, 'POST', '*', 'revokeToken'),
 (2, 'POST', '*', 'revokeToken'),
 (3, 'POST', '*', 'revokeToken'),
-(4, 'POST', '*', 'revokeToken');
+(4, 'POST', '*', 'revokeToken'),
+(1, 'GET,POST', '*', 'error'),
+(2, 'GET,POST', '*', 'error'),
+(3, 'GET,POST', '*', 'error'),
+(4, 'GET,POST', '*', 'error');
 
 
 

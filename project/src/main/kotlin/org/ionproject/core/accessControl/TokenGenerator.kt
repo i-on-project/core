@@ -5,7 +5,6 @@ import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
-import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
@@ -18,27 +17,28 @@ class TokenGenerator {
     private val HASH_ALGORITHM = "SHA-256"
     private val TOKEN_DURATION : Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
 
-    fun generateRandomString() : String {
+    fun generateRandomString() : ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
         SecureRandom().nextBytes(bytes)
 
-        return String(bytes)
+        return bytes
     }
 
-    fun encodeBase64url(rawValue : String) : String {
+    fun encodeBase64url(tokenBytes : ByteArray) : String {
         return Base64
                 .getUrlEncoder()                //replaces '+' , '/'  for '-' , '_'
                 .withoutPadding()               //Remove the '='
-                .encodeToString(rawValue.toByteArray(StandardCharsets.UTF_8))
+                .encodeToString(tokenBytes)
     }
 
-    fun decodeBase64url(tokenBase64: String): String {
+    fun decodeBase64url(tokenBase64: String): ByteArray {
         val decoder : ByteArray
         try {
             decoder = Base64
                     .getUrlDecoder()
                     .decode(tokenBase64)
-            return String(decoder)
+
+            return decoder
         } catch (ex: IllegalArgumentException) {
             throw BadRequestException("The token value is incorrect")
         }
@@ -47,12 +47,12 @@ class TokenGenerator {
     /**
      * Gets the hash of the string passed
      */
-    fun getHash(tokenRaw: String): String {
-        val bytes = tokenRaw.toByteArray()
+    fun getHash(tokenBytes: ByteArray): String {
         val md = MessageDigest.getInstance(HASH_ALGORITHM)
-        val digest = md.digest(bytes)
+        val digest = md.digest(tokenBytes)
 
         //Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
+
         return digest.fold("", { str, it -> str + "%02x".format(it) })
     }
 
