@@ -7,4 +7,11 @@ data class SearchResult(
     val id: String,
     val name: String,
     val href: URI
-)
+) {
+    constructor(
+        type: String,
+        id: String,
+        name: String,
+        href: String
+    ) : this(type, id, name, URI.create(href))
+}

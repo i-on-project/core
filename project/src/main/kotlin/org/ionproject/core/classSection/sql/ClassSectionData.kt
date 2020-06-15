@@ -33,7 +33,7 @@ internal object ClassSectionData {
         from $SCHEMA.$CLASS_SECTION
         join $SCHEMA.$CLASS on $CLASS.$ID = $CLASS_SECTION.$PARENT_CLASS_ID
         join $SCHEMA.$COURSE ON $COURSE.$ID = $CLASS.$CID
-        where $CLASS_SECTION.$DOCUMENT || $CLASS.$DOCUMENT || $COURSE.$DOCUMENT @@ ${SearchData.QUERY}
+        where $CLASS_SECTION.$DOCUMENT || $CLASS.$DOCUMENT @@ ${SearchData.QUERY}
     """
 
     const val CLASS_SECTION_QUERY = """
