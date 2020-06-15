@@ -25,7 +25,6 @@ object Postgres {
                 println("no JDBC_DATABASE_URL environment variable found, using default value")
                 "jdbc:postgresql://localhost:5432/ion?user=postgres&password=changeit"
             } else {
-                println(it)
                 it
             }
         }
