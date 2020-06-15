@@ -12,6 +12,7 @@ private const val specLocation = "https://github.com/i-on-project/core/tree/mast
 private val specUri = URI(specLocation)
 private val coursesSpecUri = URI("${specLocation}/courses.md")
 private val calendarTermsSpecUri = URI("$specLocation/calendar-terms.md")
+private val searchSpecUri = URI("$specLocation/search.md")
 
 private const val apiName = "i-on Core"
 
@@ -29,7 +30,8 @@ class JsonHomeController {
                     .hrefVar("limit", URI("/api-docs/params/limit"))
                     .hrefVar("page", URI("/api-docs/params/page"))
                     .docs(coursesSpecUri)
-                    .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+                    .formats(Media.MEDIA_SIREN)
+                    .allow(HttpMethod.GET)
                     .toResourceObject()
             }
             // calendar terms resource
@@ -39,7 +41,20 @@ class JsonHomeController {
                     .hrefVar("limit", URI("/api-docs/params/limit"))
                     .hrefVar("page", URI("/api-docs/params/page"))
                     .docs(calendarTermsSpecUri)
-                    .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
+                    .formats(Media.MEDIA_SIREN)
+                    .allow(HttpMethod.GET)
+                    .toResourceObject()
+            }
+            .newResource("search") {
+                it
+                    .hrefTemplate(Uri.pagingSearch)
+                    .hrefVar("query", URI("/api-docs/params/query"))
+                    .hrefVar("types", URI("/api-docs/params/types"))
+                    .hrefVar("limit", URI("/api-docs/params/limit"))
+                    .hrefVar("page", URI("/api-docs/params/page"))
+                    .docs(searchSpecUri)
+                    .formats(Media.MEDIA_SIREN)
+                    .allow(HttpMethod.GET)
                     .toResourceObject()
             }
             .toJsonHome()

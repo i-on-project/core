@@ -36,6 +36,20 @@ internal class HomeDocumentTest : ControllerTester() {
                         mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
                         "https://github.com/i-on-project/core/tree/master/docs/api/calendar-terms.md"
                     )
+                ),
+                "search" to Resource(
+                    "/v0/search{?query,types,limit,page}",
+                    mapOf(
+                        "query" to "/api-docs/params/query",
+                        "types" to "/api-docs/params/types",
+                        "limit" to "/api-docs/params/limit",
+                        "page" to "/api-docs/params/page"
+                    ),
+                    Hints(
+                        listOf("GET"),
+                        mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
+                        "https://github.com/i-on-project/core/tree/master/docs/api/search.md"
+                    )
                 )
             )
         )
