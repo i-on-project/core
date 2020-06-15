@@ -81,6 +81,10 @@ jobs:
               -v "$(pwd)/../docker:/mnt" \
               $SCHEMA_DIFF_IMG apply
 
+      - name: Guarantee connection string refresh, in case this job is executed by a previous runner
+        working-directory: project
+        run: ./gradlew clean -p buildSrc
+
       - name: Insert Issue Token
         working-directory: project
         run: JDBC_DATABASE_URL="jdbc:postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" ./gradlew pgInsertIssueToken
