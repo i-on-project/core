@@ -107,12 +107,12 @@ The token issue endpoint creates a token with the scope that it was requested in
 
 In the beta version this endpoint is only available to whom possesses the correct token with the scope "issue".
 
-This "issue" token is created during the boot process of the web application, and only accessible to who has access to the server. It is used to issue other tokens (e.g. read and write tokens).
+This "issue" token is created during the deploy process of the web application, and only accessible to who has access to the server. It is used to issue other tokens (e.g. read and write tokens).
 (Side note, if the application is running in local environment it's easier to run the task "pgInsertReadToken")
 
 ## Issue Endpoint Request
 
-PUT /issueToken
+POST /issueToken
 Host: example.com
 Authorization: Bearer (issue token)
 Content-Type: application/json
@@ -147,19 +147,24 @@ For that goal the token revoke endpoint is used.
 All there is to do is make a simple PUT request to the endpoint with the token.
 
 ## Revoke Endpoint Request
-PUT /revokeToken
-Authorization: Bearer (token)
+POST /revokeToken
+Authorization: Bearer xcL...
+Content-Type: application/x-www-form-urlencoded
 
+Body:
+token=xcL...
+
+The body of the request repeats the information in this phase as preparation for the next stage of the access manager where there is client authentication.
 
 ## Revoke Endpoint Response
 
 200 Ok
 Content-Type: application/json
 
-Body:
-{
-    result: "Token revoked"
-}
+In case an invalid token to revoke is presented, the response message will still be 200 OK. [RFC 7009]
 
-The error messages are the same messages already defined in the general requests section.
-Example, trying to revoke an unexistent token would result in a 401 Unauthorized.
+The only situation that is not specified by the RFC is when the body doesn't contain the key "token", in that case an error message of the following type is received:
+200 OK
+{
+    "result":"No token specified."
+}
