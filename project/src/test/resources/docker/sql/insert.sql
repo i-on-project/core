@@ -68,6 +68,7 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (1, 'GET', 'v0', 'programmes/?/offers/?'),
 (1, 'GET', 'v0', 'calendar-terms'),
 (1, 'GET', 'v0', 'calendar-terms/?'),
+(1, 'GET', 'v0', 'search'),
 (2, 'PUT,POST', 'v0', 'courses'),
 (2, 'PUT,POST', 'v0', 'courses/?'),
 (2, 'PUT,POST', 'v0', 'courses/?/classes'),
