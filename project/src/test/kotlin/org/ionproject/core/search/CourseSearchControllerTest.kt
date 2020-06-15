@@ -45,13 +45,13 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     }
     @Test
     fun searchWithDifferentPage() {
-        test("Lab", page = 2, expectedResults = emptyList(), uriBuilder = { search, _, page, _ ->
+        test("Lab", page = 1, expectedResults = emptyList(), uriBuilder = { search, _, page, _ ->
             URI.create("/v0/search?query=$search&page=$page")
         })
     }
     @Test
     fun searchWithDifferentLimitAndPage() {
-        test("Lab", 5, 2, expectedResults = results.drop(5).take(3), uriBuilder = { search, limit, page, _ ->
+        test("Lab", 5, 1, expectedResults = results.drop(5).take(3), uriBuilder = { search, limit, page, _ ->
             URI.create("/v0/search?query=$search&page=$page&limit=$limit")
         })
     }

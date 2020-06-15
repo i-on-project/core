@@ -20,7 +20,7 @@ class SearchController(
         @RequestParam("query") query: String,
         @RequestParam("types", required = false, defaultValue = SearchableEntities.ALL) types: List<String>,
         @RequestParam("limit", required = false, defaultValue = "10") limit: Int,
-        @RequestParam("page", required = false, defaultValue = "1") page: Int
+        @RequestParam("page", required = false, defaultValue = "0") page: Int
     ): ResponseEntity<Any> {
         try {
             val searchQuery = SearchQuery(query, types, limit, page)

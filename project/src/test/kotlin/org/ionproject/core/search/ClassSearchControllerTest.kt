@@ -44,13 +44,13 @@ internal class ClassSearchControllerTest : SearchControllerTest() {
     }
     @Test
     fun searchWithDifferentPage() {
-        test(page = 2, uriBuilder = { search, _, page, _ ->
+        test(page = 1, uriBuilder = { search, _, page, _ ->
             URI.create("/v0/search?query=$search&page=$page")
         })
     }
     @Test
     fun searchWithDifferentLimitAndPage() {
-        test(5, 2, uriBuilder = { search, limit, page, _ ->
+        test(5, 1, uriBuilder = { search, limit, page, _ ->
             URI.create("/v0/search?query=$search&page=$page&limit=$limit")
         })
     }

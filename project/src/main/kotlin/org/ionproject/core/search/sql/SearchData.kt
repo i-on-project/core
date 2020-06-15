@@ -29,7 +29,7 @@ object SearchData {
 
     fun Query.bindSearchQuery(searchQuery: SearchQuery): Query {
         bind("query", searchQuery.query.replace(" ", ":* | ") + ":*")
-        bind("offset", (searchQuery.page - 1) * searchQuery.limit)
+        bind("offset", (searchQuery.page) * searchQuery.limit)
         bind("limit", searchQuery.limit)
 
         return this

@@ -14,12 +14,12 @@ internal abstract class SearchControllerTest : ControllerTester() {
 
     companion object {
         const val defaultLimit = 10
-        const val defaultPage = 1
+        const val defaultPage = 0
         val defaultTypes = SearchableEntity.ALL.map { it.toString() }
     }
 
     fun defaultResults(limit: Int, page: Int, types: List<String>): List<SearchResult> {
-        return results.filter { types.contains(it.type) }.drop((page - 1) * limit).take(limit)
+        return results.filter { types.contains(it.type) }.drop((page) * limit).take(limit)
     }
 
     fun test(
