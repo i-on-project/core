@@ -1,8 +1,8 @@
 package org.ionproject.core.calendar.icalendar.types
 
 class DateTime(
-    private val date: Date,
-    private val time: Time
+    val date: Date,
+    val time: Time
 ) : ICalendarDataType {
     override val value: Any
         get() = toString()
