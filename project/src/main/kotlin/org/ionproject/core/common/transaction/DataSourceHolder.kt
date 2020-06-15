@@ -1,10 +1,9 @@
 package org.ionproject.core.common.transaction
 
 import org.postgresql.ds.PGSimpleDataSource
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
-import org.slf4j.LoggerFactory
-import java.lang.RuntimeException
 
 private val log = LoggerFactory.getLogger(DataSourceHolder::class.java)
 

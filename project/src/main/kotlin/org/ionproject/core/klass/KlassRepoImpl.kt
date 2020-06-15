@@ -2,8 +2,11 @@ package org.ionproject.core.klass
 
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.klass.model.FullKlass
+import org.ionproject.core.klass.model.Klass
 import org.ionproject.core.klass.sql.KlassClassSectionMapper
 import org.ionproject.core.klass.sql.KlassData.CAL_TERM
+import org.ionproject.core.klass.sql.KlassData.CHECK_IF_COURSE_EXISTS
 import org.ionproject.core.klass.sql.KlassData.CID
 import org.ionproject.core.klass.sql.KlassData.GET_CLASSES_QUERY
 import org.ionproject.core.klass.sql.KlassData.GET_CLASS_QUERY
@@ -11,9 +14,6 @@ import org.ionproject.core.klass.sql.KlassData.GET_CLASS_SECTIONS_QUERY
 import org.ionproject.core.klass.sql.KlassData.LIMIT
 import org.ionproject.core.klass.sql.KlassData.OFFSET
 import org.ionproject.core.klass.sql.KlassMapper
-import org.ionproject.core.klass.model.FullKlass
-import org.ionproject.core.klass.model.Klass
-import org.ionproject.core.klass.sql.KlassData.CHECK_IF_COURSE_EXISTS
 import org.springframework.stereotype.Component
 
 @Component

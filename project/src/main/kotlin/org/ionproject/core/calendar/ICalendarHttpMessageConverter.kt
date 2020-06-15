@@ -5,7 +5,6 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.MultiValuedProperty
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
-import org.ionproject.core.calendar.icalendar.types.MultiValue
 import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.common.Media
 import org.springframework.http.HttpInputMessage

@@ -16,7 +16,9 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
     /**
      * Jdbi instance wraps a JDBC DataSource
      */
-    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
+    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
+        // setSqlLogger(SqlLogger()) // uncomment this line to see what request are being sent to the database
+    }
 
     /**
      * Executes the transaction passed as parameter with the

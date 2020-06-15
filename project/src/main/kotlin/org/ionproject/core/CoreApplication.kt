@@ -75,6 +75,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
             .addPathPatterns("/v?/calendar-terms*")
             .addPathPatterns("/v?/courses/**")
             .addPathPatterns("/v?/programmes*")
+            .addPathPatterns("/v?/search*")
     }
 }
 
