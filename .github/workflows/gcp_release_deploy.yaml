@@ -82,10 +82,8 @@ jobs:
               $SCHEMA_DIFF_IMG apply
 
       - name: Insert Issue Token
-        env:
-          JDBC_DATABASE_URL: "jdbc:postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS"
         working-directory: project
-        run: ./gradlew pgInsertIssueToken
+        run: JDBC_DATABASE_URL="jdbc:postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" ./gradlew pgInsertIssueToken
 
       - name: Kill proxy
         run: pkill cloud_sql_proxy
