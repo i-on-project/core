@@ -4,6 +4,7 @@ package org.ionproject.core.course
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -23,7 +24,9 @@ internal class CourseErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidCourse() {
-        doGet(notFoundUri)
+        doGet(notFoundUri) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -36,7 +39,10 @@ internal class CourseErrorTest : ControllerTester() {
      */
     @Test
     fun getCourseWithInvalidContentType() {
-        doGet(validUri) { accept = Media.MEDIA_HOME }
+        doGet(validUri) {
+            accept = Media.MEDIA_HOME
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
                 .andReturn()
@@ -47,7 +53,9 @@ internal class CourseErrorTest : ControllerTester() {
      */
     @Test
     fun getCourseWithBadRequest() {
-        doGet(badRequestUri)
+        doGet(badRequestUri) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()

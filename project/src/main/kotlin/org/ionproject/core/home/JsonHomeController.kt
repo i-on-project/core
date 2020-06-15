@@ -10,10 +10,14 @@ import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 private const val specLocation = "https://github.com/i-on-project/core/tree/master/docs/api"
+private const val amSpecLocation = "https://github.com/i-on-project/core/tree/master/docs/access_control"
+
 private val specUri = URI(specLocation)
 private val coursesSpecUri = URI("${specLocation}/courses.md")
 private val calendarTermsSpecUri = URI("$specLocation/calendar-terms.md")
 private val programmesSpecUri = URI("$specLocation/programme.md")
+private val accessManagerSpecUri = URI("$amSpecLocation/Http_Exchanges.md")
+
 
 private const val apiName = "i-on Core"
 
@@ -44,14 +48,30 @@ class JsonHomeController {
                     .formats(Media.MEDIA_SIREN).allow(HttpMethod.GET)
                     .toResourceObject()
             }
-                .newResource("programmes") {
-                 it
+            .newResource("programmes") {
+             it
                    .href(Uri.forProgrammes())
                    .docs(programmesSpecUri)
                    .formats(Media.MEDIA_SIREN)
                    .allow(HttpMethod.GET)
                    .toResourceObject()
-                }
+            }
+            .newResource("issueToken"){
+                it
+                    .href(URI(Uri.issueToken))
+                    .docs(accessManagerSpecUri)
+                    .formats(Media.MEDIA_JSON)
+                    .allow(HttpMethod.POST)
+                    .toResourceObject()
+            }
+            .newResource("revokeToken"){
+                it
+                    .href(URI(Uri.revokeToken))
+                    .docs(accessManagerSpecUri)
+                    .formats(Media.MEDIA_FORM_URLENCODED_VALUE)
+                    .allow(HttpMethod.POST)
+                    .toResourceObject()
+            }
             .toJsonHome()
 
         return ResponseEntity.ok(homeObject)

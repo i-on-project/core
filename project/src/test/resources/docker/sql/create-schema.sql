@@ -418,3 +418,28 @@ BEGIN
 	(sid, classId, calid);
 END
 $$ LANGUAGE plpgsql;
+
+
+-- Access manager 
+
+CREATE TABLE dbo.Token(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	hash CHAR(64) UNIQUE,	--64 hexa chars = 256 bits hash
+	isValid BOOLEAN,
+	issuedAt BIGINT,
+	expiresAt BIGINT,
+	claims JSONB
+);
+
+CREATE TABLE dbo.scopes(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	scope VARCHAR(100) UNIQUE --urn:org:ionproject:scopes:api:read
+);
+
+CREATE TABLE dbo.policies(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	scope_id INT REFERENCES dbo.scopes(id),
+	method VARCHAR(50),		-- get, post...
+	version VARCHAR(10),	--	v0, v1...
+	path VARCHAR(100)		-- .../courses
+);
