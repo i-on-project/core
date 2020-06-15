@@ -61,6 +61,7 @@ internal class HomeDocumentTest : ControllerTester() {
                                 mapOf("application/x-www-form-urlencoded" to mapOf<String, Any>()),
                                 "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
                         )
+                )
             )
         )
     }
@@ -88,6 +89,12 @@ internal class HomeDocumentTest : ControllerTester() {
                     exists()
                 }
                 jsonPath("$.resources.programmes"){
+                    exists()
+                }
+                jsonPath("$.resources.issueToken"){
+                    exists()
+                }
+                jsonPath("$.resources.revokeToken"){
                     exists()
                 }
                 jsonPath("$") {

@@ -50,11 +50,11 @@ class JsonHomeController {
             }
             .newResource("programmes") {
              it
-               .href(Uri.forProgrammes())
-               .docs(programmesSpecUri)
-               .formats(Media.MEDIA_SIREN)
-               .allow(HttpMethod.GET)
-               .toResourceObject()
+                   .href(Uri.forProgrammes())
+                   .docs(programmesSpecUri)
+                   .formats(Media.MEDIA_SIREN)
+                   .allow(HttpMethod.GET)
+                   .toResourceObject()
             }
             .newResource("issueToken"){
                 it
