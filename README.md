@@ -68,7 +68,7 @@ Access management
 =================
 
 All requests will be locked under an access control mechanism.
-The following task creates the Issue access token, used for creation of the client's access tokens.
+The following task creates the Issue token, used for creation of the client's read and write tokens.
 
 ```sh
 $ # Clean cached DB config objects
@@ -79,7 +79,7 @@ $
 $ # Get issue token
 $ ./gradlew pgInsertIssueToken
 $
-$ # This task will insert a short lived read token, for convinience at test time
+$ # This task will insert a short lived read token, for convenience at test time
 $ ./gradlew pgInsertReadToken
 $
 ```
