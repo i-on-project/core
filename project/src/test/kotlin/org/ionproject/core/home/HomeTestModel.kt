@@ -29,6 +29,18 @@ fun Resource (
     "hints" to hints
 )
 
+/**
+ * Resource overload for resources
+ * that don't have templating like programmes
+ */
+fun Resource (
+        href: String,
+        hints: Map<String, Any>
+) : Map<String, Any> = mapOf(
+        "href" to href,
+        "hints" to hints
+)
+
 fun Hints(
     allow: List<String>,
     formats: Map<String, Any>,

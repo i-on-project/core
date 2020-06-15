@@ -9,6 +9,10 @@ object Uri {
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
 
+    // Access Control
+    const val revokeToken = "/revokeToken"
+    const val issueToken = "/issueToken"
+
     // Calendar Terms
     const val calendarTerms = "$version/calendar-terms"
     const val calendarTermById = "$version/calendar-terms/{calterm}"

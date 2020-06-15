@@ -23,6 +23,7 @@ import org.ionproject.core.fluentAdd
 import org.ionproject.core.removeWhitespace
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.ParameterList
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
@@ -91,7 +92,7 @@ SUMMARY;LANGUAGE=en-US:WAD Monday Lecture
 DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=en-US:Exam
+CATEGORIES;LANGUAGE=en-US:Lecture
 DTSTART:20200210T100000Z
 DTEND:20200210T123000Z
 RRULE:FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=MO
@@ -103,7 +104,7 @@ SUMMARY;LANGUAGE=en-US:WAD Wednesday Lecture
 DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit\, for the 1718
  v-1D Class section
 CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=en-US:Exam
+CATEGORIES;LANGUAGE=en-US:Lecture
 DTSTART:20200212T100000Z
 DTEND:20200212T123000Z
 RRULE:FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=WE
@@ -193,7 +194,7 @@ END:VCALENDAR"""
             Summary(enLang, "WAD Monday Lecture"),
             Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
-            Categories(enLang, "Exam"),
+            Categories(enLang, "Lecture"),
             DtStart("20200210T100000Z"),
             DtEnd("20200210T123000Z"),
             RRule("FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=MO")
@@ -205,7 +206,7 @@ END:VCALENDAR"""
             Summary(enLang, "WAD Wednesday Lecture"),
             Description(enLang, "Lectures of the WAD curricular unit, for the 1718v-1D Class section"),
             Created("20200101T163530Z"),
-            Categories(enLang, "Exam"),
+            Categories(enLang, "Lecture"),
             DtStart("20200212T100000Z"),
             DtEnd("20200212T123000Z"),
             RRule("FREQ=WEEKLY;UNTIL=20200612T235000Z;BYDAY=WE")
@@ -243,6 +244,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClass() {
         mocker.get(Uri.forCalendarComponentByClass(courseID, calTerm, componentID)) {
             accept = Media.MEDIA_SIREN
+            header("Authorization", readTokenTest)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -254,6 +256,7 @@ END:VCALENDAR"""
     fun getCalendarComponentByClassSection() {
         mocker.get(Uri.forCalendarComponentByClassSection(courseID, calTerm, classSection, "5")) {
             accept = Media.MEDIA_SIREN
+            header("Authorization", readTokenTest)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -268,7 +271,10 @@ END:VCALENDAR"""
     @Test
     fun getCalendarByClass_And_Compare() {
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-      { accept = Media.MEDIA_TEXT_CALENDAR }
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", readTokenTest)
+      }
         .andReturn()
         .response
         .contentAsString
@@ -289,7 +295,10 @@ END:VCALENDAR"""
     @Test
     fun getCalendarByClassSection_And_Compare() {
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-      { accept = Media.MEDIA_TEXT_CALENDAR }
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", readTokenTest)
+      }
         .andReturn()
         .response
         .contentAsString
@@ -306,7 +315,10 @@ END:VCALENDAR"""
     fun checkIfValidCalClass() {
       //Get the core calendar representation
       val result = doGet(Uri.forCalendarByClass(courseID, calTerm))
-      { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", readTokenTest)
+      }.andReturn()
         .response.contentAsString
 
       Assertions.assertEquals(
@@ -317,7 +329,10 @@ END:VCALENDAR"""
     @Test
     fun checkIfValidCalClassSection() {
       val result = doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection))
-      { accept = Media.MEDIA_TEXT_CALENDAR }.andReturn()
+      {
+        accept = Media.MEDIA_TEXT_CALENDAR
+        header("Authorization", readTokenTest)
+      }.andReturn()
         .response.contentAsString
 
       Assertions.assertEquals(

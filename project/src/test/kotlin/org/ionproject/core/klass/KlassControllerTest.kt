@@ -7,6 +7,7 @@ import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.get
@@ -160,6 +161,7 @@ internal class KlassControllerTest : ControllerTester() {
         var limit = 1
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = Media.MEDIA_SIREN
+            header("Authorization", readTokenTest)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
@@ -171,6 +173,7 @@ internal class KlassControllerTest : ControllerTester() {
         limit = 2
         mocker.get("${Uri.forKlasses(1)}?limit=$limit") {
             accept = Media.MEDIA_SIREN
+            header("Authorization", readTokenTest)
         }.andExpect {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
