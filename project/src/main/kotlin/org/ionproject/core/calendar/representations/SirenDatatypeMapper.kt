@@ -23,11 +23,7 @@ class SirenDatatypeMapper : DatatypeMapper() {
             append("FREQ=${recur.frequency}")
 
             recur.until?.let {
-                val value = when(it::class.java) {
-                    Date::class.java -> map(it as Date)
-                    DateTime::class.java -> map(it as DateTime)
-                    else -> throw IllegalStateException("[Recur] has a until value that isn't of type [Date] or [DateTime].")
-                }
+                val value = map(it)
                 append(";UNTIL=${value}")
             }
 
