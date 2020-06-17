@@ -298,7 +298,8 @@ class Token {
                 "-p", pgParams.port,
                 "-w",
                 "-1",
-                "-c $insertQuery")
+                "-c",
+                insertQuery)
 
             environment(Postgres.ENV_PASSWORD, pgParams.password)
         }
@@ -314,7 +315,12 @@ class Token {
 
         val currTime = System.currentTimeMillis()
         val expirationTime = currTime + 1000*60*60
-        val claims = "{\"client_id\":500, \"scope\": \"$scope\"}"
+
+        val os = System.getProperty("os.name") // TODO("URGENT: FIND BETTER SOLUTION. The problem is the '"' around the properties(scope and client_id) of the JSON string.")
+        val claims = when(os) {
+            "Windows 10" -> """{\"scope\":\"$scope\",\"client_id\":500}"""
+            else -> """{"scope":"$scope","client_id":500}"""
+        }
 
         val insertQuery = """
             INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
