@@ -268,20 +268,35 @@ open class PgAddData : AbstractTask() {
 open class PgInsertReadToken : AbstractTask() {
     @TaskAction
     fun run() {
-       Token().create("urn:org:ionproject:scopes:api:read", project)
+       Token().create("urn:org:ionproject:scopes:api:read", project, true)
     }
 }
 
 open class PgInsertIssueToken : AbstractTask() {
     @TaskAction
     fun run() {
-        Token().create("urn:org:ionproject:scopes:token:issue", project)
+        Token().create("urn:org:ionproject:scopes:token:issue", project, true)
     }
 }
 
+open class PgInsertReadTokenWin : AbstractTask() {
+    @TaskAction
+    fun run() {
+       Token().create("urn:org:ionproject:scopes:api:read", project, false)
+    }
+}
+
+open class PgInsertIssueTokenWin : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:token:issue", project, false)
+    }
+}
+
+
 class Token {
-    fun create(scope: String, project: Project) {
-        val values = getTokenReferences(scope)
+    fun create(scope: String, project: Project, isPosixShell: Boolean) {
+        val values = if (isPosixShell) getTokenReferences(scope) else getTokenReferencesWin(scope)
 
         val insertQuery = values[0]
         val base64Reference = values[1]
@@ -315,12 +330,24 @@ class Token {
 
         val currTime = System.currentTimeMillis()
         val expirationTime = currTime + 1000*60*60
+        val claims = """{"scope":"$scope","client_id":500}"""
 
-        val os = System.getProperty("os.name") // TODO("URGENT: FIND BETTER SOLUTION. The problem is the '"' around the properties(scope and client_id) of the JSON string.")
-        val claims = when(os) {
-            "Windows 10" -> """{\"scope\":\"$scope\",\"client_id\":500}"""
-            else -> """{"scope":"$scope","client_id":500}"""
-        }
+        val insertQuery = """
+            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
+        """
+
+        return listOf(insertQuery, base64Token)
+    }
+
+    private fun getTokenReferencesWin(scope: String): List<String> {
+        val tokenGenerator = TokenGenerator()
+        val randomString = tokenGenerator.generateRandomString()
+        val base64Token = tokenGenerator.encodeBase64url(randomString)
+        val tokenHash = tokenGenerator.getHash(randomString)
+
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+        val claims = """{\"scope\":\"$scope\",\"client_id\":500}"""
 
         val insertQuery = """
             INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
