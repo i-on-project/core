@@ -480,7 +480,7 @@ BEGIN
   WHERE
     NOT EXISTS(
       SELECT id FROM dbo.CalendarTerm c WHERE c.id=calendarTerm
-    );
+    ) AND calendarTerm IS NOT NULL;
 
 END
 $$ LANGUAGE plpgsql;
