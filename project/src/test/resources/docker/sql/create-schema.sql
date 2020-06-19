@@ -507,18 +507,13 @@ BEGIN
 
   SELECT id INTO langid FROM dbo.Language WHERE name = lang;
   IF (langid IS NULL) THEN
-    RAISE 'Language does not exist';
+    RAISE '% language does not exist', lang;
   END IF;
 
-  INSERT INTO
-    dbo.Category(name, language)
-  SELECT
-    categ, langid
-  WHERE NOT EXISTS (
-    SELECT id from dbo.Category C
-    WHERE C.name = categ AND language = langid
-  );
   SELECT id INTO categoryid FROM dbo.Category WHERE name = categ AND language = langid;
+  IF (categoryid IS NULL) THEN
+    RAISE '"%" is not a valid category for the language %', categ, lang;
+  END IF;
 
   -- Insert or update Programme
   -- coalesce: if any of the supplied parameters is null, use the previous value of the column instead
