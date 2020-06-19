@@ -1,6 +1,6 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.*
+import org.ionproject.core.readApi.common.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.fail
 

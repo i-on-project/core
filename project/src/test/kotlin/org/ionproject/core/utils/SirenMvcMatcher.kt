@@ -1,6 +1,6 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.*
+import org.ionproject.core.readApi.common.*
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 
 fun Siren.matchMvc(matcher: MockMvcResultMatchersDsl, root: String = "$") {

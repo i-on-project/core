@@ -1,6 +1,6 @@
 package org.ionproject.core
 
-import org.ionproject.core.common.querybuilder.Condition
+import org.ionproject.core.readApi.common.querybuilder.Condition
 import org.jdbi.v3.core.statement.Query
 import org.postgresql.util.PGobject
 import org.springframework.util.MultiValueMap

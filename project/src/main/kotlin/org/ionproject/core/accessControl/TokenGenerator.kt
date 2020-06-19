@@ -2,7 +2,7 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
-import org.ionproject.core.common.customExceptions.BadRequestException
+import org.ionproject.core.readApi.common.customExceptions.BadRequestException
 import org.springframework.stereotype.Component
 import java.lang.IllegalArgumentException
 import java.security.MessageDigest

@@ -3,10 +3,9 @@ package org.ionproject.core.accessControl
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.accessControl.representations.TokenRevokedRepr
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.Uri
+import org.ionproject.core.readApi.common.Media
+import org.ionproject.core.readApi.common.Uri
 import org.springframework.http.ResponseEntity
-import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 
 @RestController

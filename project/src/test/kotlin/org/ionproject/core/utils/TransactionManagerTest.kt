@@ -1,7 +1,7 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.transaction.DataSourceHolder
-import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.readApi.common.transaction.DataSourceHolder
+import org.ionproject.core.readApi.common.transaction.TransactionManager
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel

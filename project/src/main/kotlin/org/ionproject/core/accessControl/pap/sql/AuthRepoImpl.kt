@@ -10,7 +10,7 @@ import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.INSERT_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_TOKEN_QUERY
-import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.readApi.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 @Repository

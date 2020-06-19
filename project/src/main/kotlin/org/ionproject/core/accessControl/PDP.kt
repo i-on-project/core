@@ -3,12 +3,12 @@ package org.ionproject.core.accessControl
 import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
 import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
-import org.ionproject.core.common.customExceptions.ForbiddenActionException
-import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
-import org.ionproject.core.common.interceptors.LoggerInterceptor
-import org.ionproject.core.common.interceptors.Request
-import org.ionproject.core.common.transaction.DataSourceHolder
-import org.ionproject.core.common.transaction.TransactionManagerImpl
+import org.ionproject.core.readApi.common.customExceptions.ForbiddenActionException
+import org.ionproject.core.readApi.common.customExceptions.UnauthenticatedUserException
+import org.ionproject.core.readApi.common.interceptors.LoggerInterceptor
+import org.ionproject.core.readApi.common.interceptors.Request
+import org.ionproject.core.readApi.common.transaction.DataSourceHolder
+import org.ionproject.core.readApi.common.transaction.TransactionManagerImpl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

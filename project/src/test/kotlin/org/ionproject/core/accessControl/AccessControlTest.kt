@@ -2,8 +2,8 @@ package org.ionproject.core.accessControl
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.representations.TokenRepr
-import org.ionproject.core.common.Media
-import org.ionproject.core.common.Uri
+import org.ionproject.core.readApi.common.Media
+import org.ionproject.core.readApi.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
