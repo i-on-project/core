@@ -13,6 +13,9 @@
     - [Limit](#limit)
     - [Page](#page)
       - [Invalid Page](#invalid-page)
+  - [Errors](#errors)
+    - [Invalid Query](#invalid-query)
+    - [Invalid Type](#invalid-type)
 
 # Search
 
@@ -195,3 +198,17 @@ Integer value used to specify the page of the search results to return. Default 
 If the page has no results and the number used is 1, the response will have a 200 status code and a `search` object with an empty `entities` array as a body.
 
 If the page has no results and the number used is more than 1, the response will have a 404 status code instead.
+
+## Errors
+
+### Invalid Query
+
+The query used must only contain alpha-numeric(letters and numbers) or space characters.
+
+In the future other characters may be allowed to attribute a different meaning to the search, such as, adding `!` before a word will make it so the results won't contain the word.
+
+### Invalid Type
+
+One or multiple types were used that are not specified in the [Types](#types) section.
+
+Also make sure there are no spaces in between types. `types=course,programme` and **not** `types=course, programme`.
