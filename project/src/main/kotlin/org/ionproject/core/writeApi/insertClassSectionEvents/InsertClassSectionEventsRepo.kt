@@ -1,4 +1,4 @@
-package org.ionproject.core.insertClassSectionEvents
+package org.ionproject.core.writeApi.insertClassSectionEvents
 
 import java.sql.Timestamp
 

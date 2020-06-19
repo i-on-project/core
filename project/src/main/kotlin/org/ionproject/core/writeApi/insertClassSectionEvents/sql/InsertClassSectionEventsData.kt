@@ -1,4 +1,4 @@
-package org.ionproject.core.insertClassSectionEvents.sql
+package org.ionproject.core.writeApi.insertClassSectionEvents.sql
 
 internal object InsertClassSectionEventsData {
   const val SCHEMA = "dbo"
