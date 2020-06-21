@@ -2,11 +2,10 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
-import org.ionproject.core.accessControl.representations.TokenRevokedRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.http.ResponseEntity
-import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -41,7 +40,7 @@ class AccessController(private val services: AccessServices) {
     fun revokeToken(@RequestParam body: Map<String,String>) : ResponseEntity<Any> {
         val token = body["token"]
         if(token.isNullOrEmpty())
-            return ResponseEntity.ok().body(TokenRevokedRepr("No token specified."))
+            throw BadRequestException("No token specified.")
 
         services.revokeToken(token)
         return ResponseEntity.ok().build()

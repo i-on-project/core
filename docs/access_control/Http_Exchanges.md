@@ -163,8 +163,4 @@ Content-Type: application/json
 
 In case an invalid token to revoke is presented, the response message will still be 200 OK. [RFC 7009]
 
-The only situation that is not specified by the RFC is when the body doesn't contain the key "token", in that case an error message of the following type is received:
-200 OK
-{
-    "result":"No token specified."
-}
+Incase the body doesn't contain the key "token", the response is 400 Bad Request.

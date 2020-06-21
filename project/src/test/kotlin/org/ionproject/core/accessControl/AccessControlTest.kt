@@ -252,4 +252,17 @@ internal class AccessControlTest: ControllerTester() {
                 .andReturn()
     }
 
+    /**
+     * Tries to revoke an token with a bad request (no body)
+     */
+    @Test
+    fun revokeTokenBadRequest() {
+        doPost(revokeTokenUri) {
+            header("Authorization", readTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+        }.andDo { print() }
+                .andExpect { status { isBadRequest } }
+                .andReturn()
+    }
+
 }
