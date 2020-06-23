@@ -19,7 +19,7 @@ class ProgrammeServices(private val repo: ProgrammeRepo) {
     }
 
     fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer? {
-        return repo.getOfferById(idOffer, idProgramme)
+        return repo.getOfferById(idProgramme, idOffer)
     }
 
     fun editProgramme(programme: Programme) {

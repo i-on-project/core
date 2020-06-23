@@ -18,8 +18,6 @@ internal class ClassSearchControllerTest : SearchControllerTest() {
         SearchResult(SearchableEntities.CLASS, "1", "SL 1718v", "/v0/courses/1/classes/1718v"),
         SearchResult(SearchableEntities.CLASS, "19", "SL 1819i", "/v0/courses/1/classes/1819i"),
         SearchResult(SearchableEntities.CLASS, "7", "SL 1819v", "/v0/courses/1/classes/1819v"),
-        SearchResult(SearchableEntities.CLASS, "22", "SL 2021i", "/v0/courses/1/classes/2021i"),
-        SearchResult(SearchableEntities.CLASS, "19", "SL 2021v", "/v0/courses/1/classes/2021v"),
         SearchResult(SearchableEntities.CLASS, "17", "WAD 1920i", "/v0/courses/2/classes/1920i"),
         SearchResult(SearchableEntities.CLASS_SECTION, "1D", "WAD 1920i 1D", "/v0/courses/2/classes/1920i/1D"),
         SearchResult(SearchableEntities.CLASS_SECTION, "1N", "WAD 1920i 1N", "/v0/courses/2/classes/1920i/1N"),
