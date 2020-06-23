@@ -13,8 +13,6 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
         SearchResult(SearchableEntities.CLASS, "19", "SL 1819i", URI.create("/v0/courses/1/classes/1819i")),
         SearchResult(SearchableEntities.CLASS, "7", "SL 1819v", URI.create("/v0/courses/1/classes/1819v")),
         SearchResult(SearchableEntities.CLASS, "16", "SL 1920i", URI.create("/v0/courses/1/classes/1920i")),
-        SearchResult(SearchableEntities.CLASS, "22", "SL 2021i", URI.create("/v0/courses/1/classes/2021i")),
-        SearchResult(SearchableEntities.CLASS, "19", "SL 2021v", URI.create("/v0/courses/1/classes/2021v")),
         SearchResult(SearchableEntities.CLASS_SECTION, "1D", "SL 1718i 1D", URI.create("/v0/courses/1/classes/1718i/1D")),
         SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1718i 1N", URI.create("/v0/courses/1/classes/1718i/1N")),
         SearchResult(SearchableEntities.CLASS_SECTION, "2D", "SL 1718i 2D", URI.create("/v0/courses/1/classes/1718i/2D")),
@@ -27,13 +25,13 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
         SearchResult(SearchableEntities.CLASS_SECTION, "1D", "SL 1819v 1D", URI.create("/v0/courses/1/classes/1819v/1D")),
         SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1819v 1N", URI.create("/v0/courses/1/classes/1819v/1N")),
         SearchResult(SearchableEntities.CLASS_SECTION, "2D", "SL 1819v 2D", URI.create("/v0/courses/1/classes/1819v/2D")),
-        SearchResult(SearchableEntities.CLASS_SECTION, "1D", "SL 1920i 1D", URI.create("/v0/courses/1/classes/1920i/1D")),
-        SearchResult(SearchableEntities.CLASS_SECTION, "1N", "SL 1920i 1N", URI.create("/v0/courses/1/classes/1920i/1N"))
+        SearchResult(SearchableEntities.CLASS_SECTION, "LI61D", "SL 1920i LI61D", URI.create("/v0/courses/1/classes/1920i/LI61D")),
+        SearchResult(SearchableEntities.CLASS_SECTION, "LI61N", "SL 1920i LI61N", URI.create("/v0/courses/1/classes/1920i/LI61N"))
     )
 
     @Test
     fun defaultSearch() {
-        test("Lab", expectedResults = results.take(8), uriBuilder = { search, _, _, _ ->
+        test("Lab", expectedResults = results.take(4), uriBuilder = { search, _, _, _ ->
             URI.create("/v0/search?query=$search")
         })
     }
@@ -51,7 +49,7 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     }
     @Test
     fun searchWithDifferentLimitAndPage() {
-        test("Lab", 5, 1, expectedResults = results.drop(5).take(3), uriBuilder = { search, limit, page, _ ->
+        test("Lab", 1, 1, expectedResults = results.drop(1).take(1), uriBuilder = { search, limit, page, _ ->
             URI.create("/v0/search?query=$search&page=$page&limit=$limit")
         })
     }

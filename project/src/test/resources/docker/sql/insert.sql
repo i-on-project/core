@@ -638,7 +638,7 @@ CALL dbo.newEvent(27,
 
 -- <LI61D lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(63,
+CALL dbo.newEvent(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -651,7 +651,7 @@ CALL dbo.newEvent(63,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(63,
+CALL dbo.newEvent(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -666,7 +666,7 @@ CALL dbo.newEvent(63,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(61,
+CALL dbo.newEvent(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -679,7 +679,7 @@ CALL dbo.newEvent(61,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(61,
+CALL dbo.newEvent(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -694,7 +694,7 @@ CALL dbo.newEvent(61,
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(65,
+CALL dbo.newEvent(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -707,7 +707,7 @@ CALL dbo.newEvent(65,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(65,
+CALL dbo.newEvent(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -727,7 +727,7 @@ CALL dbo.newEvent(65,
 
 -- <LI61N lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(64,
+CALL dbo.newEvent(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -740,7 +740,7 @@ CALL dbo.newEvent(64,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(64,
+CALL dbo.newEvent(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -755,7 +755,7 @@ CALL dbo.newEvent(64,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(62,
+CALL dbo.newEvent(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -768,7 +768,7 @@ CALL dbo.newEvent(62,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(62,
+CALL dbo.newEvent(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -783,7 +783,7 @@ CALL dbo.newEvent(62,
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(66,
+CALL dbo.newEvent(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
@@ -796,7 +796,7 @@ CALL dbo.newEvent(66,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(66,
+CALL dbo.newEvent(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
@@ -972,7 +972,7 @@ CALL dbo.newTodo(14,
 CALL dbo.newEvent(13,
     ARRAY['1st Exam WAD'],
     ARRAY[2],
-    ARRAY['Normal season exam for WAD-1718v'],
+    ARRAY['Normal season exam for WAD-1920v'],
     ARRAY[2],
     ARRAY[7],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
@@ -985,7 +985,7 @@ CALL dbo.newEvent(13,
 CALL dbo.newEvent(13,
     ARRAY['2nd Exam WAD'],
     ARRAY[2],
-    ARRAY['Second season exam for WAD-1718v'],
+    ARRAY['Second season exam for WAD-1920v'],
     ARRAY[2],
     ARRAY[7],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
