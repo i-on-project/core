@@ -8,9 +8,7 @@ INSERT INTO dbo.CalendarTerm(id, start_date, end_date) VALUES
 ('1819v', to_timestamp(1586379925), to_timestamp(1586379933)),
 ('1819i', to_timestamp(1586379927), to_timestamp(1586379933)),
 ('1920v', to_timestamp(1586379929), to_timestamp(1586379933)),
-('1920i', to_timestamp(1586379930), to_timestamp(1586379943)),
-('2021v', to_timestamp(1586379940), to_timestamp(1586379953)),
-('2021i', to_timestamp(1586379950), to_timestamp(1586379963));
+('1920i', to_timestamp(1586379930), to_timestamp(1586379943));
 
 INSERT INTO dbo.Course(acronym, name) values
 ('SL',  'Software Laboratory'),
@@ -102,7 +100,7 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 
 
 INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
-(1, 2, TRUE,  3),
+(1, 2, TRUE,  6),
 (1, 1, FALSE, 6),
 (1, 3, FALSE, 1),
 (1, 4, TRUE, 6),
@@ -127,12 +125,7 @@ CALL dbo.sp_classCalendarCreate('1920v', 5);	-- calendar nº15 CC
 CALL dbo.sp_classCalendarCreate('1920i', 1);
 CALL dbo.sp_classCalendarCreate('1920i', 2);
 CALL dbo.sp_classCalendarCreate('1920i', 3);
-CALL dbo.sp_classCalendarCreate('2021v', 1);
-CALL dbo.sp_classCalendarCreate('2021v', 2);
-CALL dbo.sp_classCalendarCreate('2021v', 3);
-CALL dbo.sp_classCalendarCreate('2021i', 1);
-CALL dbo.sp_classCalendarCreate('2021i', 2);
-CALL dbo.sp_classCalendarCreate('2021i', 3);
+
 
 CALL dbo.sp_classSectionCalendarCreate(1,  '1D');
 CALL dbo.sp_classSectionCalendarCreate(1,  '2D');
@@ -185,24 +178,6 @@ CALL dbo.sp_classSectionCalendarCreate(17, '1N');
 CALL dbo.sp_classSectionCalendarCreate(18, '1D');
 CALL dbo.sp_classSectionCalendarCreate(18, '2D');
 CALL dbo.sp_classSectionCalendarCreate(18, '1N');
-CALL dbo.sp_classSectionCalendarCreate(19, '1D');
-CALL dbo.sp_classSectionCalendarCreate(19, '2D');
-CALL dbo.sp_classSectionCalendarCreate(19, '1N');
-CALL dbo.sp_classSectionCalendarCreate(20, '1D');
-CALL dbo.sp_classSectionCalendarCreate(20, '2D');
-CALL dbo.sp_classSectionCalendarCreate(20, '1N');
-CALL dbo.sp_classSectionCalendarCreate(21, '1D');
-CALL dbo.sp_classSectionCalendarCreate(21, '2D');
-CALL dbo.sp_classSectionCalendarCreate(21, '1N');
-CALL dbo.sp_classSectionCalendarCreate(22, '1D');
-CALL dbo.sp_classSectionCalendarCreate(22, '2D');
-CALL dbo.sp_classSectionCalendarCreate(22, '1N');
-CALL dbo.sp_classSectionCalendarCreate(23, '1D');
-CALL dbo.sp_classSectionCalendarCreate(23, '2D');
-CALL dbo.sp_classSectionCalendarCreate(23, '1N');
-CALL dbo.sp_classSectionCalendarCreate(24, '1D');
-CALL dbo.sp_classSectionCalendarCreate(24, '2D');
-CALL dbo.sp_classSectionCalendarCreate(24, '1N');
 
 
 INSERT INTO dbo.Language(name) VALUES
@@ -859,6 +834,17 @@ CALL dbo.newTodo(13,
     ARRAY[1,2],
     NULL,
     TIMESTAMP '2020-05-25 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(13,
+    ARRAY['[WAD]: Assignment #3'],
+    ARRAY[2],
+    ARRAY['The third and final assignment. Wrapping it up...'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-07-5 23:59:00', -- due
     5,
     TIMESTAMP '2020-01-01 16:35:30');
 -- </WAD Assignments> --

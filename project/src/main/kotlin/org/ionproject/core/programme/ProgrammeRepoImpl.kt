@@ -41,7 +41,7 @@ class ProgrammeRepoImpl(
     programme
   }
 
-  override fun getOfferById(idOffer: Int, idProgramme: Int): ProgrammeOffer? = tm.run { handle ->
+  override fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer? = tm.run { handle ->
     handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
       .bind(ProgrammeData.ID, idOffer)
       .bind(ProgrammeData.PROGRAMME_ID, idProgramme)

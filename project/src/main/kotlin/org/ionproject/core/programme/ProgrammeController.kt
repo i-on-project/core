@@ -30,7 +30,7 @@ class ProgrammeController(private val programmeServices: ProgrammeServices) {
 
     @GetMapping(Uri.programmeOfferById)
     fun getOffer(@PathVariable idProgramme: Int, @PathVariable idOffer: Int): ResponseEntity<Siren> {
-        val offer = programmeServices.getOfferById(idOffer, idProgramme)
+        val offer = programmeServices.getOfferById(idProgramme, idOffer)
 
         offer?.let { return ResponseEntity.ok(it.offerToDetailRepr()) }
         return ResponseEntity.notFound().build()
