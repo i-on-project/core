@@ -109,6 +109,7 @@ class CalendarComponentMapper(
         return descriptions.toTypedArray()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun ResultSet.getCategories(columnName: String): Array<Categories> {
         val tempCats = getArray(columnName).array as Array<Int>
 
@@ -138,6 +139,7 @@ class CalendarComponentMapper(
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <R> ResultSet.getCompositeArray(columnName: String, map: (List<String>) -> R): List<R> {
         val array = getArray(columnName).array as Array<Any>
 
@@ -188,6 +190,7 @@ class CalendarComponentMapper(
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun ResultSet.getAttachments(columnName: String): Array<Attachment> {
         val att = getArray(columnName).array as Array<String?>
 
