@@ -147,11 +147,7 @@ class CalendarComponentMapper(
             val values = pgObject.split()
 
             val list = List(values.size) { idx ->
-                val str = values[idx]
-                if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"")
-                }
-                str.replace("""\\""", """\""")
+                values[idx].removeSurrounding("\"").replace("""\\""", """\""")
             }
 
             map(list)
