@@ -83,8 +83,8 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getSummaries(columnName: String): Array<Summary> {
         val summaries = getCompositeArray(columnName) {
-            val summaryLanguage = it[0] as Int
-            val summary = it[1] as String
+            val summaryLanguage = it[0].toInt()
+            val summary = it[1]
 
             Summary(
                 summary,
@@ -97,8 +97,8 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getDescriptions(columnName: String): Array<Description> {
         val descriptions = getCompositeArray(columnName) {
-            val descriptionLanguage = it[0] as Int
-            val description = it[1] as String
+            val descriptionLanguage = it[0].toInt()
+            val description = it[1]
 
             Description(
                 description,
@@ -138,7 +138,7 @@ class CalendarComponentMapper(
         )
     }
 
-    private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R): List<R> {
+    private fun <R> ResultSet.getCompositeArray(columnName: String, map: (List<String>) -> R): List<R> {
         val array = getArray(columnName).array as Array<Any>
 
         return array.map {
@@ -149,13 +149,12 @@ class CalendarComponentMapper(
             val list = List(values.size) { idx ->
                 val str = values[idx]
                 if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"").replace("""\\""", """\""")
-                } else {
-                    str.toInt()
+                    str.removeSurrounding("\"")
                 }
+                str.replace("""\\""", """\""")
             }
 
-            oper(list)
+            map(list)
         }
     }
 
