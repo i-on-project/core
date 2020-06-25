@@ -6,7 +6,7 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
 
 interface CategoryRepo {
-    fun byId(id: Int): Category?
+    fun byId(id: Int): List<Category>?
 }
 
 @Repository
@@ -15,7 +15,7 @@ class CategoryRepoImpl(
     private val categoryMapper: CategoryData.CategoryMapper
 ) : CategoryRepo {
 
-    private val categories = hashMapOf<Int, Category>()
+    private val categories = hashMapOf<Int, MutableList<Category>>()
 
     init {
         populateCategoryMap()
@@ -28,11 +28,13 @@ class CategoryRepoImpl(
                 .map(categoryMapper)
                 .list()
         }?.forEach {
-            categories += it
+            categories.computeIfAbsent(it.first) {
+                mutableListOf()
+            }.add(it.second)
         }
     }
 
-    override fun byId(id: Int): Category? =
+    override fun byId(id: Int): List<Category>? =
         categories[id]
 
 }

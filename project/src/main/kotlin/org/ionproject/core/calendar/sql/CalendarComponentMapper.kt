@@ -111,11 +111,11 @@ class CalendarComponentMapper(
     private fun ResultSet.getCategories(columnName: String): Array<Categories> {
         val tempCats = getArray(columnName).array as Array<Int>
 
-        val cats = tempCats.map { it }
-
-        return cats.map {
+        val cats = tempCats.map {
             categoryRepo.byId(it) ?: throw ForeignKeyException("category", "categories")
-        }.groupBy {
+        }.flatten()
+
+        return cats.groupBy {
             it.language // group categories of this event by language
         }.map { pair ->
             val categories = pair.value

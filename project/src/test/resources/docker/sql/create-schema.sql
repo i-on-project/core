@@ -87,10 +87,14 @@ CREATE TABLE IF NOT EXISTS dbo.Language(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Category(
-	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name           VARCHAR(64) NOT NULL,
-	language       INT REFERENCES dbo.Language(id),
-	UNIQUE(name, language)
+	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS dbo.CategoryLanguage(
+	category       INT REFERENCES dbo.Category(id),
+	name           VARCHAR(64) NOT NULL,
+    language       INT REFERENCES dbo.Language(id),
+	PRIMARY KEY (category, language)
 );
 
 -- some iCal property types
