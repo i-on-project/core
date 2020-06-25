@@ -6,7 +6,7 @@ import org.ionproject.core.common.ProblemJson
 import org.ionproject.core.join
 import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
-import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
+import org.ionproject.core.writeApi.insertClassSectionEvents.json.InsertClassSectionEventsParams
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.postgresql.util.PSQLException
 import org.springframework.http.ResponseEntity
@@ -32,16 +32,16 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
           "/err/write/insertClassSectionEvents/jsonSchemaConstraintViolation",
           "JSON Schema constraint violation.",
           400,
-          "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.join(";")} ]. This operation's JSON Schema: ${SchemaValidator.schemaDocUri}.",
+          "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.join(
+            ";"
+          )} ]. This operation's JSON Schema: ${SchemaValidator.schemaDocUri}.",
           "/v0/insertClassSectionEvents"
         )
       )
     }
 
     // Translate the JSON Node into a more easier to use/read object
-    val schoolInfo = SchoolInfo.of(json)
-    val category = "Aula"
-    val lang = "pt-PT"
+    val schoolInfo = InsertClassSectionEventsParams.of(json)
     try {
       repo.transaction { sql ->
         sql.insertClassSectionSchoolInfo(
@@ -59,15 +59,16 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
             course.acr,
             schoolInfo.calendarSection,
             schoolInfo.calendarTerm,
-            lang,
-            category
+            schoolInfo.language,
+            schoolInfo.category
           )
 
           course.events.forEach { event ->
-            // Mandatory iCalendar components
-            val eventTitle = event.title ?: "${course.acr} $category"
+            // Mandatory iCalendar component properties
+            // Give default values in case these weren't included in the request
+            val eventTitle = event.title ?: "${course.acr} ${schoolInfo.category}"
             val eventDescription = event.description
-              ?: "Event '${category}' for the Course ${course.acr} during ${schoolInfo.calendarTerm} for the Class ${schoolInfo.calendarSection}."
+              ?: "Event '${schoolInfo.category}' during ${schoolInfo.calendarTerm} for the Class ${schoolInfo.calendarSection}."
 
             sql.insertClassSectionEvent(
               course.name,
@@ -76,12 +77,12 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
               schoolInfo.calendarTerm,
               eventTitle,
               eventDescription,
-              lang,
-              category,
+              schoolInfo.language,
+              schoolInfo.category,
               event.beginTime,
               event.endTime,
-              event.weekday.join(), // [ "MO", "FR" ] -> "MO,FR"
-              event.location?.join()
+              event.weekdays,
+              event.location
             )
           }
         }

@@ -82,13 +82,15 @@ private const val insertClassSectionEventsSchema = """{
     "programme": { "${'$'}ref": "#academicObject" },
     "calendarSection": { "type": "string" },
     "calendarTerm": { "type": "string" },
+    "language": { "type": "string" },
+    "category": { "type": "string" },
     "courses": {
       "type": "array",
       "minItems": 1,
       "items": { "${'$'}ref": "#course" }
     }
   },
-  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
+  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection", "category" ],
   "additionalProperties": false
 }"""
 
