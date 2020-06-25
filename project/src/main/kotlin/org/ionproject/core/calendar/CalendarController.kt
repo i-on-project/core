@@ -3,7 +3,6 @@ package org.ionproject.core.calendar
 import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.toSiren
 import org.ionproject.core.common.Media
-import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.hexStringToInt
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import java.net.URI
-import java.util.*
 
 
 @RestController

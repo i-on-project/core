@@ -1,7 +1,9 @@
 package org.ionproject.core.writeApi.insertClassSectionEvents
 
 import com.fasterxml.jackson.databind.JsonNode
+import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
+import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class InsertClassSectionEventsController(private val repo: InsertClassSectionEventsRepo) {
 
-  @PutMapping("/v0/insertClassSectionEvents", consumes = ["application/json"])
+  @PutMapping(Uri.insertClassSectionEvents, consumes = [Media.APPLICATION_JSON])
   fun insertClassSectionEvents(@RequestBody json: JsonNode): ResponseEntity<Any> {
 
     /**

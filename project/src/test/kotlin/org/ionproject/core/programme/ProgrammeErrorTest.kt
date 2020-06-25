@@ -3,6 +3,7 @@ package org.ionproject.core.programme
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -23,7 +24,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidProgramme() {
-        doGet(notFoundUri)
+        doGet(notFoundUri) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -36,7 +39,10 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getProgrammeWithInvalidContentType() {
-        doGet(validUri) { accept = Media.MEDIA_HOME }
+        doGet(validUri) {
+            accept = Media.MEDIA_HOME
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
                 .andReturn()
@@ -47,7 +53,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getProgrammeWithBadRequest() {
-        doGet(badRequestUri)
+        doGet(badRequestUri) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()
@@ -58,7 +66,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidProgrammeOffer() {
-        doGet(notFoundProgrammeOffer)
+        doGet(notFoundProgrammeOffer)  {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -70,7 +80,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getProgrammeOfferWithBadRequest() {
-        doGet(badRequestProgrammeOffer)
+        doGet(badRequestProgrammeOffer) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()

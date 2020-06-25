@@ -1,0 +1,8 @@
+FROM alpine
+RUN apk add --no-cache postgresql-client libc-dev python3-dev python3 postgresql-dev gcc py3-pip &&\
+  pip install --no-cache-dir migra psycopg2-binary
+
+RUN apk del libc-dev postgresql-dev python3-dev gcc
+
+COPY ./sdiff ./
+ENTRYPOINT [ "./sdiff" ]

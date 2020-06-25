@@ -3,10 +3,10 @@ package org.ionproject.core.calendar.icalendar.types
 import org.ionproject.core.toInt
 
 class Time private constructor(
-    private val hours: Hour,
-    private val minutes: Minute,
-    private val seconds: Second,
-    private val utc: Boolean = true
+    val hours: Hour,
+    val minutes: Minute,
+    val seconds: Second,
+    val utc: Boolean = true
 ) : ICalendarDataType {
     companion object {
         private const val name: String = "TIME"
@@ -76,6 +76,4 @@ class Time private constructor(
             return String.format("%02d", value)
         }
     }
-
 }
-

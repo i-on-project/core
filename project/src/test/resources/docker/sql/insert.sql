@@ -8,9 +8,7 @@ INSERT INTO dbo.CalendarTerm(id, start_date, end_date) VALUES
 ('1819v', to_timestamp(1586379925), to_timestamp(1586379933)),
 ('1819i', to_timestamp(1586379927), to_timestamp(1586379933)),
 ('1920v', to_timestamp(1586379929), to_timestamp(1586379933)),
-('1920i', to_timestamp(1586379930), to_timestamp(1586379943)),
-('2021v', to_timestamp(1586379940), to_timestamp(1586379953)),
-('2021i', to_timestamp(1586379950), to_timestamp(1586379963));
+('1920i', to_timestamp(1586379930), to_timestamp(1586379943));
 
 INSERT INTO dbo.Course(acronym, name) values
 ('SL',  'Software Laboratory'),
@@ -19,8 +17,87 @@ INSERT INTO dbo.Course(acronym, name) values
 ('PS', 'Project and Seminary'),
 ('CC', 'Cloud computing');
 	
+-- Access Manager Mock Data for beta version
+--Notes:
+--exp: 1691121207 on first 2 tokens is around the year 2023 
+--client id holds no meaning for now as there is no registration/authentication method
+-- last 2 tokens are expired and revoked for testing purposes
+
+INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt, claims) VALUES 
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,
+'{"client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,
+'{"client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,
+'{"client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
+
+
+INSERT INTO dbo.scopes (scope) VALUES
+('urn:org:ionproject:scopes:api:read'),
+('urn:org:ionproject:scopes:api:write'),
+('urn:org:ionproject:scopes:token:issue'),
+('urn:org:ionproject:scopes:api:read_restricted');
+
+/*
+* Don't use wildcards in the paths
+* e.g. /v0/courses which a user may have permission to access
+* can be tricked into accepting a request to a resource he is not allowed.
+* e.g. GET "/v0/courses/../programmes"
+* if the code accepts anything towards "/v0/courses*"
+*
+*This way of representing permissions is very extensive and would exponentially
+*grow if all paths were repeated by each HTTP method, therefore the field
+*method is a list of methods allowed for each resource.
+*/
+INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
+(1, 'GET', '*','/'),
+(1, 'GET', 'v0', 'courses'),
+(1, 'GET', 'v0', 'courses/?'),
+(1, 'GET', 'v0', 'courses/?/classes'),
+(1, 'GET', 'v0', 'courses/?/classes/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/calendar'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar'),
+(1, 'GET', 'v0', 'courses/?/classes/?/calendar/?'),
+(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar/?'),
+(1, 'GET', 'v0', 'programmes'),
+(1, 'GET', 'v0', 'programmes/?'),
+(1, 'GET', 'v0', 'programmes/?/offers'),
+(1, 'GET', 'v0', 'programmes/?/offers/?'),
+(1, 'GET', 'v0', 'calendar-terms'),
+(1, 'GET', 'v0', 'calendar-terms/?'),
+(1, 'GET', 'v0', 'search'),
+(2, 'PUT,POST', 'v0', 'courses'),
+(2, 'PUT,POST', 'v0', 'courses/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar/?'),
+(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar/?'),
+(2, 'PUT,POST', 'v0', 'programmes'),                                            
+(2, 'PUT,POST', 'v0', 'programmes/?'),                                       
+(2, 'PUT,POST', 'v0', 'programmes/?/offers'),
+(2, 'PUT,POST', 'v0', 'programmes/?/offers/?'),
+(2, 'PUT,POST', 'v0', 'calendar-terms'),
+(2, 'PUT,POST', 'v0', 'calendar-terms/?'),
+(2, 'PUT', 'v0', 'insertClassSectionEvents'),
+(4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
+(4, 'GET', 'v0', 'programmes/?'),
+(3, 'POST', '*', 'issueToken'),
+(1, 'POST', '*', 'revokeToken'),
+(2, 'POST', '*', 'revokeToken'),
+(3, 'POST', '*', 'revokeToken'),
+(4, 'POST', '*', 'revokeToken'),
+(1, 'GET,POST', '*', 'error'),
+(2, 'GET,POST', '*', 'error'),
+(3, 'GET,POST', '*', 'error'),
+(4, 'GET,POST', '*', 'error');
+
+
 INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
-(1, 2, TRUE,  3),
+(1, 2, TRUE,  6),
 (1, 1, FALSE, 6),
 (1, 3, FALSE, 1),
 (1, 4, TRUE, 6),
@@ -45,12 +122,6 @@ SELECT dbo.f_classCalendarCreate('1920v', 5);	-- calendar nº15 CC
 SELECT dbo.f_classCalendarCreate('1920i', 1);
 SELECT dbo.f_classCalendarCreate('1920i', 2);
 SELECT dbo.f_classCalendarCreate('1920i', 3);
-SELECT dbo.f_classCalendarCreate('2021v', 1);
-SELECT dbo.f_classCalendarCreate('2021v', 2);
-SELECT dbo.f_classCalendarCreate('2021v', 3);
-SELECT dbo.f_classCalendarCreate('2021i', 1);
-SELECT dbo.f_classCalendarCreate('2021i', 2);
-SELECT dbo.f_classCalendarCreate('2021i', 3);
 
 SELECT dbo.f_classSectionCalendarCreate(1,  '1D');
 SELECT dbo.f_classSectionCalendarCreate(1,  '2D');
@@ -103,24 +174,6 @@ SELECT dbo.f_classSectionCalendarCreate(17, '1N');
 SELECT dbo.f_classSectionCalendarCreate(18, '1D');
 SELECT dbo.f_classSectionCalendarCreate(18, '2D');
 SELECT dbo.f_classSectionCalendarCreate(18, '1N');
-SELECT dbo.f_classSectionCalendarCreate(19, '1D');
-SELECT dbo.f_classSectionCalendarCreate(19, '2D');
-SELECT dbo.f_classSectionCalendarCreate(19, '1N');
-SELECT dbo.f_classSectionCalendarCreate(20, '1D');
-SELECT dbo.f_classSectionCalendarCreate(20, '2D');
-SELECT dbo.f_classSectionCalendarCreate(20, '1N');
-SELECT dbo.f_classSectionCalendarCreate(21, '1D');
-SELECT dbo.f_classSectionCalendarCreate(21, '2D');
-SELECT dbo.f_classSectionCalendarCreate(21, '1N');
-SELECT dbo.f_classSectionCalendarCreate(22, '1D');
-SELECT dbo.f_classSectionCalendarCreate(22, '2D');
-SELECT dbo.f_classSectionCalendarCreate(22, '1N');
-SELECT dbo.f_classSectionCalendarCreate(23, '1D');
-SELECT dbo.f_classSectionCalendarCreate(23, '2D');
-SELECT dbo.f_classSectionCalendarCreate(23, '1N');
-SELECT dbo.f_classSectionCalendarCreate(24, '1D');
-SELECT dbo.f_classSectionCalendarCreate(24, '2D');
-SELECT dbo.f_classSectionCalendarCreate(24, '1N');
 
 
 INSERT INTO dbo.Language(name) VALUES
@@ -581,7 +634,7 @@ CALL dbo.newEvent(27,
 
 -- <LI61D lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(63,
+CALL dbo.newEvent(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -594,7 +647,7 @@ CALL dbo.newEvent(63,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(63,
+CALL dbo.newEvent(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
@@ -609,7 +662,7 @@ CALL dbo.newEvent(63,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(61,
+CALL dbo.newEvent(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -622,7 +675,7 @@ CALL dbo.newEvent(61,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(61,
+CALL dbo.newEvent(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
@@ -637,7 +690,7 @@ CALL dbo.newEvent(61,
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(65,
+CALL dbo.newEvent(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -650,7 +703,7 @@ CALL dbo.newEvent(65,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(65,
+CALL dbo.newEvent(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
@@ -670,7 +723,7 @@ CALL dbo.newEvent(65,
 
 -- <LI61N lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(64,
+CALL dbo.newEvent(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -683,7 +736,7 @@ CALL dbo.newEvent(64,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(64,
+CALL dbo.newEvent(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
@@ -698,7 +751,7 @@ CALL dbo.newEvent(64,
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(62,
+CALL dbo.newEvent(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -711,7 +764,7 @@ CALL dbo.newEvent(62,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(62,
+CALL dbo.newEvent(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
@@ -726,7 +779,7 @@ CALL dbo.newEvent(62,
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(66,
+CALL dbo.newEvent(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
@@ -739,7 +792,7 @@ CALL dbo.newEvent(66,
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(66,
+CALL dbo.newEvent(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
@@ -777,6 +830,17 @@ CALL dbo.newTodo(13,
     ARRAY[1,2],
     NULL,
     TIMESTAMP '2020-05-25 23:59:00', -- due
+    5,
+    TIMESTAMP '2020-01-01 16:35:30');
+
+CALL dbo.newTodo(13,
+    ARRAY['[WAD]: Assignment #3'],
+    ARRAY[2],
+    ARRAY['The third and final assignment. Wrapping it up...'],
+    ARRAY[2],
+    ARRAY[1,2],
+    NULL,
+    TIMESTAMP '2020-07-5 23:59:00', -- due
     5,
     TIMESTAMP '2020-01-01 16:35:30');
 -- </WAD Assignments> --
@@ -904,7 +968,7 @@ CALL dbo.newTodo(14,
 CALL dbo.newEvent(13,
     ARRAY['1st Exam WAD'],
     ARRAY[2],
-    ARRAY['Normal season exam for WAD-1718v'],
+    ARRAY['Normal season exam for WAD-1920v'],
     ARRAY[2],
     ARRAY[7],
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
@@ -917,7 +981,7 @@ CALL dbo.newEvent(13,
 CALL dbo.newEvent(13,
     ARRAY['2nd Exam WAD'],
     ARRAY[2],
-    ARRAY['Second season exam for WAD-1718v'],
+    ARRAY['Second season exam for WAD-1920v'],
     ARRAY[2],
     ARRAY[7],
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP

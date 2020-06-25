@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.net.URI
 
+
 object Postgres {
     const val SUPER_USER = "postgres"
     const val ENV_PASSWORD = "PGPASSWORD"
@@ -263,6 +264,101 @@ open class PgAddData : AbstractTask() {
         }
     }
 }
+
+open class PgInsertReadToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+       Token().create("urn:org:ionproject:scopes:api:read", project, true)
+    }
+}
+
+open class PgInsertIssueToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:token:issue", project, true)
+    }
+}
+
+open class PgInsertReadTokenWin : AbstractTask() {
+    @TaskAction
+    fun run() {
+       Token().create("urn:org:ionproject:scopes:api:read", project, false)
+    }
+}
+
+open class PgInsertIssueTokenWin : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:token:issue", project, false)
+    }
+}
+
+
+class Token {
+    fun create(scope: String, project: Project, isPosixShell: Boolean) {
+        val values = if (isPosixShell) getTokenReferences(scope) else getTokenReferencesWin(scope)
+
+        val insertQuery = values[0]
+        val base64Reference = values[1]
+
+        val pgParams = Postgres.pgParams
+        val result = project.exec {
+            commandLine("docker", "run",
+                "-e", "PGPASSWORD=${pgParams.password}",
+                "--rm", "--network=host", Docker.IMAGE_NAME,
+                "psql",
+                "-h", pgParams.host,
+                "-U", pgParams.user,
+                "-d", pgParams.db,
+                "-p", pgParams.port,
+                "-w",
+                "-1",
+                "-c",
+                insertQuery)
+
+            environment(Postgres.ENV_PASSWORD, pgParams.password)
+        }
+        result.assertNormalExitValue()
+        print("Your token reference is $base64Reference")
+    }
+
+    private fun getTokenReferences(scope: String): List<String> {
+        val tokenGenerator = TokenGenerator()
+        val randomString = tokenGenerator.generateRandomString()
+        val base64Token = tokenGenerator.encodeBase64url(randomString)
+        val tokenHash = tokenGenerator.getHash(randomString)
+
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+        val claims = """{"scope":"$scope","client_id":500}"""
+
+        val insertQuery = """
+            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
+        """
+
+        return listOf(insertQuery, base64Token)
+    }
+
+    private fun getTokenReferencesWin(scope: String): List<String> {
+        val tokenGenerator = TokenGenerator()
+        val randomString = tokenGenerator.generateRandomString()
+        val base64Token = tokenGenerator.encodeBase64url(randomString)
+        val tokenHash = tokenGenerator.getHash(randomString)
+
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+        val claims = """{\"scope\":\"$scope\",\"client_id\":500}"""
+
+        val insertQuery = """
+            INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$tokenHash',true,$currTime,$expirationTime,'$claims')
+        """
+
+        return listOf(insertQuery, base64Token)
+    }
+}
+
+
+
 
 class DevNull : OutputStream() {
     override fun write(p0: Int) {

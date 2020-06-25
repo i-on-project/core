@@ -16,7 +16,7 @@ internal class CourseControllerTest : ControllerTester() {
             Course(1, "SL", "Software Laboratory", "1718v")
 
         fun getCurrentCourse(c: Course) =
-            Course(c.id, c.acronym, c.name, "2021i")
+            Course(c.id, c.acronym, c.name, "1920i")
 
         fun getCourseCollection() = listOf(
             Course(1, "SL", "Software Laboratory"),
@@ -29,7 +29,7 @@ internal class CourseControllerTest : ControllerTester() {
      */
     @Test
     fun getClassSection_shouldRespondWithSirenType() {
-        isValidSiren(Uri.forClassSectionById(1, "2021v", "1D")).andReturn()
+        isValidSiren(Uri.forClassSectionById(2, "1920v", "LI61D")).andReturn()
     }
 
     @Test

@@ -5,7 +5,8 @@ CREATE TABLE dbo.Programme(
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	acronym         VARCHAR(10) UNIQUE,				
 	name            VARCHAR(100) UNIQUE,			-- It may be NULL in this phase
-	termSize        INT					
+	termSize        INT,
+	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
 
 CREATE TABLE dbo.Calendar (
@@ -15,7 +16,8 @@ CREATE TABLE dbo.Calendar (
 CREATE TABLE dbo.Course (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	acronym         VARCHAR(10) UNIQUE,	
-	name            VARCHAR(100) UNIQUE				-- It may be NULL in this phase
+	name            VARCHAR(100) UNIQUE,				-- It may be NULL in this phase
+	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
 
 CREATE TABLE dbo.ProgrammeOffer(
@@ -31,6 +33,7 @@ CREATE TABLE dbo.CalendarTerm (
 	id         VARCHAR(20) PRIMARY KEY, -- e.g. "1920v"
 	start_date TIMESTAMP,
 	end_date   TIMESTAMP CHECK(end_date > start_date),
+	document   TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
 	UNIQUE(start_date, end_date)
 );
 
@@ -39,6 +42,7 @@ CREATE TABLE dbo.Class (
 	courseId        INT REFERENCES dbo.Course(id),
 	calendarTerm    VARCHAR(20) REFERENCES dbo.CalendarTerm(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', calendarTerm)) STORED,
 	UNIQUE(courseId, calendarTerm)
 );
 
@@ -46,6 +50,7 @@ CREATE TABLE dbo.ClassSection (
 	id              VARCHAR(10),
 	classId         INT REFERENCES dbo.Class(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
+	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
     PRIMARY KEY(id, classId)
 );
 
@@ -379,15 +384,6 @@ BEGIN
 END
 $$ LANGUAGE PLpgSQL;
 
-------- UTILS --------
-CREATE FUNCTION MERGE_LANGUAGE_TEXT(language INT, text VARCHAR)
-RETURNS VARCHAR
-LANGUAGE PLpgSQL AS $$
-BEGIN
-	RETURN language || ':' || text;
-END;
-$$;
-
 ------- VIEWS --------
 CREATE VIEW dbo.courseWithTerm AS
 	SELECT co.*, cl.calendarterm FROM 
@@ -433,6 +429,31 @@ BEGIN
   RETURN csid;
 END
 $$ LANGUAGE plpgsql;
+
+-----------------------------------------------------
+-- Access manager 
+
+CREATE TABLE dbo.Token(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	hash CHAR(64) UNIQUE,	--64 hexa chars = 256 bits hash
+	isValid BOOLEAN,
+	issuedAt BIGINT,
+	expiresAt BIGINT,
+	claims JSONB
+);
+
+CREATE TABLE dbo.scopes(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	scope VARCHAR(100) UNIQUE --urn:org:ionproject:scopes:api:read
+);
+
+CREATE TABLE dbo.policies(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	scope_id INT REFERENCES dbo.scopes(id),
+	method VARCHAR(50),		-- get, post...
+	version VARCHAR(10),	--	v0, v1...
+	path VARCHAR(100)		-- .../courses
+);
 
 -----------------------------------------------------
 -- Write API

@@ -1,0 +1,113 @@
+name: Deploy Core on Google Compute Engine
+
+on:
+  push:
+    branches:
+      - release/*
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJ_ID }}
+  GCP_INSTANCE: core-instance
+  GCP_INSTANCE_ZONE: europe-west2-c
+  GCP_REPO: eu.gcr.io
+  IMAGE_NAME: core-release-img
+  SCHEMA_DIFF_IMG: schema-diff-img
+  DB_PROXY_PORT: 10025
+  DB_DEV_NAME: ${{ secrets.DB_DEV_NAME }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASS: ${{ secrets.DB_PASS }}
+  DB_INSTANCE: ${{ secrets.DB_INSTANCE }}
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Start DB and run tests
+        env:
+          JDBC_DATABASE_URL: ${{ secrets.LOCAL_JDBC_DATABASE_URL }}
+        working-directory: project
+        run: ./gradlew pgSetupDb test
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: reports-test
+          path: project/build/reports/tests/test/
+        if: always()
+
+      - name: Stop DB
+        working-directory: project
+        run: ./gradlew pgStop
+
+  deploy:
+    name: Deploy to GCE
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      # GCloud steps:
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '286.0.0'
+          service_account_email: ${{ secrets.GCP_EMAIL }}
+          service_account_key: ${{ secrets.GCP_KEY }}
+
+      - name: gcloud set up
+        run: gcloud config set project $GCP_PROJECT_ID
+
+      - name: Configure docker auth
+        run: gcloud auth configure-docker
+
+      - name: Set DB Proxy
+        run: |
+          wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy &&\
+            chmod +x cloud_sql_proxy &&\
+            ./cloud_sql_proxy -instances=$DB_INSTANCE=tcp:$DB_PROXY_PORT &
+
+      - name: Schema Migration Attempt
+        working-directory: ./project/src/test/resources/schema_diff
+        run: |
+          docker build -t $SCHEMA_DIFF_IMG . &&\
+            docker run --rm --network="host" \
+              -e DEV_DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_DEV_NAME?user=$DB_USER&password=$DB_PASS" \
+              -e DB_URL="postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" \
+              -v "$(pwd)/../docker:/mnt" \
+              $SCHEMA_DIFF_IMG apply
+
+      - name: Guarantee connection string refresh, in case this job is executed by a previous runner
+        working-directory: project
+        run: ./gradlew clean -p buildSrc
+
+      - name: Insert Issue Token
+        working-directory: project
+        run: JDBC_DATABASE_URL="jdbc:postgresql://localhost:$DB_PROXY_PORT/$DB_NAME?user=$DB_USER&password=$DB_PASS" ./gradlew pgInsertIssueToken
+
+      - name: Kill proxy
+        run: pkill cloud_sql_proxy
+
+      # Docker steps:
+      - name: Rebuild docker image
+        working-directory: ./project
+        run: docker build -t $IMAGE_NAME .
+
+      - name: Tag image
+        run: |
+          docker tag $IMAGE_NAME $GCP_REPO/$GCP_PROJECT_ID/$IMAGE_NAME:gh-$GITHUB_SHA &&\
+            docker tag $IMAGE_NAME $GCP_REPO/$GCP_PROJECT_ID/$IMAGE_NAME:latest
+
+      - name: Push image
+        run: docker push $GCP_REPO/$GCP_PROJECT_ID/$IMAGE_NAME
+
+      # Issue commands to the GCE instances
+      - name: Deploy
+        run: |-
+          gcloud compute instances update-container "$GCP_INSTANCE" \
+            --zone "$GCP_INSTANCE_ZONE" \
+            --container-image "$GCP_REPO/$GCP_PROJECT_ID/$IMAGE_NAME:gh-$GITHUB_SHA"

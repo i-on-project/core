@@ -3,6 +3,7 @@ package org.ionproject.core.classSection
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -25,7 +26,9 @@ internal class ClassSectionErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidClassSectionByWrongCID() {
-        doGet(notFoundUriByWrongCID)
+        doGet(notFoundUriByWrongCID) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -38,7 +41,9 @@ internal class ClassSectionErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidClassSectionByWrongCalTerm() {
-        doGet(notFoundUriByWrongCalTerm)
+        doGet(notFoundUriByWrongCalTerm) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -51,7 +56,9 @@ internal class ClassSectionErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidClassSectionByWrongSID() {
-        doGet(notFoundUriByWrongSID)
+        doGet(notFoundUriByWrongSID) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -64,7 +71,10 @@ internal class ClassSectionErrorTest : ControllerTester() {
      */
     @Test
     fun getClassSectionWithInvalidContentType() {
-        doGet(validUri) { accept = Media.MEDIA_HOME }
+        doGet(validUri) {
+            accept = Media.MEDIA_HOME
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isNotAcceptable} }
                 .andReturn()
@@ -75,7 +85,9 @@ internal class ClassSectionErrorTest : ControllerTester() {
      */
     @Test
     fun getClassSectionWithBadRequest() {
-        doGet(badRequestUri)
+        doGet(badRequestUri) {
+            header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect { status {isBadRequest} }
                 .andReturn()

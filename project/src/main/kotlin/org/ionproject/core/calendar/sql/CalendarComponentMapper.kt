@@ -83,8 +83,8 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getSummaries(columnName: String): Array<Summary> {
         val summaries = getCompositeArray(columnName) {
-            val summaryLanguage = it[0] as Int
-            val summary = it[1] as String
+            val summaryLanguage = it[0].toInt()
+            val summary = it[1]
 
             Summary(
                 summary,
@@ -97,8 +97,8 @@ class CalendarComponentMapper(
 
     private fun ResultSet.getDescriptions(columnName: String): Array<Description> {
         val descriptions = getCompositeArray(columnName) {
-            val descriptionLanguage = it[0] as Int
-            val description = it[1] as String
+            val descriptionLanguage = it[0].toInt()
+            val description = it[1]
 
             Description(
                 description,
@@ -109,6 +109,7 @@ class CalendarComponentMapper(
         return descriptions.toTypedArray()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun ResultSet.getCategories(columnName: String): Array<Categories> {
         val tempCats = getArray(columnName).array as Array<Int>
 
@@ -138,7 +139,8 @@ class CalendarComponentMapper(
         )
     }
 
-    private fun <R> ResultSet.getCompositeArray(columnName: String, oper: (List<Any>) -> R): List<R> {
+    @Suppress("UNCHECKED_CAST")
+    private fun <R> ResultSet.getCompositeArray(columnName: String, map: (List<String>) -> R): List<R> {
         val array = getArray(columnName).array as Array<Any>
 
         return array.map {
@@ -147,15 +149,10 @@ class CalendarComponentMapper(
             val values = pgObject.split()
 
             val list = List(values.size) { idx ->
-                val str = values[idx]
-                if (str.startsAndEndsWith('"')) {
-                    str.removeSurrounding("\"").replace("""\\""", """\""")
-                } else {
-                    str.toInt()
-                }
+                values[idx].removeSurrounding("\"").replace("""\\""", """\""")
             }
 
-            oper(list)
+            map(list)
         }
     }
 
@@ -193,6 +190,7 @@ class CalendarComponentMapper(
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun ResultSet.getAttachments(columnName: String): Array<Attachment> {
         val att = getArray(columnName).array as Array<String?>
 
