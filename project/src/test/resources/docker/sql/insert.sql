@@ -431,6 +431,7 @@ CALL dbo.newEvent(2,
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room G.2.6', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -444,6 +445,7 @@ CALL dbo.newEvent(2,
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room G.2.2', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -458,6 +460,7 @@ CALL dbo.newEvent(28,
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.2.1', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -471,6 +474,7 @@ CALL dbo.newEvent(28,
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.2.4', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -485,6 +489,7 @@ CALL dbo.newEvent(29,
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.1.4', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -498,6 +503,7 @@ CALL dbo.newEvent(29,
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.1.15', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -512,6 +518,7 @@ CALL dbo.newEvent(30,
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.9', -- Location
     'TU,WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -548,6 +555,7 @@ CALL dbo.newEvent(1,
     TIMESTAMP '2020-06-10 18:00:00', -- dtstart
     TIMESTAMP '2020-06-10 19:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room A.2.5', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -561,6 +569,7 @@ CALL dbo.newEvent(1,
     TIMESTAMP '2020-06-24 10:00:00', -- dtstart
     TIMESTAMP '2020-07-24 12:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room F.1.2', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -575,6 +584,7 @@ CALL dbo.newEvent(25,
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room F.1.3', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -588,6 +598,7 @@ CALL dbo.newEvent(25,
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room F.1.4', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -602,6 +613,7 @@ CALL dbo.newEvent(26,
     TIMESTAMP '2020-02-10 10:00:00', -- dtstart
     TIMESTAMP '2020-02-10 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room F.1.4', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -615,6 +627,7 @@ CALL dbo.newEvent(26,
     TIMESTAMP '2020-02-12 10:00:00', -- dtstart
     TIMESTAMP '2020-02-12 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.1.13', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -629,6 +642,7 @@ CALL dbo.newEvent(27,
     TIMESTAMP '2020-02-11 10:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.2.9', -- Location
     'TU,WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -647,6 +661,7 @@ CALL dbo.newEvent(57,
     TIMESTAMP '2020-02-11 12:30:00', -- dtstart
     TIMESTAMP '2020-02-11 14:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.2.8', -- Location
     'TU', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -660,6 +675,7 @@ CALL dbo.newEvent(57,
     TIMESTAMP '2020-02-11 11:00:00', -- dtstart
     TIMESTAMP '2020-02-11 14:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.1.2', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -675,6 +691,7 @@ CALL dbo.newEvent(55,
     TIMESTAMP '2020-02-11 11:00:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.1', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -688,6 +705,7 @@ CALL dbo.newEvent(55,
     TIMESTAMP '2020-02-11 11:00:00', -- dtstart
     TIMESTAMP '2020-02-11 14:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.11', -- Location
     'TH', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -703,6 +721,7 @@ CALL dbo.newEvent(59,
     TIMESTAMP '2020-02-11 09:30:00', -- dtstart
     TIMESTAMP '2020-02-11 11:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.2.5', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -716,6 +735,7 @@ CALL dbo.newEvent(59,
     TIMESTAMP '2020-02-11 09:30:00', -- dtstart
     TIMESTAMP '2020-02-11 12:30:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.1.12', -- Location
     'FR', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -736,6 +756,7 @@ CALL dbo.newEvent(58,
     TIMESTAMP '2020-02-11 20:00:00', -- dtstart
     TIMESTAMP '2020-02-11 23:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.2', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -749,6 +770,7 @@ CALL dbo.newEvent(58,
     TIMESTAMP '2020-02-11 18:30:00', -- dtstart
     TIMESTAMP '2020-02-11 20:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.4', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -764,6 +786,7 @@ CALL dbo.newEvent(56,
     TIMESTAMP '2020-02-11 18:30:00', -- dtstart
     TIMESTAMP '2020-02-11 20:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.4', -- Location
     'TH', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -777,6 +800,7 @@ CALL dbo.newEvent(56,
     TIMESTAMP '2020-02-11 20:00:00', -- dtstart
     TIMESTAMP '2020-02-11 23:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.8', -- Location
     'FR', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -792,6 +816,7 @@ CALL dbo.newEvent(60,
     TIMESTAMP '2020-02-11 18:30:00', -- dtstart
     TIMESTAMP '2020-02-11 20:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room E.1.6', -- Location
     'MO', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -805,6 +830,7 @@ CALL dbo.newEvent(60,
     TIMESTAMP '2020-02-11 20:00:00', -- dtstart
     TIMESTAMP '2020-02-11 23:00:00', -- dtend
     5, -- dtstart dtend type
+    'Room G.0.12', -- Location
     'WE', -- days of week when this event repeats
     TIMESTAMP '2020-06-12 23:50:00',
     TIMESTAMP '2020-01-01 16:35:30');
@@ -978,6 +1004,7 @@ CALL dbo.newEvent(13,
     TIMESTAMP '2020-06-19 18:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-06-19 19:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room A.2.10', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -991,6 +1018,7 @@ CALL dbo.newEvent(13,
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room A.2.10', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
@@ -1006,6 +1034,7 @@ CALL dbo.newEvent(15,
     TIMESTAMP '2020-07-01 10:00:00', -- dtstart, WRONG DATE CORRECT AFTER ISEL RELEASES THE LATEST EXAM MAP
     TIMESTAMP '2020-07-01 12:30:00', -- dtend
     2, -- dtstart dtend type
+    'Room A.2.12', -- Location
     NULL,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');

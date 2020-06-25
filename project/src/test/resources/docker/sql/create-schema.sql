@@ -141,6 +141,11 @@ CREATE TABLE IF NOT EXISTS dbo.Categories (
 	PRIMARY KEY(comp_id, value)
 );
 
+CREATE TABLE IF NOT EXISTS dbo.Location (
+    comp_id        INT REFERENCES dbo.CalendarComponent(id),
+    value          VARCHAR(128) NOT NULL
+);
+
 CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 	SELECT DISTINCT
 		Comp.id AS uid,
@@ -178,7 +183,8 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		RR.byday,
 		RR.until,
 		D.value AS due,
-        D.type AS due_value_data_type
+        D.type AS due_value_data_type,
+        L.value AS location
 	FROM 
 		dbo.v_ComponentsCommon AS Comp
     LEFT JOIN 
@@ -191,6 +197,8 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
+    LEFT JOIN
+        dbo.Location AS L ON Comp.uid=L.comp_id
 	ORDER BY 
 		uid;
 		
@@ -223,7 +231,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
 		RR.byday,
-		RR.until
+		RR.until,
+        L.value AS location
     FROM 
 		dbo.v_ComponentsCommon AS Comp
     JOIN 
@@ -232,6 +241,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
+    LEFT JOIN
+        dbo.Location AS L ON Comp.uid=L.comp_id
     WHERE 
 		Comp.type = 'E'
 	ORDER BY 
@@ -268,6 +279,7 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	dtstart TIMESTAMP,
     dtend TIMESTAMP,
     dtstart_dtend_type INT,
+    location VARCHAR(128),
     byday VARCHAR(20),
     until TIMESTAMP,
     stamp_time TIMESTAMP DEFAULT now()
@@ -296,6 +308,11 @@ BEGIN
 	
     INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
     (component_id, dtstart_dtend_type, dtend);
+
+    IF location IS NOT NULL THEN
+        INSERT INTO dbo.Location(comp_id, value) VALUES
+        (component_id, location);
+    END IF;
 	
 	IF byday IS NOT NULL THEN
 		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday, until) VALUES
