@@ -87,10 +87,14 @@ CREATE TABLE IF NOT EXISTS dbo.Language(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Category(
-	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  name           VARCHAR(64) NOT NULL,
-	language       INT REFERENCES dbo.Language(id),
-	UNIQUE(name, language)
+	id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS dbo.CategoryLanguage(
+	category       INT REFERENCES dbo.Category(id),
+	name           VARCHAR(64) NOT NULL,
+    language       INT REFERENCES dbo.Language(id),
+	PRIMARY KEY (category, language)
 );
 
 -- some iCal property types
@@ -141,6 +145,11 @@ CREATE TABLE IF NOT EXISTS dbo.Categories (
 	PRIMARY KEY(comp_id, value)
 );
 
+CREATE TABLE IF NOT EXISTS dbo.Location (
+    comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value          VARCHAR(128) NOT NULL
+);
+
 CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 	SELECT DISTINCT
 		Comp.id AS uid,
@@ -178,7 +187,8 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		RR.byday,
 		RR.until,
 		D.value AS due,
-        D.type AS due_value_data_type
+        D.type AS due_value_data_type,
+        L.value AS location
 	FROM 
 		dbo.v_ComponentsCommon AS Comp
     LEFT JOIN 
@@ -191,6 +201,8 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
+    LEFT JOIN
+        dbo.Location AS L ON Comp.uid=L.comp_id
 	ORDER BY 
 		uid;
 		
@@ -223,7 +235,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
 		DE.value AS dtend,
         DE.type AS dtend_value_data_type,
 		RR.byday,
-		RR.until
+		RR.until,
+        L.value AS location
     FROM 
 		dbo.v_ComponentsCommon AS Comp
     JOIN 
@@ -232,6 +245,8 @@ CREATE OR REPLACE VIEW dbo.v_Event AS
 		dbo.Dtend AS DE ON Comp.uid=DE.comp_id
     LEFT JOIN
 		dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
+    LEFT JOIN
+        dbo.Location AS L ON Comp.uid=L.comp_id
     WHERE 
 		Comp.type = 'E'
 	ORDER BY 
@@ -268,6 +283,7 @@ CREATE OR REPLACE PROCEDURE dbo.newEvent(
 	dtstart TIMESTAMP,
   dtend TIMESTAMP,
   dtstart_dtend_type INT,
+  location VARCHAR(128),
   byday VARCHAR(20),
   until TIMESTAMP,
   stamp_time TIMESTAMP DEFAULT now()
@@ -296,6 +312,11 @@ BEGIN
 	
   INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
     (component_id, dtstart_dtend_type, dtend);
+
+    IF location IS NOT NULL THEN
+        INSERT INTO dbo.Location(comp_id, value) VALUES
+        (component_id, location);
+    END IF;
 	
 	IF byday IS NOT NULL THEN
 		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday, until) VALUES
@@ -531,7 +552,13 @@ BEGIN
     RAISE '% language does not exist', lang;
   END IF;
 
-  SELECT id INTO categoryid FROM dbo.Category WHERE name = categ AND language = langid;
+  SELECT
+    c.id INTO categoryid
+  FROM
+    dbo.category c JOIN
+    dbo.categorylanguage cl ON c.id = cl.category
+  WHERE
+    name = categ AND language = langid;
   IF (categoryid IS NULL) THEN
     RAISE '"%" is not a valid category for the language %', categ, lang;
   END IF;
@@ -615,12 +642,13 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
 	categ VARCHAR(100),
 	dtstart TIMESTAMP,
   dtend TIMESTAMP,
-  week_days VARCHAR(20)
+  week_days VARCHAR(20),
+  location VARCHAR(128)
 ) AS $$
 #print_strict_params ON
 DECLARE
-	calid INT;
-	component_id INT;
+  calid INT;
+  component_id INT;
   langid INT;
   categoryid INT;
   dttype INT;
@@ -638,7 +666,13 @@ BEGIN
     AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
 
   SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang; 
-  SELECT C.id INTO categoryid FROM dbo.Category C WHERE C.name = categ AND C.language = langid;
+  SELECT
+    c.id INTO categoryid
+  FROM
+    dbo.category c JOIN
+    dbo.categorylanguage cl ON c.id = cl.category
+  WHERE
+    name = categ AND language = langid;
 
   -- get the DATE TIME icalendar type
   SELECT id INTO dttype FROM dbo.icalendardatatype WHERE name = 'DATE-TIME';
@@ -654,6 +688,7 @@ BEGIN
       dtstart,
       dtend,
       dttype, -- dtstart dtend type
+      location,
       week_days, -- by day
       NULL -- until
   );

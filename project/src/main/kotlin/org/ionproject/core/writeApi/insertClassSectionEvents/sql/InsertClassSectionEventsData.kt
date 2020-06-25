@@ -23,6 +23,7 @@ internal object InsertClassSectionEventsData {
   const val DTSTART_PARAM = "dtstart"
   const val DTEND_PARAM = "dtend"
   const val WEEK_DAYS_PARAM = "week_days"
+  const val LOCATION_PARAM = "location"
 
   const val CALL_UPSERT_SCHOOL = """
     CALL $SCHEMA.$UPSERT_SCHOOL_PROC(
@@ -56,6 +57,7 @@ internal object InsertClassSectionEventsData {
         :$CATEGORY_PARAM,
         :$DTSTART_PARAM,
         :$DTEND_PARAM,
-        :$WEEK_DAYS_PARAM)
+        :$WEEK_DAYS_PARAM,
+        :$LOCATION_PARAM)
   """
 }

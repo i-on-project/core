@@ -10,10 +10,7 @@ import org.ionproject.core.calendar.icalendar.properties.components.change_manag
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeDue
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeEnd
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeStart
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Attachment
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Categories
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Description
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Summary
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.*
 import org.ionproject.core.calendar.icalendar.properties.components.recurrence.RecurrenceRule
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
 import org.ionproject.core.calendar.icalendar.types.*
@@ -55,6 +52,7 @@ class CalendarComponentMapper(
                 categories,
                 DateTimeStart(rs.getDatetime(CalendarData.DTSTART)),
                 DateTimeEnd(rs.getDatetime(CalendarData.DTEND)),
+                rs.getLocation(CalendarData.LOCATION),
                 rs.getRecurrenceRule(CalendarData.BYDAY)
             )
             "J" -> Journal(
@@ -113,11 +111,11 @@ class CalendarComponentMapper(
     private fun ResultSet.getCategories(columnName: String): Array<Categories> {
         val tempCats = getArray(columnName).array as Array<Int>
 
-        val cats = tempCats.map { it }
-
-        return cats.map {
+        val cats = tempCats.map {
             categoryRepo.byId(it) ?: throw ForeignKeyException("category", "categories")
-        }.groupBy {
+        }.flatten()
+
+        return cats.groupBy {
             it.language // group categories of this event by language
         }.map { pair ->
             val categories = pair.value
@@ -206,5 +204,15 @@ class CalendarComponentMapper(
 
         return attachments.toTypedArray()
     }
+
+
+    private fun ResultSet.getLocation(column: String): Location? {
+        val value = getString(column)
+
+        return value?.let {
+            Location(value)
+        }
+    }
 }
+
 

@@ -7,6 +7,7 @@ import org.ionproject.core.calendar.icalendar.properties.components.datetime.Dat
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.Duration
 import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Categories
 import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Description
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Location
 import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Summary
 import org.ionproject.core.calendar.icalendar.properties.components.recurrence.RecurrenceRule
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
@@ -21,8 +22,9 @@ class Event private constructor(
     start: DateTimeStart,
     end: DateTimeEnd?,
     duration: Duration?,
+    location: Location?,
     recurrenceRule: RecurrenceRule?
-) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, recurrenceRule) {
+) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, location, recurrenceRule) {
 
     constructor(
         uid: UniqueIdentifier,
@@ -33,8 +35,9 @@ class Event private constructor(
         categories: Array<Categories>,
         start: DateTimeStart,
         duration: Duration,
+        location: Location? = null,
         recurrenceRule: RecurrenceRule? = null
-    ) : this(uid, summary, description, stamp, created, categories, start, null, duration, recurrenceRule)
+    ) : this(uid, summary, description, stamp, created, categories, start, null, duration, location, recurrenceRule)
 
     constructor(
         uid: UniqueIdentifier,
@@ -45,8 +48,9 @@ class Event private constructor(
         categories: Array<Categories>,
         start: DateTimeStart,
         end: DateTimeEnd,
+        location: Location? = null,
         recurrenceRule: RecurrenceRule? = null
-    ) : this(uid, summary, description, stamp, created, categories, start, end, null, recurrenceRule)
+    ) : this(uid, summary, description, stamp, created, categories, start, end, null, location, recurrenceRule)
 
     override val componentName: String
         get() = "VEVENT"

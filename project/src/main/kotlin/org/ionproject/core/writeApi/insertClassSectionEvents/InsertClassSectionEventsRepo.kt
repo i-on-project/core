@@ -32,7 +32,8 @@ interface InsertClassSectionEventsRepo {
     category: String,
     dtstart: Timestamp?,
     dtend: Timestamp?,
-    weekDays: String?
+    weekDays: String?,
+    location: String?
   )
 
   fun transaction(t: (InsertClassSectionEventsRepo) -> Unit): Boolean

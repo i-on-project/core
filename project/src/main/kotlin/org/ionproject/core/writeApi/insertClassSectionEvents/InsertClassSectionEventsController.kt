@@ -3,6 +3,7 @@ package org.ionproject.core.writeApi.insertClassSectionEvents
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
+import org.ionproject.core.joinWithComma
 import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
@@ -65,8 +66,8 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
           course.events.forEach { event ->
             // Mandatory iCalendar components
             val eventTitle = event.title ?: "${course.acr} $category"
-            val eventDescription = event.description ?: "Event '${category}' for the Course ${course.acr} during ${schoolInfo.calendarTerm} for the Class ${schoolInfo.calendarSection}."
-            val eventDescriptionWithLocation = if (event.location == null) eventDescription else "$eventDescription Location: ${event.location.reduceRight { l, r -> "${l},${r}"}}"
+            val eventDescription = event.description
+              ?: "Event '${category}' for the Course ${course.acr} during ${schoolInfo.calendarTerm} for the Class ${schoolInfo.calendarSection}."
 
             sql.insertClassSectionEvent(
               course.name,
@@ -74,12 +75,13 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
               schoolInfo.calendarSection,
               schoolInfo.calendarTerm,
               eventTitle,
-              eventDescriptionWithLocation,
+              eventDescription,
               lang,
               category,
               event.beginTime,
               event.endTime,
-              event.weekday.reduceRight { l, r -> "${l},${r}" } // [ "MO", "FR" ] -> "MO,FR"
+              event.weekday.joinWithComma(), // [ "MO", "FR" ] -> "MO,FR"
+              event.location?.joinWithComma()
             )
           }
         }

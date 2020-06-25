@@ -13,6 +13,7 @@ import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSect
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.DTEND_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.DTSTART_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.LANGUAGE_PARAM
+import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.LOCATION_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.PROGRAMME_ACR_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.PROGRAMME_NAME_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.PROGRAMME_TERM_SIZE_PARAM
@@ -78,7 +79,8 @@ class InsertClassSectionEventsRepoImpl(
     category: String,
     dtstart: Timestamp?,
     dtend: Timestamp?,
-    weekDays: String?
+    weekDays: String?,
+    location: String?
   ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
     handle
       .createCall(CALL_CREATE_EVENT)
@@ -93,6 +95,7 @@ class InsertClassSectionEventsRepoImpl(
       .bind(DTSTART_PARAM, dtstart)
       .bind(DTEND_PARAM, dtend)
       .bind(WEEK_DAYS_PARAM, weekDays)
+      .bind(LOCATION_PARAM, location)
       .invoke()
   }
 
