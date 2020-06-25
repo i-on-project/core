@@ -103,8 +103,8 @@ INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALU
 (1, 2, TRUE,  6),
 (1, 1, FALSE, 6),
 (1, 3, FALSE, 1),
-(1, 4, TRUE, 6),
-(1, 5, FALSE, 6),
+(1, 4, FALSE, 6),
+(1, 5, TRUE, 6),
 (2, 3, FALSE, 1);
 
 CALL dbo.sp_classCalendarCreate('1718v', 1);
