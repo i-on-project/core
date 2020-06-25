@@ -83,15 +83,15 @@ private const val insertClassSectionEventsSchema = """{
 }"""
 
 object SchemaValidator {
-    val schemaDocUri =
-        URI("https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/schemas/insertClassSectionEvents.json")
+  val schemaDocUri =
+    URI("https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/schemas/insertClassSectionEvents.json")
 
-    private val validator = JsonSchemaFactory
-        .getInstance(SpecVersion.VersionFlag.V201909)
-        .getSchema(insertClassSectionEventsSchema)
+  private val validator = JsonSchemaFactory
+    .getInstance(SpecVersion.VersionFlag.V201909)
+    .getSchema(insertClassSectionEventsSchema)
 
-    fun validate(jsonNode: JsonNode): List<String> =
-        validator
-            .validate(jsonNode)
-            .map { it.message }
+  fun validate(jsonNode: JsonNode): List<String> =
+    validator
+      .validate(jsonNode)
+      .map { it.message }
 }

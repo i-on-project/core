@@ -2,24 +2,28 @@ package org.ionproject.core.writeApi.insertClassSectionEvents
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.ProblemJson
-import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
+import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException
 import org.postgresql.util.PSQLException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.sql.Timestamp
 
 @RestController
 class InsertClassSectionEventsController(private val repo: InsertClassSectionEventsRepo) {
 
-  @PutMapping("/v0/insertClassSectionEvents", consumes = [ "application/json" ])
+  @PutMapping("/v0/insertClassSectionEvents", consumes = ["application/json"])
   fun insertClassSectionEvents(@RequestBody json: JsonNode): ResponseEntity<Any> {
 
+    /**
+     * Analyze the received JSON object in comparison with the defined
+     * JSON Schema (statically defined JSON object which enforces syntax and semantic restrictions on the requests).
+     */
     val errMessages = SchemaValidator.validate(json)
     if (errMessages.isNotEmpty()) {
+      // Invalid JSON received
       return ResponseEntity.badRequest().body(
         ProblemJson(
           "/err/write/insertClassSectionEvents/jsonSchemaConstraintViolation",
@@ -31,15 +35,11 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
       )
     }
 
+    // Translate the JSON Node into a more easier to use/read object
     val schoolInfo = SchoolInfo.of(json)
-    schoolInfo.courses.forEach { co ->
-      println(co.name)
-      println(co.acr)
-      co.events.forEach { println(it.beginTime); println(it.description) }
-    }
-
+    val category = "Aula"
+    val lang = "pt-PT"
     try {
-      // Loop through the request's items and
       repo.transaction { sql ->
         sql.insertClassSectionSchoolInfo(
           schoolInfo.schoolName,
@@ -56,28 +56,34 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
             course.acr,
             schoolInfo.calendarSection,
             schoolInfo.calendarTerm,
-            "pt-PT",
-            "Aula"
+            lang,
+            category
           )
 
           course.events.forEach { event ->
+            // Mandatory iCalendar components
+            val eventTitle = event.title ?: "${course.acr} $category"
+            val eventDescription = event.description ?: "Event '${category}' for the Course ${course.acr} during ${schoolInfo.calendarTerm} for the Class ${schoolInfo.calendarSection}."
+            val eventDescriptionWithLocation = if (event.location == null) eventDescription else "$eventDescription Location: ${event.location.reduceRight { l, r -> "${l},${r}"}}"
+
             sql.insertClassSectionEvent(
               course.name,
               course.acr,
               schoolInfo.calendarSection,
               schoolInfo.calendarTerm,
-              event.title,
-              event.description,
-              "pt-PT",
-              "Aula",
-              Timestamp.valueOf("2020-05-01 ${event.beginTime}"),
-              Timestamp.valueOf("2020-05-01 18:30:00"),
+              eventTitle,
+              eventDescriptionWithLocation,
+              lang,
+              category,
+              event.beginTime,
+              event.endTime,
               event.weekday.reduceRight { l, r -> "${l},${r}" } // [ "MO", "FR" ] -> "MO,FR"
             )
           }
         }
       }
     } catch (se: UnableToExecuteStatementException) {
+      // PostgreSQL reported an error and the transaction was aborted...
       val ex = se.cause as PSQLException
 
       return ResponseEntity.badRequest().body(
