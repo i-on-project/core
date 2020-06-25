@@ -3,7 +3,7 @@ package org.ionproject.core.writeApi.insertClassSectionEvents
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
-import org.ionproject.core.joinWithComma
+import org.ionproject.core.join
 import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchoolInfo
@@ -32,7 +32,7 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
           "/err/write/insertClassSectionEvents/jsonSchemaConstraintViolation",
           "JSON Schema constraint violation.",
           400,
-          "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.reduce { acc, s -> "${acc}; $s" }} ]. This operation's JSON Schema: ${SchemaValidator.schemaDocUri}.",
+          "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.join(";")} ]. This operation's JSON Schema: ${SchemaValidator.schemaDocUri}.",
           "/v0/insertClassSectionEvents"
         )
       )
@@ -80,8 +80,8 @@ class InsertClassSectionEventsController(private val repo: InsertClassSectionEve
               category,
               event.beginTime,
               event.endTime,
-              event.weekday.joinWithComma(), // [ "MO", "FR" ] -> "MO,FR"
-              event.location?.joinWithComma()
+              event.weekday.join(), // [ "MO", "FR" ] -> "MO,FR"
+              event.location?.join()
             )
           }
         }

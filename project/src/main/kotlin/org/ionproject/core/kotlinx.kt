@@ -79,5 +79,6 @@ fun PGobject.split(): List<String> {
     return list
 }
 
-fun List<String>.joinWithComma() = this.reduceRight { l, r -> "${l},${r}" }
+fun List<String>.join(separator: String) = this.reduceRight { l, r -> "${l}${separator}${r}" }
+fun List<String>.join() = this.join(",")
 
