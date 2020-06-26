@@ -62,9 +62,8 @@ tasks.register<PgCreateUser>("pgCreateUser")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
 tasks.register<PgInsertReadToken>("pgInsertReadToken")
+tasks.register<PgInsertWriteToken>("pgInsertWriteToken")
 tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
-tasks.register<PgInsertReadTokenWin>("pgInsertReadTokenWin")
-tasks.register<PgInsertIssueTokenWin>("pgInsertIssueTokenWin")
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,
