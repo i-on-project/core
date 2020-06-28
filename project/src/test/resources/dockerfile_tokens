@@ -1,0 +1,8 @@
+FROM alpine:3.12
+
+RUN apk add postgresql-client
+
+WORKDIR /sh
+COPY ./src/test/resources/docker/sh/insert_token .
+ENTRYPOINT [ "./insert_token" ]
+

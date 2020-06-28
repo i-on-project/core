@@ -298,6 +298,15 @@ private data class TokenDbParams(
 class Token {
     fun create(scope: String, project: Project) {
         val params = getTokenReferences(scope)
+        val imgTag = "core-token-inserter"
+
+        project.exec {
+            commandLine("docker", "build",
+                "-f", "src/test/resources/dockerfile_tokens",
+                ".",
+                "-t", imgTag
+            )
+        }
 
         val pgParams = Postgres.pgParams
         val result = project.exec {
@@ -308,8 +317,7 @@ class Token {
                 "-e", "CORE_DB_USER=${pgParams.user}",
                 "-e", "CORE_DB_NAME=${pgParams.db}",
                 "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
-                "--rm", "--network=host", Docker.IMAGE_NAME,
-                "${Docker.CONTAINER_MOUNT_DIR}/sh/insert_token",
+                "--rm", "--network=host", imgTag,
                 params.hash,
                 "${if (params.isValid) 't' else 'f'}",
                 "${params.issuedAt}",
