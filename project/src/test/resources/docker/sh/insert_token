@@ -14,6 +14,7 @@ if [ -z "$CORE_DB_HOST" ] || [ -z "$CORE_DB_USER" ] || [ -z "$CORE_DB_NAME" ] ||
   exit 1
 fi
 
+echo "INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('$1','$2',$3,$4,'{\"scope\":\"$5\", \"client_id\": $6}')"
 psql -w -1 \
   -h "$CORE_DB_HOST" \
   -U "$CORE_DB_USER" \
