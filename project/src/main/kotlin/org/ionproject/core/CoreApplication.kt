@@ -1,5 +1,6 @@
 package org.ionproject.core
 
+SOME ERROR
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
