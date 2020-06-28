@@ -2,9 +2,13 @@ import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.internal.ExecException
+import org.postgresql.ds.PGSimpleDataSource
+import org.postgresql.util.PGobject
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.net.URI
+import java.sql.Connection
+import java.sql.SQLException
 
 
 object Postgres {
@@ -265,24 +269,57 @@ open class PgAddData : AbstractTask() {
     }
 }
 
+/**
+ * From here on out, these tasks will interact with any database pointed by JDBC_DATABASE_URL
+ *  - Use of DataSource to avoid shell/OS incompatibility issues (multi-platform)
+ *  - Force the creation of the DataSource for every single task (i.e. do not cache
+ *  the database connection configs, which allows the user to change the JDBC_DATABASE_URL
+ *  for applying the tasks to another database without the need for ./gradlew clean -p buildSrc)
+ */
+object Db {
+  fun getConnection() = tryGetConnection()
+
+  private fun genDataSource() = PGSimpleDataSource().apply {
+    val url: String? = System.getenv("JDBC_DATABASE_URL")
+    setUrl(url ?: throw Error(" ppip pi p"))
+  }
+
+  private fun tryGetConnection(): Connection {
+    val ds = genDataSource()
+    val start = System.currentTimeMillis()
+    val timeout = 120000L
+    val tick = 2000L
+    while (System.currentTimeMillis() - start < timeout) {
+      try {
+        return ds.connection
+
+      } catch (con: SQLException) {
+        println("Database connection attempt failed. Retrying...")
+        Thread.sleep(tick)
+      }
+    }
+    throw IllegalStateException("Could not establish a connection to the database. Killing server.")
+  }
+}
+
 open class PgInsertReadToken : AbstractTask() {
     @TaskAction
     fun run() {
-        Token().create("urn:org:ionproject:scopes:api:read", project)
+        Token().create("urn:org:ionproject:scopes:api:read")
     }
 }
 
 open class PgInsertWriteToken : AbstractTask() {
     @TaskAction
     fun run() {
-        Token().create("urn:org:ionproject:scopes:api:write", project)
+        Token().create("urn:org:ionproject:scopes:api:write")
     }
 }
 
 open class PgInsertIssueToken : AbstractTask() {
     @TaskAction
     fun run() {
-        Token().create("urn:org:ionproject:scopes:token:issue", project)
+        Token().create("urn:org:ionproject:scopes:token:issue")
     }
 }
 
@@ -296,39 +333,17 @@ private data class TokenDbParams(
   val base64Token: String)
 
 class Token {
-    fun create(scope: String, project: Project) {
+    fun create(scope: String) {
         val params = getTokenReferences(scope)
-        val imgTag = "core-token-inserter"
-
-        project.exec {
-            commandLine("docker", "build",
-                "-f", "src/test/resources/dockerfile_tokens",
-                ".",
-                "-t", imgTag
-            )
-        }
-
-        val pgParams = Postgres.pgParams
-        val result = project.exec {
-            commandLine("docker", "run",
-                "-e", "PGPASSWORD=${pgParams.password}",
-                "-e", "CORE_DB_HOST=${pgParams.host}",
-                "-e", "CORE_DB_PORT=${pgParams.port}",
-                "-e", "CORE_DB_USER=${pgParams.user}",
-                "-e", "CORE_DB_NAME=${pgParams.db}",
-                "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
-                "--rm", "--network=host", imgTag,
-                params.hash,
-                "${if (params.isValid) 't' else 'f'}",
-                "${params.issuedAt}",
-                "${params.expiredAt}",
-                params.scope,
-                "${params.clientId}"
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
-        }
-        result.assertNormalExitValue()
+        val cid = 500
+        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope", "client_id": ${cid}}"""
+        val con = Db.getConnection()
+        val st = con.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")
+        st.setString(1, params.hash)
+        st.setBoolean(2, params.isValid)
+        st.setLong(3, params.issuedAt)
+        st.setLong(4, params.expiredAt)
+        st.setObject(5, json)
         print("Your token reference is ${params.base64Token}")
     }
 
@@ -350,7 +365,6 @@ class Token {
           base64Token
         )
     }
-
 }
 
 class DevNull : OutputStream() {
