@@ -1,4 +1,4 @@
-name: Test
+name: Continuous Integration
 
 on:
   push:
@@ -7,24 +7,11 @@ on:
 
 jobs:
   build:
-    name: Build and test
+    name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Start DB and run tests
-        env:
-          JDBC_DATABASE_URL: ${{ secrets.LOCAL_JDBC_DATABASE_URL }}
-        working-directory: project
-        run: ./gradlew pgSetupDb test
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: reports-test
-          path: project/build/reports/tests/test/
-        if: always()
-
-      - name: Stop DB
-        working-directory: project
-        run: ./gradlew pgStop
+      - name: Build and test
+        run: docker-compose -f .docker/compose_ci.yaml --build --abort-on-container-exit
