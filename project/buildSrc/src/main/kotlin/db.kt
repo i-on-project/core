@@ -277,7 +277,7 @@ open class PgAddData : AbstractTask() {
  *  for applying the tasks to another database without the need for ./gradlew clean -p buildSrc)
  */
 object Db {
-  fun getConnection() = tryGetConnection()
+  fun useConnection(e: (Connection) -> Unit) { tryGetConnection().use { e(it) } }
 
   private fun genDataSource() = PGSimpleDataSource().apply {
     val url: String? = System.getenv("JDBC_DATABASE_URL")
@@ -337,13 +337,15 @@ class Token {
         val params = getTokenReferences(scope)
         val cid = 500
         val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope", "client_id": ${cid}}"""
-        val con = Db.getConnection()
-        val st = con.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")
-        st.setString(1, params.hash)
-        st.setBoolean(2, params.isValid)
-        st.setLong(3, params.issuedAt)
-        st.setLong(4, params.expiredAt)
-        st.setObject(5, json)
+        Db.useConnection {
+          val st = it.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")
+          st.setString(1, params.hash)
+          st.setBoolean(2, params.isValid)
+          st.setLong(3, params.issuedAt)
+          st.setLong(4, params.expiredAt)
+          st.setObject(5, json)
+          st.execute()
+        }
         print("Your token reference is ${params.base64Token}")
     }
 
