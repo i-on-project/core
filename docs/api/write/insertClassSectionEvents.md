@@ -2,7 +2,7 @@ This document informs the clients on how to insert events for `Class Section` re
 
 # HTTP
 ## Usage
-* `PUT /v0/write/insertClassSectionEvents`
+* `PUT /write/v0/insertClassSectionEvents`
   - this operation is **idempotent**
   - clients need not use hypermedia navigation in order to find this resource's location
 

@@ -8,6 +8,8 @@
     },
     "calendarTerm": "1718v",
     "calendarSection": "LI11D",
+    "category": "Aula",
+    "language": "pt-PT",
     "courses": [
         {
             "label": {
@@ -20,9 +22,15 @@
                     "location": [ "E.1.31" ],
                     "beginTime": "14:00",
                     "duration": "01:30",
-                    "weekday": [ "MO" ]
+                    "weekday": [ "MO", "WE" ]
                 }
             ]
+        },
+        {
+            "label": {
+              "name": "Sistemas de Informacao I"
+            },
+            "events": [ ]
         },
         {
             "label": {
@@ -34,11 +42,10 @@
                     "title": "Aula de M2",
                     "location": [ "G.2.30" ],
                     "beginTime": "14:00",
-                    "duration": "01:30",
+                    "duration": "1:30",
                     "weekday": [ "TU" ]
                 },
                 {
-                    "title": "Aula de M2",
                     "location": [ "G.2.30" ],
                     "beginTime": "14:00",
                     "duration": "01:30",
