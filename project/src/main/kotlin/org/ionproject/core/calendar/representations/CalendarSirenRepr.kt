@@ -86,9 +86,7 @@ private fun Iterable<Property>.toMap(): Map<String, Any> =
             val propName = it.key.toLowerCase()
             val list = it.value
             if (list.size > 1) {
-                propName to arrayOf(
-                    list.map(Property::toSiren)
-                )
+                propName to list.map(Property::toSiren)
             } else {
                 propName to list[0].toSiren()
             }
