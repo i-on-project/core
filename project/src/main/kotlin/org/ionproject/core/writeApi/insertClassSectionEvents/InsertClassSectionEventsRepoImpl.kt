@@ -27,80 +27,80 @@ import java.sql.Timestamp
 
 @Component
 class InsertClassSectionEventsRepoImpl(
-  private val tm: TransactionManager
+    private val tm: TransactionManager
 ) : InsertClassSectionEventsRepo {
 
-  override fun insertClassSectionSchoolInfo(
-    schoolName: String?,
-    schoolAcr: String?,
-    programmeName: String?,
-    programmeAcr: String?,
-    programmeTermSize: Int?,
-    calendarTerm: String?
-  ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
-    handle
-      .createCall(CALL_UPSERT_SCHOOL)
-      .bind(SCHOOL_NAME_PARAM, schoolName)
-      .bind(SCHOOL_ACR_PARAM, schoolAcr)
-      .bind(PROGRAMME_NAME_PARAM, programmeName)
-      .bind(PROGRAMME_ACR_PARAM, programmeAcr)
-      .bind(PROGRAMME_TERM_SIZE_PARAM, programmeTermSize)
-      .bind(CALENDAR_TERM_PARAM, calendarTerm)
-      .invoke()
-  }
+    override fun insertClassSectionSchoolInfo(
+        schoolName: String?,
+        schoolAcr: String?,
+        programmeName: String?,
+        programmeAcr: String?,
+        programmeTermSize: Int?,
+        calendarTerm: String?
+    ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
+        handle
+            .createCall(CALL_UPSERT_SCHOOL)
+            .bind(SCHOOL_NAME_PARAM, schoolName)
+            .bind(SCHOOL_ACR_PARAM, schoolAcr)
+            .bind(PROGRAMME_NAME_PARAM, programmeName)
+            .bind(PROGRAMME_ACR_PARAM, programmeAcr)
+            .bind(PROGRAMME_TERM_SIZE_PARAM, programmeTermSize)
+            .bind(CALENDAR_TERM_PARAM, calendarTerm)
+            .invoke()
+    }
 
-  override fun insertClassSectionCourseInfo(
-    courseName: String?,
-    courseAcr: String?,
-    calendarSection: String?,
-    calendarTerm: String?,
-    language: String,
-    category: String
-  ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
-    handle
-      .createCall(CALL_UPSERT_COURSE)
-      .bind(COURSE_NAME_PARAM, courseName)
-      .bind(COURSE_ACR_PARAM, courseAcr)
-      .bind(CALENDAR_SECTION_PARAM, calendarSection)
-      .bind(CALENDAR_TERM_PARAM, calendarTerm)
-      .bind(LANGUAGE_PARAM, language)
-      .bind(CATEGORY_PARAM, category)
-      .invoke()
-  }
+    override fun insertClassSectionCourseInfo(
+        courseName: String?,
+        courseAcr: String?,
+        calendarSection: String?,
+        calendarTerm: String?,
+        language: String,
+        category: String
+    ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
+        handle
+            .createCall(CALL_UPSERT_COURSE)
+            .bind(COURSE_NAME_PARAM, courseName)
+            .bind(COURSE_ACR_PARAM, courseAcr)
+            .bind(CALENDAR_SECTION_PARAM, calendarSection)
+            .bind(CALENDAR_TERM_PARAM, calendarTerm)
+            .bind(LANGUAGE_PARAM, language)
+            .bind(CATEGORY_PARAM, category)
+            .invoke()
+    }
 
-  override fun insertClassSectionEvent(
-    courseName: String?,
-    courseAcr: String?,
-    calendarSection: String?,
-    calendarTerm: String?,
-    summary: String,
-    description: String,
-    language: String,
-    category: String,
-    dtstart: Timestamp?,
-    dtend: Timestamp?,
-    weekDays: String?,
-    location: String?
-  ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
-    handle
-      .createCall(CALL_CREATE_EVENT)
-      .bind(COURSE_NAME_PARAM, courseName)
-      .bind(COURSE_ACR_PARAM, courseAcr)
-      .bind(CALENDAR_SECTION_PARAM, calendarSection)
-      .bind(CALENDAR_TERM_PARAM, calendarTerm)
-      .bind(SUMMARY_PARAM, summary)
-      .bind(DESCRIPTION_PARAM, description)
-      .bind(LANGUAGE_PARAM, language)
-      .bind(CATEGORY_PARAM, category)
-      .bind(DTSTART_PARAM, dtstart)
-      .bind(DTEND_PARAM, dtend)
-      .bind(WEEK_DAYS_PARAM, weekDays)
-      .bind(LOCATION_PARAM, location)
-      .invoke()
-  }
+    override fun insertClassSectionEvent(
+        courseName: String?,
+        courseAcr: String?,
+        calendarSection: String?,
+        calendarTerm: String?,
+        summary: String,
+        description: String,
+        language: String,
+        category: String,
+        dtstart: Timestamp?,
+        dtend: Timestamp?,
+        weekDays: String?,
+        location: String?
+    ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
+        handle
+            .createCall(CALL_CREATE_EVENT)
+            .bind(COURSE_NAME_PARAM, courseName)
+            .bind(COURSE_ACR_PARAM, courseAcr)
+            .bind(CALENDAR_SECTION_PARAM, calendarSection)
+            .bind(CALENDAR_TERM_PARAM, calendarTerm)
+            .bind(SUMMARY_PARAM, summary)
+            .bind(DESCRIPTION_PARAM, description)
+            .bind(LANGUAGE_PARAM, language)
+            .bind(CATEGORY_PARAM, category)
+            .bind(DTSTART_PARAM, dtstart)
+            .bind(DTEND_PARAM, dtend)
+            .bind(WEEK_DAYS_PARAM, weekDays)
+            .bind(LOCATION_PARAM, location)
+            .invoke()
+    }
 
-  override fun transaction(t: (InsertClassSectionEventsRepo) -> Unit): Boolean {
-    tm.run { t(this) }
-    return true
-  }
+    override fun transaction(t: (InsertClassSectionEventsRepo) -> Unit): Boolean {
+        tm.run { t(this) }
+        return true
+    }
 }
