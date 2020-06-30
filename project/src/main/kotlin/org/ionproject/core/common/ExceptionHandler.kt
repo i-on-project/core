@@ -9,6 +9,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -31,6 +32,20 @@ class ExceptionHandler {
         return handleResponse(
             "/err/bad-request",
             "Bad request",
+            400,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [DateTimeParseException::class])
+    private fun handleDateTimeParseExceptionException(
+        ex: DateTimeParseException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "https://github.com/i-on-project/core/tree/master/docs/api/events.md#invalid-date-type",
+            "Invalid Date format",
             400,
             ex.localizedMessage,
             request.requestURI
