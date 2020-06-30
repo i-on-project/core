@@ -17,8 +17,7 @@ interface InsertClassSectionEventsRepo {
         courseAcr: String?,
         calendarSection: String?,
         calendarTerm: String?,
-        language: String,
-        category: String
+        language: String
     )
 
     fun insertClassSectionEvent(
@@ -29,7 +28,7 @@ interface InsertClassSectionEventsRepo {
         summary: String,
         description: String,
         language: String,
-        category: String,
+        category: Int,
         dtstart: Timestamp?,
         dtend: Timestamp?,
         weekDays: String?,

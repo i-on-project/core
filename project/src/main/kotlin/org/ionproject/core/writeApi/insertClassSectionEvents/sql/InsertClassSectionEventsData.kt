@@ -17,7 +17,7 @@ internal object InsertClassSectionEventsData {
     const val CALENDAR_TERM_PARAM = "calTerm"
     const val CALENDAR_SECTION_PARAM = "calendarSection"
     const val LANGUAGE_PARAM = "lang"
-    const val CATEGORY_PARAM = "categ"
+    const val CATEGORY_PARAM = "categid"
     const val SUMMARY_PARAM = "summary"
     const val DESCRIPTION_PARAM = "description"
     const val DTSTART_PARAM = "dtstart"
@@ -41,8 +41,7 @@ internal object InsertClassSectionEventsData {
         :$COURSE_ACR_PARAM,
         :$CALENDAR_SECTION_PARAM,
         :$CALENDAR_TERM_PARAM,
-        :$LANGUAGE_PARAM,
-        :$CATEGORY_PARAM)
+        :$LANGUAGE_PARAM)
   """
 
     const val CALL_CREATE_EVENT = """

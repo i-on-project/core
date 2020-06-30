@@ -22,10 +22,7 @@ private const val insertClassSectionEventsSchema = """{
           "maxLength": 10
         }
       },
-      "anyOf": [
-        { "required": [ "name" ] },
-        { "required": [ "acr" ] }
-      ],
+      "required": [ "acr" ],
       "additionalProperties": false
     },
     "event": {
@@ -38,6 +35,10 @@ private const val insertClassSectionEventsSchema = """{
           "type": "array",
           "uniqueItems": true,
           "items": { "type": "string" }
+        },
+        "category": {
+          "type": "integer",
+          "minimum": 0
         },
         "beginTime": {
           "type": "string",
@@ -58,7 +59,7 @@ private const val insertClassSectionEventsSchema = """{
           }
         }
       },
-      "required": [ "beginTime", "duration" ],
+      "required": [ "beginTime", "duration", "category" ],
       "additionalProperties": false
     },
     "course": {
@@ -83,14 +84,13 @@ private const val insertClassSectionEventsSchema = """{
     "calendarSection": { "type": "string" },
     "calendarTerm": { "type": "string" },
     "language": { "type": "string" },
-    "category": { "type": "string" },
     "courses": {
       "type": "array",
       "minItems": 1,
       "items": { "${'$'}ref": "#course" }
     }
   },
-  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection", "category" ],
+  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
   "additionalProperties": false
 }"""
 

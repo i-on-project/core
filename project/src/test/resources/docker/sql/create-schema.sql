@@ -532,8 +532,7 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceCourse (
   courseAcr VARCHAR(50),
   calendarSection VARCHAR(50),
   calTerm VARCHAR(50),
-  lang VARCHAR(10),
-	categ VARCHAR(100))
+  lang VARCHAR(10))
 AS $$
 #print_strict_params ON
 DECLARE
@@ -541,7 +540,6 @@ DECLARE
 	cid INT;
 	cscal INT;
   langid INT;
-  categoryid INT;
 BEGIN
   IF (courseName IS NULL AND courseAcr IS NULL) THEN
     RAISE 'For the Course parameters, you must provide at least a "name" or an "acronym"';
@@ -550,17 +548,6 @@ BEGIN
   SELECT id INTO langid FROM dbo.Language WHERE name = lang;
   IF (langid IS NULL) THEN
     RAISE '% language does not exist', lang;
-  END IF;
-
-  SELECT
-    c.id INTO categoryid
-  FROM
-    dbo.category c JOIN
-    dbo.categorylanguage cl ON c.id = cl.category
-  WHERE
-    name = categ AND language = langid;
-  IF (categoryid IS NULL) THEN
-    RAISE '"%" is not a valid category for the language %', categ, lang;
   END IF;
 
   -- Insert or update Programme
@@ -613,21 +600,19 @@ BEGIN
   WHERE
     C.classid = clid AND C.id = calendarSection;
   
-  -- Deletes all of the Class Section's events related to this operation
+  -- Deletes all of the Class Section's events
   DELETE FROM
     dbo.CalendarComponent
   WHERE id IN (
     SELECT
       ccs.comp_id
     FROM
-      dbo.category c JOIN
-      dbo.categories cs ON c.id=cs.value JOIN
-      dbo.calendarcomponents ccs ON ccs.comp_id=cs.comp_id
+      dbo.calendarcomponents ccs
     WHERE
-      c.id = categoryid AND ccs.calendar_id = cscal
+      ccs.calendar_id = cscal
   ) AND type = 'E';
 
-  RAISE NOTICE '% course, % class, % section, % category, % language, % calendar', cid, clid, calendarSection, categoryid, langid, cscal;
+  RAISE NOTICE '% course, % class, % section, % language, % calendar', cid, clid, calendarSection, langid, cscal;
 END
 $$ LANGUAGE plpgsql;
 
@@ -636,11 +621,11 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
   courseAcr VARCHAR(50),
   calendarSection VARCHAR(50),
   calTerm VARCHAR(50),
-	summary VARCHAR(50),
-	description VARCHAR(200),
+  summary VARCHAR(50),
+  description VARCHAR(200),
   lang VARCHAR(10),
-	categ VARCHAR(100),
-	dtstart TIMESTAMP,
+  categid INTEGER,
+  dtstart TIMESTAMP,
   dtend TIMESTAMP,
   week_days VARCHAR(20),
   location VARCHAR(128)
@@ -650,7 +635,6 @@ DECLARE
   calid INT;
   component_id INT;
   langid INT;
-  categoryid INT;
   dttype INT;
 BEGIN
 
@@ -666,25 +650,18 @@ BEGIN
     AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
 
   SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang; 
-  SELECT
-    c.id INTO categoryid
-  FROM
-    dbo.category c JOIN
-    dbo.categorylanguage cl ON c.id = cl.category
-  WHERE
-    name = categ AND language = langid;
 
   -- get the DATE TIME icalendar type
   SELECT id INTO dttype FROM dbo.icalendardatatype WHERE name = 'DATE-TIME';
 
-  raise notice '% cal, % category, % lang', calid, categoryid, langid;
+  raise notice '% cal, % category, % lang', calid, categid, langid;
 	
   CALL dbo.newEvent(calid,
       ARRAY[summary],
       ARRAY[langid],
       ARRAY[description],
       ARRAY[langid],
-      ARRAY[categoryid],
+      ARRAY[categid],
       dtstart,
       dtend,
       dttype, -- dtstart dtend type

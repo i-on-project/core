@@ -51,16 +51,15 @@ class InsertClassSectionEventsServices(private val repo: InsertClassSectionEvent
                 course.acr,
                 params.calendarSection,
                 params.calendarTerm,
-                params.language,
-                params.category
+                params.language
             )
 
             course.events.forEach { event ->
                 // Mandatory iCalendar component properties
                 // Give default values in case these weren't included in the request
-                val eventTitle = event.title ?: "${course.acr} ${params.category}"
+                val eventTitle = event.title ?: "${course.acr} ${event.category}"
                 val eventDescription = event.description
-                    ?: "Event '${params.category}' during ${params.calendarTerm} for the Class ${params.calendarSection}."
+                    ?: "Event '${event.category}' during ${params.calendarTerm} for the Class ${params.calendarSection}."
 
                 sql.insertClassSectionEvent(
                     course.name,
@@ -70,7 +69,7 @@ class InsertClassSectionEventsServices(private val repo: InsertClassSectionEvent
                     eventTitle,
                     eventDescription,
                     params.language,
-                    params.category,
+                    event.category,
                     event.beginTime,
                     event.endTime,
                     event.weekdays,

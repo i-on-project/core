@@ -1,7 +1,6 @@
 package org.ionproject.core.writeApi.insertClassSectionEvents.json
 
 import com.fasterxml.jackson.databind.JsonNode
-import org.ionproject.core.join
 import java.sql.Timestamp
 
 /**
@@ -19,7 +18,6 @@ class OperationParams(
     val calendarTerm: String,
     val calendarSection: String,
     val courses: List<CourseParams>,
-    val category: String,
     val language: String
 ) {
 
@@ -37,7 +35,6 @@ class OperationParams(
                 json["calendarTerm"].asText(),
                 json["calendarSection"].asText(),
                 json["courses"].map { CourseParams.of(it) },
-                json["category"].asText(),
                 json["language"]?.asText() ?: "en-US"
             )
         }
@@ -68,7 +65,8 @@ class EventParams(
     val location: String?,
     val beginTime: Timestamp,
     val endTime: Timestamp,
-    val weekdays: String
+    val weekdays: String,
+    val category: Int
 ) {
 
     companion object {
@@ -89,7 +87,8 @@ class EventParams(
                 json["location"]?.joinToString(",") { it.asText() },
                 beginTimestamp,
                 endTimestamp,
-                json["weekday"].joinToString(",") { it.asText() }
+                json["weekday"].joinToString(",") { it.asText() },
+                json["category"].asInt()
             )
         }
     }

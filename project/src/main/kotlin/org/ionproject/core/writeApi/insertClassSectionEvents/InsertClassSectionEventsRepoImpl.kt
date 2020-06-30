@@ -54,8 +54,7 @@ class InsertClassSectionEventsRepoImpl(
         courseAcr: String?,
         calendarSection: String?,
         calendarTerm: String?,
-        language: String,
-        category: String
+        language: String
     ): Unit = tm.run(TransactionIsolationLevel.SERIALIZABLE) { handle ->
         handle
             .createCall(CALL_UPSERT_COURSE)
@@ -64,7 +63,6 @@ class InsertClassSectionEventsRepoImpl(
             .bind(CALENDAR_SECTION_PARAM, calendarSection)
             .bind(CALENDAR_TERM_PARAM, calendarTerm)
             .bind(LANGUAGE_PARAM, language)
-            .bind(CATEGORY_PARAM, category)
             .invoke()
     }
 
@@ -76,7 +74,7 @@ class InsertClassSectionEventsRepoImpl(
         summary: String,
         description: String,
         language: String,
-        category: String,
+        category: Int,
         dtstart: Timestamp?,
         dtend: Timestamp?,
         weekDays: String?,
