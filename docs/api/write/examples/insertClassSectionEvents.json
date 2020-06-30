@@ -4,16 +4,15 @@
         "acr": "ISEL"
     },
     "programme": {
-        "name": "Licenciatura Engenharia Informática e Computadores"
+        "acr": "LEIC"
     },
     "calendarTerm": "1718v",
     "calendarSection": "LI11D",
-    "category": "Aula",
     "language": "pt-PT",
     "courses": [
         {
             "label": {
-              "acr": "ALGA[I]"
+              "acr": "ALGA"
             },
             "events": [
                 {
@@ -21,20 +20,28 @@
                     "description": "Aulas teoricas de ALGA",
                     "location": [ "E.1.31" ],
                     "beginTime": "14:00",
+                    "duration": "1:30",
+                    "weekday": [ "MO" ],
+                    "category": 2
+                },
+                {
+                    "location": [ "E.1.31" ],
+                    "beginTime": "14:00",
                     "duration": "01:30",
-                    "weekday": [ "MO", "WE" ]
+                    "weekday": [ "TU", "WE" ],
+                    "category": 2
                 }
             ]
         },
         {
             "label": {
-              "name": "Sistemas de Informacao I"
+              "acr": "SI"
             },
             "events": [ ]
         },
         {
             "label": {
-              "acr": "M2[I]",
+              "acr": "M2",
               "name": "Matemática II"
             },
             "events": [
@@ -43,13 +50,8 @@
                     "location": [ "G.2.30" ],
                     "beginTime": "14:00",
                     "duration": "1:30",
-                    "weekday": [ "TU" ]
-                },
-                {
-                    "location": [ "G.2.30" ],
-                    "beginTime": "14:00",
-                    "duration": "01:30",
-                    "weekday": [ "FR" ]
+                    "weekday": [ "TU" ],
+                    "category": 2
                 }
             ]
         }

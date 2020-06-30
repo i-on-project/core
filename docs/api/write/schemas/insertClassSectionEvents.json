@@ -15,10 +15,7 @@
           "maxLength": 10
         }
       },
-      "anyOf": [
-        { "required": [ "name" ] },
-        { "required": [ "acr" ] }
-      ],
+      "required": [ "acr" ],
       "additionalProperties": false
     },
     "event": {
@@ -31,6 +28,10 @@
           "type": "array",
           "uniqueItems": true,
           "items": { "type": "string" }
+        },
+        "category": {
+          "type": "integer",
+          "minimum": 0
         },
         "beginTime": {
           "type": "string",
@@ -51,7 +52,7 @@
           }
         }
       },
-      "required": [ "beginTime", "duration" ],
+      "required": [ "beginTime", "duration", "category" ],
       "additionalProperties": false
     },
     "course": {
@@ -60,6 +61,7 @@
         "label": { "$ref": "#academicObject" },
         "events": {
           "type": "array",
+          "minItems": 1,
           "items": { "$ref": "#event" }
         }
       },
@@ -75,13 +77,12 @@
     "calendarSection": { "type": "string" },
     "calendarTerm": { "type": "string" },
     "language": { "type": "string" },
-    "category": { "type": "string" },
     "courses": {
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#course" }
     }
   },
-  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection", "category" ],
+  "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
   "additionalProperties": false
 }
