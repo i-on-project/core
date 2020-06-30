@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -31,6 +32,20 @@ class ExceptionHandler {
           400,
           ex.localizedMessage,
           request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [DateTimeParseException::class])
+    private fun handleDateTimeParseExceptionException(
+        ex: DateTimeParseException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "https://github.com/i-on-project/core/tree/master/docs/api/events.md#InvalidDateType",
+            "Invalid Date format",
+            400,
+            ex.localizedMessage,
+            request.requestURI
         )
     }
 
