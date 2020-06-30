@@ -41,7 +41,7 @@ class ExceptionHandler {
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
         return handleResponse(
-            "https://github.com/i-on-project/core/tree/master/docs/api/events.md#InvalidDateType",
+            "https://github.com/i-on-project/core/tree/master/docs/api/events.md#invalid-date-type",
             "Invalid Date format",
             400,
             ex.localizedMessage,
