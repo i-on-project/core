@@ -86,10 +86,10 @@ class EventParams(
             return EventParams(
                 json["title"]?.asText(),
                 json["description"]?.asText(),
-                json["location"]?.map { it.asText() }?.join(),
+                json["location"]?.joinToString(",") { it.asText() },
                 beginTimestamp,
                 endTimestamp,
-                json["weekday"].map { it.asText() }.join()
+                json["weekday"].joinToString(",") { it.asText() }
             )
         }
     }

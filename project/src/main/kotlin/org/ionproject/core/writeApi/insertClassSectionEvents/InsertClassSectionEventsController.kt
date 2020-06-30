@@ -3,7 +3,6 @@ package org.ionproject.core.writeApi.insertClassSectionEvents
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
-import org.ionproject.core.join
 import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.OperationParams
 import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
@@ -30,7 +29,7 @@ class InsertClassSectionEventsController(private val services: InsertClassSectio
                     "/err/write/insertClassSectionEvents/jsonSchemaConstraintViolation",
                     "JSON Schema constraint violation.",
                     400,
-                    "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.join(
+                    "The provided request body was invalid for the insertClassSectionEvents' JSON Schema. Failed constraints: [ ${errMessages.joinToString(
                         ";"
                     )} ]. This operation's JSON Schema: ${SchemaValidator.schemaDocUri}.",
                     "/v0/insertClassSectionEvents"

@@ -596,7 +596,7 @@ BEGIN
     
   SELECT id INTO clid FROM dbo.Class WHERE courseId = cid AND calendarTerm = calTerm;
 
-  -- Creating the Class
+  -- Creating the ClassSection
   PERFORM
     dbo.f_classSectionCalendarCreate (clid, calendarSection)
   WHERE
