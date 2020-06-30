@@ -14,8 +14,8 @@ services:
         - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
     db:
       build:
-        context: ./src
-        dockerfile: ./res/dockerfile_db
+        context: ./src/res
+        dockerfile: ./dockerfile_db
       container_name: core-db-container
       ports:
         - 10021:5432
