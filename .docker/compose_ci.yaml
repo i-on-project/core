@@ -14,7 +14,7 @@ services:
       build:
         context: ./src
         dockerfile: ./res/dockerfile_db
-      container_name: pg-container
+      container_name: core-db-container
       ports:
         - 10021:5432
       environment:
