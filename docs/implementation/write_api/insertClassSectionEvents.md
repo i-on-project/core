@@ -18,6 +18,8 @@ This document describes the implementation decisions for the Write API's `insert
 
 * Transaction-less
   - this request does not depend on previous/subsequent requests
+  - note that database interactions in the context of one request will be done inside a transaction, but long-term transactions which span more than one HTTP request will not exist (e.g. sagas)
+  - each request is independent
 
 ## Request handling
 When a request arrives at the server's appropriate controller, the following steps are executed:
@@ -32,21 +34,13 @@ When a request arrives at the server's appropriate controller, the following ste
   - attempt to insert or replace `Class`, `Class Sections` and `Courses`
   - insert or replace `Events`
 * send HTTP response
-  - Useful information to include?
+  - invalid JSON objects will be rejected early into the controller, resulting in a 400 response with all the failing constraints (e.g. missing properties, out of range values)
+  - some constraints might not be 
 
 # PHY Model Entities vs Write API Resources
 The relationships of the database entities may not directly correspond to the semantics of the Write API operations.
-In this case, the Write API's `Class` resource might not have the same constraints and relations as a `Class` entity in the physical model, as we will see later on.
-This means that the server will have to arrange the incoming messages so that all database's constraints are respected upon insertion of new rows.
-
-By allowing clients to make use of a simpler interface, they do not need to delve into all the details of the underlying physical model.
-
-* `Events` apply to `Class Sections`
-  - failing to determine what `Class Section` any of the `Events` refer to will abort the operation
-
-* The granularity of a `Class Section` is different from the one in the physical model
-  - in the database's PHY model, `WAD 1718v` and `LS 1718v` are different `Classes` unrelated to any `Programme`
-  - in the Write API, a `Class` is the group of `Programme Offers` of the same semester. So, `WAD 1718v` and `LS 1718v` could belong to the same `Class` if they belong to the same `Programme` (e.g. `LEIC`).
+In example, the request JSON object will contain collections of events for course objects even though only classes and class sections have events, not courses.
+This format is simpler to use and the Core will infer what Class and Class Sections to apply the events on  in the context of the different courses (by making use of the properties placed in the root of the JSON object i.e. `calendarSection` and `calendarTerm`).
 
 # Database interactions
 Before inserting `Events` on to the database, we must first guarantee that the target `School`, `Programme`, `Class`, `Class Section`, `Calendar Term` and `Courses` are created or else we would be violating foreign key constraints.
@@ -60,4 +54,11 @@ The following steps will be implemented in separated stored procedures, which wi
 
 * If some constraint fails, the whole transaction aborts (rolling back any changes)
   - otherwise, commit all changes
+
+# Performance
+
+## Concurrency
+At this point, every transaction is in the serializable level of isolation since no deep analysis was made yet in regards to this topic.
+
+Further, all stored procedures are executed sequentially while looping through the items in order (e.g. `for each course { proc(); for each event { proc(); } }`)
 

@@ -19,7 +19,7 @@ This document informs the clients on how to insert events for `Class Section` re
 # Message Format
 
 The scope of this section is to define the constraints for the JSON object sent in the HTTP request body.
-This is meant to be a more toned down version of the request's [JSON schema]().
+This is meant to be a more toned down version of the request's [JSON schema](./schemas/insertClassSectionEvents.json).
 
 Properties are defined as follows:
 - the *type* of that property's value
@@ -29,9 +29,9 @@ Properties are defined as follows:
   - all properties which are not included in the **required** bullet are optional
 
 ## Properties
-The following sections will define each property of the JSON object.
-All of these properties must be included in the root of the JSON object.
-A request which includes additional properties which have not been defined in this document will be rejected (`400`).
+Each subsection is named after a property which will have to be included in the root of the JSON object, unless it is marked with **optional**.
+
+Properties marked with the quote "consult [#Constants](#constants) for the available values" will have a fixed number of values which clients have to pick from the [#Constants](#constants) section.
 
 ### `school`
 * *object* type
@@ -65,14 +65,17 @@ A request which includes additional properties which have not been defined in th
     - maximum number of characters: 10
     - e.g. `LEIC`
 * **required**
-    - at least one of `name` or `acr` must be included in the message
+    - `acr`
 
 ### `calendarSection`
 * *string* type
+* the unique identifier of a `Class Section`
 * e.g. `LI11D`
 
 ### `language`
 * *string* type
+* informs the Core of the language used in text values of this request
+* **optional**, if no language is provided the Core will assume all text is in American English `en-US`
 * e.g. `pt-PT`
 * consult [#Constants](#constants) for the available values
 
@@ -85,6 +88,7 @@ A request which includes additional properties which have not been defined in th
 * `label`
     - *object* type
     - has the `name` and `acr` properties similar to the `programme` and `school` properties, with the same constraints
+    - `acr` **required**
     - e.g. `label: { name: "Linear Algebra and Analythic Geometry", acr: "LAAG" }`
 * `events`
     - *array[object]* type
@@ -104,7 +108,8 @@ A request which includes additional properties which have not been defined in th
     - e.g. `ALGA Theorical Lectures`
 * `location`
     - *array[string]* type
-    - e.g. `[ "A.2.1", "G.0.21 ]`
+    - e.g. `[ "A.2.1", "G.0.21" ]`
+    - unique items (e.g. `[ "A.2", "A.2" ]` is not allowed)
     - this value does not have a strict format, since other languages may require the use of special characters for identifying locations (e.g. Mandarin Chinese)
 * `beginTime`
     - *time* type
@@ -117,11 +122,12 @@ A request which includes additional properties which have not been defined in th
 * `weekday`
     - *array[string]* type
     - consult [#Constants](#constants) for the available values
+    - unique items (e.g. `[ "MO", "MO" ]` is not allowed)
     - size: **1..7**
 * `category`
     - *integer* type
-    - unique category identifier (positive integer)
-    - categories are defined and maintained by the Core, so clients must chose the correct identifier based on the available categories
+    - positive integer (category >= 0)
+    - unique category identifier
     - consult [#Constants](#constants) for the available values
 * **required**
     - `beginTime`, `duration` and `category`
@@ -339,5 +345,5 @@ Some of the message's properties only have a selected number of values which wil
   - `za`
 
 ## Links
-* [JSON Schema](https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/schemas/insertClassSectionEvents.json)
-* [Example message](https://github.com/i-on-project/core/blob/docs/gh-123-sketch-write-api-format-doc/docs/api/write/examples/insertClassSectionEvents.json)
+* [JSON schema](./schemas/insertClassSectionEvents.json)
+* [Example message](./examples/insertClassSectionEvents.json)

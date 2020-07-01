@@ -4,4 +4,4 @@
 
 [Speeding things up with indexes](indexing.md)
 
-[Search API](api.md)
+[Search API](../../../api/read/search.md)
