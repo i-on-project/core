@@ -6,7 +6,10 @@ import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AccessController(private val services: AccessServices) {
@@ -19,7 +22,7 @@ class AccessController(private val services: AccessServices) {
      * This endpoint is accessible only to the client who presents the
      * token with the "urn:org:ionproject:scopes:token:issue" scope.
      */
-    @PostMapping(Uri.issueToken, consumes=[Media.APPLICATION_JSON])
+    @PostMapping(Uri.issueToken, consumes = [Media.APPLICATION_JSON])
     fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<TokenRepr> {
         val token: TokenRepr = services.generateToken(tokenIssueDetails.scope)
         return ResponseEntity.ok(token)
@@ -36,10 +39,10 @@ class AccessController(private val services: AccessServices) {
      * if that validation fails the client should be informed.
      *
      */
-    @PostMapping(Uri.revokeToken, consumes =[Media.FORM_URLENCODED_VALUE])
-    fun revokeToken(@RequestParam body: Map<String,String>) : ResponseEntity<Any> {
+    @PostMapping(Uri.revokeToken, consumes = [Media.FORM_URLENCODED_VALUE])
+    fun revokeToken(@RequestParam body: Map<String, String>): ResponseEntity<Any> {
         val token = body["token"]
-        if(token.isNullOrEmpty())
+        if (token.isNullOrEmpty())
             throw BadRequestException("No token specified.")
 
         services.revokeToken(token)

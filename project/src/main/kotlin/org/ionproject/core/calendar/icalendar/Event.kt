@@ -24,7 +24,19 @@ class Event private constructor(
     duration: Duration?,
     location: Location?,
     recurrenceRule: RecurrenceRule?
-) : CalendarComponent(uid, stamp, *summary, *description, created, *categories, start, end, duration, location, recurrenceRule) {
+) : CalendarComponent(
+    uid,
+    stamp,
+    *summary,
+    *description,
+    created,
+    *categories,
+    start,
+    end,
+    duration,
+    location,
+    recurrenceRule
+) {
 
     constructor(
         uid: UniqueIdentifier,

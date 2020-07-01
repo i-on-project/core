@@ -105,23 +105,23 @@ class CalendarController(private val repository: CalendarRepo) {
      * If the Accept header has something that isn't application/vnd.siren+json or text/calendar
      * the response will be null
      */
-    private fun formatComponent(calendar: Calendar, acceptHeader: Array<String>?, path: URI) : Any? =
+    private fun formatComponent(calendar: Calendar, acceptHeader: Array<String>?, path: URI): Any? =
         if (acceptHeader.isNullOrEmpty())
-                calendar
-            else {
-                acceptHeader.forEach {
-                    when(it) {
-                        Media.SIREN_TYPE -> {
-                            return calendar.components[0].toSiren(path)
-                        }
-                        Media.CALENDAR -> {
-                            return calendar
-                        }
-                        Media.ALL -> {
-                            return calendar
-                        }
+            calendar
+        else {
+            acceptHeader.forEach {
+                when (it) {
+                    Media.SIREN_TYPE -> {
+                        return calendar.components[0].toSiren(path)
+                    }
+                    Media.CALENDAR -> {
+                        return calendar
+                    }
+                    Media.ALL -> {
+                        return calendar
                     }
                 }
-                null
             }
+            null
+        }
 }
