@@ -13,6 +13,7 @@ class KlassClassSectionMapper : RowMapper<ClassSection> {
             rs.getInt(KlassData.CID),
             rs.getString(KlassData.ACR),
             rs.getString(KlassData.CAL_TERM),
-            rs.getString(KlassData.SID))
+            rs.getString(KlassData.SID)
+        )
     }
 }

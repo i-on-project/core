@@ -1,0 +1,13 @@
+version: '3'
+services:
+    db:
+      build:
+        context: ./src/res
+        dockerfile: ./dockerfile_db
+      container_name: core-db-container
+      ports:
+        - 10021:5432
+      environment:
+        - POSTGRES_USER=bob
+        - POSTGRES_PASSWORD=changeit
+        - POSTGRES_DB=core

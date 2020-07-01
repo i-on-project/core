@@ -18,7 +18,6 @@ import org.ionproject.core.calendar.language.LanguageRepo
 import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.ionproject.core.common.customExceptions.UnknownCalendarComponentTypeException
 import org.ionproject.core.split
-import org.ionproject.core.startsAndEndsWith
 import org.ionproject.core.toHexString
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
@@ -133,7 +132,7 @@ class CalendarComponentMapper(
 
         return if (weekDays == null) null
         else RecurrenceRule(
-          Recur(byDay = weekDays, until = until)
+            Recur(byDay = weekDays, until = until)
         )
     }
 
@@ -157,34 +156,34 @@ class CalendarComponentMapper(
     private fun ResultSet.getDatetime(columnName: String): DateTime {
         val offsetTime = getObject(columnName, OffsetDateTime::class.java)
         return DateTime(
-          Date(
-            offsetTime.year,
-            offsetTime.monthValue,
-            offsetTime.dayOfMonth
-          ),
-          Time(
-            offsetTime.hour,
-            offsetTime.minute,
-            offsetTime.second // TODO("Add offset")
-          )
+            Date(
+                offsetTime.year,
+                offsetTime.monthValue,
+                offsetTime.dayOfMonth
+            ),
+            Time(
+                offsetTime.hour,
+                offsetTime.minute,
+                offsetTime.second // TODO("Add offset")
+            )
         )
     }
 
     private fun ResultSet.getNullableDatetime(columnName: String): DateTime? {
         val offsetTime = getObject(columnName, OffsetDateTime::class.java)
-          ?: return null
+            ?: return null
 
         return DateTime(
-          Date(
-            offsetTime.year,
-            offsetTime.monthValue,
-            offsetTime.dayOfMonth
-          ),
-          Time(
-            offsetTime.hour,
-            offsetTime.minute,
-            offsetTime.second // TODO("Add offset")
-          )
+            Date(
+                offsetTime.year,
+                offsetTime.monthValue,
+                offsetTime.dayOfMonth
+            ),
+            Time(
+                offsetTime.hour,
+                offsetTime.minute,
+                offsetTime.second // TODO("Add offset")
+            )
         )
     }
 

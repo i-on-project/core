@@ -17,6 +17,7 @@ class CourseMapper : RowMapper<Course> {
             rs.getInt(ID),
             rs.getString(ACR),
             rs.getString(NAME),
-            rs.getString(CAL_TERM))
+            rs.getString(CAL_TERM)
+        )
     }
 }
