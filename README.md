@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 - [Overview](#overview)
+- [Docker Compose](#docker-compose)
 - [Build](#build)
 - [Running](#running)
 - [Access management](#access-management)
@@ -11,6 +12,32 @@ Overview
 
 The **i-on** initiative aims to build an extensible academic platform.
 The Core subsystem is the repository of academic information which other subsystems will access through several HTTP APIs.
+
+Docker Compose
+==============
+
+You may execute repetitive procedures running one command using only `Docker` + [Docker compose](https://docs.docker.com/compose/) (Docker does not ship with `docker-compose`, so you'll have to install it separately).
+The `compose` configuration files are used to automate these procedures such as setting up a database and building (/running) the server, running the integration tests, deploying, and so on without the need to manually build or install any dependencies (e.g. OpenJDK).
+
+```sh
+$ # Run the integration tests and exit
+$ docker-compose -f .docker/compose_ci.yaml up --build core
+$ 
+$ # Remove docker images and clean resources
+$ docker-compose -f .docker/compose_ci.yaml down
+$
+$ # Run the server and database on two containers
+$ docker-compose -f .docker/compose_run.yaml up --build core
+$ 
+$ # Remove docker images and clean resources
+$ docker-compose -f .docker/compose_run.yaml down
+```
+The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
+
+The following tokens will be inserted to the database container, for ease of use:
+- Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`
+- Write: `hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok`
+- Issue: `vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144`
 
 Build
 =====

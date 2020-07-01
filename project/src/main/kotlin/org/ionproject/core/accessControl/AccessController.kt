@@ -8,6 +8,10 @@ import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.http.ResponseEntity
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AccessController(private val services: AccessServices) {
@@ -20,7 +24,7 @@ class AccessController(private val services: AccessServices) {
      * This endpoint is accessible only to the client who presents the
      * token with the "urn:org:ionproject:scopes:token:issue" scope.
      */
-    @PostMapping(Uri.issueToken, consumes=[Media.APPLICATION_JSON])
+    @PostMapping(Uri.issueToken, consumes = [Media.APPLICATION_JSON])
     fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<TokenRepr> {
         val token: TokenRepr = services.generateToken(tokenIssueDetails.scope)
         return ResponseEntity.ok(token)
@@ -37,10 +41,10 @@ class AccessController(private val services: AccessServices) {
      * if that validation fails the client should be informed.
      *
      */
-    @PostMapping(Uri.revokeToken, consumes =[Media.FORM_URLENCODED_VALUE])
-    fun revokeToken(@RequestParam body: Map<String,String>) : ResponseEntity<Any> {
+    @PostMapping(Uri.revokeToken, consumes = [Media.FORM_URLENCODED_VALUE])
+    fun revokeToken(@RequestParam body: Map<String, String>): ResponseEntity<Any> {
         val token = body["token"]
-        if(token.isNullOrEmpty())
+        if (token.isNullOrEmpty())
             throw BadRequestException("No token specified.")
 
         services.revokeToken(token)
@@ -48,6 +52,9 @@ class AccessController(private val services: AccessServices) {
     }
 
 
+    /**
+     * Generates an import link for a class Calendar
+     */
     @GetMapping(Uri.importClassCalendar)
     fun importClassCalendar(@PathVariable cid: Int,
                             @PathVariable calterm: String,
@@ -55,21 +62,32 @@ class AccessController(private val services: AccessServices) {
 
         var url = Uri.forCalendarByClass(cid, calterm).toString()
         url = addQueryParams(url, query)
+
+        return ResponseEntity.ok().build()
     }
 
+    /**
+     * Generates an import link for a class section Calendar
+     */
     @GetMapping(Uri.importClassSectionCalendar)
     fun importClassSectionCalendar(@PathVariable sid: String,
                                    @PathVariable calterm: String,
                                    @PathVariable cid: Int,
                                    @RequestParam query: MultiValueMap<String, String>): ResponseEntity<Any> {
 
+        var url = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
+        url = addQueryParams(url, query)
+
+        return ResponseEntity.ok().build()
     }
 
     private fun addQueryParams(url: String, query: MultiValueMap<String, String>) : String {
         var url = "$url?"
-        for (key in query) {
-            url += "$key=${query[key]}"
+        for (key in query.keys) {
+            url += "$key=${query[key]}&"
         }
+
+        return url
     }
 
 }

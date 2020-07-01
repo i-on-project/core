@@ -28,8 +28,8 @@ fun <R> MutableList<R>.fluentAdd(vararg r: R): MutableList<R> {
 fun String.startsAndEndsWith(str: String): Boolean = startsWith(str) && endsWith(str)
 fun String.startsAndEndsWith(str: Char): Boolean = startsWith(str) && endsWith(str)
 
-fun String.hexStringToInt() : Int = toInt(16)
-fun Int.toHexString() : String = toString(16)
+fun String.hexStringToInt(): Int = toInt(16)
+fun Int.toHexString(): String = toString(16)
 
 fun Query.bind(queryFilters: Map<String, Condition>, filters: MultiValueMap<String, String>): Query {
     filters.forEach { (key, list) ->
@@ -51,7 +51,7 @@ fun <K, V, NK, NV> Map<K, V>.mapEntries(oper: (Map.Entry<K, V>) -> Pair<NK, NV>)
 }
 
 fun String.removeWhitespace() =
-  replace("\\s".toRegex(), "")
+    replace("\\s".toRegex(), "")
 
 fun PGobject.split(): List<String> {
     value = value.removeSurrounding("(", ")")
@@ -64,7 +64,7 @@ fun PGobject.split(): List<String> {
     var endIndex = 0
 
     var parsingString = false
-    while(endIndex < value.length) {
+    while (endIndex < value.length) {
         val c = value[endIndex]
         if (c == '"') parsingString = !parsingString
         if (c == ',' && !parsingString) {

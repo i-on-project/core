@@ -83,19 +83,17 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
                         value.map {
                             (it as Text).iCalendarFormat()
                         }.joinToString()
-                    }
-                    else value.joinToString()
+                    } else value.joinToString()
                 } else
-                if (value is Text) {
-                    (value as Text).iCalendarFormat()
-                }
-                else value.toString()
+                    if (value is Text) {
+                        (value as Text).iCalendarFormat()
+                    } else value.toString()
 
             writer.writeICalendar("$name$parameters:$value")
         }
     }
 
-    private fun Text.iCalendarFormat() : String {
+    private fun Text.iCalendarFormat(): String {
         var text = value
         text = text.replace(",", "\\,")
         return text.replace(";", "\\;")

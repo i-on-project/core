@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -u
+
+# 2 minutes of timeout
+timeout=120
+start_time="$(date +%s)"
+while true; do
+  if psql -Atx "$(echo "$JDBC_DATABASE_URL" | sed 's;jdbc:;;g')" -1 -c "select" >/dev/null 2>/dev/null; then
+    printf "Connection established with the database.\\n"
+    break
+  fi
+
+  current_time="$(date +%s)"
+  if [ "$(( current_time - start_time ))" -ge "$timeout" ]; then
+    printf "Timeout reached. Exiting...\\n"
+    exit 1
+  fi
+  sleep 1
+done
+
+set -e
+
+# Gradle is very slow at starting the daemon
+# Since the CI process will not make use of it anyway, might as well disable it
+mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
+./gradlew build --stacktrace --no-daemon
+
+if [ $# -gt 0 ] && [ "$1" = "run" ]; then
+  java -server \
+    -jar "$(find build/libs -name "*.jar" | head -n 1)" \
+    -Dserver.port=8080
+fi
+

@@ -1,0 +1,8 @@
+FROM openjdk:8-jdk-alpine
+
+RUN apk add postgresql-client
+
+WORKDIR /proj
+COPY . .
+RUN mv ./res/bin/poll_db_and_build .
+ENTRYPOINT [ "./poll_db_and_build" ]

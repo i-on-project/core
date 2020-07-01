@@ -1,0 +1,59 @@
+{
+    "school": {
+        "name": "INSTITUTO SUPERIOR DE ENGENHARIA DE LISBOA",
+        "acr": "ISEL"
+    },
+    "programme": {
+        "acr": "LEIC"
+    },
+    "calendarTerm": "1718v",
+    "calendarSection": "LI11D",
+    "language": "pt-PT",
+    "courses": [
+        {
+            "label": {
+              "acr": "ALGA"
+            },
+            "events": [
+                {
+                    "title": "Aula de ALGA",
+                    "description": "Aulas teoricas de ALGA",
+                    "location": [ "E.1.31" ],
+                    "beginTime": "14:00",
+                    "duration": "1:30",
+                    "weekday": [ "MO" ],
+                    "category": 2
+                },
+                {
+                    "location": [ "E.1.31" ],
+                    "beginTime": "14:00",
+                    "duration": "01:30",
+                    "weekday": [ "TU", "WE" ],
+                    "category": 2
+                }
+            ]
+        },
+        {
+            "label": {
+              "acr": "SI"
+            },
+            "events": [ ]
+        },
+        {
+            "label": {
+              "acr": "M2",
+              "name": "Matemática II"
+            },
+            "events": [
+                {
+                    "title": "Aula de M2",
+                    "location": [ "G.2.30" ],
+                    "beginTime": "14:00",
+                    "duration": "1:30",
+                    "weekday": [ "TU" ],
+                    "category": 2
+                }
+            ]
+        }
+    ]
+}

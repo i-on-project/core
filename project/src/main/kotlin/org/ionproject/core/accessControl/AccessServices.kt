@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator: TokenGenerator) {
 
-    fun generateToken(scope: String) : TokenRepr {
+    fun generateToken(scope: String): TokenRepr {
         //generate the raw string
         val tokenString = tokenGenerator.generateRandomString()
 

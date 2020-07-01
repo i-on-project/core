@@ -102,7 +102,8 @@ object Uri {
     const val search = "$version/search"
     val searchTemplate = UriTemplate("$search?query={query}&types={types}&limit={limit}&page={page}")
     val pagingSearch = UriTemplate("$search{?query,types,limit,page}")
-    fun forSearch(query: SearchQuery) : URI = searchTemplate.expand(query.query, query.types.joinToString(","), query.limit, query.page)
+    fun forSearch(query: SearchQuery): URI =
+        searchTemplate.expand(query.query, query.types.joinToString(","), query.limit, query.page)
 
 
     // custom link rel

@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CourseRepoImpl(
-        private val tm: TransactionManager,
-        private val courseMapper: CourseMapper
+    private val tm: TransactionManager,
+    private val courseMapper: CourseMapper
 ) : CourseRepo {
 
     override fun getCourses(page: Int, limit: Int): List<Course> {

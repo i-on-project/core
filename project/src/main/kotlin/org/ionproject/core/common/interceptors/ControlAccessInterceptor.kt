@@ -22,7 +22,7 @@ data class Request(val method: String, val apiVersion: String, val resource: Str
 class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
     @Resource
-    private val tokenGenerator : TokenGenerator = TokenGenerator()
+    private val tokenGenerator: TokenGenerator = TokenGenerator()
 
     @Resource
     private val pdp: PDP = PDP()
@@ -30,11 +30,11 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         //Client doesn't include header "Authorization"
         val header = request.getHeader("Authorization")
-                ?: throw UnauthenticatedUserException("User not authenticated.")
+            ?: throw UnauthenticatedUserException("User not authenticated.")
         val pair = header.trim().split(" ")
 
         //Client includes header "Authorization" with bad value e.g. "Bearer      "
-        if(pair.size != 2)
+        if (pair.size != 2)
             throw BadRequestException("Incorrect authorization header value.")
 
         //Client include token type is different than "Bearer"
@@ -58,7 +58,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val requestDescriptor: Request
         val parts = pathInfo.substring(1).split("/")
 
-        if(parts.size == 1) //Special case user is accessing endpoint without version
+        if (parts.size == 1) //Special case user is accessing endpoint without version
             requestDescriptor = Request(method, "*", pathInfo)
         else {
             val idxVersion = pathInfo.indexOf("/", 1)

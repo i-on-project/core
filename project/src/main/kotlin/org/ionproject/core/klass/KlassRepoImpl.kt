@@ -28,11 +28,11 @@ class KlassRepoImplementation(
     override fun get(id: Int, calendarTerm: String): FullKlass? {
         val result = tm.run { handle ->
             val klass = handle
-                    .createQuery(GET_CLASS_QUERY)
-                    .bind(CID, id)
-                    .bind(CAL_TERM, calendarTerm)
-                    .map(klassMapper)
-                    .findOne()
+                .createQuery(GET_CLASS_QUERY)
+                .bind(CID, id)
+                .bind(CAL_TERM, calendarTerm)
+                .map(klassMapper)
+                .findOne()
 
             if (!klass.isPresent) {
                 return@run null
@@ -40,19 +40,20 @@ class KlassRepoImplementation(
 
             val klassObj = klass.get()
             val sections = handle
-                    .createQuery(GET_CLASS_SECTIONS_QUERY)
-                    .bind(CID, id)
-                    .bind(CAL_TERM, calendarTerm)
-                    .map(classSectionMapper)
-                    .list()
+                .createQuery(GET_CLASS_SECTIONS_QUERY)
+                .bind(CID, id)
+                .bind(CAL_TERM, calendarTerm)
+                .map(classSectionMapper)
+                .list()
 
             FullKlass(
-                    klassObj.courseId,
-                    klassObj.courseAcr,
-                    klassObj.calendarTerm,
-                    sections)
+                klassObj.courseId,
+                klassObj.courseAcr,
+                klassObj.calendarTerm,
+                sections
+            )
         }
-                ?: throw ResourceNotFoundException("There is no Class for the course Id $id.")
+            ?: throw ResourceNotFoundException("There is no Class for the course Id $id.")
 
         return result
     }
@@ -61,25 +62,24 @@ class KlassRepoImplementation(
      * Retrieve a list of [Class]es, with only the essential information i.e. IDs, name, etc.
      */
     override fun getPage(id: Int, page: Int, limit: Int): List<Klass> {
-        var result = tm.run {
-            handle ->
+        var result = tm.run { handle ->
             {
                 val count = handle
-                                .createQuery(CHECK_IF_COURSE_EXISTS)
-                                .bind(CID, id)
-                                .mapTo(Integer::class.java)
-                                .one() ?: 0
+                    .createQuery(CHECK_IF_COURSE_EXISTS)
+                    .bind(CID, id)
+                    .mapTo(Integer::class.java)
+                    .one() ?: 0
 
-                if(count == 0)
+                if (count == 0)
                     throw ResourceNotFoundException("There is no course with id $id.")
 
-                val result : List<Klass> = handle
-                        .createQuery(GET_CLASSES_QUERY)
-                        .bind(CID, id)
-                        .bind(OFFSET, page * limit)
-                        .bind(LIMIT, limit)
-                        .map(klassMapper)
-                        .list()
+                val result: List<Klass> = handle
+                    .createQuery(GET_CLASSES_QUERY)
+                    .bind(CID, id)
+                    .bind(OFFSET, page * limit)
+                    .bind(LIMIT, limit)
+                    .map(klassMapper)
+                    .list()
 
                 result
             }()
