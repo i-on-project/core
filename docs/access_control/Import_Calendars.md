@@ -189,6 +189,9 @@ HMACSHA256(
   256-bit-secret
 )
 
+(This implementation follows the RFC 7519.)
+
+
 The secret is stored as an environment variable of the system.
 
 The API when receiving a request of this type will do the operation mentioned above on the token and compare it with the signature of the received token, if the comparison fails the access manager will reject the request.
@@ -197,5 +200,3 @@ If the comparison succeds and the URL claim value is the same as the request URL
 
 If for example the attacker tries to change the URI claim and present the token at some other endpoint besides the allowed ones (calendar), the signatures won't match and an attack attempt will be detected.
 Also this kind of access is only allowed for safe operations like 'GET' or 'HEAD', if the signature is valid but the method is 'POST' the request will be rejected.
-
-This implementation follows the RFC 7519.
