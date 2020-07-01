@@ -31,4 +31,5 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
         val hash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(token))
         authRepo.revokeToken(hash)
     }
+
 }

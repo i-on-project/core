@@ -6,6 +6,7 @@ import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -45,4 +46,30 @@ class AccessController(private val services: AccessServices) {
         services.revokeToken(token)
         return ResponseEntity.ok().build()
     }
+
+
+    @GetMapping(Uri.importClassCalendar)
+    fun importClassCalendar(@PathVariable cid: Int,
+                            @PathVariable calterm: String,
+                            @RequestParam query: MultiValueMap<String, String>): ResponseEntity<Any> {
+
+        var url = Uri.forCalendarByClass(cid, calterm).toString()
+        url = addQueryParams(url, query)
+    }
+
+    @GetMapping(Uri.importClassSectionCalendar)
+    fun importClassSectionCalendar(@PathVariable sid: String,
+                                   @PathVariable calterm: String,
+                                   @PathVariable cid: Int,
+                                   @RequestParam query: MultiValueMap<String, String>): ResponseEntity<Any> {
+
+    }
+
+    private fun addQueryParams(url: String, query: MultiValueMap<String, String>) : String {
+        var url = "$url?"
+        for (key in query) {
+            url += "$key=${query[key]}"
+        }
+    }
+
 }

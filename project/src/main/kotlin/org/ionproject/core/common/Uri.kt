@@ -9,10 +9,6 @@ object Uri {
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
 
-    // Access Control
-    const val revokeToken = "/revokeToken"
-    const val issueToken = "/issueToken"
-
     // Calendar Terms
     const val calendarTerms = "$version/calendar-terms"
     const val calendarTermById = "$version/calendar-terms/{calterm}"
@@ -96,6 +92,11 @@ object Uri {
     fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) =
         componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
 
+    // Access Control
+    const val revokeToken = "/revokeToken"
+    const val issueToken = "/issueToken"
+    const val importClassCalendar = "$calendarByClass/import"
+    const val importClassSectionCalendar = "$calendarByClassSection/import"
 
     // Search
     const val search = "$version/search"
