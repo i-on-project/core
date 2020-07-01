@@ -1,12 +1,12 @@
 package org.ionproject.core.accessControl
 
+import org.ionproject.core.accessControl.representations.ImportLinkRepr
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.http.ResponseEntity
-import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -56,38 +56,53 @@ class AccessController(private val services: AccessServices) {
      * Generates an import link for a class Calendar
      */
     @GetMapping(Uri.importClassCalendar)
-    fun importClassCalendar(@PathVariable cid: Int,
-                            @PathVariable calterm: String,
-                            @RequestParam query: MultiValueMap<String, String>): ResponseEntity<Any> {
+    fun importClassCalendar(
+        @PathVariable cid: Int,
+        @PathVariable calterm: String,
+        @RequestParam query: Map<String, String>,
+        @RequestAttribute("clientId") clientId: Int
+    ): ResponseEntity<Any> {
 
-        var url = Uri.forCalendarByClass(cid, calterm).toString()
+        var url = Uri.baseUrl + Uri.forCalendarByClass(cid, calterm).toString()
         url = addQueryParams(url, query)
 
-        return ResponseEntity.ok().build()
+        val jwt = services.generateImportToken(url, clientId)
+        url += jwt
+
+        return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
     /**
      * Generates an import link for a class section Calendar
      */
     @GetMapping(Uri.importClassSectionCalendar)
-    fun importClassSectionCalendar(@PathVariable sid: String,
-                                   @PathVariable calterm: String,
-                                   @PathVariable cid: Int,
-                                   @RequestParam query: MultiValueMap<String, String>): ResponseEntity<Any> {
+    fun importClassSectionCalendar(
+        @PathVariable sid: String,
+        @PathVariable calterm: String,
+        @PathVariable cid: Int,
+        @RequestParam query: Map<String, String>,
+        @RequestAttribute("clientId") clientId: Int
+    ): ResponseEntity<Any> {
 
-        var url = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
+        var url = Uri.baseUrl + Uri.forCalendarByClassSection(cid, calterm, sid).toString()
         url = addQueryParams(url, query)
 
-        return ResponseEntity.ok().build()
+        val jwt = services.generateImportToken(url, clientId)
+        url += jwt
+
+        return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
-    private fun addQueryParams(url: String, query: MultiValueMap<String, String>) : String {
+    /**
+     * Concatenates the query parameters to the url
+     */
+    private fun addQueryParams(url: String, query: Map<String, String>) : String {
         var url = "$url?"
         for (key in query.keys) {
             url += "$key=${query[key]}&"
         }
 
-        return url
+        return url.dropLast(1) // removes the last &
     }
 
 }

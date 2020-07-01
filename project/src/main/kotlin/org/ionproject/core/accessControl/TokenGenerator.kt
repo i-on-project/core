@@ -2,11 +2,16 @@ package org.ionproject.core.accessControl
 
 import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
+import org.ionproject.core.accessControl.representations.JWTHeaderRepr
+import org.ionproject.core.accessControl.representations.JWTPayloadRepr
+import org.ionproject.core.accessControl.representations.serializeComponent
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 @Component
 class TokenGenerator {
@@ -15,6 +20,9 @@ class TokenGenerator {
 
     private val HASH_ALGORITHM = "SHA-256"
     private val TOKEN_DURATION: Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
+
+    private val JWT_ALGORITHM = "HmacSHA256"
+    private val SECRET_KEY = "t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"//System.getenv("secretKey")
 
     fun generateRandomString(): ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
@@ -63,5 +71,43 @@ class TokenGenerator {
     fun buildToken(tokenHash: String, issueTime: Long, scope: String, clientId: Int): TokenEntity {
         val claims = ClaimsEntity(clientId, scope)
         return TokenEntity(tokenHash, true, issueTime, issueTime + TOKEN_DURATION, claims)
+    }
+
+    /**
+     * Generates a JWT token without signature: header.payload
+     */
+    fun generateImportToken(url: String, clientId: Int) : String {
+        val header = JWTHeaderRepr("JWT", "HS256")
+
+        val iat = System.currentTimeMillis()
+        val exp = iat + TOKEN_DURATION
+        val payload = JWTPayloadRepr(clientId, url, iat, exp)
+
+        val headerBytes = serializeComponent(header).toByteArray()
+        val payloadBytes = serializeComponent(payload).toByteArray()
+
+        return encodeBase64url(headerBytes) + "." + encodeBase64url(payloadBytes)
+    }
+
+    /**
+     * Signs a JWT
+     *  HMACSHA256(
+     *      base64UrlEncode(header) + "." +
+     *      base64UrlEncode(payload),
+     *      256-bit-secret
+     *  )
+     *
+     *  The first two base64UrlEncoded parts are already present in the jwt
+     */
+    fun signJWT(jwt: String) : String {
+        val alg = Mac.getInstance(JWT_ALGORITHM)
+        val secretKey = SecretKeySpec(SECRET_KEY.toByteArray(), JWT_ALGORITHM)
+
+        alg.init(secretKey)
+
+        val signatureBytes = alg.doFinal(jwt.toByteArray())
+        val signature = signatureBytes.fold("", { str, it -> str + "%02x".format(it) })
+
+        return "$jwt.$signature"
     }
 }

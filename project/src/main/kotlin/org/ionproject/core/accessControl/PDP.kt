@@ -18,7 +18,7 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 class PDP {
     private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
 
-    fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Boolean {
+    fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Int {
         val token = pap.getTableToken(tokenHash)
 
         //Check if the token is valid or exists
@@ -33,7 +33,7 @@ class PDP {
     /**
      * Check if the user is allowed to do the action he requested
      */
-    private fun checkPolicies(token: TokenEntity, requestDescriptor: Request): Boolean {
+    private fun checkPolicies(token: TokenEntity, requestDescriptor: Request): Int {
         //Checks if the token is expired
         if (System.currentTimeMillis() > token.expiresAt) {
             logger.info("Client_id:${token.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
@@ -52,7 +52,7 @@ class PDP {
             val methods = policy.method
             if (methods.contains(requestDescriptor.method)) {
                 logger.info("Client_id:${token.claims.client_id} was AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
-                return true
+                return token.claims.client_id
             }
         }
 

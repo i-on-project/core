@@ -1,6 +1,11 @@
 package org.ionproject.core.accessControl
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepo
+import org.ionproject.core.accessControl.representations.JWT
+import org.ionproject.core.accessControl.representations.JWTHeaderRepr
+import org.ionproject.core.accessControl.representations.JWTPayloadRepr
 import org.ionproject.core.accessControl.representations.TokenRepr
 import org.springframework.stereotype.Component
 
@@ -30,6 +35,16 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
     fun revokeToken(token: String) {
         val hash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(token))
         authRepo.revokeToken(hash)
+    }
+
+    /**
+     * Generates a JWT according to RFC 7519
+     */
+    fun generateImportToken(url: String, clientId: Int) : String {
+        val jwtWithoutSignature = tokenGenerator.generateImportToken(url, clientId)
+        val jwtSigned = tokenGenerator.signJWT(jwtWithoutSignature)
+
+        return "&access_token=$jwtSigned"
     }
 
 }

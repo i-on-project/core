@@ -48,10 +48,13 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
         //Sends the request with the token Hash down to the Policy Decision Point
         val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
-        if (pdp.evaluateRequest(tokenHash, requestDescriptor))
-            return true
 
-        return false
+        //Checks if the token is valid, if any policy is not valid an exception will be thrown
+        //and the next interceptor won't be called
+        val clientId = pdp.evaluateRequest(tokenHash, requestDescriptor)
+
+        request.setAttribute("clientId", clientId)
+        return true
     }
 
     private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
