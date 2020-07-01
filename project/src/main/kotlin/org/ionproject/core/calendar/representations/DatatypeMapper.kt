@@ -7,8 +7,8 @@ import org.springframework.http.MediaType
 abstract class DatatypeMapper {
 
     companion object {
-        fun forType(media: MediaType) : DatatypeMapper {
-            return when(media) {
+        fun forType(media: MediaType): DatatypeMapper {
+            return when (media) {
                 Media.MEDIA_SIREN -> SirenDatatypeMapper()
                 Media.MEDIA_TEXT_CALENDAR -> TODO("Not needed currently. Might be needed in the future.")
                 else -> throw IllegalArgumentException("No datatype mappers for specified media type.")
@@ -16,5 +16,5 @@ abstract class DatatypeMapper {
         }
     }
 
-    abstract fun map(value: ICalendarDataType) : Any
+    abstract fun map(value: ICalendarDataType): Any
 }

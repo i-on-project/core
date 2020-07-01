@@ -19,7 +19,7 @@ __Not all properties mentioned in the RFC are supported by this API, only the on
 - [Data types](#data-types)
 
 # Date Format
-Date formatting is done according to [RFC3339](https://tools.ietf.org/html/rfc3339) which is an Internet profile of the [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html).
+Date formatting is done according to [RFC3339](https://tools.ietf.org/html/rfc3339) which is an Internet profile of the [ISO8601](https://www.iso.org/iso-8601-date-and-time-format.html). Examples can be found [here](https://tools.ietf.org/html/rfc3339#section-5.8).
 
 # Date Intervals
 All date intervals are inclusive-exclusive, meaning that start and creation dates are included in the interval and due or end dates are excluded from it.
@@ -129,6 +129,9 @@ The `search` action allows the following parameters:
 * `endAfter`: filters **components** that have a `dtend` earlier than specified
 
 * `summary`: filters **components** that do not have a matching `summary`
+
+#### Invalid Date Type
+The date used in the `startBefore`, `startAfter`, `endBefore` and `endAfter` must follow the format specified in the [Date Format Section](#date-format).
 
 ## Link Relations
 A `Calendar` representation:

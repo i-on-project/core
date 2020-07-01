@@ -15,6 +15,7 @@ class KlassMapper : RowMapper<Klass> {
         return Klass(
             rs.getInt(CID),
             rs.getString(ACR),
-            rs.getString(CAL_TERM))
+            rs.getString(CAL_TERM)
+        )
     }
 }
