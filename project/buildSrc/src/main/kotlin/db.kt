@@ -2,9 +2,14 @@ import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.internal.ExecException
+import org.postgresql.ds.PGSimpleDataSource
+import org.postgresql.util.PGobject
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.net.URI
+import java.sql.Connection
+import java.sql.SQLException
+
 
 object Postgres {
     const val SUPER_USER = "postgres"
@@ -264,8 +269,109 @@ open class PgAddData : AbstractTask() {
     }
 }
 
+/**
+ * From here on out, these tasks will interact with any database pointed by JDBC_DATABASE_URL
+ *  - Use of DataSource to avoid shell/OS incompatibility issues (multi-platform)
+ *  - Force the creation of the DataSource for every single task (i.e. do not cache
+ *  the database connection configs, which allows the user to change the JDBC_DATABASE_URL
+ *  for applying the tasks to another database without the need for ./gradlew clean -p buildSrc)
+ */
+object Db {
+  fun useConnection(e: (Connection) -> Unit) { tryGetConnection().use { e(it) } }
+
+  private fun genDataSource() = PGSimpleDataSource().apply {
+    val url: String? = System.getenv("JDBC_DATABASE_URL")
+    setUrl(url ?: throw Error(" ppip pi p"))
+  }
+
+  private fun tryGetConnection(): Connection {
+    val ds = genDataSource()
+    val start = System.currentTimeMillis()
+    val timeout = 120000L
+    val tick = 2000L
+    while (System.currentTimeMillis() - start < timeout) {
+      try {
+        return ds.connection
+
+      } catch (con: SQLException) {
+        println("Database connection attempt failed. Retrying...")
+        Thread.sleep(tick)
+      }
+    }
+    throw IllegalStateException("Could not establish a connection to the database. Killing server.")
+  }
+}
+
+open class PgInsertReadToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:api:read")
+    }
+}
+
+open class PgInsertWriteToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:api:write")
+    }
+}
+
+open class PgInsertIssueToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:token:issue")
+    }
+}
+
+private data class TokenDbParams(
+  val hash: String,
+  val isValid: Boolean,
+  val issuedAt: Long,
+  val expiredAt: Long,
+  val scope: String,
+  val clientId: Int,
+  val base64Token: String)
+
+class Token {
+    fun create(scope: String) {
+        val params = getTokenReferences(scope)
+        val cid = 500
+        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope", "client_id": ${cid}}"""
+        Db.useConnection {
+          val st = it.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")
+          st.setString(1, params.hash)
+          st.setBoolean(2, params.isValid)
+          st.setLong(3, params.issuedAt)
+          st.setLong(4, params.expiredAt)
+          st.setObject(5, json)
+          st.execute()
+        }
+        print("Your token reference is ${params.base64Token}")
+    }
+
+    private fun getTokenReferences(scope: String): TokenDbParams {
+        val tokenGenerator = TokenGenerator()
+        val randomString = tokenGenerator.generateRandomString()
+        val base64Token = tokenGenerator.encodeBase64url(randomString)
+        val tokenHash = tokenGenerator.getHash(randomString)
+        val currTime = System.currentTimeMillis()
+        val expirationTime = currTime + 1000*60*60
+
+        return TokenDbParams(
+          tokenHash,
+          true,
+          currTime,
+          expirationTime,
+          scope,
+          500,
+          base64Token
+        )
+    }
+}
+
 class DevNull : OutputStream() {
     override fun write(p0: Int) {
         // sink
     }
 }
+

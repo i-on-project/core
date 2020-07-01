@@ -1,11 +1,15 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
-import org.jdbi.v3.core.statement.UnableToCreateStatementException
 import org.postgresql.util.PSQLException
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.HttpMediaTypeNotSupportedException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.time.format.DateTimeParseException
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -20,31 +24,101 @@ import javax.servlet.http.HttpServletRequest
 @RestControllerAdvice
 class ExceptionHandler {
 
+    @ExceptionHandler(value = [BadRequestException::class])
+    private fun handleBadRequestException(
+        ex: BadRequestException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/bad-request",
+            "Bad request",
+            400,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [DateTimeParseException::class])
+    private fun handleDateTimeParseExceptionException(
+        ex: DateTimeParseException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "https://github.com/i-on-project/core/tree/master/docs/api/events.md#invalid-date-type",
+            "Invalid Date format",
+            400,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
     @ExceptionHandler(value = [PSQLException::class])
     private fun handleUnableToCreateStatementException(
-            ex: PSQLException,
-            request: HttpServletRequest
-    ) : ResponseEntity<ProblemJson> {
+        ex: PSQLException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
         return handleResponse(
-                "",
-                "Internal Error (DB)",
-                500,
-                ex.localizedMessage,
-                request.requestURI
+            "/err/internal-db-error",
+            "Internal Error (DB)",
+            500,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [HttpRequestMethodNotSupportedException::class])
+    private fun handleHttpRequestMethodNotSupportedException(
+        ex: HttpRequestMethodNotSupportedException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/method-not-allowed",
+            "Method not allowed for the target resource",
+            405,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [HttpMediaTypeNotSupportedException::class])
+    private fun handleHttpMediaTypeNotSupported(
+        ex: HttpMediaTypeNotSupportedException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/media-type-not-supported",
+            "This resource does not support the provided media type",
+            415,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [HttpMessageNotReadableException::class])
+    private fun handleHttpMessageNotReadableException(
+        ex: HttpMessageNotReadableException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/message-not-readable",
+            "Could not interpret the contents of the message body.",
+            400,
+            ex.localizedMessage,
+            request.requestURI
         )
     }
 
     @ExceptionHandler(value = [InternalServerErrorException::class])
     private fun handleInternalServerErrorException(
-            ex: InternalServerErrorException,
-            request: HttpServletRequest
-    ) : ResponseEntity<ProblemJson> {
+        ex: InternalServerErrorException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
         return handleResponse(
-                "",
-                "Internal Error",
-                500,
-                ex.localizedMessage,
-                request.requestURI
+            "/err/internal-error",
+            "Internal Error",
+            500,
+            ex.localizedMessage,
+            request.requestURI
         )
     }
 
@@ -54,7 +128,7 @@ class ExceptionHandler {
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
         return handleResponse(
-            "",
+            "/err/resource-not-found",
             "Resource not found",
             404,
             ex.localizedMessage,
@@ -67,13 +141,27 @@ class ExceptionHandler {
      * of a integer on a parameter. e.g. /v0/courses/BUG
      * or when is used an illegal character in a url. e.g. /v0/courses/ç/
      */
-    @ExceptionHandler(value = [NumberFormatException::class, IllegalArgumentException::class])
+    @ExceptionHandler(value = [NumberFormatException::class])
     private fun handleNumberFormatException(
         ex: NumberFormatException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
         return handleResponse(
-            "",
+            "/err/bad-request",
+            "Bad request",
+            400,
+            ex.localizedMessage,
+            request.requestURI
+        )
+    }
+
+    @ExceptionHandler(value = [IllegalArgumentException::class])
+    private fun handleIllegalArgumentException(
+        ex: NumberFormatException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/bad-request",
             "Bad request",
             400,
             ex.localizedMessage,
@@ -91,7 +179,7 @@ class ExceptionHandler {
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
         return handleResponse(
-            "",
+            "/err/incorrect-params",
             "Incorrect Query Parameters",
             400,
             ex.localizedMessage,
@@ -104,15 +192,39 @@ class ExceptionHandler {
      * tries to access a restricted resource.
      */
     @ExceptionHandler(value = [UnauthenticatedUserException::class])
-    private fun handleUnauthenticatedAccess() {
+    private fun handleUnauthenticatedAccess(
+        ex: UnauthenticatedUserException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        val headers = HttpHeaders()
+        headers.add("WWW-Authenticate", "Bearer realm=\"I-ON\"")
+
+        return handleResponse(
+            "/err/unauthorized",
+            "UNAUTHORIZED",
+            401,
+            ex.localizedMessage,
+            request.requestURI,
+            headers
+        )
     }
 
     /*
      * Occurs when an Authenticated User
      * tries to access a resource that has no permissions for.
      */
-    @ExceptionHandler(value = [ProhibitedUserException::class])
-    private fun handleProhibitedAccess() {
+    @ExceptionHandler(value = [ForbiddenActionException::class])
+    private fun handleForbiddenActionException(
+        ex: ForbiddenActionException,
+        request: HttpServletRequest
+    ): ResponseEntity<ProblemJson> {
+        return handleResponse(
+            "/err/forbidden",
+            "FORBIDDEN",
+            403,
+            ex.localizedMessage,
+            request.requestURI
+        )
     }
 
     private fun handleResponse(
@@ -120,11 +232,14 @@ class ExceptionHandler {
         title: String,
         status: Int,
         detail: String,
-        instance: String
+        instance: String,
+        customHeaders: HttpHeaders = HttpHeaders()
     ): ResponseEntity<ProblemJson> {
+        customHeaders.add("Content-Type", Media.PROBLEM_JSON)
+
         return ResponseEntity
             .status(status)
-            .header("Content-Type", Media.PROBLEM_JSON)
+            .headers(customHeaders)
             .body(ProblemJson(type, title, status, detail, instance))
     }
 

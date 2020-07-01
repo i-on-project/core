@@ -3,9 +3,9 @@ package org.ionproject.core.calendar.icalendar.types
 import org.ionproject.core.toInt
 
 class Date private constructor(
-    private val year: Year,
-    private val month: Month,
-    private val day: MonthDay
+    val year: Year,
+    val month: Month,
+    val day: MonthDay
 ) : ICalendarDataType {
     companion object {
         private const val name: String = "DATE"

@@ -1,15 +1,8 @@
 package org.ionproject.core.calendar.icalendar.types
 
 class Text(
-    text: String
-) : ICalendarDataType {
     override val value: String
-
-    init {
-        var temp = text.replace(Regex("[^\\\\],"), "\\,")
-        temp = temp.replace(Regex("[^\\\\];"), "\\;")
-        value = temp
-    }
+) : ICalendarDataType {
 
     override fun toString(): String = value
 

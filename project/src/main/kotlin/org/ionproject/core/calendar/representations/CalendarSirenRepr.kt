@@ -11,6 +11,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.util.UriTemplate
 import java.net.URI
 
+private val datatypeMapper = DatatypeMapper.forType(Media.MEDIA_SIREN)
+
 private const val CALENDAR_CLASS = "calendar"
 
 fun Calendar.toSiren(): Siren =
@@ -21,7 +23,7 @@ fun Calendar.toSiren(): Siren =
                 name = "search",
                 title = "Search components",
                 method = HttpMethod.GET,
-                href = UriTemplate("${prod.value}/calendar?type,startBefore,startAfter,endBefore,endAfter,summary"),
+                href = UriTemplate("${prod.value}/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}"),
                 isTemplated = true,
                 type = Media.APPLICATION_JSON,
                 fields = listOf(
@@ -84,9 +86,7 @@ private fun Iterable<Property>.toMap(): Map<String, Any> =
             val propName = it.key.toLowerCase()
             val list = it.value
             if (list.size > 1) {
-                propName to arrayOf(
-                    list.map(Property::toSiren)
-                )
+                propName to list.map(Property::toSiren)
             } else {
                 propName to list[0].toSiren()
             }
@@ -99,14 +99,16 @@ private fun Property.toSiren(): Any {
         it.name.toLowerCase() to it.toSiren()
     }
 
+    val value = datatypeMapper.map(value)
+
     return if (params.isNullOrEmpty()) {
         object {
-            val value = this@toSiren.value.value
+            val value = value
         }
     } else {
         object {
             val parameters = params
-            val value = this@toSiren.value.value
+            val value = value
         }
     }
 }

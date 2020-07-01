@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.lang.Thread.sleep
 
 plugins {
     id("org.springframework.boot") version "2.2.6.RELEASE"
@@ -19,19 +18,21 @@ detekt {
 }
 
 group = "org.ionproject"
-version = "0.0.1-SNAPSHOT"
+version = "0.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
+dependencies    {
     // main dependencies
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("com.networknt:json-schema-validator:1.0.38")
+    implementation("org.json:json:20171018")
     implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
 
@@ -62,6 +63,9 @@ tasks.register<PgCreateDb>("pgCreateDb")
 tasks.register<PgCreateUser>("pgCreateUser")
 tasks.register<PgInitSchema>("pgInitSchema")
 tasks.register<PgAddData>("pgAddData")
+tasks.register<PgInsertReadToken>("pgInsertReadToken")
+tasks.register<PgInsertWriteToken>("pgInsertWriteToken")
+tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
 
 /**
  * Will execute all the tasks needed to setup the database running in a container,

@@ -1,7 +1,7 @@
 package org.ionproject.core.misc
 
-import org.ionproject.core.programme.ProgrammeErrorTest
 import org.ionproject.core.utils.ControllerTester
+import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -20,7 +20,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun badQueryParamsTest() {
-        doGet(badQueryParamsRequest)
+        doGet(badQueryParamsRequest) {
+          header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isNotFound}
@@ -29,7 +31,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun goodQueryParamsTest() {
-        doGet(goodQueryParamsRequest)
+        doGet(goodQueryParamsRequest) {
+          header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isOk}
@@ -38,7 +42,9 @@ internal class InterceptorsErrorTest : ControllerTester() {
 
     @Test
     fun excedingQueryParamsLimits() {
-        doGet(excedingQueryParamsLimit)
+        doGet(excedingQueryParamsLimit) {
+          header("Authorization", readTokenTest)
+        }
                 .andDo { print() }
                 .andExpect {
                     status {isBadRequest}

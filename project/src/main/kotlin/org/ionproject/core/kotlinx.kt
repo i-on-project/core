@@ -2,6 +2,7 @@ package org.ionproject.core
 
 import org.ionproject.core.common.querybuilder.Condition
 import org.jdbi.v3.core.statement.Query
+import org.postgresql.util.PGobject
 import org.springframework.util.MultiValueMap
 
 fun CharSequence.toInt(): Int {
@@ -52,30 +53,28 @@ fun <K, V, NK, NV> Map<K, V>.mapEntries(oper: (Map.Entry<K, V>) -> Pair<NK, NV>)
 fun String.removeWhitespace() =
   replace("\\s".toRegex(), "")
 
-/**
- * [regex] - regular expression used for comparison
- * [count] - how many characters to remove counting from the end
- */
-fun String.split(regex: Regex, count: Int = 1, limit: Int = 0): ArrayList<String> {
-    val array = arrayListOf<String>()
+fun PGobject.split(): List<String> {
+    value = value.removeSurrounding("(", ")")
 
-    var actualLimit = if (limit == 0) length else limit
-    var lastIndex = 0
-    var result = regex.find(this, lastIndex)
+    if (value.isEmpty()) return emptyList()
 
-    while (result != null && actualLimit > 0) {
-        --actualLimit
+    val list = mutableListOf<String>()
 
-        val nextLastIndex = result.range.last + 1
+    var startIndex = 0
+    var endIndex = 0
 
-        array.add(this.substring(lastIndex, nextLastIndex - count))
-
-        lastIndex = nextLastIndex
-
-        result = regex.find(this, lastIndex)
+    var parsingString = false
+    while(endIndex < value.length) {
+        val c = value[endIndex]
+        if (c == '"') parsingString = !parsingString
+        if (c == ',' && !parsingString) {
+            parsingString = false
+            list.add(value.substring(startIndex, endIndex))
+            startIndex = endIndex + 1
+        }
+        ++endIndex
     }
+    list.add(value.substring(startIndex, endIndex))
 
-    if (actualLimit > 0) array.add(substring(lastIndex))
-
-    return array
+    return list
 }
