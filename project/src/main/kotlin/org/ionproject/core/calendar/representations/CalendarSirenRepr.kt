@@ -40,7 +40,7 @@ fun Calendar.toSiren(): Siren =
         .link("about", href = URI("${prod.value}"))
         .toSiren()
 
-fun CalendarComponent.toSiren(about: URI) : Siren =
+fun CalendarComponent.toSiren(about: URI): Siren =
     SirenBuilder(sirenProperties)
         .klass(this::class.java.simpleName.toLowerCase())
         .link("self", href = URI.create("$about/calendar/${uid.value.value}"))

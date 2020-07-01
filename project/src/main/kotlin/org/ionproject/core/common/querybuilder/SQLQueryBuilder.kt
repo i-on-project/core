@@ -12,12 +12,12 @@ class SQLQueryBuilder {
         DESC
     }
 
-    fun with(query: Query) : With =
+    fun with(query: Query): With =
         With().apply {
             with(query)
         }
 
-    fun with(query: String) : With =
+    fun with(query: String): With =
         With().apply {
             with(query)
         }
@@ -26,12 +26,12 @@ class SQLQueryBuilder {
     fun selectDistinct(vararg columns: String): From = Select().selectDistinct(*columns)
 
     inner class With : Select() {
-        fun with(query: Query) : With {
+        fun with(query: Query): With {
             queryComponents.add(query.toString())
             return this
         }
 
-        fun with(query: String) : With {
+        fun with(query: String): With {
             queryComponents.add("$query\n")
             return this
         }
@@ -50,14 +50,14 @@ class SQLQueryBuilder {
     }
 
     open inner class From {
-        fun from(table: String) : Join {
+        fun from(table: String): Join {
             queryComponents.add("from $table\n")
             return Join()
         }
     }
 
     open inner class Join : Where() {
-        fun join(table: String, on: Pair<String, String>) : Join {
+        fun join(table: String, on: Pair<String, String>): Join {
             queryComponents.add("join $table on ${on.first} = ${on.second}\n")
             return this
         }
@@ -68,7 +68,7 @@ class SQLQueryBuilder {
 
         fun where(condition: String): Where {
             queryComponents.add(
-                if(first){
+                if (first) {
                     first = false
                     "where $condition\n"
                 } else
@@ -77,7 +77,7 @@ class SQLQueryBuilder {
             return this
         }
 
-        fun where(srcFilters: Map<String, Condition>, toBeApplied: MultiValueMap<String, String>) : Where {
+        fun where(srcFilters: Map<String, Condition>, toBeApplied: MultiValueMap<String, String>): Where {
             toBeApplied.forEach {
                 val toBeAppliedKey = it.key
 
@@ -95,8 +95,8 @@ class SQLQueryBuilder {
         }
     }
 
-    open inner class GroupBy: Having() {
-        fun groupBy(vararg columns: String) : Having {
+    open inner class GroupBy : Having() {
+        fun groupBy(vararg columns: String): Having {
             queryComponents.add("group by ${columns.joinToString()}")
             return this
         }
@@ -108,7 +108,7 @@ class SQLQueryBuilder {
             return this
         }
 
-        fun having(condition: String) : OrderBy {
+        fun having(condition: String): OrderBy {
             queryComponents.add("having $condition\n")
             return this
         }
@@ -117,7 +117,7 @@ class SQLQueryBuilder {
     open inner class OrderBy : Limit() {
         private var first = true
 
-        open fun orderBy(column: String, order: Order = Order.ASC) : OrderBy {
+        open fun orderBy(column: String, order: Order = Order.ASC): OrderBy {
             queryComponents.add(", $column $order\n")
             return this
         }
@@ -138,7 +138,7 @@ class SQLQueryBuilder {
     }
 
     open inner class Builder {
-        fun build() : String {
+        fun build(): String {
             return queryComponents.reduce { acc, s ->
                 acc + s
             }

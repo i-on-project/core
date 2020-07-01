@@ -1,5 +1,3 @@
-
-import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.*
@@ -9,20 +7,20 @@ class TokenGenerator {
     private val STRING_LENGTH = STRING_BIT_SIZE / 8
 
     private val HASH_ALGORITHM = "SHA-256"
-    private val TOKEN_DURATION : Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
+    private val TOKEN_DURATION: Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
 
-    fun generateRandomString() : ByteArray {
+    fun generateRandomString(): ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
         SecureRandom().nextBytes(bytes)
 
         return bytes
     }
 
-    fun encodeBase64url(tokenBytes : ByteArray) : String {
+    fun encodeBase64url(tokenBytes: ByteArray): String {
         val token = Base64
-                .getUrlEncoder()                //replaces '+' , '/'  for '-' , '_'
-                .withoutPadding()               //Remove the '='
-                .encodeToString(tokenBytes)
+            .getUrlEncoder()                //replaces '+' , '/'  for '-' , '_'
+            .withoutPadding()               //Remove the '='
+            .encodeToString(tokenBytes)
 
         println("string token:$token")
         return token

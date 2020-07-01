@@ -14,53 +14,53 @@ import org.springframework.util.MultiValueMap
 
 @Repository
 class CalendarRepoImpl(
-  private val transactionManager: TransactionManager,
-  private val componentMapper: CalendarComponentMapper
+    private val transactionManager: TransactionManager,
+    private val componentMapper: CalendarComponentMapper
 ) : CalendarRepo {
 
     override fun getClassCalendar(
-      courseId: Int,
-      calendarTerm: String,
-      filters: MultiValueMap<String, String>
+        courseId: Int,
+        calendarTerm: String,
+        filters: MultiValueMap<String, String>
     ): Calendar? {
-      val components = transactionManager.run {
-        checkIfClassIsValid(it, courseId, calendarTerm)
+        val components = transactionManager.run {
+            checkIfClassIsValid(it, courseId, calendarTerm)
 
-        CalendarData.calendarFromClassQuery(it, courseId, calendarTerm, filters)
-          .map(componentMapper)
-          .list()
-      }
+            CalendarData.calendarFromClassQuery(it, courseId, calendarTerm, filters)
+                .map(componentMapper)
+                .list()
+        }
 
-      return Calendar(
-        ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
-        Version(),
-        null,
-        null,
-        components
-      )
+        return Calendar(
+            ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
+            Version(),
+            null,
+            null,
+            components
+        )
     }
 
     override fun getClassSectionCalendar(
-      courseId: Int,
-      calendarTerm: String,
-      classSectionId: String,
-      filters: MultiValueMap<String, String>
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        filters: MultiValueMap<String, String>
     ): Calendar? {
-      val components = transactionManager.run {
-        checkIfClassSectionIsValid(it, courseId, calendarTerm, classSectionId)
+        val components = transactionManager.run {
+            checkIfClassSectionIsValid(it, courseId, calendarTerm, classSectionId)
 
-        CalendarData.calendarFromClassSectionQuery(it, courseId, calendarTerm, classSectionId, filters)
-          .map(componentMapper)
-          .list()
-      }
+            CalendarData.calendarFromClassSectionQuery(it, courseId, calendarTerm, classSectionId, filters)
+                .map(componentMapper)
+                .list()
+        }
 
-      return Calendar(
-        ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
-        Version(),
-        null,
-        null,
-        components
-      )
+        return Calendar(
+            ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
+            Version(),
+            null,
+            null,
+            components
+        )
     }
 
     override fun getClassCalendarComponent(courseId: Int, calendarTerm: String, componentId: Int): Calendar? {
@@ -68,20 +68,20 @@ class CalendarRepoImpl(
             val component = transactionManager.run {
                 checkIfClassIsValid(it, courseId, calendarTerm)
 
-              it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
-                .bind(CalendarData.COURSE_ID, courseId)
-                .bind(CalendarData.CAL_TERM, calendarTerm)
-                .bind(CalendarData.UID, componentId)
-                .map(componentMapper)
-                .one()
+                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_QUERY)
+                    .bind(CalendarData.COURSE_ID, courseId)
+                    .bind(CalendarData.CAL_TERM, calendarTerm)
+                    .bind(CalendarData.UID, componentId)
+                    .map(componentMapper)
+                    .one()
             }
 
             return Calendar(
-              ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
-              Version(),
-              null,
-              null,
-              mutableListOf(component)
+                ProductIdentifier(Uri.forKlassByCalTerm(courseId, calendarTerm).toString()),
+                Version(),
+                null,
+                null,
+                mutableListOf(component)
             )
 
         } catch (e: IllegalStateException) {
@@ -91,30 +91,30 @@ class CalendarRepoImpl(
     }
 
     override fun getClassSectionCalendarComponent(
-      courseId: Int,
-      calendarTerm: String,
-      classSectionId: String,
-      componentId: Int
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String,
+        componentId: Int
     ): Calendar? {
         try {
             val component = transactionManager.run {
                 checkIfClassSectionIsValid(it, courseId, calendarTerm, classSectionId)
 
-              it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
-                .bind(CalendarData.COURSE_ID, courseId)
-                .bind(CalendarData.CAL_TERM, calendarTerm)
-                .bind(CalendarData.ID, classSectionId)
-                .bind(CalendarData.UID, componentId)
-                .map(componentMapper)
-                .one()
+                it.createQuery(CalendarData.CALENDAR_COMPONENT_FROM_CLASS_SECTION_QUERY)
+                    .bind(CalendarData.COURSE_ID, courseId)
+                    .bind(CalendarData.CAL_TERM, calendarTerm)
+                    .bind(CalendarData.ID, classSectionId)
+                    .bind(CalendarData.UID, componentId)
+                    .map(componentMapper)
+                    .one()
             }
 
             return Calendar(
-              ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
-              Version(),
-              null,
-              null,
-              mutableListOf(component)
+                ProductIdentifier(Uri.forClassSectionById(courseId, calendarTerm, classSectionId).toString()),
+                Version(),
+                null,
+                null,
+                mutableListOf(component)
             )
         } catch (e: IllegalStateException) {
             return null
@@ -135,7 +135,12 @@ class CalendarRepoImpl(
         }
     }
 
-    private fun checkIfClassSectionIsValid(handle: Handle, courseId: Int, calendarTerm: String, classSectionId: String) {
+    private fun checkIfClassSectionIsValid(
+        handle: Handle,
+        courseId: Int,
+        calendarTerm: String,
+        classSectionId: String
+    ) {
         val count = handle
             .createQuery(CalendarData.CHECK_IF_CLASS_SECTION_EXISTS)
             .bind(CalendarData.CAL_TERM, calendarTerm)

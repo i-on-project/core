@@ -16,7 +16,7 @@ abstract class Condition(
         return "(${conditions.joinToString(" $aggregationKind ")})"
     }
 
-    open fun formatVariable() : String = ":%s"
+    open fun formatVariable(): String = ":%s"
 
     abstract fun parse(s: String): Any
 }

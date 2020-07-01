@@ -1,7 +1,6 @@
 package org.ionproject.core.calendarTerm.sql
 
 import org.ionproject.core.common.Uri
-import org.ionproject.core.course.sql.CourseData
 import org.ionproject.core.search.SearchableEntities
 import org.ionproject.core.search.sql.SearchData
 

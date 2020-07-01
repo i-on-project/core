@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 private const val specLocation = "https://github.com/i-on-project/core/tree/master/docs/api"
@@ -64,14 +63,14 @@ class JsonHomeController {
                     .toResourceObject()
             }
             .newResource("programmes") {
-             it
-                   .href(Uri.forProgrammes())
-                   .docs(programmesSpecUri)
-                   .formats(Media.MEDIA_SIREN)
-                   .allow(HttpMethod.GET)
-                   .toResourceObject()
+                it
+                    .href(Uri.forProgrammes())
+                    .docs(programmesSpecUri)
+                    .formats(Media.MEDIA_SIREN)
+                    .allow(HttpMethod.GET)
+                    .toResourceObject()
             }
-            .newResource("issueToken"){
+            .newResource("issueToken") {
                 it
                     .href(URI(Uri.issueToken))
                     .docs(accessManagerSpecUri)
@@ -79,7 +78,7 @@ class JsonHomeController {
                     .allow(HttpMethod.POST)
                     .toResourceObject()
             }
-            .newResource("revokeToken"){
+            .newResource("revokeToken") {
                 it
                     .href(URI(Uri.revokeToken))
                     .docs(accessManagerSpecUri)

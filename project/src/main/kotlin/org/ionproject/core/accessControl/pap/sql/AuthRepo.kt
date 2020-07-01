@@ -4,11 +4,11 @@ import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 
 interface AuthRepo {
-  fun getTableToken(tokenHash: String): TokenEntity?
+    fun getTableToken(tokenHash: String): TokenEntity?
 
-  fun getPolicies(scope: String, apiVersion: String): List<PolicyEntity>
+    fun getPolicies(scope: String, apiVersion: String): List<PolicyEntity>
 
-  fun storeToken(token: TokenEntity): Boolean
+    fun storeToken(token: TokenEntity): Boolean
 
-  fun revokeToken(hash: String): Boolean
+    fun revokeToken(hash: String): Boolean
 }

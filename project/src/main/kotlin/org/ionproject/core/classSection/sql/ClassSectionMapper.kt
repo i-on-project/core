@@ -17,6 +17,7 @@ class ClassSectionMapper : RowMapper<ClassSection> {
             rs.getInt(CID),
             rs.getString(ACR),
             rs.getString(CAL_TERM),
-            rs.getString(ID))
+            rs.getString(ID)
+        )
     }
 }
