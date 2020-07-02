@@ -86,7 +86,6 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
 (4, 'GET', 'v0', 'programmes/?'),
 (3, 'POST', '*', 'issueToken'),
-(1, 'POST', '*', 'revokeToken'),
 (2, 'POST', '*', 'revokeToken'),
 (3, 'POST', '*', 'revokeToken'),
 (4, 'POST', '*', 'revokeToken'),

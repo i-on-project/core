@@ -7,6 +7,7 @@ import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
+import org.ionproject.core.utils.writeTokenTest
 import org.junit.jupiter.api.*
 import java.net.URI
 
@@ -201,7 +202,7 @@ internal class AccessControlTest: ControllerTester() {
             header("Authorization", issueTokenTest)
             header("Content-Type", "application/json")
 
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
+            content = "{\"scope\":\"urn:org:ionproject:scopes:api:write\"}"
         }
                 .andDo { print() }
                 .andExpect { status { isOk } }
@@ -244,7 +245,7 @@ internal class AccessControlTest: ControllerTester() {
     @Test
     fun revokeTokenInvalid() {
         doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
+            header("Authorization", writeTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=ggdsiojgfsdfioj"
         }.andDo { print() }
@@ -258,7 +259,7 @@ internal class AccessControlTest: ControllerTester() {
     @Test
     fun revokeTokenBadRequest() {
         doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
+            header("Authorization", writeTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
         }.andDo { print() }
                 .andExpect { status { isBadRequest } }

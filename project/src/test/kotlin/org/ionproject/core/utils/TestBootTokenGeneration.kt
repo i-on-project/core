@@ -32,11 +32,12 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
         //generate the token needed for issuing other tokens
         val token = generateToken(readScope, -1)
         val issueToken = generateToken(issueScope, -1)
+        val writeToken = generateToken(writeScope, -1)
 
         //with the issueToken issue read & write token
         issueTokenTest = "Bearer $issueToken"
         readTokenTest = "Bearer $token"
-        //val writeToken = issueToken(issueToken, writeScope)
+        writeTokenTest = "Bearer $writeToken"
     }
 
     /**
