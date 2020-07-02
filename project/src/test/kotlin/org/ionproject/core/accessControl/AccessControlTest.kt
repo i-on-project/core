@@ -223,6 +223,20 @@ internal class AccessControlTest: ControllerTester() {
     }
 
     /**
+     * Tries to revoke a read token, which shall not succed
+     */
+    @Test
+    fun tryRevokeReadToken() {
+        doPost(revokeTokenUri) {
+            header("Authorization", readTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=$readTokenTest"
+        }.andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
+    }
+
+    /**
      * Tries to issue a token, with an invalid token
      */
     @Test
