@@ -22,7 +22,7 @@ class TokenGenerator {
     private val TOKEN_DURATION: Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
 
     private val JWT_ALGORITHM = "HmacSHA256"
-    private val SECRET_KEY = "t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"//System.getenv("secretKey")
+    private val SECRET_KEY = System.getenv("secretKey")
 
     fun generateRandomString(): ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
@@ -106,8 +106,20 @@ class TokenGenerator {
         alg.init(secretKey)
 
         val signatureBytes = alg.doFinal(jwt.toByteArray())
-        val signature = signatureBytes.fold("", { str, it -> str + "%02x".format(it) })
+        return signatureBytes.fold("", { str, it -> str + "%02x".format(it) })
+    }
 
-        return "$jwt.$signature"
+    /**
+     * Verifies if the signature on the received jwt is valid,
+     * this operations rebuilds the signature and compares the expected with the actual value.
+     */
+    fun verifySignatureJWT(jwt: String) : Boolean {
+        val parts = jwt.split(".")
+
+        val requestJwtSignature = parts[2]
+        val headerPayload = parts[0] + "." + parts[1]
+        val generatedSignature = signJWT(headerPayload)
+
+        return requestJwtSignature == generatedSignature
     }
 }

@@ -42,7 +42,8 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
      */
     fun generateImportToken(url: String, clientId: Int) : String {
         val jwtWithoutSignature = tokenGenerator.generateImportToken(url, clientId)
-        val jwtSigned = tokenGenerator.signJWT(jwtWithoutSignature)
+        val signature = tokenGenerator.signJWT(jwtWithoutSignature)
+        val jwtSigned = "$jwtWithoutSignature.$signature"
 
         return "&access_token=$jwtSigned"
     }

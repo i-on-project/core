@@ -63,11 +63,10 @@ class AccessController(private val services: AccessServices) {
         @RequestAttribute("clientId") clientId: Int
     ): ResponseEntity<Any> {
 
-        var url = Uri.baseUrl + Uri.forCalendarByClass(cid, calterm).toString()
-        url = addQueryParams(url, query)
+        var url = Uri.forCalendarByClass(cid, calterm).toString()
 
         val jwt = services.generateImportToken(url, clientId)
-        url += jwt
+        url = Uri.baseUrl + url + addQueryParams(query) + jwt
 
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
@@ -84,11 +83,10 @@ class AccessController(private val services: AccessServices) {
         @RequestAttribute("clientId") clientId: Int
     ): ResponseEntity<Any> {
 
-        var url = Uri.baseUrl + Uri.forCalendarByClassSection(cid, calterm, sid).toString()
-        url = addQueryParams(url, query)
+        var url = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
         val jwt = services.generateImportToken(url, clientId)
-        url += jwt
+        url = Uri.baseUrl + url + addQueryParams(query) + jwt
 
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
@@ -96,13 +94,16 @@ class AccessController(private val services: AccessServices) {
     /**
      * Concatenates the query parameters to the url
      */
-    private fun addQueryParams(url: String, query: Map<String, String>) : String {
-        var url = "$url?"
+    private fun addQueryParams(
+        query: Map<String, String>
+    ) : String {
+
+        var queryString = "?"
         for (key in query.keys) {
-            url += "$key=${query[key]}&"
+            queryString += "$key=${query[key]}&"
         }
 
-        return url.dropLast(1) // removes the last &
+        return queryString.dropLast(1) // removes the last &
     }
 
 }

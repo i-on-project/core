@@ -1,8 +1,12 @@
 package org.ionproject.core.accessControl
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
+import org.ionproject.core.accessControl.representations.JWTPayloadRepr
+import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -17,6 +21,62 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 @Component
 class PDP {
     private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
+    private val tokenGenerator = TokenGenerator()
+
+    /**
+     * Evaluates if the access token received as a query parameter is valid
+     */
+    fun evaluateJwtToken(jwt: String, method: String, requestUrl: String) {
+        val parts = jwt.split(".")
+
+        //Check method - this type of access doesn't allow UNSAFE METHODS (POST, PUT...)
+        if(method != "GET" && method != "HEAD") {
+            logger.info("An access_token query parameter authentication method failed: INVALID METHOD \"$method\" ")
+            throw BadRequestException("This type of access doesn't allow unsafe methods (PUT, POST...).")
+        }
+
+        //Check token structure
+        if(parts.size != 3) {
+            logger.info("An access_token query parameter authentication method failed: " +
+                "INVALID TOKEN STRUCTURE \"$jwt\" ")
+            throw BadRequestException("The presented token is invalid " +
+                "(missing a component [HEADER].[PAYLOAD].[SIGNATURE]).")
+        }
+
+        //Check token signature
+        if(!tokenGenerator.verifySignatureJWT(jwt)) {
+            logger.info("An access_token query parameter authentication method failed: INVALID SIGNATURE \"$jwt\" ")
+            throw UnauthenticatedUserException("Invalid Token (signature check failed).")
+
+        }
+
+        //Payload object
+        val jwtPayload = decodeJwtPayload(jwt)
+
+        //Check if token is not expired
+        val currTime = System.currentTimeMillis()
+        if(currTime > jwtPayload.exp) {
+            logger.info("An access_token query parameter authentication method failed: TOKEN EXPIRED")
+            throw UnauthenticatedUserException("Token expired, try requesting another import link.")
+        }
+
+        //Check if claim URL matches with request URL
+        if(jwtPayload.url != requestUrl) {
+            logger.info("An access_token query parameter authentication method failed: INVALID ACCESS the presented " +
+                "token does not grant access to the current location. <EXPECTED:${jwtPayload.url}> | <ACTUAL:${requestUrl}>\"")
+            throw ForbiddenActionException("The presented token does not grant access to the current location. " +
+                "<EXPECTED:${jwtPayload.url}> | <ACTUAL:${requestUrl}>")
+        }
+
+    }
+
+    private fun decodeJwtPayload(jwt: String) : JWTPayloadRepr {
+        val parts = jwt.split(".")
+        val payloadJson = tokenGenerator.decodeBase64url(parts[1])
+
+        val mapper = jacksonObjectMapper()
+        return mapper.readValue(payloadJson, JWTPayloadRepr::class.java)
+    }
 
     fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Int {
         val token = pap.getTableToken(tokenHash)
