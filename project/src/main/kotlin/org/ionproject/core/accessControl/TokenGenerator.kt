@@ -19,7 +19,7 @@ class TokenGenerator {
     private val STRING_LENGTH = STRING_BIT_SIZE / 8
 
     private val HASH_ALGORITHM = "SHA-256"
-    private val TOKEN_DURATION: Long = 1000 * 60 * 60 * 24 * 20 //Time in milliseconds before token expiring
+    private val TOKEN_DURATION: Long = 1000L * 60 * 60 * 24 * 365 //Time in milliseconds before token expiring
 
     private val JWT_ALGORITHM = "HmacSHA256"
     private val SECRET_KEY = System.getenv("secretKey")
