@@ -35,8 +35,7 @@ internal class ImportLinkTests: ControllerTester() {
             .andDo { print() }
             .andExpect { status { isOk } }
             .andReturn()
-            .response
-            .contentAsString
+
     }
 
     /**
@@ -60,8 +59,7 @@ internal class ImportLinkTests: ControllerTester() {
             .andDo { print() }
             .andExpect { status { isOk } }
             .andReturn()
-            .response
-            .contentAsString
+
     }
 
     private fun convertToJson(result: String) : ImportLinkRepr {

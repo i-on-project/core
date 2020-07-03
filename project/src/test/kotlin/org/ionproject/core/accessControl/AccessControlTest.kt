@@ -237,6 +237,20 @@ internal class AccessControlTest: ControllerTester() {
     }
 
     /**
+     * Tries to revoke a read token, using a write token, which is a forbidden operation
+     */
+    @Test
+    fun tryRevokeReadTokenUsingWriteToken() {
+        doPost(revokeTokenUri) {
+            header("Authorization", writeTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=$readTokenTest"
+        }.andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
+    }
+
+    /**
      * Tries to issue a token, with an invalid token
      */
     @Test
@@ -249,21 +263,6 @@ internal class AccessControlTest: ControllerTester() {
         }
                 .andDo { print() }
                 .andExpect { status { isUnauthorized } }
-                .andReturn()
-    }
-
-    /**
-     * Tries to revoke an invalid token
-     * the answer should be 200 OK as specified by [RFC 7009]
-     */
-    @Test
-    fun revokeTokenInvalid() {
-        doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=ggdsiojgfsdfioj"
-        }.andDo { print() }
-                .andExpect { status { isOk } }
                 .andReturn()
     }
 

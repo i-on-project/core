@@ -6,6 +6,7 @@ import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
+import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.PostMapping
@@ -31,21 +32,34 @@ class AccessController(private val services: AccessServices) {
     }
 
     /**
-     * According to [RFC 7009] , the body should be of content-type "application/x-wwww-form-urlencoded" and contain the token to revoke
-     * Invalid tokens revoke requests should also return 200 OK
+     * According to [RFC 7009] , the body should be of content-type "application/x-wwww-form-urlencoded" a
+     * nd contain the token to revoke
      *
-     * The only occasion the response of this handler is not 200 OK is when the body has not used the key token,
-     * which is a behavior not specified by the RFC.
+     * Invalid tokens revoke requests should also return 200 OK, but this condition can't be fully respected as there is
+     * the chance that a token which has permission to access revoke endpoint (write) would revoke a read (PUBLIC) token.
      *
      * When client secrets are added a new policy should be checked, if the token was issued by the client,
      * if that validation fails the client should be informed.
-     *
      */
     @PostMapping(Uri.revokeToken, consumes = [Media.FORM_URLENCODED_VALUE])
-    fun revokeToken(@RequestParam body: Map<String, String>): ResponseEntity<Any> {
+    fun revokeToken(
+        @RequestParam body: Map<String, String>,
+        @RequestHeader("Authorization") authHeader: String
+    ): ResponseEntity<Any> {
         val token = body["token"]
         if (token.isNullOrEmpty())
             throw BadRequestException("No token specified.")
+
+        // Before revoking the token check if the token belongs to the client
+        // (e.g. write token revoking read token which has no permission to access /revoke)
+        // as there is no client_id at this phase, only check if the token used
+        // to authenticate is the same as the one trying to revoke
+
+        val tokenAuth = authHeader.split(" ")
+        val tokenVal =  tokenAuth[tokenAuth.lastIndex]
+
+        if(tokenVal != token)
+            throw ForbiddenActionException("You can't revoke another token besides the presented one.")
 
         services.revokeToken(token)
         return ResponseEntity.ok().build()

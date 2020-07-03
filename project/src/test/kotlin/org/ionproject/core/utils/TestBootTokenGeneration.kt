@@ -6,6 +6,7 @@ import org.ionproject.core.accessControl.pap.sql.AuthRepo
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 /**
  * It creates at startup the tokens needed to pass the tests,
