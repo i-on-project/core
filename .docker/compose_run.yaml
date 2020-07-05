@@ -12,6 +12,7 @@ services:
         - 10023:8080
       environment:
         - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
+        - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
     db:
       build:
         context: ./src/res

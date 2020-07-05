@@ -22,7 +22,7 @@ class TokenGenerator {
     private val TOKEN_DURATION: Long = 1000L * 60 * 60 * 24 * 365 //Time in milliseconds before token expiring
 
     private val JWT_ALGORITHM = "HmacSHA256"
-    private val SECRET_KEY = System.getenv("secretKey")
+    private val SECRET_KEY = System.getenv("ION_CORE_SECRET_KEY")
 
     fun generateRandomString(): ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
