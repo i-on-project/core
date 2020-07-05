@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.*
 import java.net.URI
 
 var readTokenTest = ""  //Used to allow tests to run or they will all fail with 400
+var writeTokenTest = ""
 var issueTokenTest = "" //Used to test the issue of tokens in AccessControlTest
 
 @SpringBootTest

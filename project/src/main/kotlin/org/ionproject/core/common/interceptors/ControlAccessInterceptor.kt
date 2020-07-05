@@ -28,6 +28,20 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     private val pdp: PDP = PDP()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        //If the request is one made by an import link's it will instead of a Authorization header
+        //contain the query parameter access_token
+        /**
+         * If the user includes an access_token query parameter when he has a valid token to read the resource
+         * in the header Authorization, this current way will ignore the Authorization header, is this a correct
+         * behavior?
+         */
+        val jwtToken = request.getParameter("access_token")
+        if(jwtToken != null) {
+            pdp.evaluateJwtToken(jwtToken, request.method, request.requestURI)
+            logger.info("An access_token query parameter authentication method succeeded for location \"${request.servletPath}\".")
+            return true
+        }
+
         //Client doesn't include header "Authorization"
         val header = request.getHeader("Authorization")
             ?: throw UnauthenticatedUserException("User not authenticated.")
@@ -48,10 +62,13 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
         //Sends the request with the token Hash down to the Policy Decision Point
         val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
-        if (pdp.evaluateRequest(tokenHash, requestDescriptor))
-            return true
 
-        return false
+        //Checks if the token is valid, if any policy is not valid an exception will be thrown
+        //and the next interceptor won't be called
+        val clientId = pdp.evaluateRequest(tokenHash, requestDescriptor)
+
+        request.setAttribute("clientId", clientId)
+        return true
     }
 
     private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
