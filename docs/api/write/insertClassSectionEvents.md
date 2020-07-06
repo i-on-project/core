@@ -39,12 +39,12 @@ Properties marked with the quote "consult [#Constants](#constants) for the avail
     - *string* type
     - extensive name of
     - minimum number of characters: 2
-    - maximum number of characters: 50
+    - maximum number of characters: 100
     - e.g. `Instituto Superior de Engenharia de Lisboa`
 * `acr`
     - *string* type
     - acronym 
-    - minimum number of characters: 2
+    - minimum number of characters: 1
     - maximum number of characters: 10
     - e.g. `ISEL`
 * **required**
@@ -55,13 +55,13 @@ Properties marked with the quote "consult [#Constants](#constants) for the avail
 * `name`
     - *string* type
     - extensive name of 
-    - minimum number of characters: 2
-    - maximum number of characters: 50
+    - minimum number of characters: 1
+    - maximum number of characters: 100
     - e.g. `Licenciatura de Engenharia de Lisboa`
 * `acr`
     - *string* type
     - acronym
-    - minimum number of characters: 2
+    - minimum number of characters: 1
     - maximum number of characters: 10
     - e.g. `LEIC`
 * **required**

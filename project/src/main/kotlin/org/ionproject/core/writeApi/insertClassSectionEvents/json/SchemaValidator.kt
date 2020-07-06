@@ -14,11 +14,11 @@ private const val insertClassSectionEventsSchema = """{
         "name": {
           "type": "string",
           "minLength": 2,
-          "maxLength": 50
+          "maxLength": 100
         },
         "acr": {
           "type": "string",
-          "minLength": 2,
+          "minLength": 1,
           "maxLength": 10
         }
       },
