@@ -33,14 +33,13 @@ auth_gcp() {
     # completely wipe the credentials file from the disk
     if [ -f "$key_file" ]; then
       printf "Wiping key file.\n"
-      key_file_size="$(du -b "$key_file" | awk '{print $1}')"
-      wipe_bs="512"
-      wipe_count="$(( (key_file_size / wipe_bs) + 5 ))"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$wipe_count"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$wipe_count"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$wipe_count"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$wipe_count"
-      dd if=/dev/zero of="$key_file" bs="$wipe_bs" count="$wipe_count"
+      key_file_size="$(du -k "$key_file" | awk '{print $1}')"
+      wipe_bs="1K"
+      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
+      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
+      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
+      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
+      dd if=/dev/zero of="$key_file" bs="$wipe_bs" count="$key_file_size"
       rm "$key_file"
     fi
   }
