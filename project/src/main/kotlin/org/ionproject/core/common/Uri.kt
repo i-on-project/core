@@ -5,7 +5,6 @@ import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 object Uri {
-    const val baseUrl = "https://host1.dev.ionproject.org"
     const val version = "/v0"
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
