@@ -1,0 +1,28 @@
+version: '3'
+# WARNING!
+# In order for this procedure to work, you need to run docker-compose
+# from the root of the project, such that PWD=<root of the repo folder>
+# e.g. cd <root of project> && docker-compose -f .docker/compose_deploy.yaml run --rm core-deploy
+#
+# Credentials. Create a file named `env_deploy` in this folder, with the contents:
+# GCP_KEY='<JSON key credentials>'
+# GCP_ZONE='<zone of the GCE instance>'
+# GCP_REPO='<GCR repository name>'
+# GCP_INSTANCE='<target GCE instance name>'
+# GCP_PROJECT_ID='<GCP project ID>'
+# GCP_ACCOUNT='<GCP service account's email>'
+# GCP_DB_INSTANCE='<GCP SQL connection instance name>'
+# DB_CON_STRING_SUFFIX='<real db name>?user=<username>&password=<user password>'
+# DEV_DB_CON_STRING_SUFFIX='<auxiliary db name>?user=<username>&password=<user password>'
+services:
+    core-deploy:
+      build:
+        context: ..
+        dockerfile: ./project/res/dockerfile_deploy
+      env_file: ./env_deploy
+      network_mode: host
+      working_dir: "${PWD}"
+      container_name: core-deploy-container
+      volumes:
+        - "${PWD}:${PWD}"
+        - "/var/run/docker.sock:/var/run/docker.sock"
