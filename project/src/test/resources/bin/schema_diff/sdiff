@@ -4,6 +4,26 @@
 # Evvar $DEV_DB_URL -> URL to the dev DB
 # Evvar $DB_URL     -> URL to the release DB
 
+# Poll for DB availability
+# 1 minute of timeout
+timeout=60
+start_time="$(date +%s)"
+printf "Attempting to connect to the database...\\n"
+while true; do
+  if psql -Atx "$DEV_DB_URL" -1 -c "select" >/dev/null 2>/dev/null; then
+    printf "Connection established with the database.\\n"
+    break
+  fi
+  printf "DB unavailable. Retrying...\\n"
+
+  current_time="$(date +%s)"
+  if [ "$(( current_time - start_time ))" -ge "$timeout" ]; then
+    printf "Timeout reached. Exiting...\\n"
+    exit 1
+  fi
+  sleep 1
+done
+
 set -e
 
 schema_diff_file="/tmp/schema_diff"
@@ -19,7 +39,7 @@ cat "${scripts_dir}/drop-schema.sql" "${scripts_dir}/create-schema.sql" |\
 
 # Gen schema diff
 printf "\\set ON_ERROR_STOP on\n" >"$schema_diff_file"
-migra --unsafe "$DB_URL" "$DEV_DB_URL" | tee -a "$schema_diff_file"
+migra "$DB_URL" "$DEV_DB_URL" | tee -a "$schema_diff_file"
 
 if [ -n "$1" ] && [ "$1" = "apply" ]; then
     psql -Atx "$DB_URL" -1 -f "$schema_diff_file" >&2
