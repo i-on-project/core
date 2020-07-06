@@ -38,6 +38,7 @@ The following tokens will be inserted to the database container, for ease of use
 - Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`
 - Write: `hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok`
 - Issue: `vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144`
+The secret key for import links used is: `t8abumA3JBJrd7q0LuN3nSzKGBfslOYb`.
 
 Build
 =====
@@ -53,11 +54,11 @@ $ # Start DB container (loaded with testing data)
 $ export JDBC_DATABASE_URL="jdbc:postgresql://localhost:10020/ion?user=unpriv&password=changeit"
 $ ./gradlew pgSetupDb
 $
-$ # Run the integration/unit tests
-$ ./gradlew test
-$
 $ # Environment variable used to generate import links (256 bit key)
 $ export ION_CORE_SECRET_KEY="t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"
+$
+$ # Run the integration/unit tests
+$ ./gradlew test
 $
 $ # Build
 $ ./gradlew build
