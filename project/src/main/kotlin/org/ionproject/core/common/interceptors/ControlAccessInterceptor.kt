@@ -28,8 +28,6 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     private val pdp: PDP = PDP()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        request.setAttribute("serverName", request.scheme + "://" + request.serverName)
-
         //If the request is one made by an import link's it will instead of a Authorization header
         //contain the query parameter access_token
         /**
