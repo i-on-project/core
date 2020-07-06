@@ -74,13 +74,14 @@ class AccessController(private val services: AccessServices) {
         @PathVariable cid: Int,
         @PathVariable calterm: String,
         @RequestParam query: Map<String, String>,
-        @RequestAttribute("clientId") clientId: Int
+        @RequestAttribute("clientId") clientId: Int,
+        @RequestAttribute("serverName") serverName: String
     ): ResponseEntity<Any> {
 
         var url = Uri.forCalendarByClass(cid, calterm).toString()
 
         val jwt = services.generateImportToken(url, clientId)
-        url = Uri.baseUrl + url + addQueryParams(query) + jwt
+        url = serverName + url + addQueryParams(query) + jwt
 
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
@@ -94,13 +95,14 @@ class AccessController(private val services: AccessServices) {
         @PathVariable calterm: String,
         @PathVariable cid: Int,
         @RequestParam query: Map<String, String>,
-        @RequestAttribute("clientId") clientId: Int
+        @RequestAttribute("clientId") clientId: Int,
+        @RequestAttribute("serverName") serverName: String
     ): ResponseEntity<Any> {
 
         var url = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
         val jwt = services.generateImportToken(url, clientId)
-        url = Uri.baseUrl + url + addQueryParams(query) + jwt
+        url = serverName + url + addQueryParams(query) + jwt
 
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }

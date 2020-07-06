@@ -27,13 +27,13 @@ class PDP {
      * Evaluates if the access token received as a query parameter is valid
      */
     fun evaluateJwtToken(jwt: String, method: String, requestUrl: String) {
-        val parts = jwt.split(".")
-
         //Check method - this type of access doesn't allow UNSAFE METHODS (POST, PUT...)
         if(method != "GET" && method != "HEAD") {
             logger.info("An access_token query parameter authentication method failed: INVALID METHOD \"$method\" ")
             throw BadRequestException("This type of access doesn't allow unsafe methods (PUT, POST...).")
         }
+
+        val parts = jwt.split(".")
 
         //Check token structure
         if(parts.size != 3) {
