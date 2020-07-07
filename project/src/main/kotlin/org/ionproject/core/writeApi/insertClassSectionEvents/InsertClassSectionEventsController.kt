@@ -37,7 +37,7 @@ class InsertClassSectionEventsController(private val services: InsertClassSectio
             )
         }
 
-        // Translate the JSON Node into a more easier to use/read object
+        // Translate the JSON Node into an easier to use/read object
         val params = OperationParams.of(json)
         // Execute DB transaction and retrieve error message (if any)
         val err = services.insertClassSectionEvents(params)
