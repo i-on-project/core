@@ -15,6 +15,15 @@ private val datatypeMapper = DatatypeMapper.forType(Media.MEDIA_SIREN)
 
 private const val CALENDAR_CLASS = "calendar"
 
+private val fields = listOf(
+        Field(name = "type", type = "text", klass = "https://example.org/param/free-text-query"),
+        Field(name = "startBefore", type = "date", klass = "https://example.org/param/date-query"),
+        Field(name = "startAfter", type = "date", klass = "https://example.org/param/date-query"),
+        Field(name = "endBefore", type = "date", klass = "https://example.org/param/date-query"),
+        Field(name = "endAfter", type = "date", klass = "https://example.org/param/date-query"),
+        Field(name = "summary", type = "text", klass = "https://example.org/param/free-text-query")
+)
+
 fun Calendar.toSiren(): Siren =
     SirenBuilder(properties)
         .klass(CALENDAR_CLASS)
@@ -26,14 +35,18 @@ fun Calendar.toSiren(): Siren =
                 href = UriTemplate("${prod.value}/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}"),
                 isTemplated = true,
                 type = Media.APPLICATION_JSON,
-                fields = listOf(
-                    Field(name = "type", type = "text", klass = "https://example.org/param/free-text-query"),
-                    Field(name = "startBefore", type = "date", klass = "https://example.org/param/date-query"),
-                    Field(name = "startAfter", type = "date", klass = "https://example.org/param/date-query"),
-                    Field(name = "endBefore", type = "date", klass = "https://example.org/param/date-query"),
-                    Field(name = "endAfter", type = "date", klass = "https://example.org/param/date-query"),
-                    Field(name = "summary", type = "text", klass = "https://example.org/param/free-text-query")
-                )
+                fields = fields
+            )
+        )
+        .action(
+            Action(
+                name = "import",
+                title = "Import Calendar",
+                method = HttpMethod.GET,
+                href = UriTemplate("${prod.value}/calendar/import{?type,startBefore,startAfter,endBefore,endAfter,summary}"),
+                isTemplated = true,
+                type = Media.APPLICATION_JSON,
+                fields = fields
             )
         )
         .link("self", href = URI("${prod.value}/calendar"))

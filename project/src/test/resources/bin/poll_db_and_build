@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -u
+set -eu
 
 # 2 minutes of timeout
 timeout=120
@@ -18,8 +18,6 @@ while true; do
   fi
   sleep 1
 done
-
-set -e
 
 # Gradle is very slow at starting the daemon
 # Since the CI process will not make use of it anyway, might as well disable it

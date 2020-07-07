@@ -7,6 +7,7 @@ import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
+import org.ionproject.core.utils.writeTokenTest
 import org.junit.jupiter.api.*
 import java.net.URI
 
@@ -201,7 +202,7 @@ internal class AccessControlTest: ControllerTester() {
             header("Authorization", issueTokenTest)
             header("Content-Type", "application/json")
 
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
+            content = "{\"scope\":\"urn:org:ionproject:scopes:api:write\"}"
         }
                 .andDo { print() }
                 .andExpect { status { isOk } }
@@ -222,6 +223,34 @@ internal class AccessControlTest: ControllerTester() {
     }
 
     /**
+     * Tries to revoke a read token, which shall not succed
+     */
+    @Test
+    fun tryRevokeReadToken() {
+        doPost(revokeTokenUri) {
+            header("Authorization", readTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=$readTokenTest"
+        }.andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
+    }
+
+    /**
+     * Tries to revoke a read token, using a write token, which is a forbidden operation
+     */
+    @Test
+    fun tryRevokeReadTokenUsingWriteToken() {
+        doPost(revokeTokenUri) {
+            header("Authorization", writeTokenTest)
+            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
+            content = "token=$readTokenTest"
+        }.andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
+    }
+
+    /**
      * Tries to issue a token, with an invalid token
      */
     @Test
@@ -238,27 +267,12 @@ internal class AccessControlTest: ControllerTester() {
     }
 
     /**
-     * Tries to revoke an invalid token
-     * the answer should be 200 OK as specified by [RFC 7009]
-     */
-    @Test
-    fun revokeTokenInvalid() {
-        doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=ggdsiojgfsdfioj"
-        }.andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
-    }
-
-    /**
      * Tries to revoke an token with a bad request (no body)
      */
     @Test
     fun revokeTokenBadRequest() {
         doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
+            header("Authorization", writeTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
         }.andDo { print() }
                 .andExpect { status { isBadRequest } }

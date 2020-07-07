@@ -5,13 +5,11 @@ import org.springframework.web.util.UriTemplate
 import java.net.URI
 
 object Uri {
+
+    var baseUrl = System.getenv("ION_CORE_BASE_URL")
     const val version = "/v0"
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
-
-    // Access Control
-    const val revokeToken = "/revokeToken"
-    const val issueToken = "/issueToken"
 
     // Calendar Terms
     const val calendarTerms = "$version/calendar-terms"
@@ -96,6 +94,11 @@ object Uri {
     fun forCalendarComponentByClassSection(cid: Int, calterm: String, sid: String, cmpid: String) =
         componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
 
+    // Access Control
+    const val revokeToken = "/revokeToken"
+    const val issueToken = "/issueToken"
+    const val importClassCalendar = "$calendarByClass/import"
+    const val importClassSectionCalendar = "$calendarByClassSection/import"
 
     // Search
     const val search = "$version/search"

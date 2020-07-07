@@ -1,8 +1,12 @@
 package org.ionproject.core.accessControl
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
+import org.ionproject.core.accessControl.representations.JWTPayloadRepr
+import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
@@ -17,8 +21,64 @@ private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 @Component
 class PDP {
     private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
+    private val tokenGenerator = TokenGenerator()
 
-    fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Boolean {
+    /**
+     * Evaluates if the access token received as a query parameter is valid
+     */
+    fun evaluateJwtToken(jwt: String, method: String, requestUrl: String) {
+        //Check method - this type of access doesn't allow UNSAFE METHODS (POST, PUT...)
+        if(method != "GET" && method != "HEAD") {
+            logger.info("An access_token query parameter authentication method failed: INVALID METHOD \"$method\" ")
+            throw BadRequestException("This type of access doesn't allow unsafe methods (PUT, POST...).")
+        }
+
+        val parts = jwt.split(".")
+
+        //Check token structure
+        if(parts.size != 3) {
+            logger.info("An access_token query parameter authentication method failed: " +
+                "INVALID TOKEN STRUCTURE \"$jwt\" ")
+            throw BadRequestException("The presented token is invalid " +
+                "(missing a component [HEADER].[PAYLOAD].[SIGNATURE]).")
+        }
+
+        //Check token signature
+        if(!tokenGenerator.verifySignatureJWT(jwt)) {
+            logger.info("An access_token query parameter authentication method failed: INVALID SIGNATURE \"$jwt\" ")
+            throw UnauthenticatedUserException("Invalid Token (signature check failed).")
+
+        }
+
+        //Payload object
+        val jwtPayload = decodeJwtPayload(jwt)
+
+        //Check if token is not expired
+        val currTime = System.currentTimeMillis()
+        if(currTime > jwtPayload.exp) {
+            logger.info("An access_token query parameter authentication method failed: TOKEN EXPIRED")
+            throw UnauthenticatedUserException("Token expired, try requesting another import link.")
+        }
+
+        //Check if claim URL matches with request URL
+        if(jwtPayload.url != requestUrl) {
+            logger.info("An access_token query parameter authentication method failed: INVALID ACCESS the presented " +
+                "token does not grant access to the current location. <EXPECTED:${jwtPayload.url}> | <ACTUAL:${requestUrl}>\"")
+            throw ForbiddenActionException("The presented token does not grant access to the current location. " +
+                "<EXPECTED:${jwtPayload.url}> | <ACTUAL:${requestUrl}>")
+        }
+
+    }
+
+    private fun decodeJwtPayload(jwt: String) : JWTPayloadRepr {
+        val parts = jwt.split(".")
+        val payloadJson = tokenGenerator.decodeBase64url(parts[1])
+
+        val mapper = jacksonObjectMapper()
+        return mapper.readValue(payloadJson, JWTPayloadRepr::class.java)
+    }
+
+    fun evaluateRequest(tokenHash: String, requestDescriptor: Request): Int {
         val token = pap.getTableToken(tokenHash)
 
         //Check if the token is valid or exists
@@ -33,7 +93,7 @@ class PDP {
     /**
      * Check if the user is allowed to do the action he requested
      */
-    private fun checkPolicies(token: TokenEntity, requestDescriptor: Request): Boolean {
+    private fun checkPolicies(token: TokenEntity, requestDescriptor: Request): Int {
         //Checks if the token is expired
         if (System.currentTimeMillis() > token.expiresAt) {
             logger.info("Client_id:${token.claims.client_id} was NOT AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
@@ -52,7 +112,7 @@ class PDP {
             val methods = policy.method
             if (methods.contains(requestDescriptor.method)) {
                 logger.info("Client_id:${token.claims.client_id} was AUTHORIZED to ${requestDescriptor.method} on ${requestDescriptor.resource}")
-                return true
+                return token.claims.client_id
             }
         }
 
