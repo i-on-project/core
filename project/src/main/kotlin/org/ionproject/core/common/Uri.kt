@@ -6,7 +6,7 @@ import java.net.URI
 
 object Uri {
 
-    var baseUrl = System.getenv("baseUrl")
+    var baseUrl = System.getenv("ION_CORE_BASE_URL")
     const val version = "/v0"
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
