@@ -77,11 +77,9 @@ class AccessController(private val services: AccessServices) {
         @RequestAttribute("clientId") clientId: Int
     ): ResponseEntity<Any> {
 
-        var url = Uri.forCalendarByClass(cid, calterm).toString()
+        var parameterPath = Uri.forCalendarByClass(cid, calterm).toString()
 
-        val jwt = services.generateImportToken(url, clientId)
-        url = Uri.baseUrl + url + addQueryParams(query) + jwt
-
+        val url = buildUrl(clientId, query, parameterPath)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
@@ -97,12 +95,23 @@ class AccessController(private val services: AccessServices) {
         @RequestAttribute("clientId") clientId: Int
     ): ResponseEntity<Any> {
 
-        var url = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
+        var parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
-        val jwt = services.generateImportToken(url, clientId)
-        url = Uri.baseUrl + url + addQueryParams(query) + jwt
-
+        val url = buildUrl(clientId, query, parameterPath)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
+    }
+
+
+    private fun buildUrl(clientId: Int, query: Map<String,String>, parameterPath: String) : String {
+        val jwt = services.generateImportToken(parameterPath, clientId)
+
+        var queryParams: String
+        if(query.size == 0)
+            queryParams = "?$jwt"
+        else
+            queryParams = "?" + addQueryParams(query) + "&$jwt"
+
+        return Uri.baseUrl + parameterPath + queryParams
     }
 
     /**
@@ -112,7 +121,7 @@ class AccessController(private val services: AccessServices) {
         query: Map<String, String>
     ) : String {
 
-        var queryString = "?"
+        var queryString = ""
         for (key in query.keys) {
             queryString += "$key=${query[key]}&"
         }

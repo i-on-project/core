@@ -45,7 +45,7 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
         val signature = tokenGenerator.signJWT(jwtWithoutSignature)
         val jwtSigned = "$jwtWithoutSignature.$signature"
 
-        return "&access_token=$jwtSigned"
+        return "access_token=$jwtSigned"
     }
 
 }
