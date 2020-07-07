@@ -111,14 +111,14 @@ Properties marked with the quote "consult [#Constants](#constants) for the avail
     - e.g. `[ "A.2.1", "G.0.21" ]`
     - unique items (e.g. `[ "A.2", "A.2" ]` is not allowed)
     - this value does not have a strict format, since other languages may require the use of special characters for identifying locations (e.g. Mandarin Chinese)
-* `beginTime`
-    - *time* type
-    - `hh:mm` format 
-    - e.g. `14:00`
-* `duration`
-    - *time* type
-    - `hh:mm` format 
-    - e.g. `01:30`
+* `startDate`
+    - *datetime* type
+    - `yyyy-mm-ddThh:mm` format 
+    - e.g. `2020-01-01T10:10`
+* `endDate`
+    - *datetime* type
+    - `yyyy-mm-ddThh:mm` format 
+    - e.g. `2020-01-01T10:10`
 * `weekday`
     - *array[string]* type
     - consult [#Constants](#constants) for the available values

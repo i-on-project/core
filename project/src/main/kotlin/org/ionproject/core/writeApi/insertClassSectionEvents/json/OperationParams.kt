@@ -65,21 +65,16 @@ class EventParams(
     val location: String?,
     val beginTime: Timestamp,
     val endTime: Timestamp,
-    val weekdays: String,
+    val weekdays: String?,
     val category: Int
 ) {
 
     companion object {
         fun of(json: JsonNode): EventParams {
-            val beginTimeText = json["beginTime"].asText()
-            val durationText = json["duration"].asText()
-            // TODO: ClassSection's start and finish dates are unknown, cannot infer event's date
-            val beginTimestamp = Timestamp.valueOf("2020-05-01 ${beginTimeText}:00")
-
-            // Date value will be ignored. Only the Time portion will be taken into account.
-            val endTimestamp = Timestamp(
-                beginTimestamp.time + Timestamp.valueOf("2020-01-01 ${durationText}:00").time
-            )
+            val beginTimeText = json["startDate"].asText()
+            val durationText = json["endDate"].asText()
+            val beginTimestamp = Timestamp.valueOf("${beginTimeText.replace("T", " ")}:00")
+            val endTimestamp = Timestamp.valueOf("${durationText.replace("T", " ")}:00")
 
             return EventParams(
                 json["title"]?.asText(),
@@ -87,7 +82,7 @@ class EventParams(
                 json["location"]?.joinToString(",") { it.asText() },
                 beginTimestamp,
                 endTimestamp,
-                json["weekday"].joinToString(",") { it.asText() },
+                json["weekday"]?.joinToString(",") { it.asText() },
                 json["category"].asInt()
             )
         }

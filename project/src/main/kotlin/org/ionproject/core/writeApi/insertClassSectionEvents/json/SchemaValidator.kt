@@ -40,13 +40,13 @@ private const val insertClassSectionEventsSchema = """{
           "type": "integer",
           "minimum": 0
         },
-        "beginTime": {
+        "startDate": {
           "type": "string",
-          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]${'$'}"
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]${'$'}"
         },
-        "duration": {
+        "endDate": {
           "type": "string",
-          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]${'$'}"
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]${'$'}"
         },
         "weekday": {
           "type": "array",
@@ -59,7 +59,7 @@ private const val insertClassSectionEventsSchema = """{
           }
         }
       },
-      "required": [ "beginTime", "duration", "category" ],
+      "required": [ "startDate", "endDate", "category" ],
       "additionalProperties": false
     },
     "course": {
@@ -68,7 +68,6 @@ private const val insertClassSectionEventsSchema = """{
         "label": { "${'$'}ref": "#academicObject" },
         "events": {
           "type": "array",
-          "minItems": 1,
           "items": { "${'$'}ref": "#event" }
         }
       },
