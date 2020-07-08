@@ -20,12 +20,14 @@ private data class KlassOutputModel(val courseId: Int, val courseAcr: String?, v
 
 private data class KlassCollectionOutputModel(val cid: Int)
 
+private data class KlassItemOutputModel(val calendarTerm: String)
+
 /**
  * Class item representation.
  * Is used as an embedded siren object in a Class Collection.
  */
 fun Klass.toSiren(): EmbeddedRepresentation {
-    return SirenBuilder()
+    return SirenBuilder(KlassItemOutputModel(this.calendarTerm))
         .klass(*klassClasses)
         .rel("item")
         .link("self", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
