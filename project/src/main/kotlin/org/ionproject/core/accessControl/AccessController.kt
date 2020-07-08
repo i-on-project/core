@@ -1,5 +1,7 @@
 package org.ionproject.core.accessControl
 
+import org.ionproject.core.accessControl.pap.entities.TokenClaims
+import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.representations.ImportLinkRepr
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
@@ -10,6 +12,7 @@ import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AccessController(private val services: AccessServices) {
+class AccessController(private val services: AccessServices, private val tokenGenerator: TokenGenerator) {
+
+    private val privilegedRevokeScope = "urn:org:ionproject:scopes:api:revoke"
+
     /**
      * Generates token based on the scope requested and saves it to the database.
      *
@@ -43,32 +49,54 @@ class AccessController(private val services: AccessServices) {
      *
      * When client secrets are added a new policy should be checked, if the token was issued by the client,
      * if that validation fails the client should be informed.
+     *
+     * Read Tokens and they're derived can only be revoked with a special token that must possess the scope
+     * stored in the constant "privilegedRevokeScope" (this token is only known by core members)
      */
     @ResourceIdentifierAnnotation(ResourceIds.REVOKE_TOKEN, ResourceIds.ALL_VERSIONS)
     @PostMapping(Uri.revokeToken, consumes = [Media.FORM_URLENCODED_VALUE])
     fun revokeToken(
         @RequestParam body: Map<String, String>,
-        @RequestHeader("Authorization") authHeader: String
+        @RequestAttribute("token") token: TokenEntity
     ): ResponseEntity<Any> {
-        val token = body["token"]
-        if (token.isNullOrEmpty())
+
+        val tokenBody = body["token"]
+        if (tokenBody.isNullOrEmpty())
             throw BadRequestException("No token specified.")
 
-        // Before revoking the token check if the token belongs to the client
-        // (e.g. write token revoking read token which has no permission to access /revoke)
-        // as there is no client_id at this phase, only check if the token used
-        // to authenticate is the same as the one trying to revoke
+        val tokenBodyHash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(tokenBody))
 
-        val tokenAuth = authHeader.split(" ")
-        val tokenVal =  tokenAuth[tokenAuth.lastIndex]
+        //Check for special revoke token
+        val claims = token.claims as TokenClaims
+        if(claims.scope == privilegedRevokeScope) {
+            //Privileged path
 
-        if(tokenVal != token)
-            throw ForbiddenActionException("You can't revoke another token besides the presented one.")
+            when(body["operation"]) {
+                "1" -> {    //revokeChild
+                    services.revokeChild(tokenBodyHash)
+                }
+                "2" -> {    //revokePresented
+                    services.revokeToken(tokenBodyHash)
+                }
+                "3" -> {    //revokePresentedAndChild
+                    services.revokePresentedAndChild(tokenBodyHash)
+                }
+                else -> {   //DEFAULT revokePresented
+                    services.revokeToken(tokenBodyHash)
+                }
+            }
 
-        services.revokeToken(token)
+        } else {
+            //Unprivileged path, can only revoke the presented token
+
+            if (token.hash != tokenBodyHash)
+                throw ForbiddenActionException("You can't revoke another token besides the presented one.")
+
+            services.revokeToken(tokenBodyHash)
+        }
+
         return ResponseEntity.ok().build()
     }
-
 
     /**
      * Generates an import link for a class Calendar
@@ -78,13 +106,15 @@ class AccessController(private val services: AccessServices) {
     fun importClassCalendar(
         @PathVariable cid: Int,
         @PathVariable calterm: String,
-        @RequestParam query: Map<String, String>,
-        @RequestAttribute tokenHash: String
+        @RequestParam query: MultiValueMap<String, String>,
+        @RequestAttribute("token") token: TokenEntity
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClass(cid, calterm).toString()
 
-        val url = buildUrl(query, parameterPath, tokenHash)
+        val token = services.generateImportClassCalendar(cid, calterm, query, parameterPath, token.hash)
+
+        val url = buildUrl(query, parameterPath, token)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
@@ -97,25 +127,25 @@ class AccessController(private val services: AccessServices) {
         @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int,
-        @RequestParam query: Map<String, String>,
-        @RequestAttribute tokenHash: String
+        @RequestParam query: MultiValueMap<String, String>,
+        @RequestAttribute("token") token: TokenEntity
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
-        val url = buildUrl(query, parameterPath, tokenHash)
+        val token = services.generateImportClassSectionCalendar(sid, calterm, cid, query, parameterPath, token.hash)
+
+        val url = buildUrl(query, parameterPath, token)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
 
-    private fun buildUrl(query: Map<String,String>, parameterPath: String, tokenHash: String) : String {
-        val token = services.generateImportToken(parameterPath, tokenHash)
-
+    private fun buildUrl(query: MultiValueMap<String,String>, parameterPath: String, derivedToken: String) : String {
         var queryParams = "?"
         if(query.size == 0)
-            queryParams += token
+            queryParams += derivedToken
         else
-            queryParams += addQueryParams(query) + "&$token"
+            queryParams += addQueryParams(query) + "&$derivedToken"
 
         return Uri.baseUrl + parameterPath + queryParams
     }
@@ -124,12 +154,22 @@ class AccessController(private val services: AccessServices) {
      * Concatenates the query parameters to the url
      */
     private fun addQueryParams(
-        query: Map<String, String>
+        query: MultiValueMap<String, String>
     ) : String {
 
         var queryString = ""
+        var listParams : String
         for (key in query.keys) {
-            queryString += "$key=${query[key]}&"
+            val list = query[key]
+
+            listParams = if(list == null || list.size == 0)
+                continue
+            else if(list.size == 1)
+                list[0]
+            else
+                query[key]?.fold(query[key]?.get(0), { str, it -> "$str,$it" }) ?: ""
+
+            queryString += "$key=${listParams}&"
         }
 
         return queryString.dropLast(1) // removes the last &

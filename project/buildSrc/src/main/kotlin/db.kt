@@ -350,6 +350,13 @@ open class PgInsertIssueToken : AbstractTask() {
     }
 }
 
+open class PgInsertRevokeToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:api:revoke")
+    }
+}
+
 private data class TokenDbParams(
     val hash: String,
     val isValid: Boolean,

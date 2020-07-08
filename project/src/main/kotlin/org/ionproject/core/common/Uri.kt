@@ -102,6 +102,15 @@ object Uri {
     const val importClassCalendar = "${version}/import/courses/{cid}/classes/{calterm}/calendar"
     const val importClassSectionCalendar = "${version}/import/courses/{cid}/classes/{calterm}/{sid}/calendar"
 
+    val importClassCalendarTemplate = UriTemplate(importClassCalendar)
+    val importClassSectionCalendarTemplate = UriTemplate(importClassSectionCalendar)
+
+    fun forImportClassCalendar(cid: Int, calterm: String) =
+        importClassCalendarTemplate.expand(cid, calterm)
+
+    fun forImportClassSectionCalendar(cid: Int, calterm: String, sid: String) =
+        importClassSectionCalendarTemplate.expand(cid, calterm, sid)
+
     // Search
     const val search = "$version/search"
     val searchTemplate = UriTemplate("$search?query={query}&types={types}&limit={limit}&page={page}")

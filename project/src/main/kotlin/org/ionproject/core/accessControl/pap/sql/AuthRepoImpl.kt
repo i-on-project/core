@@ -6,8 +6,10 @@ import org.ionproject.core.accessControl.pap.entities.*
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.API_VERSION
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_IMPORT_TOKENS
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_POLICIES_QUERY
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.INSERT_TOKEN_QUERY
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_CHILD_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.SCOPE_URI
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.TOKEN
@@ -30,6 +32,17 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                 .bind(TOKEN, tokenHash)
                 .map(tokenMapper)
                 .firstOrNull()
+        }()
+    }
+
+    override fun checkScopeExistence(scope: String) : Boolean = tm.run { handle ->
+        {
+            val res = handle.createQuery(GET_SCOPE)
+                .bind(SCOPE_URI, scope)
+                .mapTo(Int::class.java)
+                .first()
+
+            res == 1
         }()
     }
 
@@ -75,6 +88,22 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
         {
             val result = handle.execute(REVOKE_TOKEN_QUERY, hash)
             result > 0
+        }()
+    }
+
+    override fun revokeChild(hash: String): Boolean = tm.run { handle ->
+        {
+            val result = handle.execute(REVOKE_CHILD_TOKEN_QUERY, hash)
+            result > 0
+        }()
+    }
+
+    override fun revokePresentedAndChild(hash: String): Boolean = tm.run { handle ->
+        {
+            val result1 = handle.execute(REVOKE_TOKEN_QUERY, hash)
+            val result2 = handle.execute(REVOKE_CHILD_TOKEN_QUERY, hash)
+
+            result1 > 0 && result2 > 0
         }()
     }
 

@@ -2,16 +2,22 @@ package org.ionproject.core.accessControl
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.representations.ImportLinkRepr
+import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.readTokenTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.net.URI
 
 internal class ImportLinkTests: ControllerTester() {
 
     companion object {
-        private val importClassCalendarUrl = URI("/v0/import/courses/5/classes/1920v/calendar?type=T")
-        private val importClassSectionCalendarUrl = URI("/v0/import/courses/5/classes/1920v/LI61D/calendar?type=E")
+        private val importClassCalendarUrl = Uri.forImportClassCalendar(5, "1920v")
+        private val importClassSectionCalendarUrl = Uri.forImportClassSectionCalendar(5, "1920v", "LI61D")
+
+        private val importClassCalendarNotFoundUrl = Uri.forImportClassCalendar(1238949324, "1920v")
+
+        private val importClassSectionCalendarDuplicate = Uri.forImportClassSectionCalendar(4, "1920v", "LI61D")
     }
 
     /**
@@ -67,6 +73,51 @@ internal class ImportLinkTests: ControllerTester() {
             .andReturn()
 
     }
+
+    /**
+     * Tries to issue an import URL for an invalid/non existent resource
+     * it should respond Not Found to avoid Denial of Service
+     */
+    @Test
+    fun generateInexistentResourceImportUrl() {
+         doGet(importClassCalendarNotFoundUrl) {
+            header("Authorization", readTokenTest)
+        }
+            .andDo { print() }
+            .andExpect { status { isNotFound } }
+            .andReturn()
+    }
+
+
+    /**
+     * Tries to issue an import URL two times and check if its shared,
+     * if its two different access tokens DOS is possible and should be corrected.
+     */
+    @Test
+    fun generateImportUrlDuplicate() {
+        val result1 = doGet(importClassSectionCalendarDuplicate) {
+            header("Authorization", readTokenTest)
+        }
+            .andDo { print() }
+            .andReturn()
+            .response
+            .contentAsString
+
+        val link1 = convertToJson(result1)
+
+        val result2 = doGet(importClassSectionCalendarDuplicate) {
+            header("Authorization", readTokenTest)
+        }
+            .andDo { print() }
+            .andReturn()
+            .response
+            .contentAsString
+
+        val link2 = convertToJson(result2)
+
+        Assertions.assertEquals(link1.link, link2.link)
+    }
+
 
     private fun convertToJson(result: String) : ImportLinkRepr {
         val mapper = jacksonObjectMapper()

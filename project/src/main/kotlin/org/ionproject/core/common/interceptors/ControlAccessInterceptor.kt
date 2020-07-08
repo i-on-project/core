@@ -2,6 +2,8 @@ package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
+import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
+import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
@@ -33,27 +35,43 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
 
         //Checks if its an import link verification path
-        val token = request.getParameter("access_token")
-        if(token != null) {
-            pdp.evaluateAccessToken(token, request.method, request.requestURI)
-            logger.info("An access_token query parameter authentication method succeeded " +
-                "for location \"${request.servletPath}\".")
+        val accessToken = request.getParameter("access_token")
+        if(accessToken != null) {
+            val token = pdp.evaluateAccessToken(accessToken, request.method, request.requestURI)
+            val claims = token.claims as DerivedTokenClaims
+
+            logger.info(LogMessages.forSuccessImport(
+                claims.derivedTokenReference,
+                claims.fatherTokenHash,
+                request.method,
+                request.requestURI)
+            )
             return true
         }
 
         //Client doesn't include header "Authorization"
         val header = request.getHeader("Authorization")
-            ?: throw UnauthenticatedUserException("User not authenticated.")
+
+            if(header == null) {
+                logger.info(LogMessages.forError(request.method, request.requestURI, "NO TOKEN PRESENTED"))
+                throw UnauthenticatedUserException("User not authenticated, no token on Authorization Header")
+            }
         val pair = header.trim().split(" ")
 
         //Client includes header "Authorization" with bad value e.g. "Bearer      "
-        if (pair.size != 2)
-            throw BadRequestException("Incorrect authorization header value.")
+        if (pair.size != 2) {
+            logger.info(LogMessages.forError(request.method, request.requestURI,
+                "INCORRECT AUTHORIZATION HEADER FORMAT VALUE"))
+            throw BadRequestException("Incorrect authorization header format value.")
+        }
 
         //Client include token type is different than "Bearer"
         val tokenIncludeType = pair[0].toLowerCase()
-        if (tokenIncludeType != includeType)
-            throw BadRequestException("Unsupported include token type.")
+        if (tokenIncludeType != includeType) {
+            logger.info(LogMessages.forError(request.method, request.requestURI,
+                "UNSUPPORTED TOKEN INCLUDE TYPE"))
+            throw BadRequestException("Unsupported include token type, it must be Bearer.")
+        }
 
         //Transforms the base64url encoded value to the SHA-256 hashed value
         val tokenBase64Decoded = tokenGenerator.decodeBase64url(pair[1])
@@ -64,10 +82,10 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
 
         //Verify the policies, if any fails the next interceptor won't be called and the processing will end
-        pdp.evaluateRequest(tokenHash, requestDescriptor)
+        val token = pdp.evaluateRequest(tokenHash, requestDescriptor)
 
         //Optimization to avoid querying the db again for this same information
-        request.setAttribute("tokenHash", tokenHash)
+        request.setAttribute("token", token)
         return true
     }
 

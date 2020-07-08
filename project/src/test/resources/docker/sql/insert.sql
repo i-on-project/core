@@ -36,7 +36,8 @@ INSERT INTO dbo.scopes (scope) VALUES
 ('urn:org:ionproject:scopes:api:read'),
 ('urn:org:ionproject:scopes:api:write'),
 ('urn:org:ionproject:scopes:token:issue'),
-('urn:org:ionproject:scopes:api:read_restricted');
+('urn:org:ionproject:scopes:api:read_restricted'),
+('urn:org:ionproject:scopes:api:revoke');
 
 /*
 * Don't use wildcards in the paths
@@ -55,6 +56,7 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (2, 'POST', '*', 'revokeToken'),
 (3, 'POST', '*', 'revokeToken'),
 (4, 'POST', '*', 'revokeToken'),
+(5, 'POST', '*', 'revokeToken'),
 (1, 'GET', 'v0', 'getProgramme'),
 (1, 'GET', 'v0', 'getProgrammes'),
 (4, 'GET', 'v0', 'getProgramme'), --Testing read restricted scope
@@ -74,7 +76,7 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (1, 'GET', 'v0', 'getCalendarTerms'),
 (1, 'GET', 'v0', 'getCalendarTerm'),
 (2, 'PUT', 'v0', 'insertClassSectionEvents'),
-(1, 'GET,POST', '*', 'error'),  -- OVERRIDE ERROR ENDPOINT
+(1, 'GET,POST', '*', 'error'),  
 (2, 'GET,POST', '*', 'error'),
 (3, 'GET,POST', '*', 'error'),
 (4, 'GET,POST', '*', 'error');

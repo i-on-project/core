@@ -43,8 +43,6 @@ internal class AccessControlTest: ControllerTester() {
         val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()
         val homeDocumentUri = URI("/")
-        val issueTokenUri = URI(Uri.issueToken)
-        val revokeTokenUri = URI(Uri.revokeToken)
 
     }
     /**
@@ -144,12 +142,12 @@ internal class AccessControlTest: ControllerTester() {
      */
     @Test
     fun getCoursesWithRevokedToken() {
-        doGet(coursesUri) {
-            header("Authorization", revokedToken)
+        doGet(AccessControlTest.coursesUri) {
+            header("Authorization", AccessControlTest.revokedToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -188,93 +186,6 @@ internal class AccessControlTest: ControllerTester() {
             header("Authorization", tokenIncorrect)
         }
                 .andDo { print() }
-                .andExpect { status { isBadRequest } }
-                .andReturn()
-    }
-
-
-    /**
-     * Test issue token and then revoke it
-     */
-    @Test
-    fun issueTokenAndRevoke() {
-        val result = doPost(issueTokenUri) {
-            header("Authorization", issueTokenTest)
-            header("Content-Type", "application/json")
-
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:write\"}"
-        }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
-                .response
-                .contentAsString
-
-        val mapper = jacksonObjectMapper()
-        val tokenToRevoke = mapper.readValue(result, TokenRepr::class.java).token
-
-        doPost(revokeTokenUri) {
-            header("Authorization", "Bearer $tokenToRevoke")
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$tokenToRevoke"
-        }.andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
-    }
-
-    /**
-     * Tries to revoke a read token, which shall not succed
-     */
-    @Test
-    fun tryRevokeReadToken() {
-        doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$readTokenTest"
-        }.andDo { print() }
-            .andExpect { status { isForbidden } }
-            .andReturn()
-    }
-
-    /**
-     * Tries to revoke a read token, using a write token, which is a forbidden operation
-     */
-    @Test
-    fun tryRevokeReadTokenUsingWriteToken() {
-        doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$readTokenTest"
-        }.andDo { print() }
-            .andExpect { status { isForbidden } }
-            .andReturn()
-    }
-
-    /**
-     * Tries to issue a token, with an invalid token
-     */
-    @Test
-    fun postIssueTokenInvalid() {
-        doPost(issueTokenUri) {
-            header("Authorization", "Bearer lol")
-            header("Content-Type", "application/json")
-
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
-        }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
-    }
-
-    /**
-     * Tries to revoke an token with a bad request (no body)
-     */
-    @Test
-    fun revokeTokenBadRequest() {
-        doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-        }.andDo { print() }
                 .andExpect { status { isBadRequest } }
                 .andReturn()
     }

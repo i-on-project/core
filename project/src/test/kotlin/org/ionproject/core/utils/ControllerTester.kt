@@ -10,6 +10,7 @@ import java.net.URI
 var readTokenTest = ""  //Used to allow tests to run or they will all fail with 400
 var writeTokenTest = ""
 var issueTokenTest = "" //Used to test the issue of tokens in AccessControlTest
+var revokeTokenTest = "" //used to test the revoke endpoint
 
 @SpringBootTest
 @AutoConfigureMockMvc
