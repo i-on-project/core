@@ -17,6 +17,7 @@ internal object AuthRepoData {
     const val ISSUED_AT = "issuedAt"
     const val EXPIRES_AT = "expiresAt"
     const val CLAIMS = "claims"
+    const val IS_DERIVED_TOKEN = "derivedToken"
 
 
     const val GET_TOKEN_QUERY = "SELECT * FROM $SCHEMA.$TOKEN WHERE $HASH_ID=:$TOKEN"
@@ -28,10 +29,12 @@ internal object AuthRepoData {
   """
 
     const val INSERT_TOKEN_QUERY = """
-    INSERT INTO $SCHEMA.$TOKEN ($HASH,$IS_VALID,$ISSUED_AT,$EXPIRES_AT,$CLAIMS) VALUES (?,?,?,?,to_json(?::json))
+    INSERT INTO $SCHEMA.$TOKEN ($HASH,$IS_VALID,$ISSUED_AT,$EXPIRES_AT,$IS_DERIVED_TOKEN,$CLAIMS) VALUES (?,?,?,?,?,to_json(?::json))
   """
 
     const val REVOKE_TOKEN_QUERY = """
     UPDATE $SCHEMA.$TOKEN SET $IS_VALID=false WHERE $HASH=?
   """
+
+    const val GET_IMPORT_TOKENS = "SELECT * FROM $SCHEMA.$TOKEN WHERE $IS_DERIVED_TOKEN=TRUE"
 }

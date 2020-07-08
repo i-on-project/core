@@ -2,9 +2,11 @@ package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
+import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
@@ -13,7 +15,8 @@ import javax.servlet.http.HttpServletResponse
 private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 private const val includeType = "bearer"
 
-data class Request(val method: String, val apiVersion: String, val resource: String)
+data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
+data class ResourceIdentifierDescriptor(val resource: String, val version: String)
 
 /**
  * Policy Enforcement Point
@@ -28,17 +31,13 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     private val pdp: PDP = PDP()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        //If the request is one made by an import link's it will instead of a Authorization header
-        //contain the query parameter access_token
-        /**
-         * If the user includes an access_token query parameter when he has a valid token to read the resource
-         * in the header Authorization, this current way will ignore the Authorization header, is this a correct
-         * behavior?
-         */
-        val jwtToken = request.getParameter("access_token")
-        if(jwtToken != null) {
-            pdp.evaluateJwtToken(jwtToken, request.method, request.requestURI)
-            logger.info("An access_token query parameter authentication method succeeded for location \"${request.servletPath}\".")
+
+        //Checks if its an import link verification path
+        val token = request.getParameter("access_token")
+        if(token != null) {
+            pdp.evaluateAccessToken(token, request.method, request.requestURI)
+            logger.info("An access_token query parameter authentication method succeeded " +
+                "for location \"${request.servletPath}\".")
             return true
         }
 
@@ -60,30 +59,24 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val tokenBase64Decoded = tokenGenerator.decodeBase64url(pair[1])
         val tokenHash = tokenGenerator.getHash(tokenBase64Decoded)
 
-        //Sends the request with the token Hash down to the Policy Decision Point
-        val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
+        //Obtain name of resource trying to access (the name of the resource is the one in the annotation
+        val resourceIdentifier = buildResourceIdentifier(handler)
+        val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
 
-        //Checks if the token is valid, if any policy is not valid an exception will be thrown
-        //and the next interceptor won't be called
-        val clientId = pdp.evaluateRequest(tokenHash, requestDescriptor)
+        //Verify the policies, if any fails the next interceptor won't be called and the processing will end
+        pdp.evaluateRequest(tokenHash, requestDescriptor)
 
-        request.setAttribute("clientId", clientId)
+        //Optimization to avoid querying the db again for this same information
+        request.setAttribute("tokenHash", tokenHash)
         return true
     }
 
-    private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
-        val requestDescriptor: Request
-        val parts = pathInfo.substring(1).split("/")
-
-        if (parts.size == 1) //Special case user is accessing endpoint without version
-            requestDescriptor = Request(method, "*", pathInfo)
-        else {
-            val idxVersion = pathInfo.indexOf("/", 1)
-            requestDescriptor = Request(method, pathInfo.substring(1, idxVersion), pathInfo.substring(idxVersion))
-        }
-
-        return requestDescriptor
+    private fun buildResourceIdentifier(handler: Any) : ResourceIdentifierDescriptor {
+        val handlerMethod = handler as HandlerMethod
+        val resourceIdentifierAnnotation = handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)
+        val resourceName = resourceIdentifierAnnotation?.resourceName ?: ""
+        val resourceVersion = resourceIdentifierAnnotation?.version ?: ""
+        return ResourceIdentifierDescriptor(resourceName, resourceVersion)
     }
-
 
 }

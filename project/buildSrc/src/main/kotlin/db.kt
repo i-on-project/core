@@ -363,8 +363,7 @@ private data class TokenDbParams(
 class Token {
     fun create(scope: String) {
         val params = getTokenReferences(scope)
-        val cid = 500
-        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope", "client_id": ${cid}}"""
+        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope"}"""
         Db.useConnection {
             val st =
                 it.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")

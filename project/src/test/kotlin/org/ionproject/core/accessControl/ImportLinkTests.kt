@@ -10,8 +10,8 @@ import java.net.URI
 internal class ImportLinkTests: ControllerTester() {
 
     companion object {
-        private val importClassCalendarUrl = URI("/v0/courses/5/classes/1920v/calendar/import?type=T")
-        private val importClassSectionCalendarUrl = URI("/v0/courses/5/classes/1920v/LI61D/calendar/import?type=E")
+        private val importClassCalendarUrl = URI("/v0/import/courses/5/classes/1920v/calendar?type=T")
+        private val importClassSectionCalendarUrl = URI("/v0/import/courses/5/classes/1920v/LI61D/calendar?type=E")
     }
 
     /**

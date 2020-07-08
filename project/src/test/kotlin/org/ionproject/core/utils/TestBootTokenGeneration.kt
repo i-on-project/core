@@ -28,11 +28,12 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
         generateTokens()
     }
 
+
     fun generateTokens() {
         //generate the token needed for issuing other tokens
-        val token = generateToken(readScope, -1)
-        val issueToken = generateToken(issueScope, -1)
-        val writeToken = generateToken(writeScope, -1)
+        val token = generateToken(readScope)
+        val issueToken = generateToken(issueScope)
+        val writeToken = generateToken(writeScope)
 
         //with the issueToken issue read & write token
         issueTokenTest = "Bearer $issueToken"
@@ -43,12 +44,12 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
     /**
      * Issues a token and stores it
      */
-    private fun generateToken(scope: String, clientId: Int): String {
+    private fun generateToken(scope: String): String {
         val tokenRaw = tokenGenerator.generateRandomString()
         val tokenBase64 = tokenGenerator.encodeBase64url(tokenRaw)
         val tokenHash = tokenGenerator.getHash(tokenRaw)
 
-        val token = tokenGenerator.buildToken(tokenHash, System.currentTimeMillis(), scope, clientId)
+        val token = tokenGenerator.buildToken(tokenHash, System.currentTimeMillis(), scope)
         authRepo.storeToken(token)  //token needs to be stored so it can be used to issue other tokens
 
         return tokenBase64

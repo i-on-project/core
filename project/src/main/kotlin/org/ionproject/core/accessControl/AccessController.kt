@@ -4,6 +4,8 @@ import org.ionproject.core.accessControl.representations.ImportLinkRepr
 import org.ionproject.core.accessControl.representations.TokenIssueDetails
 import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.common.Media
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
@@ -25,6 +27,7 @@ class AccessController(private val services: AccessServices) {
      * This endpoint is accessible only to the client who presents the
      * token with the "urn:org:ionproject:scopes:token:issue" scope.
      */
+    @ResourceIdentifierAnnotation(ResourceIds.ISSUE_TOKEN, ResourceIds.ALL_VERSIONS)
     @PostMapping(Uri.issueToken, consumes = [Media.APPLICATION_JSON])
     fun issueToken(@RequestBody tokenIssueDetails: TokenIssueDetails): ResponseEntity<TokenRepr> {
         val token: TokenRepr = services.generateToken(tokenIssueDetails.scope)
@@ -41,6 +44,7 @@ class AccessController(private val services: AccessServices) {
      * When client secrets are added a new policy should be checked, if the token was issued by the client,
      * if that validation fails the client should be informed.
      */
+    @ResourceIdentifierAnnotation(ResourceIds.REVOKE_TOKEN, ResourceIds.ALL_VERSIONS)
     @PostMapping(Uri.revokeToken, consumes = [Media.FORM_URLENCODED_VALUE])
     fun revokeToken(
         @RequestParam body: Map<String, String>,
@@ -69,47 +73,49 @@ class AccessController(private val services: AccessServices) {
     /**
      * Generates an import link for a class Calendar
      */
+    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_CALENDAR, ResourceIds.VERSION)
     @GetMapping(Uri.importClassCalendar)
     fun importClassCalendar(
         @PathVariable cid: Int,
         @PathVariable calterm: String,
         @RequestParam query: Map<String, String>,
-        @RequestAttribute("clientId") clientId: Int
+        @RequestAttribute tokenHash: String
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClass(cid, calterm).toString()
 
-        val url = buildUrl(clientId, query, parameterPath)
+        val url = buildUrl(query, parameterPath, tokenHash)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
     /**
      * Generates an import link for a class section Calendar
      */
+    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_SECTION_CALENDAR, ResourceIds.VERSION)
     @GetMapping(Uri.importClassSectionCalendar)
     fun importClassSectionCalendar(
         @PathVariable sid: String,
         @PathVariable calterm: String,
         @PathVariable cid: Int,
         @RequestParam query: Map<String, String>,
-        @RequestAttribute("clientId") clientId: Int
+        @RequestAttribute tokenHash: String
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
-        val url = buildUrl(clientId, query, parameterPath)
+        val url = buildUrl(query, parameterPath, tokenHash)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
 
-    private fun buildUrl(clientId: Int, query: Map<String,String>, parameterPath: String) : String {
-        val jwt = services.generateImportToken(parameterPath, clientId)
+    private fun buildUrl(query: Map<String,String>, parameterPath: String, tokenHash: String) : String {
+        val token = services.generateImportToken(parameterPath, tokenHash)
 
-        var queryParams: String
+        var queryParams = "?"
         if(query.size == 0)
-            queryParams = "?$jwt"
+            queryParams += token
         else
-            queryParams = "?" + addQueryParams(query) + "&$jwt"
+            queryParams += addQueryParams(query) + "&$token"
 
         return Uri.baseUrl + parameterPath + queryParams
     }

@@ -5,6 +5,7 @@ import org.ionproject.core.calendar.icalendar.CalendarComponent
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
 import org.ionproject.core.calendar.icalendar.properties.Property
 import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
+import org.ionproject.core.calendar.icalendar.types.Text
 import org.ionproject.core.common.*
 import org.ionproject.core.mapEntries
 import org.springframework.http.HttpMethod
@@ -43,7 +44,7 @@ fun Calendar.toSiren(): Siren =
                 name = "import",
                 title = "Import Calendar",
                 method = HttpMethod.GET,
-                href = UriTemplate("${prod.value}/calendar/import{?type,startBefore,startAfter,endBefore,endAfter,summary}"),
+                href = buildImportUrl(prod.value),
                 isTemplated = true,
                 type = Media.APPLICATION_JSON,
                 fields = fields
@@ -52,6 +53,17 @@ fun Calendar.toSiren(): Siren =
         .link("self", href = URI("${prod.value}/calendar"))
         .link("about", href = URI("${prod.value}"))
         .toSiren()
+
+fun buildImportUrl(identifier : Text) : UriTemplate {
+    //The prod.value was all combined in one string and we need to add the import after /v0/ and before the rest
+
+    val id = identifier.value
+    val idxVersionEnding = id.indexOf("/", 1)
+    val version = id.substring(0, idxVersionEnding)
+    val rest = id.substring(idxVersionEnding+1, id.length)
+
+    return UriTemplate("$version/import/$rest/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}")
+}
 
 fun CalendarComponent.toSiren(about: URI): Siren =
     SirenBuilder(sirenProperties)

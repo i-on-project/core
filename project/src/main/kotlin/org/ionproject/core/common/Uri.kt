@@ -7,6 +7,8 @@ import java.net.URI
 object Uri {
 
     var baseUrl = System.getenv("ION_CORE_BASE_URL")
+
+    const val error = "/error"
     const val version = "/v0"
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
@@ -97,8 +99,8 @@ object Uri {
     // Access Control
     const val revokeToken = "/revokeToken"
     const val issueToken = "/issueToken"
-    const val importClassCalendar = "$calendarByClass/import"
-    const val importClassSectionCalendar = "$calendarByClassSection/import"
+    const val importClassCalendar = "${version}/import/courses/{cid}/classes/{calterm}/calendar"
+    const val importClassSectionCalendar = "${version}/import/courses/{cid}/classes/{calterm}/{sid}/calendar"
 
     // Search
     const val search = "$version/search"

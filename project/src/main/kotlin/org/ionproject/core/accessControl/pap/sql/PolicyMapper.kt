@@ -11,7 +11,7 @@ class PolicyMapper : RowMapper<PolicyEntity> {
             rs.getInt("scope_id"),
             rs.getString("method"),
             rs.getString("version"),
-            rs.getString("path")
+            rs.getString("resource")
         )
     }
 

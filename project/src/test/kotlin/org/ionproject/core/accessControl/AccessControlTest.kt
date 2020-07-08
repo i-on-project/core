@@ -174,7 +174,7 @@ internal class AccessControlTest: ControllerTester() {
             header("Authorization", tokenCorrect)
         }
                 .andDo { print() }
-                .andExpect { status { isForbidden } }
+                .andExpect { status { isMethodNotAllowed } }
                 .andReturn()
     }
 

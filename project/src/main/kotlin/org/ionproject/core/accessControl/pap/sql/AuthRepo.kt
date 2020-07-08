@@ -11,4 +11,8 @@ interface AuthRepo {
     fun storeToken(token: TokenEntity): Boolean
 
     fun revokeToken(hash: String): Boolean
+
+    fun generateImportToken(url: String, fatherTokenHash: String) : String
+
+    fun getDerivedTableToken(tokenHash: String): TokenEntity?
 }

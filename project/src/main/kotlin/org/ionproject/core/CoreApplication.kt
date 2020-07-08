@@ -14,7 +14,9 @@ import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
@@ -44,8 +46,6 @@ class CoreSerializationConfig : WebMvcConfigurer {
                     .addSerializer(Calendar::class.java, CalendarSerializer())
             )
 
-        // Calendar -> text/calendar || application/vdn.siren+json
-        converters.add(0, ICalendarHttpMessageConverter())
 
         converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
 
@@ -53,10 +53,11 @@ class CoreSerializationConfig : WebMvcConfigurer {
         converters.add(0, SirenMessageConverter(converter))
         converters.add(0, JsonHomeMessageConverter(converter))
         converters.add(0, ProblemJsonMessageConverter(converter))
+        converters.add(0, ICalendarHttpMessageConverter())  // Calendar -> text/calendar || application/vdn.siren+json
 
         /**
          * Converters were added to position 0 to be more privileged than the default
-         * message converters.
+         * message converters. (Converters follow LDFC order, last added first checked)
          * (If such wasn't done, the default behavior (without specifying the Accept Header) would always be JSON)
          *
          * Also, if the property supportedMediaTypes of MappingJackson2HttpMessageConverter wasn't overriden

@@ -1,11 +1,6 @@
 package org.ionproject.core.accessControl
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.ionproject.core.accessControl.pap.entities.ClaimsEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepo
-import org.ionproject.core.accessControl.representations.JWT
-import org.ionproject.core.accessControl.representations.JWTHeaderRepr
-import org.ionproject.core.accessControl.representations.JWTPayloadRepr
 import org.ionproject.core.accessControl.representations.TokenRepr
 import org.springframework.stereotype.Component
 
@@ -22,7 +17,7 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
         //hash the raw string & store it
         val tokenHash = tokenGenerator.getHash(tokenString)
         val issueTime = System.currentTimeMillis()
-        val token = tokenGenerator.buildToken(tokenHash, issueTime, scope, 0)
+        val token = tokenGenerator.buildToken(tokenHash, issueTime, scope)
 
         authRepo.storeToken(token)
         return TokenRepr(tokenBase64encoded, issueTime)
@@ -38,14 +33,11 @@ class AccessServices(private val authRepo: AuthRepo, private val tokenGenerator:
     }
 
     /**
-     * Generates a JWT according to RFC 7519
+     * Generates an import link token
      */
-    fun generateImportToken(url: String, clientId: Int) : String {
-        val jwtWithoutSignature = tokenGenerator.generateImportToken(url, clientId)
-        val signature = tokenGenerator.signJWT(jwtWithoutSignature)
-        val jwtSigned = "$jwtWithoutSignature.$signature"
-
-        return "access_token=$jwtSigned"
+    fun generateImportToken(url: String, fatherTokenHash: String) : String {
+        val tokenReference = authRepo.generateImportToken(url, fatherTokenHash)
+        return "access_token=$tokenReference"
     }
 
 }
