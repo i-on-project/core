@@ -107,12 +107,12 @@ class AccessController(private val services: AccessServices, private val tokenGe
         @PathVariable cid: Int,
         @PathVariable calterm: String,
         @RequestParam query: MultiValueMap<String, String>,
-        @RequestAttribute("token") token: TokenEntity
+        @RequestAttribute("token") tokenFather: TokenEntity
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClass(cid, calterm).toString()
 
-        val token = services.generateImportClassCalendar(cid, calterm, query, parameterPath, token.hash)
+        val token = services.generateImportClassCalendar(cid, calterm, query, tokenFather.hash)
 
         val url = buildUrl(query, parameterPath, token)
         return ResponseEntity.ok().body(ImportLinkRepr(url))
@@ -128,12 +128,12 @@ class AccessController(private val services: AccessServices, private val tokenGe
         @PathVariable calterm: String,
         @PathVariable cid: Int,
         @RequestParam query: MultiValueMap<String, String>,
-        @RequestAttribute("token") token: TokenEntity
+        @RequestAttribute("token") tokenFather: TokenEntity
     ): ResponseEntity<Any> {
 
         var parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
-        val token = services.generateImportClassSectionCalendar(sid, calterm, cid, query, parameterPath, token.hash)
+        val token = services.generateImportClassSectionCalendar(sid, calterm, cid, query, tokenFather.hash)
 
         val url = buildUrl(query, parameterPath, token)
         return ResponseEntity.ok().body(ImportLinkRepr(url))

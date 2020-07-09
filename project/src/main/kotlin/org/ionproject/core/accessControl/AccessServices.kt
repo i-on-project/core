@@ -62,13 +62,12 @@ class AccessServices(
         cid: Int,
         calterm: String,
         query: MultiValueMap<String, String>,
-        parameterPath: String,
         tokenHash: String
     ) : String {
         val calendar = calRepo.getClassCalendar(cid, calterm, query)
 
         if(calendar != null)
-            return generateImportToken(parameterPath, tokenHash)
+            return generateImportToken(tokenHash)
         else
             throw BadRequestException("The class calendar you tried to import doesn't exist.")
     }
@@ -81,19 +80,13 @@ class AccessServices(
         calterm: String,
         cid: Int,
         query: MultiValueMap<String, String>,
-        parameterPath: String,
         tokenHash: String
     ) : String {
 
-        val calendar = calRepo.getClassSectionCalendar(
-            cid,
-            calterm,
-            sid,
-            query
-        )
+        val calendar = calRepo.getClassSectionCalendar(cid, calterm, sid, query)
 
         if(calendar != null)
-            return generateImportToken(parameterPath, tokenHash)
+            return generateImportToken(tokenHash)
         else
             throw BadRequestException("The class section calendar you tried to import doesn't exist.")
     }
@@ -102,8 +95,8 @@ class AccessServices(
      * Generates an import link token, this only happens if the calendar exists
      * to avoid denial of service generating millions of import url's to non existent calendars...
      */
-    private fun generateImportToken(url: String, fatherTokenHash: String) : String {
-        val tokenReference = authRepo.generateImportToken(url, fatherTokenHash)
+     fun generateImportToken(fatherTokenHash: String) : String {
+        val tokenReference = authRepo.generateImportToken(fatherTokenHash)
         return "access_token=$tokenReference"
     }
 

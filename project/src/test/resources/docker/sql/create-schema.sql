@@ -461,6 +461,7 @@ CREATE TABLE dbo.Token(
 	issuedAt BIGINT,
 	expiresAt BIGINT,
   derivedToken BOOLEAN DEFAULT FALSE,
+  fatherHash CHAR(64) DEFAULT '', --used only if its a derived token
 	claims JSONB
 );
 

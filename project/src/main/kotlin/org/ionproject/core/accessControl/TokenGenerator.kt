@@ -61,15 +61,37 @@ class TokenGenerator {
      */
     fun buildToken(tokenHash: String, issueTime: Long, scope: String): TokenEntity {
         val claims = TokenClaims(scope)
-        return TokenEntity(tokenHash, true, issueTime, issueTime + TOKEN_DURATION, false, claims)
+
+        return TokenEntity(
+            tokenHash,
+            true,
+            issueTime,
+            issueTime + TOKEN_DURATION,
+            false,
+            "",
+            claims
+        )
     }
 
     /**
      * Builds a derived token for import url purposes
      */
-    fun buildDerivedToken(fatherTokenHash: String, derivedTokenHash: String, uri: String, derivedTokenReference: String) : TokenEntity {
-        val claims = DerivedTokenClaims(fatherTokenHash, derivedTokenReference, uri)
+    fun buildDerivedToken(fatherTokenHash: String,
+                          derivedTokenHash: String,
+                          derivedTokenReference: String,
+                          scope: String
+    ) : TokenEntity {
+        val claims = DerivedTokenClaims(scope, derivedTokenReference)
         val issueTime = System.currentTimeMillis()
-        return TokenEntity(derivedTokenHash, true, issueTime, issueTime+TOKEN_DURATION, true, claims)
+
+        return TokenEntity(
+            derivedTokenHash,
+            true,
+            issueTime,
+            issueTime+TOKEN_DURATION,
+            true,
+            fatherTokenHash,
+            claims
+        )
     }
 }

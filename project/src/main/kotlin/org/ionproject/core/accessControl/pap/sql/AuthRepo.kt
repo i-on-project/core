@@ -18,7 +18,7 @@ interface AuthRepo {
 
     fun revokePresentedAndChild(hash: String): Boolean
 
-    fun generateImportToken(url: String, fatherTokenHash: String) : String
+    fun generateImportToken(fatherTokenHash: String) : String
 
     fun getDerivedTableToken(tokenHash: String): TokenEntity?
 }

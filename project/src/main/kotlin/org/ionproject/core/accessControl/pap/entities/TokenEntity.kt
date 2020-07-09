@@ -1,13 +1,12 @@
 package org.ionproject.core.accessControl.pap.entities
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-
 class TokenEntity(
     val hash: String,
     val isValid: Boolean,
     val issuedAt: Long,
     val expiresAt: Long,
     val derivedToken: Boolean,
+    val fatherHash: String,
     val claims: ClaimsEntity
 )
 
@@ -18,7 +17,6 @@ class TokenClaims(
 ) : ClaimsEntity
 
 class DerivedTokenClaims(
-    val fatherTokenHash : String,
-    val derivedTokenReference: String,
-    val uri: String
+    val scope: String,
+    val derivedTokenReference: String
 ) : ClaimsEntity

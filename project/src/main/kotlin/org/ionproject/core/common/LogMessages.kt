@@ -2,28 +2,29 @@ package org.ionproject.core.common
 
 object LogMessages {
 
-    fun forErrorImport(method: String, url: String, reason: String) =
-        "TYPE:[IMPORT URL] |  METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
+    //Authentication modes
+    const val importUrlAuth = "IMPORT URL"
+    const val tokenHeaderAuth = "AUTHORIZATION HEADER"
 
-    fun forErrorImportDetail(derivedTokenReference: String, fatherTokenHash: String, method: String, requestUrl: String, reason: String) =
-        "TYPE:[IMPORT URL] | ACCESS_TOKEN:[${derivedTokenReference}] " +
-        "| ISSUED_BY:[${fatherTokenHash}] | METHOD:[${method}] " +
-        "| LOCATION:[\"${requestUrl}\"] | RESULT:[ACCESS DENIED] " +
-        "| REASON:[$reason]"
+    //Errors
+    const val lackPrivileges = "Lack of privileges."
+    const val invalidMethod = "Invalid method."
+    const val inexistentToken = "Token Not Found."
+    const val revokedToken = "Revoked Token."
+    const val tokenExpired = "Token Expired."
+    const val noToken = "No token presented."
+    const val invalidFormatHeader = "Authorization header token format is invalid."
+    const val unsupportedIncludeType = "Unsupported include type."
 
-    fun forSuccessImport(derivedTokenReference: String, fatherTokenHash: String, method: String, requestUrl: String) =
-        "TYPE:[IMPORT URL] | ACCESS_TOKEN:[${derivedTokenReference}] " +
-        "| ISSUED_BY:[${fatherTokenHash}] | METHOD:[${method}] " +
-        "| LOCATION:[\"${requestUrl}\"] | RESULT:[ACCESS GRANTED]"
+    //Messages
+    fun forError(authenticationMode: String, method: String, url: String, reason: String) =
+        "TYPE:[$authenticationMode] |  METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
 
-    fun forError(method: String, url: String, reason: String) =
-        "TYPE:[AUTHORIZATION HEADER] |  METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
-
-    fun forErrorDetail(tokenHash: String, method: String, requestUrl: String, reason: String) =
-        "TYPE:[AUTHORIZATION HEADER] | TOKEN_HASH:[${tokenHash}] " +
+    fun forErrorDetail(authenticationMode: String, tokenHash: String, method: String, requestUrl: String, reason: String) =
+        "TYPE:[$authenticationMode] | TOKEN_HASH:[${tokenHash}] " +
         "| METHOD:[${method}] | LOCATION:[${requestUrl}] | RESULT:[ACCESS DENIED] " +
         "| REASON:[$reason]"
 
-    fun forSuccess(method: String, url: String) =
-        "TYPE:[AUTHORIZATION HEADER] |  METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS GRANTED]"
+    fun forSuccess(authenticationMode: String, tokenHash: String, method: String, url: String) =
+        "TYPE:[$authenticationMode] | TOKEN:[${tokenHash}] | METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS GRANTED]"
 }

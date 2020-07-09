@@ -23,12 +23,12 @@ INSERT INTO dbo.Course(acronym, name) values
 --client id holds no meaning for now as there is no registration/authentication method
 -- last 2 tokens are expired and revoked for testing purposes
 
-INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt,derivedToken, claims) VALUES 
-('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,FALSE,
+INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt,derivedToken, fatherHash, claims) VALUES 
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,FALSE,'',
 '{"scope": "urn:org:ionproject:scopes:api:read"}'),
-('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,FALSE,
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,FALSE,'',
 '{"scope": "urn:org:ionproject:scopes:api:write"}'),
-('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,FALSE,
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,FALSE,'',
 '{"scope": "urn:org:ionproject:scopes:api:read_restricted"}');
 
 
@@ -37,7 +37,8 @@ INSERT INTO dbo.scopes (scope) VALUES
 ('urn:org:ionproject:scopes:api:write'),
 ('urn:org:ionproject:scopes:token:issue'),
 ('urn:org:ionproject:scopes:api:read_restricted'),
-('urn:org:ionproject:scopes:api:revoke');
+('urn:org:ionproject:scopes:api:revoke'),
+('urn:org:ionproject:scopes:api:read:calendar'); -- scope only used by derived tokens
 
 /*
 * Don't use wildcards in the paths
@@ -71,6 +72,8 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (1, 'GET', 'v0', 'getClassSection'),
 (1, 'GET', 'v0', 'getCalendarClass'),
 (1, 'GET', 'v0', 'getCalendarClassSection'),
+(6, 'GET', 'v0', 'getCalendarClass'),           -- used by derived tokens to read calendars
+(6, 'GET', 'v0', 'getCalendarClassSection'),
 (1, 'GET', 'v0', 'getComponentClass'),
 (1, 'GET', 'v0', 'getComponentClassSection'),
 (1, 'GET', 'v0', 'getCalendarTerms'),

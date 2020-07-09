@@ -9,7 +9,7 @@ import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import java.sql.ResultSet
 
-class TokenMapper() : RowMapper<TokenEntity> {
+class TokenMapper : RowMapper<TokenEntity> {
     override fun map(rs: ResultSet, ctx: StatementContext?): TokenEntity {
         return buildTokenEntity(rs, deserializeToken(rs.getString("claims")))
     }
@@ -21,7 +21,7 @@ class TokenMapper() : RowMapper<TokenEntity> {
 
 }
 
-class DerivedTokenMapper() : RowMapper<TokenEntity> {
+class DerivedTokenMapper : RowMapper<TokenEntity> {
     override fun map(rs: ResultSet, ctx: StatementContext?): TokenEntity {
         return buildTokenEntity(rs, deserializeDerived(rs.getString("claims")))
     }
@@ -40,6 +40,7 @@ fun buildTokenEntity(rs: ResultSet, claims: ClaimsEntity) : TokenEntity {
         rs.getLong("issuedAt"),
         rs.getLong("expiresAt"),
         rs.getBoolean("derivedToken"),
+        rs.getString("fatherHash"),
         claims
     )
 }

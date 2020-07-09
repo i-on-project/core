@@ -73,14 +73,6 @@ class JsonHomeController {
                     .allow(HttpMethod.GET)
                     .toResourceObject()
             }
-            .newResource("issueToken") {
-                it
-                    .href(URI(Uri.issueToken))
-                    .docs(accessManagerSpecUri)
-                    .formats(Media.MEDIA_JSON)
-                    .allow(HttpMethod.POST)
-                    .toResourceObject()
-            }
             .newResource("revokeToken") {
                 it
                     .href(URI(Uri.revokeToken))

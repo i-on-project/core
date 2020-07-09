@@ -18,7 +18,8 @@ internal object AuthRepoData {
     const val EXPIRES_AT = "expiresAt"
     const val CLAIMS = "claims"
     const val IS_DERIVED_TOKEN = "derivedToken"
-    const val FATHER_TOKEN_HASH = "fatherTokenHash"
+    const val FATHER_TOKEN_HASH = "fatherHash"
+    const val CALENDAR_READ_SCOPE = "urn:org:ionproject:scopes:api:read:calendar"
 
     const val GET_TOKEN_QUERY = "SELECT * FROM $SCHEMA.$TOKEN WHERE $HASH_ID=:$TOKEN"
 
@@ -31,7 +32,7 @@ internal object AuthRepoData {
   """
 
     const val INSERT_TOKEN_QUERY = """
-    INSERT INTO $SCHEMA.$TOKEN ($HASH,$IS_VALID,$ISSUED_AT,$EXPIRES_AT,$IS_DERIVED_TOKEN,$CLAIMS) VALUES (?,?,?,?,?,to_json(?::json))
+    INSERT INTO $SCHEMA.$TOKEN ($HASH,$IS_VALID,$ISSUED_AT,$EXPIRES_AT,$IS_DERIVED_TOKEN,$FATHER_TOKEN_HASH,$CLAIMS) VALUES (?,?,?,?,?,?,to_json(?::json))
   """
 
     const val REVOKE_TOKEN_QUERY = """
@@ -39,8 +40,14 @@ internal object AuthRepoData {
   """
 
     const val REVOKE_CHILD_TOKEN_QUERY = """
-       UPDATE $SCHEMA.$TOKEN SET $IS_VALID=false WHERE $CLAIMS ->> '$FATHER_TOKEN_HASH' = ? 
+       UPDATE $SCHEMA.$TOKEN SET $IS_VALID=false WHERE $FATHER_TOKEN_HASH=? 
     """
 
-    const val GET_IMPORT_TOKENS = "SELECT * FROM $SCHEMA.$TOKEN WHERE $IS_DERIVED_TOKEN=TRUE AND $IS_VALID=TRUE"
+    const val GET_IMPORT_TOKEN = """
+        SELECT * FROM $SCHEMA.$TOKEN 
+        WHERE $IS_DERIVED_TOKEN=TRUE 
+        AND $IS_VALID=TRUE 
+        AND $FATHER_TOKEN_HASH=:$FATHER_TOKEN_HASH 
+        AND $CLAIMS ->> '$SCOPE_URI'=:$SCOPE_URI
+    """
 }

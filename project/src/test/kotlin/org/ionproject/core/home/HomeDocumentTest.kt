@@ -60,14 +60,6 @@ internal class HomeDocumentTest : ControllerTester() {
                     "https://github.com/i-on-project/core/tree/master/docs/api/programme.md"
                     )
                 ),
-                "issueToken" to Resource(
-                    "/issueToken",
-                    Hints(
-                            listOf("POST"),
-                            mapOf("application/json" to mapOf<String, Any>()),
-                            "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
-                    )
-                ),
                 "revokeToken" to Resource(
                     "/revokeToken",
                     Hints(
@@ -103,9 +95,6 @@ internal class HomeDocumentTest : ControllerTester() {
                     exists()
                 }
                 jsonPath("$.resources.programmes"){
-                    exists()
-                }
-                jsonPath("$.resources.issueToken"){
                     exists()
                 }
                 jsonPath("$.resources.revokeToken"){

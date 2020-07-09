@@ -4,7 +4,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.accessControl.pap.entities.*
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.API_VERSION
-import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_IMPORT_TOKENS
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.CALENDAR_READ_SCOPE
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.FATHER_TOKEN_HASH
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_IMPORT_TOKEN
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_POLICIES_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_TOKEN_QUERY
@@ -14,7 +16,6 @@ import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.SCOPE_URI
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.TOKEN
 import org.ionproject.core.common.transaction.TransactionManager
-import org.jdbi.v3.core.mapper.RowMapper
 import org.springframework.stereotype.Repository
 import java.lang.Exception
 
@@ -78,6 +79,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                 token.issuedAt,
                 token.expiresAt,
                 token.derivedToken,
+                "",
                 claimsData
             )
             result > 0
@@ -110,27 +112,21 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
     /**
      * First checks to see if there already exists an import url token to the requested resource,
      * if it doesn't, creates one.
+     *
+     * There can only be 1 derived token per READ token
      */
-    override fun generateImportToken(url: String, fatherTokenHash: String): String = tm.run { handle ->
+    override fun generateImportToken(fatherTokenHash: String): String = tm.run { handle ->
         {
-            val importTokens = handle.createQuery(GET_IMPORT_TOKENS)
+            val importToken = handle.createQuery(GET_IMPORT_TOKEN)
+                .bind(FATHER_TOKEN_HASH, fatherTokenHash)
+                .bind(SCOPE_URI, CALENDAR_READ_SCOPE)
                 .map(derivedTokenMapper)
-                .list()
+                .firstOrNull()
 
-            //Check if there already exists a token for the current URL
-            var tokenReference = ""
-            for(tokenDb : TokenEntity in importTokens) {
-                val claims = tokenDb.claims as DerivedTokenClaims
-
-                if(claims.uri == url) {
-                    tokenReference = claims.derivedTokenReference
-                    break
-                }
-            }
-
-            if(tokenReference == "") {
+            val tokenReference: String
+            if(importToken == null) {
                 //No token found for the requesting resource, generate new token
-                val token = generateToken(url, fatherTokenHash)
+                val token = generateToken(fatherTokenHash, "urn:org:ionproject:scopes:api:read:calendar")
 
                 val mapper = jacksonObjectMapper()
                 val claimsData = mapper.writeValueAsString(token.claims)
@@ -142,6 +138,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                     token.issuedAt,
                     token.expiresAt,
                     token.derivedToken,
+                    fatherTokenHash,
                     claimsData
                 )
 
@@ -149,6 +146,8 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                     throw Exception("Something Unexpected happened during the import url token generation.")
 
                 tokenReference = (token.claims as DerivedTokenClaims).derivedTokenReference
+            } else {
+                tokenReference = (importToken.claims as DerivedTokenClaims).derivedTokenReference
             }
 
             tokenReference
@@ -158,11 +157,11 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
     /**
      * It's more optimized to build the hash, token... after its confirmed there is no token for the resource
      */
-    private fun generateToken(url: String, fatherTokenHash: String) : TokenEntity {
+    private fun generateToken(fatherTokenHash: String, scope: String) : TokenEntity {
         val tokenReferenceBytes = tokenGenerator.generateRandomString()
         val tokenReferenceString = tokenGenerator.encodeBase64url(tokenReferenceBytes)
         val derivedTokenHash = tokenGenerator.getHash(tokenReferenceBytes)
 
-        return tokenGenerator.buildDerivedToken(fatherTokenHash, derivedTokenHash, url, tokenReferenceString)
+        return tokenGenerator.buildDerivedToken(fatherTokenHash, derivedTokenHash, tokenReferenceString, scope)
     }
 }
