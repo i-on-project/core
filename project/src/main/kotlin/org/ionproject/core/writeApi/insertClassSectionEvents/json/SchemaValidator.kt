@@ -14,19 +14,56 @@ private const val insertClassSectionEventsSchema = """{
         "name": {
           "type": "string",
           "minLength": 2,
-          "maxLength": 100
+          "maxLength": 50
         },
         "acr": {
           "type": "string",
-          "minLength": 1,
+          "minLength": 2,
           "maxLength": 10
         }
       },
       "required": [ "acr" ],
       "additionalProperties": false
     },
-    "event": {
-      "${'$'}id": "#event",
+    "eventRecurrent": {
+      "${'$'}id": "#event-recurrent",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "category": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "beginTime": {
+          "type": "string",
+          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]${'$'}"
+        },
+        "duration": {
+          "type": "string",
+          "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]${'$'}"
+        },
+        "weekday": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [ "MO", "TU", "WE", "TH", "FR", "SA", "SU" ]
+          }
+        }
+      },
+      "required": [ "weekday", "beginTime", "duration", "category" ],
+      "additionalProperties": false
+    },
+    "eventNonRecurrent": {
+      "${'$'}id": "#event-non-recurrent",
       "type": "object",
       "properties": {
         "title": { "type": "string" },
@@ -47,20 +84,17 @@ private const val insertClassSectionEventsSchema = """{
         "endDate": {
           "type": "string",
           "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]${'$'}"
-        },
-        "weekday": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 7,
-          "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "enum": [ "MO", "TU", "WE", "TH", "FR", "SA", "SU" ]
-          }
         }
       },
       "required": [ "startDate", "endDate", "category" ],
       "additionalProperties": false
+    },
+    "event": {
+      "${'$'}id": "#event",
+      "anyOf": [
+        { "${'$'}ref": "#event-non-recurrent" },
+        { "${'$'}ref": "#event-recurrent" }
+      ]
     },
     "course": {
       "${'$'}id": "#course",
@@ -91,7 +125,8 @@ private const val insertClassSectionEventsSchema = """{
   },
   "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
   "additionalProperties": false
-}"""
+}
+"""
 
 object SchemaValidator {
     val schemaDocUri =
