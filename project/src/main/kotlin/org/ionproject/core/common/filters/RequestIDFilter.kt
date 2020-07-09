@@ -1,9 +1,6 @@
 package org.ionproject.core.common.filters
 
 import org.slf4j.MDC // if we use logback switch the import. The method name is the same so everything should work accordingly
-import org.springframework.boot.web.servlet.FilterRegistrationBean
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.OncePerRequestFilter
 import java.util.*
 import javax.servlet.FilterChain
@@ -30,15 +27,4 @@ class RequestIDFilter : OncePerRequestFilter() {
 
         filterChain.doFilter(request, response)
     }
-}
-
-@Configuration
-class FilterRegistration {
-
-    @Bean
-    fun register() : FilterRegistrationBean<RequestIDFilter> =
-        FilterRegistrationBean<RequestIDFilter>().apply {
-            filter = RequestIDFilter()
-            order = 1
-        }
 }

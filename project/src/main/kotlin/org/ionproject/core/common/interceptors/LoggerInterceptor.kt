@@ -1,7 +1,6 @@
 package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.common.filters.REQUEST_ID
-import org.ionproject.core.common.filters.RequestIDFilter
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
