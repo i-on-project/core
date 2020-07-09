@@ -10,7 +10,7 @@ This document informs the clients on how to insert faculty information for `Clas
 # HTTP
 
 ## Usage
-* `PUT /v0/insertClassSectionEvents`
+* `PUT /v0/insertClassSectionFaculty`
   - this operation is **idempotent**
   - clients need not use hypermedia navigation in order to find this resource's location
   - content type: `application/json`
@@ -19,7 +19,7 @@ This document informs the clients on how to insert faculty information for `Clas
 # Message Format
 
 The scope of this section is to define the constraints for the JSON object sent in the HTTP request body.
-This is meant to be a more toned down version of the request's [JSON schema](./schemas/insertClassSectionEvents.json).
+This is meant to be a more toned down version of the request's [JSON schema](./schemas/insertClassSectionFaculty.json).
 
 Properties are defined as follows:
 - the *type* of that property's value
@@ -301,5 +301,5 @@ Some of the message's properties only have a selected number of values which wil
   - `za`
 
 ## Links
-* [JSON schema](./schemas/insertClassSectionEvents.json)
-* [Example message](./examples/insertClassSectionEvents.json)
+* [JSON schema](./schemas/insertClassSectionFaculty.json)
+* [Example message](./examples/insertClassSectionFaculty.json)
