@@ -83,6 +83,7 @@ INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
 (2, 'PUT,POST', 'v0', 'calendar-terms'),
 (2, 'PUT,POST', 'v0', 'calendar-terms/?'),
 (2, 'PUT', 'v0', 'insertClassSectionEvents'),
+(2, 'PUT', 'v0', 'insertClassSectionFaculty'),
 (4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
 (4, 'GET', 'v0', 'programmes/?'),
 (3, 'POST', '*', 'issueToken'),
