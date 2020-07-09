@@ -118,10 +118,10 @@ A simplified representation of a `class`. This is how `class`es are represented 
 ## Properties
 All properties which are not assigned with the `mandatory` label, are optional, they may not be included in the representation.
 
-* `courseId`: the course's unique identifier
+* `calendarTerm`: the calendar term which the class takes place
   - mandatory
-  - type: **number**
-  - e.g. 1
+  - type: **text**
+  - e.g. 1718v
 
 ## Link relations
 A class item representation:

@@ -1,21 +1,21 @@
-package org.ionproject.core.writeApi.insertClassSectionEvents
+package org.ionproject.core.writeApi.insertClassSectionFaculty
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
 import org.ionproject.core.writeApi.common.Uri
-import org.ionproject.core.writeApi.insertClassSectionEvents.json.OperationParams
-import org.ionproject.core.writeApi.insertClassSectionEvents.json.SchemaValidator
+import org.ionproject.core.writeApi.insertClassSectionFaculty.json.OperationParams
+import org.ionproject.core.writeApi.insertClassSectionFaculty.json.SchemaValidator
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class InsertClassSectionEventsController(private val services: InsertClassSectionEventsServices) {
+class InsertClassSectionFacultyController(private val services: InsertClassSectionFacultyServices) {
 
-    @PutMapping(Uri.insertClassSectionEvents, consumes = [Media.APPLICATION_JSON])
-    fun insertClassSectionEvents(@RequestBody json: JsonNode): ResponseEntity<Any> {
+    @PutMapping(Uri.insertClassSectionFaculty, consumes = [Media.APPLICATION_JSON])
+    fun insertClassSectionFaculty(@RequestBody json: JsonNode): ResponseEntity<Any> {
 
         /**
          * Analyze the received JSON object in comparison with the defined
@@ -40,7 +40,7 @@ class InsertClassSectionEventsController(private val services: InsertClassSectio
         // Translate the JSON Node into an easier to use/read object
         val params = OperationParams.of(json)
         // Execute DB transaction and retrieve error message (if any)
-        val err = services.insertClassSectionEvents(params)
+        val err = services.insertClassSectionFaculty(params)
         return if (err != null) {
             ResponseEntity.badRequest().body(
                 ProblemJson(
