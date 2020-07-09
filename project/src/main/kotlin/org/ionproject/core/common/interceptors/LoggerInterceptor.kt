@@ -1,6 +1,9 @@
 package org.ionproject.core.common.interceptors
 
+import org.ionproject.core.common.filters.REQUEST_ID
+import org.ionproject.core.common.filters.RequestIDFilter
 import org.slf4j.LoggerFactory
+import org.slf4j.MDC
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,7 +15,8 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val startTime = System.currentTimeMillis()
         logger.info(
-            "IP:${request.remoteAddr} | Method:${request.method} | Endpoint:${request.requestURI} | Timestamp:${startTime}"
+            "IP:${request.remoteAddr} | Method:${request.method} | Endpoint:${request.requestURI} | Request-Id:${MDC.get(
+                REQUEST_ID)} | Timestamp:${startTime}"
         )
         request.setAttribute("startTime", startTime)
         return true
@@ -28,7 +32,7 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
         val endTime: Long = System.currentTimeMillis()
         logger.info(
             """
-                    Total time taken to proccess request in milliseconds: ${endTime - startTime} ms
+                    Request-Id:${MDC.get(REQUEST_ID)} | Total time taken to proccess request in milliseconds: ${endTime - startTime} ms
                 """.trimIndent()
         )
     }
