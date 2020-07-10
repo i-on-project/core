@@ -8,6 +8,7 @@ import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
+import org.ionproject.core.common.filters.RequestIDFilter
 import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
@@ -18,6 +19,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 import org.springframework.boot.runApplication
+import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -78,6 +81,13 @@ class CoreSerializationConfig : WebMvcConfigurer {
             .addPathPatterns("/v?/programmes*")
             .addPathPatterns("/v?/search*")
     }
+
+    @Bean
+    fun registerRequestIDFilter() : FilterRegistrationBean<RequestIDFilter> =
+        FilterRegistrationBean<RequestIDFilter>().apply {
+            filter = RequestIDFilter()
+            order = 1
+        }
 }
 
 fun main(args: Array<String>) {
