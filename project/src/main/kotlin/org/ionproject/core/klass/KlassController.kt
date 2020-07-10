@@ -1,5 +1,7 @@
 package org.ionproject.core.klass
 
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.springframework.http.ResponseEntity
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class KlassController(private val repo: KlassRepo) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASSES, ResourceIds.VERSION)
     @GetMapping(Uri.klasses)
     fun getCollection(
         @PathVariable cid: Int,
@@ -22,6 +25,7 @@ class KlassController(private val repo: KlassRepo) {
         return ResponseEntity.ok(klasses.toSiren(cid, page, limit))
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS, ResourceIds.VERSION)
     @GetMapping(Uri.klassByCalTerm)
     fun get(@PathVariable cid: Int, @PathVariable calterm: String): ResponseEntity<Siren> {
         val klass = repo.get(cid, calterm)

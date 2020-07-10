@@ -1,6 +1,8 @@
 package org.ionproject.core.search
 
 import org.ionproject.core.common.ProblemJson
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
 import org.ionproject.core.search.model.InvalidSearchQuerySyntaxException
 import org.ionproject.core.search.model.InvalidSearchTypeException
@@ -16,6 +18,7 @@ class SearchController(
     private val searchRepo: SearchRepo
 ) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.SEARCH, ResourceIds.VERSION)
     @GetMapping(Uri.search)
     fun search(
         @RequestParam("query") query: String,

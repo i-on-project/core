@@ -4,5 +4,5 @@ class PolicyEntity(
     val scope_id: Int,
     val method: String,
     val version: String,
-    val path: String
+    val resource: String
 )

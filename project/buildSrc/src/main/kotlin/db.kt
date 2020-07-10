@@ -350,6 +350,13 @@ open class PgInsertIssueToken : AbstractTask() {
     }
 }
 
+open class PgInsertRevokeToken : AbstractTask() {
+    @TaskAction
+    fun run() {
+        Token().create("urn:org:ionproject:scopes:api:revoke")
+    }
+}
+
 private data class TokenDbParams(
     val hash: String,
     val isValid: Boolean,
@@ -363,8 +370,7 @@ private data class TokenDbParams(
 class Token {
     fun create(scope: String) {
         val params = getTokenReferences(scope)
-        val cid = 500
-        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope", "client_id": ${cid}}"""
+        val json = PGobject(); json.type = "jsonb"; json.value = """{"scope":"$scope"}"""
         Db.useConnection {
             val st =
                 it.prepareStatement("INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES (?,?,?,?,?);")
@@ -384,7 +390,7 @@ class Token {
         val base64Token = tokenGenerator.encodeBase64url(randomString)
         val tokenHash = tokenGenerator.getHash(randomString)
         val currTime = System.currentTimeMillis()
-        val expirationTime = currTime + 1000 * 60 * 60
+        val expirationTime = currTime + 1000L * 60 * 60 * 365
 
         return TokenDbParams(
             tokenHash,

@@ -1,7 +1,9 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
+import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.postgresql.util.PSQLException
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
+    private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
     @ExceptionHandler(value = [BadRequestException::class])
     private fun handleBadRequestException(
@@ -236,6 +239,13 @@ class ExceptionHandler {
         customHeaders: HttpHeaders = HttpHeaders()
     ): ResponseEntity<ProblemJson> {
         customHeaders.add("Content-Type", Media.PROBLEM_JSON)
+
+        logger.error(
+            LogMessages.forException(
+                instance,
+                detail
+            )
+        )
 
         return ResponseEntity
             .status(status)
