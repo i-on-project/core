@@ -25,6 +25,18 @@ if [ -z "$GCP_KEY" ] ||\
   exit 1
 fi
 
+# A file with the GCP credentials is placed in a foreign machine
+# Erase every trace of the file in the HDD by filling the sectors with random data
+# DIY version of the `shred` command
+wipe_file() {
+  dd if=/dev/urandom of="$1" bs="$2" count="$3"
+  dd if=/dev/urandom of="$1" bs="$2" count="$3"
+  dd if=/dev/urandom of="$1" bs="$2" count="$3"
+  dd if=/dev/urandom of="$1" bs="$2" count="$3"
+  dd if=/dev/zero of="$1" bs="$2" count="$3"
+  rm "$1"
+}
+
 # Will authenticate this environment with the GCP account
 # Configures docker to use GCP account for pushing images to the GCR
 auth_gcp() {
@@ -35,12 +47,7 @@ auth_gcp() {
       printf "Wiping key file.\n"
       key_file_size="$(du -k "$key_file" | awk '{print $1}')"
       wipe_bs="1K"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
-      dd if=/dev/urandom of="$key_file" bs="$wipe_bs" count="$key_file_size"
-      dd if=/dev/zero of="$key_file" bs="$wipe_bs" count="$key_file_size"
-      rm "$key_file"
+      wipe_file "$key_file" "$wipe_bs" "$key_file_size"
     fi
   }
   trap 'auth_gcp_clean' EXIT
@@ -125,6 +132,8 @@ notify_gcp() {
     --zone "$GCP_ZONE" \
     --container-image "$1" 
 }
+
+# ENTRYPOINT
 
 auth_gcp
 
