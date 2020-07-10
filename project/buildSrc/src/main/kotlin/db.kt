@@ -390,7 +390,7 @@ class Token {
         val base64Token = tokenGenerator.encodeBase64url(randomString)
         val tokenHash = tokenGenerator.getHash(randomString)
         val currTime = System.currentTimeMillis()
-        val expirationTime = currTime + 1000 * 60 * 60
+        val expirationTime = currTime + 1000L * 60 * 60 * 365
 
         return TokenDbParams(
             tokenHash,

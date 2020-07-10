@@ -38,7 +38,7 @@ internal class ImportLinkTests: ControllerTester() {
 
         // Spring boot delivers the requests directly to a Servlet
         // Host:Port will not be considered
-        val link = jsonLink.link.dropWhile { c -> c != '/' }
+        val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link)) {
         }
             .andDo { print() }
@@ -65,7 +65,7 @@ internal class ImportLinkTests: ControllerTester() {
 
         // Spring boot delivers the requests directly to a Servlet
         // Host:Port will not be considered
-        val link = jsonLink.link.dropWhile { c -> c != '/' }
+        val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link)) {
         }
             .andDo { print() }
@@ -115,7 +115,7 @@ internal class ImportLinkTests: ControllerTester() {
 
         val link2 = convertToJson(result2)
 
-        Assertions.assertEquals(link1.link, link2.link)
+        Assertions.assertEquals(link1.url, link2.url)
     }
 
 

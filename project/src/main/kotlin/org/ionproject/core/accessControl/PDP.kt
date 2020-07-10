@@ -34,7 +34,7 @@ class PDP {
         //The order of this operation is before the method check just for extra log info
         if(token == null) {
             logger.info(
-                LogMessages.forError(
+                LogMessages.forAuthError(
                     LogMessages.importUrlAuth,
                     requestDescriptor.method,
                     requestDescriptor.path,
@@ -42,14 +42,15 @@ class PDP {
                 )
             )
 
-            throw UnauthenticatedUserException("Invalid access, access_token not found.")
+            throw UnauthenticatedUserException(LogMessages.inexistentTokenMessage
+            )
         }
 
 
         //Check method - this type of access doesn't allow UNSAFE METHODS (POST, PUT...)
         if(requestDescriptor.method != "GET" && requestDescriptor.method != "HEAD") {
             logger.info(
-                LogMessages.forErrorDetail(
+                LogMessages.forAuthErrorDetail(
                     LogMessages.importUrlAuth,
                     token.hash,
                     requestDescriptor.method,
@@ -58,7 +59,7 @@ class PDP {
                 )
             )
 
-            throw BadRequestException("This type of access doesn't allow unsafe methods (PUT, POST...).")
+            throw BadRequestException(LogMessages.unsafeMethodMessage)
         }
 
         val claims = token.claims as DerivedTokenClaims
@@ -66,7 +67,7 @@ class PDP {
             return token
         else {
             logger.info(
-                LogMessages.forErrorDetail(
+                LogMessages.forAuthErrorDetail(
                     LogMessages.importUrlAuth,
                     token.hash,
                     requestDescriptor.method,
@@ -75,7 +76,7 @@ class PDP {
                 )
             )
 
-            throw ForbiddenActionException("You Require higher privileges to do that.")
+            throw ForbiddenActionException(LogMessages.lackOfPrivilegesMessage)
         }
 
     }
@@ -93,14 +94,14 @@ class PDP {
         //Check if the token exists
         if (token == null) {
             logger.info(
-                LogMessages.forError(
+                LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
                     requestDescriptor.method,
                     requestDescriptor.path,
                     LogMessages.inexistentToken
                 )
             )
-            throw UnauthenticatedUserException("Inexistent token... try requesting a new one.")
+            throw UnauthenticatedUserException(LogMessages.inexistentTokenMessage)
         }
 
         val claims = token.claims as TokenClaims
@@ -108,7 +109,7 @@ class PDP {
              return token
         else {
              logger.info(
-                 LogMessages.forErrorDetail(
+                 LogMessages.forAuthErrorDetail(
                      LogMessages.tokenHeaderAuth,
                      token.hash,
                      requestDescriptor.method,
@@ -116,7 +117,7 @@ class PDP {
                      LogMessages.lackPrivileges
                  )
              )
-             throw ForbiddenActionException("You Require higher privileges to do that.")
+             throw ForbiddenActionException(LogMessages.lackOfPrivilegesMessage)
          }
     }
 
@@ -127,7 +128,7 @@ class PDP {
         //Check if the token is revoked
         if(!token.isValid) {
             logger.info(
-                LogMessages.forErrorDetail(
+                LogMessages.forAuthErrorDetail(
                     authMode,
                     token.hash,
                     requestDescriptor.method,
@@ -136,12 +137,12 @@ class PDP {
                 )
             )
 
-            throw UnauthenticatedUserException("Token Revoked... try requesting a new one.")
+            throw UnauthenticatedUserException(LogMessages.tokenRevokedMessage)
         }
 
         if (System.currentTimeMillis() > token.expiresAt) {
             logger.info(
-                LogMessages.forErrorDetail(
+                LogMessages.forAuthErrorDetail(
                     authMode,
                     token.hash,
                     requestDescriptor.method,
@@ -149,7 +150,7 @@ class PDP {
                     LogMessages.tokenExpired
                 )
             )
-            throw UnauthenticatedUserException("Token expired... try requesting a new one.")
+            throw UnauthenticatedUserException(LogMessages.tokenExpiredMessage)
         }
 
         val policies = pap.getPolicies(scope, requestDescriptor.resourceIdentifier.version)
@@ -166,7 +167,7 @@ class PDP {
             if (methods.contains(requestDescriptor.method)) {
 
                 logger.info(
-                    LogMessages.forSuccess(
+                    LogMessages.forAuthSuccess(
                         authMode,
                         token.hash,
                         requestDescriptor.method,

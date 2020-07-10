@@ -65,7 +65,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         //Checks to see if request has authorization header
         if(header == null) {
             logger.info(
-                LogMessages.forError(
+                LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
                     request.method,
                     request.requestURI,
@@ -73,7 +73,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
                 )
             )
 
-            throw UnauthenticatedUserException("User not authenticated, no token on Authorization Header")
+            throw UnauthenticatedUserException(LogMessages.noTokenException)
         }
 
         val pair = header.trim().split(" ")
@@ -81,7 +81,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         //Client includes header "Authorization" with bad value e.g. "Bearer      "
         if (pair.size != 2) {
             logger.info(
-                LogMessages.forError(
+                LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
                     request.method,
                     request.requestURI,
@@ -89,7 +89,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
                 )
             )
 
-            throw BadRequestException("Incorrect authorization header format value.")
+            throw BadRequestException(LogMessages.incorrectAuthHeaderFormatException)
         }
 
         //Client include token type is different than "Bearer"
@@ -97,7 +97,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         if (tokenIncludeType != includeType) {
 
             logger.info(
-                LogMessages.forError(
+                LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
                     request.method,
                     request.requestURI,
@@ -105,13 +105,13 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
                 )
             )
 
-            throw BadRequestException("Unsupported include token type, it must be Bearer.")
+            throw BadRequestException(LogMessages.unsupportedIncludeTypeException)
         }
 
         val reference = pair[1]
 
         //Check remaining policies
-        val token = pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference), requestDescriptor)
+        val token = pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference, requestDescriptor), requestDescriptor)
 
         request.setAttribute("token", token)
     }
@@ -123,7 +123,14 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     private fun checkAccessToken(request: HttpServletRequest, requestDescriptor: Request) : Boolean {
         val accessToken = request.getParameter(authenticationQueryParameter)
         if(accessToken != null) {
-            val token = pdp.evaluateAccessTokenAuthentication(getTokenHash(accessToken), requestDescriptor)
+            val token = pdp.evaluateAccessTokenAuthentication(
+                getTokenHash(
+                    accessToken,
+                    requestDescriptor,
+                    LogMessages.importUrlAuth
+                ),
+                requestDescriptor
+            )
             return true
         }
 
@@ -145,9 +152,23 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     /**
      * Builds the hash out of the reference
      */
-    private fun getTokenHash(tokenReference: String) : String {
-        val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
-        return tokenGenerator.getHash(tokenBase64Decoded)
+    private fun getTokenHash(tokenReference: String, requestDescriptor: Request, authMode : String = LogMessages.tokenHeaderAuth) : String {
+        try {
+            val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
+            return tokenGenerator.getHash(tokenBase64Decoded)
+
+        } catch(e : Exception) {
+            logger.info(
+                LogMessages.forAuthError(
+                    authMode,
+                    requestDescriptor.method,
+                    requestDescriptor.path,
+                    LogMessages.tokenHashError
+                )
+            )
+
+            throw UnauthenticatedUserException(LogMessages.incorrectTokenFormat)
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package org.ionproject.core.common.interceptors
 
+import org.ionproject.core.common.LogMessages
 import org.slf4j.LoggerFactory
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.servlet.http.HttpServletRequest
@@ -12,7 +13,12 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val startTime = System.currentTimeMillis()
         logger.info(
-            "IP:${request.remoteAddr} | Method:${request.method} | Endpoint:${request.requestURI} | Timestamp:${startTime}"
+            LogMessages.forLoggerAccessMessage(
+                request.remoteAddr,
+                request.method,
+                request.requestURI,
+                startTime
+            )
         )
         request.setAttribute("startTime", startTime)
         return true
@@ -27,9 +33,10 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
         val startTime: Long = request.getAttribute("startTime") as Long
         val endTime: Long = System.currentTimeMillis()
         logger.info(
-            """
-                    Total time taken to proccess request in milliseconds: ${endTime - startTime} ms
-                """.trimIndent()
+            LogMessages.forLoggerCompletionMessage(
+                startTime,
+                endTime
+            )
         )
     }
 }

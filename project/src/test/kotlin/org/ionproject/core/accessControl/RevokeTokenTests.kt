@@ -129,7 +129,7 @@ internal class RevokeTokenTests : ControllerTester() {
 
         //Checking if the issued import link is valid
         val jsonLink = convertToJson(linkResult)
-        val link = jsonLink.link.dropWhile { c -> c != '/' }
+        val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link)) {
         }
             .andDo { print() }
@@ -180,7 +180,7 @@ internal class RevokeTokenTests : ControllerTester() {
 
         //Checking if the issued import link is valid
         val jsonLink = convertToJson(linkResult)
-        val link = jsonLink.link.dropWhile { c -> c != '/' }
+        val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link)) {
         }
             .andDo { print() }
@@ -231,7 +231,7 @@ internal class RevokeTokenTests : ControllerTester() {
 
         //Checking if the issued import link is valid
         val jsonLink = convertToJson(linkResult)
-        val link = jsonLink.link.dropWhile { c -> c != '/' }
+        val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link)) {
         }
             .andDo { print() }
