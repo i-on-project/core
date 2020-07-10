@@ -1,0 +1,24 @@
+{
+    "school": {
+        "acr": "ISEL"
+    },
+    "programme": {
+        "acr": "LEIC"
+    },
+    "calendarTerm": "2019/20-Verão",
+    "calendarSection": "LI11D",
+    "language": "pt-PT",
+    "courses": [
+        {
+            "label": {
+              "acr": "ALga",
+              "name": "Algebra"
+            },
+            "teachers": [
+                {
+                    "name": "Teresa Maria de Araújo Melo Quinteiro"
+                }
+            ]
+        }
+    ]
+}

@@ -20,15 +20,14 @@
                     "description": "Aulas teoricas de ALGA",
                     "location": [ "E.1.31" ],
                     "beginTime": "14:00",
-                    "duration": "1:30",
+                    "duration": "5:30",
                     "weekday": [ "MO" ],
                     "category": 2
                 },
                 {
                     "location": [ "E.1.31" ],
-                    "beginTime": "14:00",
-                    "duration": "01:30",
-                    "weekday": [ "TU", "WE" ],
+                    "startDate": "2020-01-20T14:00",
+                    "endDate": "2020-01-20T15:30",
                     "category": 2
                 }
             ]
@@ -48,9 +47,8 @@
                 {
                     "title": "Aula de M2",
                     "location": [ "G.2.30" ],
-                    "beginTime": "14:00",
-                    "duration": "1:30",
-                    "weekday": [ "TU" ],
+                    "startDate": "2020-01-20T14:00",
+                    "endDate": "2020-01-20T15:30",
                     "category": 2
                 }
             ]

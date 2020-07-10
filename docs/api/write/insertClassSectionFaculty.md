@@ -1,4 +1,4 @@
-This document informs the clients on how to insert events for `Class Section` resources.
+This document informs the clients on how to insert faculty information for `Class Section` resources.
 
 - [HTTP](#http)
   - [Usage](#usage)
@@ -10,7 +10,7 @@ This document informs the clients on how to insert events for `Class Section` re
 # HTTP
 
 ## Usage
-* `PUT /v0/insertClassSectionEvents`
+* `PUT /v0/insertClassSectionFaculty`
   - this operation is **idempotent**
   - clients need not use hypermedia navigation in order to find this resource's location
   - content type: `application/json`
@@ -19,7 +19,7 @@ This document informs the clients on how to insert events for `Class Section` re
 # Message Format
 
 The scope of this section is to define the constraints for the JSON object sent in the HTTP request body.
-This is meant to be a more toned down version of the request's [JSON schema](./schemas/insertClassSectionEvents.json).
+This is meant to be a more toned down version of the request's [JSON schema](./schemas/insertClassSectionFaculty.json).
 
 Properties are defined as follows:
 - the *type* of that property's value
@@ -90,68 +90,24 @@ Properties marked with the quote "consult [#Constants](#constants) for the avail
     - has the `name` and `acr` properties similar to the `programme` and `school` properties, with the same constraints
     - `acr` **required**
     - e.g. `label: { name: "Linear Algebra and Analythic Geometry", acr: "LAAG" }`
-* `events`
+* `teachers`
     - *array[object]* type
-    - events to be stored in the Core, type defined later on
     - size: **0..N**
 * **required**
     - `label` (its `acr` property is mandatory)
-    - `events` must exist but may be empty, in which case the Core will attempt to store the rest of the received properties
+    - `teachers` must exist but may be empty, in which case the Core will attempt to store the rest of the received properties
 
-### `event`
+### `teacher`
 * *object* type
-* `title`
+* `name`
     - *string* type
-    - e.g. `ALGA Lecture`
-* `description`
-    - *string* type
-    - e.g. `ALGA Theorical Lectures`
-* `location`
-    - *array[string]* type
-    - e.g. `[ "A.2.1", "G.0.21" ]`
-    - unique items (e.g. `[ "A.2", "A.2" ]` is not allowed)
-    - this value does not have a strict format, since other languages may require the use of special characters for identifying locations (e.g. Mandarin Chinese)
-* `startDate`
-    - *datetime* type
-    - `yyyy-mm-ddThh:mm` format 
-    - e.g. `2020-01-01T10:10`
-* `endDate`
-    - *datetime* type
-    - `yyyy-mm-ddThh:mm` format 
-    - e.g. `2020-01-01T10:10`
-* `weekday`
-    - *array[string]* type
-    - consult [#Constants](#constants) for the available values
-    - unique items (e.g. `[ "MO", "MO" ]` is not allowed)
-    - size: **1..7**
-* `category`
-    - *integer* type
-    - positive integer (category >= 0)
-    - unique category identifier
-    - consult [#Constants](#constants) for the available values
+    - e.g. `Bob McDonald`
 * **required**
-    - `beginTime`, `duration` and `category`
+    - `name`
 
 ## Constants
 
 Some of the message's properties only have a selected number of values which will be present in this section.
-
-* `category`
-  - `1` Exam
-  - `2` Lecture
-  - `3` Lab
-  - `4` Warning
-  - `5` Deadline
-  - `6` Test
-
-* `weekday`
-  - `MO` Monday
-  - `TU` Tuesday
-  - `WE` Wednesday
-  - `TH` Thursday
-  - `FR` Friday
-  - `SA` Saturday
-  - `SU` Sunday
 
 * `language`
   - `pt-PT`
@@ -345,5 +301,5 @@ Some of the message's properties only have a selected number of values which wil
   - `za`
 
 ## Links
-* [JSON schema](./schemas/insertClassSectionEvents.json)
-* [Example message](./examples/insertClassSectionEvents.json)
+* [JSON schema](./schemas/insertClassSectionFaculty.json)
+* [Example message](./examples/insertClassSectionFaculty.json)
