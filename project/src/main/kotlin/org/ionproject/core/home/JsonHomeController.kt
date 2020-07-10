@@ -1,6 +1,8 @@
 package org.ionproject.core.home
 
 import org.ionproject.core.common.Media
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -24,6 +26,7 @@ private const val apiName = "i-on Core"
 @RestController
 class JsonHomeController {
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_HOME, ResourceIds.VERSION)
     @GetMapping("/")
     fun getRoot(): ResponseEntity<JsonHome> {
         val homeObject = JsonHomeBuilder(apiName)
@@ -68,14 +71,6 @@ class JsonHomeController {
                     .docs(programmesSpecUri)
                     .formats(Media.MEDIA_SIREN)
                     .allow(HttpMethod.GET)
-                    .toResourceObject()
-            }
-            .newResource("issueToken") {
-                it
-                    .href(URI(Uri.issueToken))
-                    .docs(accessManagerSpecUri)
-                    .formats(Media.MEDIA_JSON)
-                    .allow(HttpMethod.POST)
                     .toResourceObject()
             }
             .newResource("revokeToken") {

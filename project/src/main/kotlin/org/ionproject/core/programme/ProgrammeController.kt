@@ -1,5 +1,7 @@
 package org.ionproject.core.programme
 
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.programme.model.Programme
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class ProgrammeController(private val programmeServices: ProgrammeServices) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_PROGRAMMES, ResourceIds.VERSION)
     @GetMapping(Uri.programmes)
     fun getProgrammes(): ResponseEntity<Siren> {
         val programmes = programmeServices.getProgrammes()
@@ -20,6 +23,7 @@ class ProgrammeController(private val programmeServices: ProgrammeServices) {
         return ResponseEntity.ok(programmes.programmesListRepr())
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_PROGRAMME, ResourceIds.VERSION)
     @GetMapping(Uri.programmesById)
     fun getProgramme(@PathVariable id: Int): ResponseEntity<Siren> {
         val programme = programmeServices.getProgrammeById(id)
@@ -28,26 +32,12 @@ class ProgrammeController(private val programmeServices: ProgrammeServices) {
         return ResponseEntity.notFound().build()
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_OFFER, ResourceIds.VERSION)
     @GetMapping(Uri.programmeOfferById)
     fun getOffer(@PathVariable idProgramme: Int, @PathVariable idOffer: Int): ResponseEntity<Siren> {
         val offer = programmeServices.getOfferById(idProgramme, idOffer)
 
         offer?.let { return ResponseEntity.ok(it.offerToDetailRepr()) }
         return ResponseEntity.notFound().build()
-    }
-
-    @PutMapping(Uri.programmesById)
-    fun editProgramme(programme: Programme) {
-        TODO("Write API")
-    }
-
-    @PostMapping(Uri.programmes)
-    fun addProgramme(programme: Programme) {
-        TODO("Write API")
-    }
-
-    @PostMapping(Uri.programmeByIdOffer)
-    fun addOffer(id: Int, offer: ProgrammeOffer) {
-        TODO("Write API")
     }
 }

@@ -581,6 +581,8 @@ CREATE TABLE dbo.Token(
 	isValid BOOLEAN,
 	issuedAt BIGINT,
 	expiresAt BIGINT,
+  derivedToken BOOLEAN DEFAULT FALSE,
+  fatherHash CHAR(64) DEFAULT '', --used only if its a derived token
 	claims JSONB
 );
 
@@ -594,7 +596,7 @@ CREATE TABLE dbo.policies(
 	scope_id INT REFERENCES dbo.scopes(id),
 	method VARCHAR(50),		-- get, post...
 	version VARCHAR(10),	--	v0, v1...
-	path VARCHAR(100)		-- .../courses
+	resource VARCHAR(100)		-- "getProgrammes", "getProgramme"
 );
 
 -----------------------------------------------------

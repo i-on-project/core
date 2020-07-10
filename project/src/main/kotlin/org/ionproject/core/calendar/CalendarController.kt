@@ -3,6 +3,8 @@ package org.ionproject.core.calendar
 import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.toSiren
 import org.ionproject.core.common.Media
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.hexStringToInt
@@ -16,6 +18,7 @@ import java.net.URI
 @RestController
 class CalendarController(private val repository: CalendarRepo) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS, ResourceIds.VERSION)
     @GetMapping(Uri.calendarByClass)
     fun fromClass(
         @PathVariable cid: Int,
@@ -30,6 +33,7 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS_SECTION, ResourceIds.VERSION)
     @GetMapping(Uri.calendarByClassSection)
     fun fromClassSection(
         @PathVariable sid: String,
@@ -49,6 +53,7 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS, ResourceIds.VERSION)
     @GetMapping(Uri.componentByClassCalendar)
     fun fromClassCalendar(
         @PathVariable cid: Int,
@@ -72,6 +77,7 @@ class CalendarController(private val repository: CalendarRepo) {
             throw ResourceNotFoundException("This component doesn't exist.")
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS_SECTION, ResourceIds.VERSION)
     @GetMapping(Uri.componentByClassSectionCalendar)
     fun fromClassSectionCalendar(
         @PathVariable sid: String,

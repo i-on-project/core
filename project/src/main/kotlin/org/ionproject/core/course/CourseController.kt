@@ -1,5 +1,7 @@
 package org.ionproject.core.course
 
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.course.representations.courseToDetailRepr
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class CourseController(private val courseServices: CourseServices) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSES, ResourceIds.VERSION)
     @GetMapping(Uri.courses)
     fun getCourses(
         @RequestParam(defaultValue = "0") page: Int,
@@ -21,26 +24,12 @@ class CourseController(private val courseServices: CourseServices) {
         return ResponseEntity.ok(siren)
     }
 
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSE, ResourceIds.VERSION)
     @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
         val course = courseServices.getCourseById(cid)
 
         course?.let { return ResponseEntity.ok(it.courseToDetailRepr()) }
         return ResponseEntity.notFound().build()
-    }
-
-    /*
-     * Annotation `RequiresAuth` serves as an indication
-     * that to use this endpoint credentials must be
-     * provided.
-     */
-    @DeleteMapping(Uri.courseById)
-    fun deleteCourse(@PathVariable id: Int) {
-        TODO("Waiting write API")
-    }
-
-    @PatchMapping(Uri.courseById)
-    fun editCourse(@PathVariable id: Int) {
-        TODO("Waiting write API")
     }
 }

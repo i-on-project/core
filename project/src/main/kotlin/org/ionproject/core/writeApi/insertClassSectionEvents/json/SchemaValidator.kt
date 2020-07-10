@@ -13,20 +13,20 @@ private const val insertClassSectionEventsSchema = """{
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 2,
+          "minLength": 1,
           "maxLength": 100
         },
         "acr": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 10
+          "maxLength": 50
         }
       },
       "required": [ "acr" ],
       "additionalProperties": false
     },
-    "event": {
-      "${'$'}id": "#event",
+    "eventRecurrent": {
+      "${'$'}id": "#event-recurrent",
       "type": "object",
       "properties": {
         "title": { "type": "string" },
@@ -59,8 +59,42 @@ private const val insertClassSectionEventsSchema = """{
           }
         }
       },
-      "required": [ "beginTime", "duration", "category" ],
+      "required": [ "weekday", "beginTime", "duration", "category" ],
       "additionalProperties": false
+    },
+    "eventNonRecurrent": {
+      "${'$'}id": "#event-non-recurrent",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "category": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "startDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]${'$'}"
+        },
+        "endDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]${'$'}"
+        }
+      },
+      "required": [ "startDate", "endDate", "category" ],
+      "additionalProperties": false
+    },
+    "event": {
+      "${'$'}id": "#event",
+      "anyOf": [
+        { "${'$'}ref": "#event-non-recurrent" },
+        { "${'$'}ref": "#event-recurrent" }
+      ]
     },
     "course": {
       "${'$'}id": "#course",
@@ -68,7 +102,6 @@ private const val insertClassSectionEventsSchema = """{
         "label": { "${'$'}ref": "#academicObject" },
         "events": {
           "type": "array",
-          "minItems": 1,
           "items": { "${'$'}ref": "#event" }
         }
       },
@@ -92,7 +125,8 @@ private const val insertClassSectionEventsSchema = """{
   },
   "required": [ "school", "programme", "courses", "calendarTerm", "calendarSection" ],
   "additionalProperties": false
-}"""
+}
+"""
 
 object SchemaValidator {
     val schemaDocUri =

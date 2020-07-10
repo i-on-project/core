@@ -37,20 +37,22 @@ INSERT INTO dbo.Course(acronym, name) values
 --client id holds no meaning for now as there is no registration/authentication method
 -- last 2 tokens are expired and revoked for testing purposes
 
-INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt, claims) VALUES 
-('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,
-'{"client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
-('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,
-'{"client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
-('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,
-'{"client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
+INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt,derivedToken, fatherHash, claims) VALUES 
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:read_restricted"}');
 
 
 INSERT INTO dbo.scopes (scope) VALUES
 ('urn:org:ionproject:scopes:api:read'),
 ('urn:org:ionproject:scopes:api:write'),
 ('urn:org:ionproject:scopes:token:issue'),
-('urn:org:ionproject:scopes:api:read_restricted');
+('urn:org:ionproject:scopes:api:read_restricted'),
+('urn:org:ionproject:scopes:api:revoke'),
+('urn:org:ionproject:scopes:api:read:calendar'); -- scope only used by derived tokens
 
 /*
 * Don't use wildcards in the paths
@@ -59,51 +61,39 @@ INSERT INTO dbo.scopes (scope) VALUES
 * e.g. GET "/v0/courses/../programmes"
 * if the code accepts anything towards "/v0/courses*"
 *
-*This way of representing permissions is very extensive and would exponentially
-*grow if all paths were repeated by each HTTP method, therefore the field
-*method is a list of methods allowed for each resource.
+* IMPORTANT NOTE: WHEN ADDING NEW ENDPOINT URI'S BE CAREFUL NOT TO FALL IN THE "WILDCARD" OF AN ALREADY EXISTING ENDPOINT, 
+* IF THAT HAPPENS AND THE ENDPOINT WITH WILDCARD IS AUTHORIZED TO SOME SCOPE, THE PERSON CAN USE THE SAME SCOPE TO ACCESS THE NEW ENDPOINT
 */
-INSERT INTO dbo.policies(scope_id, method, version, path) VALUES
-(1, 'GET', '*','/'),
-(1, 'GET', 'v0', 'courses'),
-(1, 'GET', 'v0', 'courses/?'),
-(1, 'GET', 'v0', 'courses/?/classes'),
-(1, 'GET', 'v0', 'courses/?/classes/?'),
-(1, 'GET', 'v0', 'courses/?/classes/?/?'),
-(1, 'GET', 'v0', 'courses/?/classes/?/calendar'),
-(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar'),
-(1, 'GET', 'v0', 'courses/?/classes/?/calendar/?'),
-(1, 'GET', 'v0', 'courses/?/classes/?/?/calendar/?'),
-(1, 'GET', 'v0', 'programmes'),
-(1, 'GET', 'v0', 'programmes/?'),
-(1, 'GET', 'v0', 'programmes/?/offers'),
-(1, 'GET', 'v0', 'programmes/?/offers/?'),
-(1, 'GET', 'v0', 'calendar-terms'),
-(1, 'GET', 'v0', 'calendar-terms/?'),
+INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
+(1, 'GET', 'v0', 'getHome'),
 (1, 'GET', 'v0', 'search'),
-(2, 'PUT,POST', 'v0', 'courses'),
-(2, 'PUT,POST', 'v0', 'courses/?'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?/calendar/?'),
-(2, 'PUT,POST', 'v0', 'courses/?/classes/?/?/calendar/?'),
-(2, 'PUT,POST', 'v0', 'programmes'),                                            
-(2, 'PUT,POST', 'v0', 'programmes/?'),                                       
-(2, 'PUT,POST', 'v0', 'programmes/?/offers'),
-(2, 'PUT,POST', 'v0', 'programmes/?/offers/?'),
-(2, 'PUT,POST', 'v0', 'calendar-terms'),
-(2, 'PUT,POST', 'v0', 'calendar-terms/?'),
-(2, 'PUT', 'v0', 'insertClassSectionEvents'),
-(4, 'GET', 'v0', 'programmes'), --Testing read restricted scope
-(4, 'GET', 'v0', 'programmes/?'),
 (3, 'POST', '*', 'issueToken'),
 (2, 'POST', '*', 'revokeToken'),
 (3, 'POST', '*', 'revokeToken'),
 (4, 'POST', '*', 'revokeToken'),
-(1, 'GET,POST', '*', 'error'),
+(5, 'POST', '*', 'revokeToken'),
+(1, 'GET', 'v0', 'getProgramme'),
+(1, 'GET', 'v0', 'getProgrammes'),
+(4, 'GET', 'v0', 'getProgramme'), --Testing read restricted scope
+(4, 'GET', 'v0', 'getProgrammes'), --Testing read restricted scope
+(1, 'GET', 'v0', 'getOffer'),
+(1, 'GET', 'v0', 'importClassCalendar'),
+(1, 'GET', 'v0', 'importClassSectionCalendar'),
+(1, 'GET', 'v0', 'getCourses'),
+(1, 'GET', 'v0', 'getCourse'),
+(1, 'GET', 'v0', 'getClasses'),
+(1, 'GET', 'v0', 'getClass'),
+(1, 'GET', 'v0', 'getClassSection'),
+(1, 'GET', 'v0', 'getCalendarClass'),
+(1, 'GET', 'v0', 'getCalendarClassSection'),
+(6, 'GET', 'v0', 'getCalendarClass'),           -- used by derived tokens to read calendars
+(6, 'GET', 'v0', 'getCalendarClassSection'),
+(1, 'GET', 'v0', 'getComponentClass'),
+(1, 'GET', 'v0', 'getComponentClassSection'),
+(1, 'GET', 'v0', 'getCalendarTerms'),
+(1, 'GET', 'v0', 'getCalendarTerm'),
+(2, 'PUT', 'v0', 'insertClassSectionEvents'),
+(1, 'GET,POST', '*', 'error'),  
 (2, 'GET,POST', '*', 'error'),
 (3, 'GET,POST', '*', 'error'),
 (4, 'GET,POST', '*', 'error');
