@@ -1,5 +1,8 @@
 package org.ionproject.core.common
 
+import org.ionproject.core.common.filters.REQUEST_ID
+import org.slf4j.MDC
+
 object LogMessages {
     var logMessageId : Long = 0
 
@@ -53,8 +56,8 @@ object LogMessages {
 
     //Logger interceptor message
     fun forLoggerAccessMessage(ip: String, method: String, url: String, startTime: Long) =
-        "[ID:${logMessageId++}] [INFORMATION] | IP:[${ip}] | Method:[${method}] | Endpoint:[${url}] | Timestamp:[${startTime}]"
+        "[ID:${logMessageId++}] |  Request-Id:${MDC.get(REQUEST_ID)} |[INFORMATION] | IP:[${ip}] | Method:[${method}] | Endpoint:[${url}] | Timestamp:[${startTime}]"
 
     fun forLoggerCompletionMessage(startTime: Long, endTime: Long) =
-        "[ID:${logMessageId++}] [INFORMATION] | Total time taken to process request in milliseconds: ${endTime - startTime} ms"
+        "[ID:${logMessageId++}] |  Request-Id:${MDC.get(REQUEST_ID)} | [INFORMATION] | Total time taken to process request in milliseconds: ${endTime - startTime} ms"
 }
