@@ -475,7 +475,8 @@ CREATE TABLE dbo.policies(
 	scope_id INT REFERENCES dbo.scopes(id),
 	method VARCHAR(50),		-- get, post...
 	version VARCHAR(10),	--	v0, v1...
-	resource VARCHAR(100)		-- "getProgrammes", "getProgramme"
+	resource VARCHAR(100),-- "getProgrammes", "getProgramme"
+  UNIQUE(scope_id, method, version, resource)
 );
 
 -----------------------------------------------------

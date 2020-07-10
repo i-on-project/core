@@ -48,40 +48,17 @@ tasks.withType<KotlinCompile> {
 tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is already running
 tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist
 tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
-tasks.register<PgDropDb>("pgDropDb")
-tasks.register<PgCreateDb>("pgCreateDb")
-tasks.register<PgCreateUser>("pgCreateUser")
-tasks.register<PgInitSchema>("pgInitSchema")
-tasks.register<PgAddData>("pgAddData")
 tasks.register<PgInsertReadToken>("pgInsertReadToken")
 tasks.register<PgInsertWriteToken>("pgInsertWriteToken")
 tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
 tasks.register<PgInsertRevokeToken>("pgInsertRevokeToken")
 
 /**
- * Will execute all the tasks needed to setup the database running in a container,
- * in the proper order.
- */
-tasks.register("pgSetupDb") {
-    val startTask = "pgStart"
-    val createDbTask = "pgCreateDb"
-    val createUserTask = "pgCreateUser"
-    val initSchemaTask = "pgInitSchema"
-    val addDataTask = "pgAddData"
-
-    dependsOn(startTask, createDbTask, createUserTask, initSchemaTask, addDataTask)
-    tasks[createUserTask].mustRunAfter(startTask)
-    tasks[createDbTask].mustRunAfter(createUserTask)
-    tasks[initSchemaTask].mustRunAfter(createDbTask)
-    tasks[addDataTask].mustRunAfter(initSchemaTask)
-}
-
-/**
  * Will destroy the container before setting the database (which will be done inside
  * a new container).
  */
 tasks.register("pgReset") {
-    val setupTask = "pgSetupDb"
+    val setupTask = "pgStart"
     val stopTask = "pgStop"
 
     dependsOn(setupTask, stopTask)

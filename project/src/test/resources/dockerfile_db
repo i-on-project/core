@@ -2,9 +2,8 @@ FROM postgres:13-alpine
 
 USER postgres
 COPY ./docker/sql/create-schema.sql /docker-entrypoint-initdb.d/1_create.sql
-COPY ./docker/sql/insert.sql /docker-entrypoint-initdb.d/2_insert.sql
-COPY ./docker/sql/tokens.sql /docker-entrypoint-initdb.d/3_tokens.sql
-COPY ./docker/sql/strip-privileges.sql /docker-entrypoint-initdb.d/4_priv.sql
+COPY ./docker/sql/insert-essential-data.sql /docker-entrypoint-initdb.d/2_insert-essentials.sql
+COPY ./docker/sql/insert-testing-data.sql /docker-entrypoint-initdb.d/3_insert-testing-data.sql
 
 EXPOSE 5432
 

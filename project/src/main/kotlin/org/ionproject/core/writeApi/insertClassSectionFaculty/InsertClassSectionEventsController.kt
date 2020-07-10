@@ -3,6 +3,8 @@ package org.ionproject.core.writeApi.insertClassSectionFaculty
 import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.ProblemJson
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.writeApi.common.ResourceIds
 import org.ionproject.core.writeApi.common.Uri
 import org.ionproject.core.writeApi.insertClassSectionFaculty.json.OperationParams
 import org.ionproject.core.writeApi.insertClassSectionFaculty.json.SchemaValidator
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class InsertClassSectionFacultyController(private val services: InsertClassSectionFacultyServices) {
 
+    @ResourceIdentifierAnnotation(ResourceIds.INSERT_CLASS_SECTION_EVENTS, ResourceIds.VERSION)
     @PutMapping(Uri.insertClassSectionFaculty, consumes = [Media.APPLICATION_JSON])
     fun insertClassSectionFaculty(@RequestBody json: JsonNode): ResponseEntity<Any> {
 

@@ -4,6 +4,8 @@
 # Evvar $DEV_DB_URL -> URL to the dev DB
 # Evvar $DB_URL     -> URL to the release DB
 
+set -eu
+
 # Poll for DB availability
 # 1 minute of timeout
 timeout=60
@@ -24,8 +26,6 @@ while true; do
   sleep 1
 done
 
-set -e
-
 schema_diff_file="/tmp/schema_diff"
 scripts_dir="/mnt/sql"
 
@@ -43,4 +43,5 @@ migra "$DB_URL" "$DEV_DB_URL" | tee -a "$schema_diff_file"
 
 if [ -n "$1" ] && [ "$1" = "apply" ]; then
     psql -Atx "$DB_URL" -1 -f "$schema_diff_file" >&2
+    psql -Atx "$DB_URL" -1 -f "${scripts_dir}/insert-essential-data.sql" >&2
 fi
