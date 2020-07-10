@@ -57,7 +57,7 @@ object Postgres {
 object Docker {
     const val CONTAINER_NAME = "pg-container"
     const val CONTAINER_PORT = 5432
-    const val RESOURCES_FOLDER = "res"
+    const val RESOURCES_FOLDER = "src/test/resources"
 
     fun isContainerRunning(project: Project): Boolean {
         val pipe = ByteArrayOutputStream()
