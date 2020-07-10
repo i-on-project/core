@@ -147,7 +147,7 @@ A `Calendar` representation:
     "type": "calendar",
     "properties": {
       "prodid": {
-        "value": "/v0/courses/1/classes/1920v/61D"
+        "value": "/v0/courses/1/classes/1920v/LI61D"
       },
       "version": {
         "value": "2.0"
@@ -230,6 +230,21 @@ A `Calendar` representation:
       "href": "/v0/courses/1/classes/1920v/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}",
       "isTemplated": true,
       "type": "application/x-www-form-urlencoded",
+      "fields": [
+        { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" },
+        { "name": "startBefore", "type": "date", "class": "https://example.org/param/date-query" },
+        { "name": "startAfter", "type": "date", "class": "https://example.org/param/date-query" },
+        { "name": "endBefore", "type": "date", "class": "https://example.org/param/date-query" },
+        { "name": "endAfter", "type": "date", "class": "https://example.org/param/date-query" },
+        { "name": "summary", "type": "text", "class": "https://example.org/param/free-text-query" }
+      ]
+    },
+    {
+      "name": "Import",
+      "summary": "Import URL",
+      "method": "GET",
+      "href": "/v0/import/courses/1/classes/1920v/calendar{?type,startBefore,startAfter,endBefore,endAfter,summary}",
+      "isTemplated": true,
       "fields": [
         { "name": "type", "type": "text", "class": "https://example.org/param/free-text-query" },
         { "name": "startBefore", "type": "date", "class": "https://example.org/param/date-query" },
