@@ -611,6 +611,9 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceSchool (
   calendarTerm VARCHAR(50))
 AS $$
 #print_strict_params ON
+DECLARE
+    start_date INT;
+    end_date INT;
 BEGIN
   IF (schoolName IS NULL AND schoolAcr IS NULL) OR (programmeAcr IS NULL AND programmeName IS NULL) THEN
     RAISE 'For the School and Programme parameters, you must provide at least a "name" or an "acronym"';
@@ -638,10 +641,13 @@ BEGIN
     );
 
   -- Insert or update CalendarTerm
+  INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
+  INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
+
   INSERT INTO
-    dbo.CalendarTerm(id, start_date, end_date)
+    dbo._CalendarTerm(id, start_date, end_date)
   SELECT
-    calendarTerm, NULL, NULL
+    calendarTerm, start_date, end_date
   WHERE
     NOT EXISTS(
       SELECT id FROM dbo.CalendarTerm c WHERE c.id=calendarTerm
