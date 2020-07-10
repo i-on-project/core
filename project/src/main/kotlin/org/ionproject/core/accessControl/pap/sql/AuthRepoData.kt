@@ -21,7 +21,8 @@ internal object AuthRepoData {
     const val FATHER_TOKEN_HASH = "fatherHash"
     const val CALENDAR_READ_SCOPE = "urn:org:ionproject:scopes:api:read:calendar"
 
-    const val GET_TOKEN_QUERY = "SELECT * FROM $SCHEMA.$TOKEN WHERE $HASH_ID=:$TOKEN"
+    const val GET_TOKEN_QUERY = "SELECT * FROM $SCHEMA.$TOKEN WHERE $HASH_ID=:$TOKEN AND $IS_DERIVED_TOKEN=FALSE"
+    const val GET_DERIVED_TOKEN_QUERY = "SELECT * FROM $SCHEMA.$TOKEN WHERE $HASH_ID=:$TOKEN AND $IS_DERIVED_TOKEN=TRUE"
 
     const val GET_SCOPE = "SELECT COUNT(*) FROM $SCHEMA.$SCOPES WHERE $SCOPE_URI=:$SCOPE_URI"
 

@@ -8,6 +8,7 @@ import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.API_VERSION
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.CALENDAR_READ_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.FATHER_TOKEN_HASH
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_DERIVED_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_IMPORT_TOKEN
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_POLICIES_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_SCOPE
@@ -53,7 +54,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
      */
     override fun getDerivedTableToken(tokenHash: String): TokenEntity? = tm.run { handle ->
         {
-            handle.createQuery(GET_TOKEN_QUERY)
+            handle.createQuery(GET_DERIVED_TOKEN_QUERY)
                 .bind(TOKEN, tokenHash)
                 .map(derivedTokenMapper)
                 .firstOrNull()
