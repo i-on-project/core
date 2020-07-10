@@ -43,8 +43,7 @@ The following tokens will be inserted to the database container, for ease of use
 - Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`
 - Write: `hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok`
 - Issue: `vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144`
-
-The secret key for import links used is: `t8abumA3JBJrd7q0LuN3nSzKGBfslOYb`.
+- Revoke: `5eN-N7muBGix6X0N8jfau7Ou-3KcNHPAGVZNGWQ6ryw`
 
 Build
 =====
@@ -60,13 +59,7 @@ $ # Start DB container (loaded with testing data)
 $ export JDBC_DATABASE_URL="jdbc:postgresql://localhost:10020/ion?user=unpriv&password=changeit"
 $ ./gradlew pgSetupDb
 $
-$ # Environment variable used to generate import links (256 bit key)
-$ export ION_CORE_SECRET_KEY="t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"
-$
-$ # Run the integration/unit tests
-$ ./gradlew test
-$
-$ # Build
+$ # Runs the integration tests and builds
 $ ./gradlew build
 $
 $ # Stop the DB running in the background
@@ -77,9 +70,6 @@ In Microsoft Window's shell the procedure should be similar with the exception o
 
 You may also connect to the database running in the container with `docker exec -it pq-container psql -h localhost -d ion -U unpriv` (you may also use `psql` locally).
 The parameters of the command may vary depending on the contents of the `JDBC_DATABASE_URL` variable you have defined earlier.
-
-The `ION_CORE_SECRET_KEY` environment variable has to be a 256 bit key.
-This variable should be kept secret when deploying the server, but can otherwise have any 256 key.
 
 ## Updating `JDBC_DATABASE_URL`
 If you want to change the connection string, you have to run `./gradlew clean -p buildSrc` before doing so.
@@ -96,7 +86,6 @@ $ # Generate JAR
 $ ./gradlew assemble
 $
 $ export JDBC_DATABASE_URL="jdbc:postgresql://10.0.2.15:10020/myrealdb?user=unpriv&password=realdbsafepw"
-$ export ION_CORE_SECRET_KEY="<your randomly generated 256 bit key>"
 $
 $ # Run server
 $ java -server -jar ./build/libs/core-0.1.jar
