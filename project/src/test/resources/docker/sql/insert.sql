@@ -2,13 +2,27 @@ INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('LEIC', 'licenciatura eng. inf.', 6),
 ('MEIC', 'mestrado eng. inf.',     4);
 
-INSERT INTO dbo.CalendarTerm(id, start_date, end_date) VALUES
-('1718v', to_timestamp(1586379923), to_timestamp(1586379933)),
-('1718i', to_timestamp(1586379924), to_timestamp(1586379933)),
-('1819v', to_timestamp(1586379925), to_timestamp(1586379933)),
-('1819i', to_timestamp(1586379927), to_timestamp(1586379933)),
-('1920v', to_timestamp(1586379929), to_timestamp(1586379933)),
-('1920i', to_timestamp(1586379930), to_timestamp(1586379943));
+INSERT INTO dbo.Instant(date, time) VALUES
+(DATE '2017-02-01', null),
+(DATE '2017-06-10', null),
+(DATE '2017-09-01', null),
+(DATE '2017-12-22', null),
+(DATE '2018-02-01', null),
+(DATE '2018-06-10', null),
+(DATE '2018-09-01', null),
+(DATE '2018-12-22', null),
+(DATE '2019-02-01', null),
+(DATE '2019-06-10', null),
+(DATE '2019-09-01', null),
+(DATE '2019-12-22', null);
+
+INSERT INTO dbo._CalendarTerm(id, start_date, end_date) VALUES
+('1718v', 1, 2),
+('1718i', 3, 4),
+('1819v', 5, 6),
+('1819i', 7, 8),
+('1920v', 9, 10),
+('1920i', 11, 12);
 
 INSERT INTO dbo.Course(acronym, name) values
 ('SL',  'Software Laboratory'),
@@ -424,7 +438,7 @@ CALL dbo.newTodo(2,
     5,
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(2,
+CALL dbo.newEventWithInstants(2,
     ARRAY['1st Exam WAD'],
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1718v'],
@@ -438,7 +452,7 @@ CALL dbo.newEvent(2,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(2,
+CALL dbo.newEventWithInstants(2,
     ARRAY['2nd Exam WAD'],
     ARRAY[2],
     ARRAY['Second season exam for WAD-1718v'],
@@ -453,76 +467,81 @@ CALL dbo.newEvent(2,
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- WAD 1718v 1D
-CALL dbo.newEvent(28,
+CALL dbo.newEventWithDateReferences(28,
     ARRAY['WAD Monday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.2.1', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(28,
+CALL dbo.newEventWithDateReferences(28,
     ARRAY['WAD Wednesday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.2.4', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- WAD 1718v 2D
-CALL dbo.newEvent(29,
+CALL dbo.newEventWithDateReferences(29,
     ARRAY['WAD Monday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.1.4', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(29,
+CALL dbo.newEventWithDateReferences(29,
     ARRAY['WAD Wednesday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.1.15', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- WAD 1718v 1N
-CALL dbo.newEvent(30,
+CALL dbo.newEventWithDateReferences(30,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.9', -- Location
     'TU,WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- SL 1718v Class
@@ -548,7 +567,7 @@ CALL dbo.newTodo(1,
     5,
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(1,
+CALL dbo.newEventWithInstants(1,
     ARRAY['1st Exam SL'],
     ARRAY[2],
     ARRAY['Normal season exam for SL-1718v'],
@@ -562,7 +581,7 @@ CALL dbo.newEvent(1,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(1,
+CALL dbo.newEventWithInstants(1,
     ARRAY['2nd Exam SL'],
     ARRAY[2],
     ARRAY['Second season exam for SL-1718v'],
@@ -577,76 +596,81 @@ CALL dbo.newEvent(1,
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- SL 1718v 1D
-CALL dbo.newEvent(25,
+CALL dbo.newEventWithDateReferences(25,
     ARRAY['SL Monday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room F.1.3', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(25,
+CALL dbo.newEventWithDateReferences(25,
     ARRAY['SL Wednesday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room F.1.4', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- SL 1718v 2D
-CALL dbo.newEvent(26,
+CALL dbo.newEventWithDateReferences(26,
     ARRAY['SL Monday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-10 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-10 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room F.1.4', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(26,
+CALL dbo.newEventWithDateReferences(26,
     ARRAY['SL Wednesday Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-2D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-12 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-12 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.1.13', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 -- SL 1718v 1N
-CALL dbo.newEvent(27,
+CALL dbo.newEventWithDateReferences(27,
     ARRAY['SL Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the SL curricular unit, for the 1718v-1N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 10:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    1, -- start_instant
+    TIME '10:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.2.9', -- Location
     'TU,WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    2, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
 
@@ -654,92 +678,98 @@ CALL dbo.newEvent(27,
 
 -- <LI61D lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(57,
+CALL dbo.newEventWithDateReferences(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 12:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    9, -- start_instant
+    TIME '12:30:00', -- dtstart
+    TIME '14:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.2.8', -- Location
     'TU', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(57,
+CALL dbo.newEventWithDateReferences(57,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    9, -- start_instant
+    TIME '11:00:00', -- dtstart
+    TIME '14:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.1.2', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(55,
+CALL dbo.newEventWithDateReferences(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    9, -- start_instant
+    TIME '11:00:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.1', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(55,
+CALL dbo.newEventWithDateReferences(55,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 11:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 14:00:00', -- dtend
+    9, -- start_instant
+    TIME '11:00:00', -- dtstart
+    TIME '14:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.11', -- Location
     'TH', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(59,
+CALL dbo.newEventWithDateReferences(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 09:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 11:00:00', -- dtend
+    9, -- start_instant
+    TIME '09:30:00', -- dtstart
+    TIME '11:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.2.5', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(59,
+CALL dbo.newEventWithDateReferences(59,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61D Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 09:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 12:30:00', -- dtend
+    9, -- start_instant
+    TIME '09:30:00', -- dtstart
+    TIME '12:30:00', -- dtend
     5, -- dtstart dtend type
     'Room G.1.12', -- Location
     'FR', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </CC lectures> --
 
@@ -749,92 +779,98 @@ CALL dbo.newEvent(59,
 
 -- <LI61N lectures> --
 -- <PS lectures> --
-CALL dbo.newEvent(58,
+CALL dbo.newEventWithDateReferences(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    9, -- start_instant
+    TIME '20:00:00', -- dtstart
+    TIME '23:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.2', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(58,
+CALL dbo.newEventWithDateReferences(58,
     ARRAY['PS Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the PS curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    9, -- start_instant
+    TIME '18:30:00', -- dtstart
+    TIME '20:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.4', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </PS lectures> --
 
 -- <WAD lectures> --
-CALL dbo.newEvent(56,
+CALL dbo.newEventWithDateReferences(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    9, -- start_instant
+    TIME '18:30:00', -- dtstart
+    TIME '20:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.4', -- Location
     'TH', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(56,
+CALL dbo.newEventWithDateReferences(56,
     ARRAY['WAD Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the WAD curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    9, -- start_instant
+    TIME '20:00:00', -- dtstart
+    TIME '23:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.8', -- Location
     'FR', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </WAD lecture> --
 
 -- <CC lectures> --
-CALL dbo.newEvent(60,
+CALL dbo.newEventWithDateReferences(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 18:30:00', -- dtstart
-    TIMESTAMP '2020-02-11 20:00:00', -- dtend
+    9, -- start_instant
+    TIME '18:30:00', -- dtstart
+    TIME '20:00:00', -- dtend
     5, -- dtstart dtend type
     'Room E.1.6', -- Location
     'MO', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(60,
+CALL dbo.newEventWithDateReferences(60,
     ARRAY['CC Lecture'],
     ARRAY[2],
     ARRAY['Lectures of the CC curricular unit for the 1920v-LI61N Class section'],
     ARRAY[2],
     ARRAY[2],
-    TIMESTAMP '2020-02-11 20:00:00', -- dtstart
-    TIMESTAMP '2020-02-11 23:00:00', -- dtend
+    9, -- start_instant
+    TIME '20:00:00', -- dtstart
+    TIME '23:00:00', -- dtend
     5, -- dtstart dtend type
     'Room G.0.12', -- Location
     'WE', -- days of week when this event repeats
-    TIMESTAMP '2020-06-12 23:50:00',
+    10, -- until
     TIMESTAMP '2020-01-01 16:35:30');
 -- </CC lectures> --
 -- </LI61N lectures> --
@@ -997,7 +1033,7 @@ CALL dbo.newTodo(14,
 -- <Exams> --
 
 -- <WAD Exams> --
-CALL dbo.newEvent(13,
+CALL dbo.newEventWithInstants(13,
     ARRAY['1st Exam WAD'],
     ARRAY[2],
     ARRAY['Normal season exam for WAD-1920v'],
@@ -1011,7 +1047,7 @@ CALL dbo.newEvent(13,
     NULL,
     TIMESTAMP '2020-01-01 16:35:30');
 
-CALL dbo.newEvent(13,
+CALL dbo.newEventWithInstants(13,
     ARRAY['2nd Exam WAD'],
     ARRAY[2],
     ARRAY['Second season exam for WAD-1920v'],
@@ -1027,7 +1063,7 @@ CALL dbo.newEvent(13,
 -- </WAD Exams> --
 
 -- <CC Exams> --
-CALL dbo.newEvent(15,
+CALL dbo.newEventWithInstants(15,
     ARRAY['Exam CC'],
     ARRAY[2],
     ARRAY['Exam for CC-1920v'],
