@@ -71,9 +71,6 @@ In Microsoft Window's shell the procedure should be similar with the exception o
 You may also connect to the database running in the container with `docker exec -it pq-container psql -h localhost -d ion -U unpriv` (you may also use `psql` locally).
 The parameters of the command may vary depending on the contents of the `JDBC_DATABASE_URL` variable you have defined earlier.
 
-## Updating `JDBC_DATABASE_URL`
-If you want to change the connection string, you have to run `./gradlew clean -p buildSrc` before doing so.
-
 Running
 =======
 
