@@ -21,18 +21,23 @@ The `compose` configuration files are used to automate these procedures such as 
 
 ```sh
 $ # Run the integration tests and exit
-$ docker-compose -f .docker/compose_ci.yaml up --build core
+$ docker-compose -f .docker/compose_ci.yaml up --abort-on-container-exit core
 $ 
 $ # Remove docker images and clean resources
 $ docker-compose -f .docker/compose_ci.yaml down
 $
+$ # In case you don't feel like installing docker-compose, you may use its docker-image as such
+$ docker run --rm -it -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock docker/compose:1.24.0 -f .docker/compose_ci.yaml up --abort-on-container-exit core
+$
 $ # Run the server and database on two containers
-$ docker-compose -f .docker/compose_run.yaml up --build core
+$ docker-compose -f .docker/compose_run.yaml up core
 $ 
 $ # Remove docker images and clean resources
 $ docker-compose -f .docker/compose_run.yaml down
 ```
 The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
+
+If you don't want to install docker-compose, you can run `` instead.
 
 The following tokens will be inserted to the database container, for ease of use:
 - Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`

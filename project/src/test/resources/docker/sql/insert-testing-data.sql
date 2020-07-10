@@ -22,25 +22,23 @@ INSERT INTO dbo.Course(acronym, name) values
 --exp: 1691121207 on first 2 tokens is around the year 2023 
 --client id holds no meaning for now as there is no registration/authentication method
 -- last 2 tokens are expired and revoked for testing purposes
-INSERT INTO dbo.Token (hash, isValid, issuedAt, expiresAt, claims) VALUES 
-('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,
-'{"client_id":3, "scope": "urn:org:ionproject:scopes:api:read"}'),
-('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,
-'{"client_id":4, "scope": "urn:org:ionproject:scopes:api:write"}'),
-('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,
-'{"client_id":5, "scope": "urn:org:ionproject:scopes:api:read_restricted"}');
+INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,derivedToken,fatherHash,claims) VALUES
+('a00ffe411bc611ca81e1bfd5cd862586d89ca3b3a02fccc8586b547396bf60aa', TRUE, 1591544539044, 1591544539045,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:read"}'),
+('1681e5591f1bd814d69c8cdc657a0752707aff4d82d8b94d2c85185a289058ea', FALSE, 1591544539044, 1691544539044,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:write"}'),
+('92f9640fb837bb369afe725941f3d54464ff3c19d25de31a188bca72348de2b2', TRUE, 1591544539044, 1691544539044,FALSE,'',
+'{"scope": "urn:org:ionproject:scopes:api:read_restricted"}');
 
 -- Tokens for use with a local testing database/server
--- Read token
--- Token: l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U
-INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('5f5efa16d66d290bb31667bfffd6d9e37776a862ef116cbaa415f650a7283c0e','t',1593338117608,9999999999999,'{"scope":"urn:org:ionproject:scopes:api:read", "client_id": 500}');
--- Write token
--- Token: hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok
-INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('58e46fa9f1441d4fe9798ce1015eeab9231aa66cdee7638177c33a1b64ab534c','t',1593338126153,9999999999999,'{"scope":"urn:org:ionproject:scopes:api:write", "client_id": 500}');
--- Issue token
--- Token: vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144
-INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,claims) VALUES ('1784968c5536e2ed449507982b9cc281017a0a74c41d96f02dab31bbb7c6138f','t',1593338132242,9999999999999,'{"scope":"urn:org:ionproject:scopes:token:issue", "client_id": 500}');
-
+-- In orger:
+-- Read token: l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U
+-- Write token: hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok
+-- Issue token: vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144
+INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,derivedToken,fatherHash,claims) VALUES
+('5f5efa16d66d290bb31667bfffd6d9e37776a862ef116cbaa415f650a7283c0e','t',1593338117608,9999999999999,FALSE,'','{"scope":"urn:org:ionproject:scopes:api:read", "client_id": 500}'),
+('58e46fa9f1441d4fe9798ce1015eeab9231aa66cdee7638177c33a1b64ab534c','t',1593338126153,9999999999999,FALSE,'','{"scope":"urn:org:ionproject:scopes:api:write", "client_id": 500}'),
+('1784968c5536e2ed449507982b9cc281017a0a74c41d96f02dab31bbb7c6138f','t',1593338132242,9999999999999,FALSE,'','{"scope":"urn:org:ionproject:scopes:token:issue", "client_id": 500}');
 
 INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
 (1, 2, TRUE,  6),

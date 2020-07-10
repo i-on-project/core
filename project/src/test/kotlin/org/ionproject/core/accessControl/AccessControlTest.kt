@@ -1,17 +1,12 @@
 package org.ionproject.core.accessControl
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.ionproject.core.accessControl.representations.TokenRepr
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
-import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
-import org.ionproject.core.utils.writeTokenTest
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
 import java.net.URI
 
-internal class AccessControlTest: ControllerTester() {
+internal class AccessControlTest : ControllerTester() {
 
     companion object {
         /**
@@ -43,10 +38,9 @@ internal class AccessControlTest: ControllerTester() {
         val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()
         val homeDocumentUri = URI("/")
-        val issueTokenUri = URI(Uri.issueToken)
-        val revokeTokenUri = URI(Uri.revokeToken)
 
     }
+
     /**
      * Because all requests pass through the access control interceptor
      * I believe its important to test if the behavior
@@ -57,9 +51,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(notFoundUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isNotFound } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotFound } }
+            .andReturn()
     }
 
     /**
@@ -72,9 +66,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(homeDocumentUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     /**
@@ -87,9 +81,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     @Test
@@ -97,9 +91,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesDetailUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     @Test
@@ -107,9 +101,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesQueryParamsUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     /**
@@ -121,9 +115,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isForbidden } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
     }
 
     /**
@@ -134,9 +128,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", unexistentToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -144,12 +138,12 @@ internal class AccessControlTest: ControllerTester() {
      */
     @Test
     fun getCoursesWithRevokedToken() {
-        doGet(coursesUri) {
-            header("Authorization", revokedToken)
+        doGet(AccessControlTest.coursesUri) {
+            header("Authorization", AccessControlTest.revokedToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -160,9 +154,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", expiredToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -173,9 +167,9 @@ internal class AccessControlTest: ControllerTester() {
         doPost(programmesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isForbidden } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isMethodNotAllowed } }
+            .andReturn()
     }
 
     /**
@@ -187,96 +181,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesUri) {
             header("Authorization", tokenIncorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isBadRequest } }
-                .andReturn()
-    }
-
-
-    /**
-     * Test issue token and then revoke it
-     */
-    @Test
-    fun issueTokenAndRevoke() {
-        val result = doPost(issueTokenUri) {
-            header("Authorization", issueTokenTest)
-            header("Content-Type", "application/json")
-
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:write\"}"
-        }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
-                .response
-                .contentAsString
-
-        val mapper = jacksonObjectMapper()
-        val tokenToRevoke = mapper.readValue(result, TokenRepr::class.java).token
-
-        doPost(revokeTokenUri) {
-            header("Authorization", "Bearer $tokenToRevoke")
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$tokenToRevoke"
-        }.andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
-    }
-
-    /**
-     * Tries to revoke a read token, which shall not succed
-     */
-    @Test
-    fun tryRevokeReadToken() {
-        doPost(revokeTokenUri) {
-            header("Authorization", readTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$readTokenTest"
-        }.andDo { print() }
-            .andExpect { status { isForbidden } }
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
             .andReturn()
-    }
-
-    /**
-     * Tries to revoke a read token, using a write token, which is a forbidden operation
-     */
-    @Test
-    fun tryRevokeReadTokenUsingWriteToken() {
-        doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-            content = "token=$readTokenTest"
-        }.andDo { print() }
-            .andExpect { status { isForbidden } }
-            .andReturn()
-    }
-
-    /**
-     * Tries to issue a token, with an invalid token
-     */
-    @Test
-    fun postIssueTokenInvalid() {
-        doPost(issueTokenUri) {
-            header("Authorization", "Bearer lol")
-            header("Content-Type", "application/json")
-
-            content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
-        }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
-    }
-
-    /**
-     * Tries to revoke an token with a bad request (no body)
-     */
-    @Test
-    fun revokeTokenBadRequest() {
-        doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
-            contentType = Media.MEDIA_FORM_URLENCODED_VALUE
-        }.andDo { print() }
-                .andExpect { status { isBadRequest } }
-                .andReturn()
     }
 
 }

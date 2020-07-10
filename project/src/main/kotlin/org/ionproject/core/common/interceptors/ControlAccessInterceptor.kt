@@ -2,9 +2,12 @@ package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
+import org.ionproject.core.common.LogMessages
+import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
@@ -13,7 +16,8 @@ import javax.servlet.http.HttpServletResponse
 private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 private const val includeType = "bearer"
 
-data class Request(val method: String, val apiVersion: String, val resource: String)
+data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
+data class ResourceIdentifierDescriptor(val resource: String, val version: String)
 
 /**
  * Policy Enforcement Point
@@ -21,69 +25,155 @@ data class Request(val method: String, val apiVersion: String, val resource: Str
  */
 class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
+    private val authenticationQueryParameter = "access_token"
+    private val authenticationHeaderAuthorization = "Authorization"
+
     @Resource
     private val tokenGenerator: TokenGenerator = TokenGenerator()
 
     @Resource
     private val pdp: PDP = PDP()
 
+    /**
+     * Intercepts the request, tries to identify the authentication mode...
+     * returns true if access was granted
+     * returns false if access was not granted
+     */
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        //If the request is one made by an import link's it will instead of a Authorization header
-        //contain the query parameter access_token
-        /**
-         * If the user includes an access_token query parameter when he has a valid token to read the resource
-         * in the header Authorization, this current way will ignore the Authorization header, is this a correct
-         * behavior?
-         */
-        val jwtToken = request.getParameter("access_token")
-        if(jwtToken != null) {
-            pdp.evaluateJwtToken(jwtToken, request.method, request.requestURI)
-            logger.info("An access_token query parameter authentication method succeeded for location \"${request.servletPath}\".")
+
+        //Obtain name of resource trying to access (the name of the resource is the one in the annotation
+        val resourceIdentifier = buildResourceIdentifier(handler)
+        val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
+
+        //Checks if its an import link verification path
+        if (checkAccessToken(request, requestDescriptor))
             return true
-        }
 
-        //Client doesn't include header "Authorization"
-        val header = request.getHeader("Authorization")
-            ?: throw UnauthenticatedUserException("User not authenticated.")
-        val pair = header.trim().split(" ")
-
-        //Client includes header "Authorization" with bad value e.g. "Bearer      "
-        if (pair.size != 2)
-            throw BadRequestException("Incorrect authorization header value.")
-
-        //Client include token type is different than "Bearer"
-        val tokenIncludeType = pair[0].toLowerCase()
-        if (tokenIncludeType != includeType)
-            throw BadRequestException("Unsupported include token type.")
-
-        //Transforms the base64url encoded value to the SHA-256 hashed value
-        val tokenBase64Decoded = tokenGenerator.decodeBase64url(pair[1])
-        val tokenHash = tokenGenerator.getHash(tokenBase64Decoded)
-
-        //Sends the request with the token Hash down to the Policy Decision Point
-        val requestDescriptor: Request = buildRequestDescriptor(request.requestURI, request.method)
-
-        //Checks if the token is valid, if any policy is not valid an exception will be thrown
-        //and the next interceptor won't be called
-        val clientId = pdp.evaluateRequest(tokenHash, requestDescriptor)
-
-        request.setAttribute("clientId", clientId)
+        //Authorization Header verification path
+        checkAuthorizationHeader(request, requestDescriptor)
         return true
     }
 
-    private fun buildRequestDescriptor(pathInfo: String, method: String): Request {
-        val requestDescriptor: Request
-        val parts = pathInfo.substring(1).split("/")
+    /**
+     * During an authorization header authentication mode
+     * checks if the header is present and if the format is valid to proceed with further
+     * checks.
+     */
+    private fun checkAuthorizationHeader(request: HttpServletRequest, requestDescriptor: Request) {
+        val header = request.getHeader(authenticationHeaderAuthorization)
 
-        if (parts.size == 1) //Special case user is accessing endpoint without version
-            requestDescriptor = Request(method, "*", pathInfo)
-        else {
-            val idxVersion = pathInfo.indexOf("/", 1)
-            requestDescriptor = Request(method, pathInfo.substring(1, idxVersion), pathInfo.substring(idxVersion))
+        //Checks to see if request has authorization header
+        if (header == null) {
+            logger.info(
+                LogMessages.forAuthError(
+                    LogMessages.tokenHeaderAuth,
+                    request.method,
+                    request.requestURI,
+                    LogMessages.noToken
+                )
+            )
+
+            throw UnauthenticatedUserException(LogMessages.noTokenException)
         }
 
-        return requestDescriptor
+        val pair = header.trim().split(" ")
+
+        //Client includes header "Authorization" with bad value e.g. "Bearer      "
+        if (pair.size != 2) {
+            logger.info(
+                LogMessages.forAuthError(
+                    LogMessages.tokenHeaderAuth,
+                    request.method,
+                    request.requestURI,
+                    LogMessages.invalidFormatHeader
+                )
+            )
+
+            throw BadRequestException(LogMessages.incorrectAuthHeaderFormatException)
+        }
+
+        //Client include token type is different than "Bearer"
+        val tokenIncludeType = pair[0].toLowerCase()
+        if (tokenIncludeType != includeType) {
+
+            logger.info(
+                LogMessages.forAuthError(
+                    LogMessages.tokenHeaderAuth,
+                    request.method,
+                    request.requestURI,
+                    LogMessages.unsupportedIncludeType
+                )
+            )
+
+            throw BadRequestException(LogMessages.unsupportedIncludeTypeException)
+        }
+
+        val reference = pair[1]
+
+        //Check remaining policies
+        val token =
+            pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference, requestDescriptor), requestDescriptor)
+
+        request.setAttribute("token", token)
     }
 
+    /**
+     * Returns true if it was an import url authentication mode and succeeded
+     * Returns false if it wasn't an import url authentication
+     */
+    private fun checkAccessToken(request: HttpServletRequest, requestDescriptor: Request): Boolean {
+        val accessToken = request.getParameter(authenticationQueryParameter)
+        if (accessToken != null) {
+            val token = pdp.evaluateAccessTokenAuthentication(
+                getTokenHash(
+                    accessToken,
+                    requestDescriptor,
+                    LogMessages.importUrlAuth
+                ),
+                requestDescriptor
+            )
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * Builds an object that describes the controller trying to gain access (id, version)
+     * used to check policies
+     */
+    private fun buildResourceIdentifier(handler: Any): ResourceIdentifierDescriptor {
+        val handlerMethod = handler as HandlerMethod
+        val resourceIdentifierAnnotation = handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)
+        val resourceName = resourceIdentifierAnnotation?.resourceName ?: ""
+        val resourceVersion = resourceIdentifierAnnotation?.version ?: ""
+        return ResourceIdentifierDescriptor(resourceName, resourceVersion)
+    }
+
+    /**
+     * Builds the hash out of the reference
+     */
+    private fun getTokenHash(
+        tokenReference: String,
+        requestDescriptor: Request,
+        authMode: String = LogMessages.tokenHeaderAuth
+    ): String {
+        try {
+            val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
+            return tokenGenerator.getHash(tokenBase64Decoded)
+
+        } catch (e: Exception) {
+            logger.info(
+                LogMessages.forAuthError(
+                    authMode,
+                    requestDescriptor.method,
+                    requestDescriptor.path,
+                    LogMessages.tokenHashError
+                )
+            )
+
+            throw UnauthenticatedUserException(LogMessages.incorrectTokenFormat)
+        }
+    }
 
 }
