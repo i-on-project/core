@@ -757,6 +757,7 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
   dtstart TIMESTAMP,
   dtend TIMESTAMP,
   week_days VARCHAR(20),
+  until TIMESTAMP,
   location VARCHAR(128)
 ) AS $$
 #print_strict_params ON
@@ -785,7 +786,7 @@ BEGIN
 
   raise notice '% cal, % category, % lang', calid, categid, langid;
 	
-  CALL dbo.newEvent(calid,
+  CALL dbo.newEventWithInstants(calid,
       ARRAY[summary],
       ARRAY[langid],
       ARRAY[description],
@@ -796,8 +797,72 @@ BEGIN
       dttype, -- dtstart dtend type
       location,
       week_days, -- by day
-      NULL -- until
+      until -- until
   );
 END
 $$ LANGUAGE PLpgSQL;
 
+CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEventAssociatedToCalendarTerm(
+  courseName VARCHAR(100),
+  courseAcr VARCHAR(50),
+  calendarSection VARCHAR(50),
+  calTerm VARCHAR(50),
+  summary VARCHAR(50),
+  description VARCHAR(200),
+  lang VARCHAR(10),
+  categid INTEGER,
+  start_time TIME,
+  end_time TIME,
+  week_days VARCHAR(20),
+  location VARCHAR(128)
+) AS $$
+#print_strict_params ON
+DECLARE
+  calid INT;
+  component_id INT;
+  langid INT;
+  dttype INT;
+  cal_term_start INT;
+  cal_term_end INT;
+BEGIN
+
+  -- get target calendar ID (the class section's calendar)
+  SELECT
+    CS.calendar INTO calid
+  FROM
+    dbo.Course C JOIN
+    dbo.Class CL ON C.id = CL.courseid JOIN
+    dbo.ClassSection CS ON CS.classid = CL.id
+  WHERE
+    ( C.acronym = courseAcr OR C.name = courseName )
+    AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
+
+  SELECT
+    cal_term_start = start_date,
+    cal_term_end = end_date
+  FROM
+    dbo._CalendarTerm;
+
+  SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang;
+
+  -- get the DATE TIME icalendar type
+  SELECT id INTO dttype FROM dbo.icalendardatatype WHERE name = 'DATE-TIME';
+
+  raise notice '% cal, % category, % lang', calid, categid, langid;
+
+  CALL dbo.newEventWithDateReferences(calid,
+      ARRAY[summary],
+      ARRAY[langid],
+      ARRAY[description],
+      ARRAY[langid],
+      ARRAY[categid],
+      cal_term_start,
+      start_time,
+      end_time,
+      dttype, -- dtstart dtend type
+      location,
+      week_days, -- by day
+      cal_term_end -- until
+  );
+END
+$$ LANGUAGE PLpgSQL;
