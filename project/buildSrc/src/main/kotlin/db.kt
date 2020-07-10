@@ -12,8 +12,12 @@ import java.sql.SQLException
 
 
 object Postgres {
-    const val SUPER_USER = "postgres"
-    const val ENV_PASSWORD = "PGPASSWORD"
+    const val DEFAULT_PORT = 5432
+    const val CONNECTION_STRING_ENV_NAME = "JDBC_DATABASE_URL"
+    private const val DEFAULT_CONNECTION_STRING =
+        "jdbc:postgresql://localhost:5432/ion?user=postgres&password=changeit"
+    private const val CONNECTION_STRING_FORMAT =
+        "jdbc:postgresql://<host>:<port>/<db>?user=<username>&password=<user password>"
 
     data class PgDb(
         val host: String,
@@ -23,12 +27,11 @@ object Postgres {
         val password: String
     )
 
-    val pgParams: PgDb by lazy {
-
-        val pgUrl: String = System.getenv("JDBC_DATABASE_URL").let {
+    fun getPgParams(): PgDb {
+        val pgUrl: String = System.getenv(CONNECTION_STRING_ENV_NAME).let {
             if (it == null || it.isEmpty()) {
-                println("no JDBC_DATABASE_URL environment variable found, using default value")
-                "jdbc:postgresql://localhost:5432/ion?user=postgres&password=changeit"
+                println("no $CONNECTION_STRING_ENV_NAME environment variable found, using default value")
+                DEFAULT_CONNECTION_STRING
             } else {
                 it
             }
@@ -42,22 +45,19 @@ object Postgres {
 
         val prms = PgDb(
             pgUri.host, pgUri.port.toInt(), pgUri.path.substring(1),
-            pgMap["user"] ?: error("missing user on "),
-            pgMap["password"] ?: error("missing password")
+            pgMap["user"] ?: error("Missing the user. Connection string format: $CONNECTION_STRING_FORMAT"),
+            pgMap["password"] ?: error("Missing the password. Connection string format: $CONNECTION_STRING_FORMAT")
         )
-
         println("Using DB: $prms")
 
-        prms
+        return prms
     }
 }
 
 object Docker {
-    const val IMAGE_NAME = "postgres"
     const val CONTAINER_NAME = "pg-container"
     const val CONTAINER_PORT = 5432
-    const val HOST_MOUNT_DIR = "src/test/resources/docker"
-    const val CONTAINER_MOUNT_DIR = "/mnt"
+    const val RESOURCES_FOLDER = "src/test/resources"
 
     fun isContainerRunning(project: Project): Boolean {
         val pipe = ByteArrayOutputStream()
@@ -76,13 +76,15 @@ object Docker {
         return pipe.size() > 0
     }
 
-    fun tryConnectDb(project: Project): Boolean = try {
+    fun tryConnectDb(project: Project, pgParams: Postgres.PgDb): Boolean = try {
         project.exec {
             commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
+                "docker", "exec", CONTAINER_NAME,
                 "psql",
-                "-h", Postgres.pgParams.host,
-                "-U", Postgres.SUPER_USER,
+                "-h", "localhost",
+                "-U", pgParams.user,
+                "-d", pgParams.db,
+                "-p", Postgres.DEFAULT_PORT,
                 "-w",
                 "-1",
                 "-c", "select"
@@ -96,6 +98,29 @@ object Docker {
     } catch (e: ExecException) {
         false
     }
+
+    fun createDbContainer(project: Project, pgParams: Postgres.PgDb) {
+        project.exec {
+            commandLine(
+                "docker", "build",
+                "-t", CONTAINER_NAME,
+                "-f", "${project.rootDir.absolutePath}/$RESOURCES_FOLDER/dockerfile_db",
+                "${project.rootDir.absolutePath}/$RESOURCES_FOLDER"
+            )
+        }
+
+        project.exec {
+            commandLine(
+                "docker", "run",
+                "--name", CONTAINER_NAME,
+                "-e", "POSTGRES_PASSWORD=${pgParams.password}",
+                "-e", "POSTGRES_USER=${pgParams.user}",
+                "-e", "POSTGRES_DB=${pgParams.db}",
+                "-p", "${pgParams.port}:$CONTAINER_PORT/tcp",
+                "-d", CONTAINER_NAME
+            )
+        }
+    }
 }
 
 /// Docker related Tasks
@@ -107,26 +132,13 @@ open class PgStart : AbstractTask() {
             return
         }
 
-        println(
-            "Mounted host's directory \"${project.buildDir.absolutePath}/${Docker.HOST_MOUNT_DIR}\" " +
-                "on \"${Docker.CONTAINER_MOUNT_DIR}\""
-        )
-
-        project.exec {
-            commandLine(
-                "docker", "run",
-                "--name", Docker.CONTAINER_NAME,
-                "-e", "POSTGRES_PASSWORD=${Postgres.pgParams.password}",
-                "-p", "${Postgres.pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
-                "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}:${Docker.CONTAINER_MOUNT_DIR}",
-                "-d", Docker.IMAGE_NAME
-            )
-
-            standardOutput = DevNull()
-        }
+        val pgParams = Postgres.getPgParams()
+        println("Creating DB image and container...")
+        Docker.createDbContainer(project, pgParams)
+        println("Container created and daemonized.")
 
         val tick = 250L
-        while (!Docker.tryConnectDb(project)) {
+        while (!Docker.tryConnectDb(project, pgParams)) {
             println("Polling for DBMS availability...")
             Thread.sleep(tick)
         }
@@ -163,133 +175,15 @@ open class PgToggle : AbstractTask() {
             }
             return
         }
+
+        val pgParams = Postgres.getPgParams()
         println("Container \"${Docker.CONTAINER_NAME}\" not running. Creating...")
-        val pgParams = Postgres.pgParams
-        project.exec {
-            commandLine(
-                "docker", "run",
-                "--name", Docker.CONTAINER_NAME,
-                "-e", "POSTGRES_PASSWORD=${pgParams.password}",
-                "-p", "${pgParams.port}:${Docker.CONTAINER_PORT}/tcp",
-                "-v", "${project.rootDir.absolutePath}/${Docker.HOST_MOUNT_DIR}" +
-                    ":${Docker.CONTAINER_MOUNT_DIR}",
-                "-d", Docker.IMAGE_NAME
-            )
+        Docker.createDbContainer(project, pgParams)
 
-            standardOutput = DevNull()
-        }
-    }
-}
-
-/// PostgreSQL related Tasks
-open class PgCreateUser : AbstractTask() {
-    @TaskAction
-    fun run() {
-        val pgParams = Postgres.pgParams
-        if (pgParams.user == Postgres.SUPER_USER) {
-            return
-        }
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "createuser",
-                "-d",
-                "-U", Postgres.SUPER_USER,
-                "-h", pgParams.host,
-                "-w", pgParams.user
-            )
-        }
-
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "psql",
-                "-d", Postgres.SUPER_USER,
-                "-U", Postgres.SUPER_USER,
-                "-h", pgParams.host,
-                "-w",
-                "-c", "ALTER USER ${pgParams.user} WITH PASSWORD '${pgParams.password}';"
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
-        }
-    }
-}
-
-open class PgDropDb : AbstractTask() {
-    @TaskAction
-    fun run() {
-        val pgParams = Postgres.pgParams
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "dropdb", "--if-exists",
-                "-h", pgParams.host,
-                "-U", pgParams.user,
-                "-w", pgParams.db
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
-        }
-    }
-}
-
-open class PgCreateDb : AbstractTask() {
-    @TaskAction
-    fun run() {
-        val pgParams = Postgres.pgParams
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "createdb",
-                "-h", pgParams.host,
-                "-U", pgParams.user,
-                "-w", pgParams.db
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
-        }
-    }
-}
-
-open class PgInitSchema : AbstractTask() {
-    @TaskAction
-    fun run() {
-        val pgParams = Postgres.pgParams
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "psql",
-                "-h", pgParams.host,
-                "-U", pgParams.user,
-                "-d", pgParams.db,
-                "-w",
-                "-1",
-                "-f", "${Docker.CONTAINER_MOUNT_DIR}/sql/create-schema.sql"
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
-        }
-    }
-}
-
-open class PgAddData : AbstractTask() {
-    @TaskAction
-    fun run() {
-        val pgParams = Postgres.pgParams
-        project.exec {
-            commandLine(
-                "docker", "exec", Docker.CONTAINER_NAME,
-                "psql",
-                "-h", pgParams.host,
-                "-U", pgParams.user,
-                "-d", pgParams.db,
-                "-w",
-                "-1",
-                "-f", "${Docker.CONTAINER_MOUNT_DIR}/sql/insert.sql"
-            )
-
-            environment(Postgres.ENV_PASSWORD, pgParams.password)
+        val tick = 250L
+        while (!Docker.tryConnectDb(project, pgParams)) {
+            println("Polling for DBMS availability...")
+            Thread.sleep(tick)
         }
     }
 }
@@ -307,8 +201,8 @@ object Db {
     }
 
     private fun genDataSource() = PGSimpleDataSource().apply {
-        val url: String? = System.getenv("JDBC_DATABASE_URL")
-        setUrl(url ?: throw Error(" ppip pi p"))
+        val url: String? = System.getenv(Postgres.CONNECTION_STRING_ENV_NAME)
+        setUrl(url ?: throw Error("${Postgres.CONNECTION_STRING_ENV_NAME} connection string not set"))
     }
 
     private fun tryGetConnection(): Connection {
