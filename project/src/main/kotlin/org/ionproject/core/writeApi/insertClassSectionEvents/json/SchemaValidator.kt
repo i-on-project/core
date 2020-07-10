@@ -13,13 +13,13 @@ private const val insertClassSectionEventsSchema = """{
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 2,
-          "maxLength": 50
+          "minLength": 1,
+          "maxLength": 100
         },
         "acr": {
           "type": "string",
-          "minLength": 2,
-          "maxLength": 10
+          "minLength": 1,
+          "maxLength": 50
         }
       },
       "required": [ "acr" ],
