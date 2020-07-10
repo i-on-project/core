@@ -33,7 +33,7 @@ class DerivedTokenMapper : RowMapper<TokenEntity> {
 
 }
 
-fun buildTokenEntity(rs: ResultSet, claims: ClaimsEntity) : TokenEntity {
+fun buildTokenEntity(rs: ResultSet, claims: ClaimsEntity): TokenEntity {
     return TokenEntity(
         rs.getString("hash"),
         rs.getBoolean("isValid"),

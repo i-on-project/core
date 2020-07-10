@@ -14,10 +14,6 @@ import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.springframework.http.ResponseEntity
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AccessController(private val services: AccessServices, private val tokenGenerator: TokenGenerator) {
@@ -68,10 +64,10 @@ class AccessController(private val services: AccessServices, private val tokenGe
 
         //Check for special revoke token
         val claims = token.claims as TokenClaims
-        if(claims.scope == privilegedRevokeScope) {
+        if (claims.scope == privilegedRevokeScope) {
             //Privileged path
 
-            when(body["operation"]) {
+            when (body["operation"]) {
                 "1" -> {    //revokeChild
                     services.revokeChild(tokenBodyHash)
                 }
@@ -140,9 +136,9 @@ class AccessController(private val services: AccessServices, private val tokenGe
     }
 
 
-    private fun buildUrl(query: MultiValueMap<String,String>, parameterPath: String, derivedToken: String) : String {
+    private fun buildUrl(query: MultiValueMap<String, String>, parameterPath: String, derivedToken: String): String {
         var queryParams = "?"
-        if(query.size == 0)
+        if (query.size == 0)
             queryParams += derivedToken
         else
             queryParams += addQueryParams(query) + "&$derivedToken"
@@ -155,16 +151,16 @@ class AccessController(private val services: AccessServices, private val tokenGe
      */
     private fun addQueryParams(
         query: MultiValueMap<String, String>
-    ) : String {
+    ): String {
 
         var queryString = ""
-        var listParams : String
+        var listParams: String
         for (key in query.keys) {
             val list = query[key]
 
-            listParams = if(list == null || list.size == 0)
+            listParams = if (list == null || list.size == 0)
                 continue
-            else if(list.size == 1)
+            else if (list.size == 1)
                 list[0]
             else
                 query[key]?.fold(query[key]?.get(0), { str, it -> "$str,$it" }) ?: ""

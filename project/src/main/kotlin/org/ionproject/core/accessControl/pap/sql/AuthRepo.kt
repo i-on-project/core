@@ -8,7 +8,7 @@ interface AuthRepo {
 
     fun getPolicies(scope: String, apiVersion: String): List<PolicyEntity>
 
-    fun checkScopeExistence(scope: String) : Boolean
+    fun checkScopeExistence(scope: String): Boolean
 
     fun storeToken(token: TokenEntity): Boolean
 
@@ -18,7 +18,7 @@ interface AuthRepo {
 
     fun revokePresentedAndChild(hash: String): Boolean
 
-    fun generateImportToken(fatherTokenHash: String) : String
+    fun generateImportToken(fatherTokenHash: String): String
 
     fun getDerivedTableToken(tokenHash: String): TokenEntity?
 }

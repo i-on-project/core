@@ -46,7 +46,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
 
         //Checks if its an import link verification path
-        if(checkAccessToken(request, requestDescriptor))
+        if (checkAccessToken(request, requestDescriptor))
             return true
 
         //Authorization Header verification path
@@ -63,7 +63,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val header = request.getHeader(authenticationHeaderAuthorization)
 
         //Checks to see if request has authorization header
-        if(header == null) {
+        if (header == null) {
             logger.info(
                 LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
@@ -111,7 +111,8 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val reference = pair[1]
 
         //Check remaining policies
-        val token = pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference, requestDescriptor), requestDescriptor)
+        val token =
+            pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference, requestDescriptor), requestDescriptor)
 
         request.setAttribute("token", token)
     }
@@ -120,9 +121,9 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
      * Returns true if it was an import url authentication mode and succeeded
      * Returns false if it wasn't an import url authentication
      */
-    private fun checkAccessToken(request: HttpServletRequest, requestDescriptor: Request) : Boolean {
+    private fun checkAccessToken(request: HttpServletRequest, requestDescriptor: Request): Boolean {
         val accessToken = request.getParameter(authenticationQueryParameter)
-        if(accessToken != null) {
+        if (accessToken != null) {
             val token = pdp.evaluateAccessTokenAuthentication(
                 getTokenHash(
                     accessToken,
@@ -141,7 +142,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
      * Builds an object that describes the controller trying to gain access (id, version)
      * used to check policies
      */
-    private fun buildResourceIdentifier(handler: Any) : ResourceIdentifierDescriptor {
+    private fun buildResourceIdentifier(handler: Any): ResourceIdentifierDescriptor {
         val handlerMethod = handler as HandlerMethod
         val resourceIdentifierAnnotation = handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)
         val resourceName = resourceIdentifierAnnotation?.resourceName ?: ""
@@ -152,12 +153,16 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
     /**
      * Builds the hash out of the reference
      */
-    private fun getTokenHash(tokenReference: String, requestDescriptor: Request, authMode : String = LogMessages.tokenHeaderAuth) : String {
+    private fun getTokenHash(
+        tokenReference: String,
+        requestDescriptor: Request,
+        authMode: String = LogMessages.tokenHeaderAuth
+    ): String {
         try {
             val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
             return tokenGenerator.getHash(tokenBase64Decoded)
 
-        } catch(e : Exception) {
+        } catch (e: Exception) {
             logger.info(
                 LogMessages.forAuthError(
                     authMode,

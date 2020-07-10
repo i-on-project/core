@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.net.URI
 
-internal class ImportLinkTests: ControllerTester() {
+internal class ImportLinkTests : ControllerTester() {
 
     companion object {
         private val importClassCalendarUrl = Uri.forImportClassCalendar(5, "1920v")
@@ -80,7 +80,7 @@ internal class ImportLinkTests: ControllerTester() {
      */
     @Test
     fun generateInexistentResourceImportUrl() {
-         doGet(importClassCalendarNotFoundUrl) {
+        doGet(importClassCalendarNotFoundUrl) {
             header("Authorization", readTokenTest)
         }
             .andDo { print() }
@@ -119,7 +119,7 @@ internal class ImportLinkTests: ControllerTester() {
     }
 
 
-    private fun convertToJson(result: String) : ImportLinkRepr {
+    private fun convertToJson(result: String): ImportLinkRepr {
         val mapper = jacksonObjectMapper()
         return mapper.readValue(result, ImportLinkRepr::class.java)
     }

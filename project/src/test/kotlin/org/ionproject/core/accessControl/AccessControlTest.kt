@@ -1,17 +1,12 @@
 package org.ionproject.core.accessControl
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.ionproject.core.accessControl.representations.TokenRepr
-import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
-import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
-import org.ionproject.core.utils.writeTokenTest
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
 import java.net.URI
 
-internal class AccessControlTest: ControllerTester() {
+internal class AccessControlTest : ControllerTester() {
 
     companion object {
         /**
@@ -45,6 +40,7 @@ internal class AccessControlTest: ControllerTester() {
         val homeDocumentUri = URI("/")
 
     }
+
     /**
      * Because all requests pass through the access control interceptor
      * I believe its important to test if the behavior
@@ -55,9 +51,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(notFoundUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isNotFound } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotFound } }
+            .andReturn()
     }
 
     /**
@@ -70,9 +66,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(homeDocumentUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     /**
@@ -85,9 +81,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     @Test
@@ -95,9 +91,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesDetailUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     @Test
@@ -105,9 +101,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesQueryParamsUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isOk } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isOk } }
+            .andReturn()
     }
 
     /**
@@ -119,9 +115,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isForbidden } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isForbidden } }
+            .andReturn()
     }
 
     /**
@@ -132,9 +128,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", unexistentToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -158,9 +154,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(coursesUri) {
             header("Authorization", expiredToken)
         }
-                .andDo { print() }
-                .andExpect { status { isUnauthorized } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isUnauthorized } }
+            .andReturn()
     }
 
     /**
@@ -171,9 +167,9 @@ internal class AccessControlTest: ControllerTester() {
         doPost(programmesUri) {
             header("Authorization", tokenCorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isMethodNotAllowed } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isMethodNotAllowed } }
+            .andReturn()
     }
 
     /**
@@ -185,9 +181,9 @@ internal class AccessControlTest: ControllerTester() {
         doGet(programmesUri) {
             header("Authorization", tokenIncorrect)
         }
-                .andDo { print() }
-                .andExpect { status { isBadRequest } }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
 
 }

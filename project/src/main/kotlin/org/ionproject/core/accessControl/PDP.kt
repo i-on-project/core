@@ -1,6 +1,9 @@
 package org.ionproject.core.accessControl
 
-import org.ionproject.core.accessControl.pap.entities.*
+import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
+import org.ionproject.core.accessControl.pap.entities.PolicyEntity
+import org.ionproject.core.accessControl.pap.entities.TokenClaims
+import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.customExceptions.BadRequestException
@@ -27,12 +30,12 @@ class PDP {
     fun evaluateAccessTokenAuthentication(
         tokenHash: String,
         requestDescriptor: Request
-    ) : TokenEntity {
+    ): TokenEntity {
 
         val token = pap.getDerivedTableToken(tokenHash)
 
         //The order of this operation is before the method check just for extra log info
-        if(token == null) {
+        if (token == null) {
             logger.info(
                 LogMessages.forAuthError(
                     LogMessages.importUrlAuth,
@@ -42,13 +45,14 @@ class PDP {
                 )
             )
 
-            throw UnauthenticatedUserException(LogMessages.inexistentTokenMessage
+            throw UnauthenticatedUserException(
+                LogMessages.inexistentTokenMessage
             )
         }
 
 
         //Check method - this type of access doesn't allow UNSAFE METHODS (POST, PUT...)
-        if(requestDescriptor.method != "GET" && requestDescriptor.method != "HEAD") {
+        if (requestDescriptor.method != "GET" && requestDescriptor.method != "HEAD") {
             logger.info(
                 LogMessages.forAuthErrorDetail(
                     LogMessages.importUrlAuth,
@@ -63,7 +67,7 @@ class PDP {
         }
 
         val claims = token.claims as DerivedTokenClaims
-        if(checkPolicies(token, claims.scope, requestDescriptor, LogMessages.importUrlAuth))
+        if (checkPolicies(token, claims.scope, requestDescriptor, LogMessages.importUrlAuth))
             return token
         else {
             logger.info(
@@ -105,28 +109,33 @@ class PDP {
         }
 
         val claims = token.claims as TokenClaims
-         if(checkPolicies(token, claims.scope, requestDescriptor, LogMessages.tokenHeaderAuth))
-             return token
+        if (checkPolicies(token, claims.scope, requestDescriptor, LogMessages.tokenHeaderAuth))
+            return token
         else {
-             logger.info(
-                 LogMessages.forAuthErrorDetail(
-                     LogMessages.tokenHeaderAuth,
-                     token.hash,
-                     requestDescriptor.method,
-                     requestDescriptor.path,
-                     LogMessages.lackPrivileges
-                 )
-             )
-             throw ForbiddenActionException(LogMessages.lackOfPrivilegesMessage)
-         }
+            logger.info(
+                LogMessages.forAuthErrorDetail(
+                    LogMessages.tokenHeaderAuth,
+                    token.hash,
+                    requestDescriptor.method,
+                    requestDescriptor.path,
+                    LogMessages.lackPrivileges
+                )
+            )
+            throw ForbiddenActionException(LogMessages.lackOfPrivilegesMessage)
+        }
     }
 
     /**
      * Check if the user is allowed to do the action he requested
      */
-    private fun checkPolicies(token: TokenEntity, scope: String, requestDescriptor: Request, authMode: String) : Boolean {
+    private fun checkPolicies(
+        token: TokenEntity,
+        scope: String,
+        requestDescriptor: Request,
+        authMode: String
+    ): Boolean {
         //Check if the token is revoked
-        if(!token.isValid) {
+        if (!token.isValid) {
             logger.info(
                 LogMessages.forAuthErrorDetail(
                     authMode,
@@ -184,9 +193,12 @@ class PDP {
     /**
      * Returns the policy that matches, if any matches
      */
-    private fun matchResources(resourceIdentifier: ResourceIdentifierDescriptor, policies: List<PolicyEntity>): PolicyEntity? {
+    private fun matchResources(
+        resourceIdentifier: ResourceIdentifierDescriptor,
+        policies: List<PolicyEntity>
+    ): PolicyEntity? {
         for (policy in policies) {
-            if(policy.resource == resourceIdentifier.resource && policy.version == resourceIdentifier.version)
+            if (policy.resource == resourceIdentifier.resource && policy.version == resourceIdentifier.version)
                 return policy
         }
 

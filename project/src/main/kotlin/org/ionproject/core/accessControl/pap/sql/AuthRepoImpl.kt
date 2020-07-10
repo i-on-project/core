@@ -2,7 +2,9 @@ package org.ionproject.core.accessControl.pap.sql
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.TokenGenerator
-import org.ionproject.core.accessControl.pap.entities.*
+import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
+import org.ionproject.core.accessControl.pap.entities.PolicyEntity
+import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.API_VERSION
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.CALENDAR_READ_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.FATHER_TOKEN_HASH
@@ -17,7 +19,6 @@ import org.ionproject.core.accessControl.pap.sql.AuthRepoData.SCOPE_URI
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.TOKEN
 import org.ionproject.core.common.transaction.TransactionManager
 import org.springframework.stereotype.Repository
-import java.lang.Exception
 
 @Repository
 class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
@@ -36,7 +37,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
         }()
     }
 
-    override fun checkScopeExistence(scope: String) : Boolean = tm.run { handle ->
+    override fun checkScopeExistence(scope: String): Boolean = tm.run { handle ->
         {
             val res = handle.createQuery(GET_SCOPE)
                 .bind(SCOPE_URI, scope)
@@ -124,7 +125,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                 .firstOrNull()
 
             val tokenReference: String
-            if(importToken == null) {
+            if (importToken == null) {
                 //No token found for the requesting resource, generate new token
                 val token = generateToken(fatherTokenHash, "urn:org:ionproject:scopes:api:read:calendar")
 
@@ -142,7 +143,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                     claimsData
                 )
 
-                if(result == 0)
+                if (result == 0)
                     throw Exception("Something Unexpected happened during the import url token generation.")
 
                 tokenReference = (token.claims as DerivedTokenClaims).derivedTokenReference
@@ -157,7 +158,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
     /**
      * It's more optimized to build the hash, token... after its confirmed there is no token for the resource
      */
-    private fun generateToken(fatherTokenHash: String, scope: String) : TokenEntity {
+    private fun generateToken(fatherTokenHash: String, scope: String): TokenEntity {
         val tokenReferenceBytes = tokenGenerator.generateRandomString()
         val tokenReferenceString = tokenGenerator.encodeBase64url(tokenReferenceBytes)
         val derivedTokenHash = tokenGenerator.getHash(tokenReferenceBytes)

@@ -6,7 +6,6 @@ import org.ionproject.core.accessControl.representations.TokenRepr
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.*
-import org.ionproject.core.utils.ControllerTester
 import org.junit.jupiter.api.Test
 import java.net.URI
 
@@ -18,7 +17,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val importClassSectionCalendarUrl = Uri.forImportClassSectionCalendar(5, "1920v", "LI61D")
     }
 
-    private fun issueTokenTest(scope: String) : String {
+    private fun issueTokenTest(scope: String): String {
         val result = doPost(issueTokenUri) {
             header("Authorization", issueTokenTest)
             header("Content-Type", "application/json")
@@ -263,7 +262,7 @@ internal class RevokeTokenTests : ControllerTester() {
             .andReturn()
     }
 
-    private fun convertToJson(result: String) : ImportLinkRepr {
+    private fun convertToJson(result: String): ImportLinkRepr {
         val mapper = jacksonObjectMapper()
         return mapper.readValue(result, ImportLinkRepr::class.java)
     }
