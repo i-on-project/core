@@ -4,16 +4,17 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
 import org.ionproject.core.accessControl.pap.entities.PolicyEntity
+import org.ionproject.core.accessControl.pap.entities.TokenClaims
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.API_VERSION
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.CALENDAR_READ_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.FATHER_TOKEN_HASH
-import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_DERIVED_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_IMPORT_TOKEN
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_POLICIES_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_SCOPE
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.GET_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.INSERT_TOKEN_QUERY
+import org.ionproject.core.accessControl.pap.sql.AuthRepoData.IS_DERIVED_TOKEN
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_CHILD_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.REVOKE_TOKEN_QUERY
 import org.ionproject.core.accessControl.pap.sql.AuthRepoData.SCOPE_URI
@@ -23,17 +24,22 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
-    private val tokenMapper = TokenMapper()
-    private val derivedTokenMapper = DerivedTokenMapper()
+    private val tokenMapper = TokenMapper { claims : String -> TokenClaims.deserialize(claims) }
+    private val derivedTokenMapper = TokenMapper { claims : String -> DerivedTokenClaims.deserialize(claims) }
     private val policyMapper = PolicyMapper()
 
     private val tokenGenerator = TokenGenerator()
 
-    override fun getTableToken(tokenHash: String): TokenEntity? = tm.run { handle ->
+    override fun getToken(tokenHash: String, derived: Boolean): TokenEntity? = tm.run { handle ->
         {
+            var mapper = tokenMapper
+            if(derived)
+                mapper = derivedTokenMapper
+
             handle.createQuery(GET_TOKEN_QUERY)
                 .bind(TOKEN, tokenHash)
-                .map(tokenMapper)
+                .bind(IS_DERIVED_TOKEN, derived)
+                .map(mapper)
                 .firstOrNull()
         }()
     }
@@ -46,18 +52,6 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
                 .first()
 
             res == 1
-        }()
-    }
-
-    /**
-     * Avoids having to add if's checking if its meant to build a derived token or not
-     */
-    override fun getDerivedTableToken(tokenHash: String): TokenEntity? = tm.run { handle ->
-        {
-            handle.createQuery(GET_DERIVED_TOKEN_QUERY)
-                .bind(TOKEN, tokenHash)
-                .map(derivedTokenMapper)
-                .firstOrNull()
         }()
     }
 

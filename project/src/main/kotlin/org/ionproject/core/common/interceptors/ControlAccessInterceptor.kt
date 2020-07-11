@@ -1,12 +1,20 @@
 package org.ionproject.core.common.interceptors
 
+import org.ionproject.core.accessControl.AccessControlCache
+import org.ionproject.core.accessControl.CaffeineConfiguration
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
+import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
+import org.ionproject.core.accessControl.pap.entities.TokenClaims
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.annotation.Resource
@@ -14,7 +22,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
-private const val includeType = "bearer"
 
 data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
 data class ResourceIdentifierDescriptor(val resource: String, val version: String)
@@ -25,14 +32,13 @@ data class ResourceIdentifierDescriptor(val resource: String, val version: Strin
  */
 class ControlAccessInterceptor : HandlerInterceptorAdapter() {
 
+    private val includeType = "bearer"
     private val authenticationQueryParameter = "access_token"
     private val authenticationHeaderAuthorization = "Authorization"
 
-    @Resource
     private val tokenGenerator: TokenGenerator = TokenGenerator()
-
-    @Resource
     private val pdp: PDP = PDP()
+    private val cache: AccessControlCache = AccessControlCache()
 
     /**
      * Intercepts the request, tries to identify the authentication mode...
@@ -67,8 +73,6 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
             logger.info(
                 LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
-                    request.method,
-                    request.requestURI,
                     LogMessages.noToken
                 )
             )
@@ -83,8 +87,6 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
             logger.info(
                 LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
-                    request.method,
-                    request.requestURI,
                     LogMessages.invalidFormatHeader
                 )
             )
@@ -99,8 +101,6 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
             logger.info(
                 LogMessages.forAuthError(
                     LogMessages.tokenHeaderAuth,
-                    request.method,
-                    request.requestURI,
                     LogMessages.unsupportedIncludeType
                 )
             )
@@ -111,9 +111,15 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
         val reference = pair[1]
 
         //Check remaining policies
-        val token =
-            pdp.evaluateAuthorizationHeaderAuthentication(getTokenHash(reference, requestDescriptor), requestDescriptor)
+        val tokenHash = getTokenHash(
+            reference,
+            LogMessages.tokenHeaderAuth
+        )
 
+        val token = cache.getToken(tokenHash, false)
+        val claims = token.claims as TokenClaims
+
+        pdp.evaluateAuthorization(token, requestDescriptor, claims.scope, LogMessages.tokenHeaderAuth)
         request.setAttribute("token", token)
     }
 
@@ -122,16 +128,18 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
      * Returns false if it wasn't an import url authentication
      */
     private fun checkAccessToken(request: HttpServletRequest, requestDescriptor: Request): Boolean {
-        val accessToken = request.getParameter(authenticationQueryParameter)
-        if (accessToken != null) {
-            val token = pdp.evaluateAccessTokenAuthentication(
-                getTokenHash(
-                    accessToken,
-                    requestDescriptor,
-                    LogMessages.importUrlAuth
-                ),
-                requestDescriptor
+        val reference = request.getParameter(authenticationQueryParameter)
+        if (reference != null) {
+
+            val tokenHash = getTokenHash(
+                reference,
+                LogMessages.importUrlAuth
             )
+
+            val token = cache.getToken(tokenHash, true)
+            val claims = token.claims as DerivedTokenClaims
+
+            pdp.evaluateAuthorization(token, requestDescriptor, claims.scope, LogMessages.importUrlAuth)
             return true
         }
 
@@ -155,8 +163,7 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
      */
     private fun getTokenHash(
         tokenReference: String,
-        requestDescriptor: Request,
-        authMode: String = LogMessages.tokenHeaderAuth
+        authMode: String
     ): String {
         try {
             val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
@@ -166,8 +173,6 @@ class ControlAccessInterceptor : HandlerInterceptorAdapter() {
             logger.info(
                 LogMessages.forAuthError(
                     authMode,
-                    requestDescriptor.method,
-                    requestDescriptor.path,
                     LogMessages.tokenHashError
                 )
             )

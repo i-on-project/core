@@ -39,8 +39,8 @@ object LogMessages {
     const val unknownError = "It seems the error you received isn't yet documented, inform the developers."
 
     //Authentication Messages
-    fun forAuthError(authenticationMode: String, method: String, url: String, reason: String) =
-        "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] |  METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
+    fun forAuthError(authenticationMode: String, reason: String) =
+        "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
 
     fun forAuthErrorDetail(authenticationMode: String, tokenHash: String, method: String, requestUrl: String, reason: String) =
         "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] | TOKEN_HASH:[${tokenHash}] " +

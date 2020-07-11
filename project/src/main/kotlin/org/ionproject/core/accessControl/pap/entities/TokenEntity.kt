@@ -1,5 +1,7 @@
 package org.ionproject.core.accessControl.pap.entities
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+
 class TokenEntity(
     val hash: String,
     val isValid: Boolean,
@@ -14,9 +16,23 @@ interface ClaimsEntity
 
 class TokenClaims(
     val scope: String
-) : ClaimsEntity
+) : ClaimsEntity {
+    companion object {
+         fun deserialize(claims: String): TokenClaims {
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(claims, TokenClaims::class.java)
+        }
+    }
+}
 
 class DerivedTokenClaims(
     val scope: String,
     val derivedTokenReference: String
-) : ClaimsEntity
+) : ClaimsEntity {
+    companion object {
+        fun deserialize(claims: String): DerivedTokenClaims {
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(claims, DerivedTokenClaims::class.java)
+        }
+    }
+}
