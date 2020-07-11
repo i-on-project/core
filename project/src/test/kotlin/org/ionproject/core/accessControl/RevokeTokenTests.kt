@@ -15,6 +15,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val revokeTokenUri = URI(Uri.revokeToken)
         val issueTokenUri = URI(Uri.issueToken)
         val importClassSectionCalendarUrl = Uri.forImportClassSectionCalendar(5, "1920v", "LI61D")
+        val cache = AccessControlCache()
     }
 
     private fun issueTokenTest(scope: String): String {
@@ -144,6 +145,8 @@ internal class RevokeTokenTests : ControllerTester() {
             .andExpect { status { isOk } }
             .andReturn()
 
+        cache.clearCache()
+
         //Checking if son token is revoked
         doGet(URI(link)) {
         }
@@ -195,6 +198,7 @@ internal class RevokeTokenTests : ControllerTester() {
             .andExpect { status { isOk } }
             .andReturn()
 
+        cache.clearCache()
         //Check if child is revoked
         doGet(URI(link)) {
         }
@@ -246,6 +250,7 @@ internal class RevokeTokenTests : ControllerTester() {
             .andExpect { status { isOk } }
             .andReturn()
 
+        cache.clearCache()
         //Check if the father was revoked
         doGet(URI("/")) {
             header("Authorization", "Bearer $fatherToken")
