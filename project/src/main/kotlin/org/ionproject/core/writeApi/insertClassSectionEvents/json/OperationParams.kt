@@ -1,6 +1,7 @@
 package org.ionproject.core.writeApi.insertClassSectionEvents.json
 
 import com.fasterxml.jackson.databind.JsonNode
+import org.ionproject.core.asSanitizedText
 import java.sql.Timestamp
 
 /**
@@ -32,8 +33,8 @@ class OperationParams(
                 programmeAcademicObj["name"]?.asText(),
                 programmeAcademicObj["acr"]?.asText(),
                 json["termSize"]?.asInt(),
-                json["calendarTerm"].asText(),
-                json["calendarSection"].asText(),
+                json["calendarTerm"].asSanitizedText(),
+                json["calendarSection"].asSanitizedText(),
                 json["courses"].map { CourseParams.of(it) },
                 json["language"]?.asText() ?: "en-US"
             )

@@ -1,5 +1,6 @@
 package org.ionproject.core
 
+import com.fasterxml.jackson.databind.JsonNode
 import org.ionproject.core.common.querybuilder.Condition
 import org.jdbi.v3.core.statement.Query
 import org.postgresql.util.PGobject
@@ -79,4 +80,6 @@ fun PGobject.split(): List<String> {
 
     return list
 }
+
+fun JsonNode.asSanitizedText() = this.asText().removeWhitespace().replace("/", "-")
 

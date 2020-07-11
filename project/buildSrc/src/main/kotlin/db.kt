@@ -202,6 +202,7 @@ object Db {
 
     private fun genDataSource() = PGSimpleDataSource().apply {
         val url: String? = System.getenv(Postgres.CONNECTION_STRING_ENV_NAME)
+        println(url)
         setUrl(url ?: throw Error("${Postgres.CONNECTION_STRING_ENV_NAME} connection string not set"))
     }
 

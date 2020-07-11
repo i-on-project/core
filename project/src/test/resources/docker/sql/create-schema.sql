@@ -390,7 +390,8 @@ DECLARE
 	until_instant INT;
 BEGIN
 
-  component_id := (SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time));
+  SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time)
+  INTO component_id;
 
   INSERT INTO dbo.Instant(date, time) VALUES (dtstart::DATE, dtstart::TIME) RETURNING id INTO start_instant;
   INSERT INTO dbo.Instant(date, time) VALUES (dtend::DATE, dtend::TIME) RETURNING id INTO end_instant;
@@ -432,7 +433,8 @@ DECLARE
 	component_id INT;
 BEGIN
 
-  component_id = (SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time));
+  SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time)
+  INTO component_id;
 
   INSERT INTO dbo._Dtstart (comp_id, type, date, time) VALUES
     (component_id, dtstart_dtend_type, start_instant, start_time);
@@ -826,7 +828,6 @@ DECLARE
   cal_term_start INT;
   cal_term_end INT;
 BEGIN
-
   -- get target calendar ID (the class section's calendar)
   SELECT
     CS.calendar INTO calid
@@ -839,10 +840,14 @@ BEGIN
     AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
 
   SELECT
-    cal_term_start = start_date,
-    cal_term_end = end_date
+    CT.start_date INTO cal_term_start
   FROM
-    dbo._CalendarTerm;
+    dbo._CalendarTerm CT;
+
+  SELECT
+    CT.end_date INTO cal_term_end
+  FROM
+    dbo._CalendarTerm CT;
 
   SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang;
 

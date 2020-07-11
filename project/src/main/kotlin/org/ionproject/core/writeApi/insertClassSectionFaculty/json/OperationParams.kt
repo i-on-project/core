@@ -1,6 +1,7 @@
 package org.ionproject.core.writeApi.insertClassSectionFaculty.json
 
 import com.fasterxml.jackson.databind.JsonNode
+import org.ionproject.core.asSanitizedText
 
 /**
  * Extract all values from the controller's JSON Node parameter.
@@ -29,8 +30,8 @@ class OperationParams(
                 schoolAcademicObj["acr"]?.asText(),
                 programmeAcademicObj["name"]?.asText(),
                 programmeAcademicObj["acr"]?.asText(),
-                json["calendarTerm"].asText(),
-                json["calendarSection"].asText(),
+                json["calendarTerm"].asSanitizedText(),
+                json["calendarSection"].asSanitizedText(),
                 json["courses"].map { CourseParams.of(it) },
                 json["language"]?.asText() ?: "en-US"
             )
