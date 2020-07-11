@@ -133,7 +133,7 @@ class InsertClassSectionEventsTransactionRepo(
         weekDays: String?,
         location: String?
     ) {
-        val a = handle
+        handle
             .createCall(CALL_CREATE_EVENT)
             .bind(COURSE_NAME_PARAM, courseName)
             .bind(COURSE_ACR_PARAM, courseAcr)
