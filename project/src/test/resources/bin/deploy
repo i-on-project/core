@@ -51,11 +51,6 @@ auth_gcp() {
     fi
   }
   trap 'auth_gcp_clean' EXIT
-  trap 'auth_gcp_clean' HUP
-  trap 'auth_gcp_clean' TERM
-  trap 'auth_gcp_clean' INT
-  trap 'auth_gcp_clean' 1
-  trap 'auth_gcp_clean' 2
   printf "%s\n" "$GCP_KEY" > "$key_file"
   
   gcloud auth activate-service-account "$GCP_ACCOUNT" --key-file="$key_file"
@@ -77,13 +72,13 @@ schema_migration() {
   db_con_string="${db_con_string_prefix}/${DB_CON_STRING_SUFFIX}"
   dev_db_con_string="${db_con_string_prefix}/${DEV_DB_CON_STRING_SUFFIX}"
 
-  wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
-  chmod +x cloud_sql_proxy
-  ./cloud_sql_proxy -instances="$GCP_DB_INSTANCE=tcp:$db_proxy_port" &
-  cloud_sql_proxy_pid="$!"
+  wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /tmp/cloud_sql_proxy
+  chmod +x /tmp/cloud_sql_proxy
+  /tmp/cloud_sql_proxy -instances="$GCP_DB_INSTANCE=tcp:$db_proxy_port" &
 
   backup_dir="$(pwd)"
   cd .docker/src/res/bin/schema_diff
+  # TODO: Copy the sql scripts to the docker image on build time (i.e. don't use a mount point)
   docker build -t "$schema_diff_img" .
   docker run --rm --network="host" \
     -e DEV_DB_URL="$dev_db_con_string" \
@@ -92,8 +87,8 @@ schema_migration() {
     "$schema_diff_img" apply
   cd "$backup_dir"
 
-  kill "$cloud_sql_proxy_pid"
-  rm cloud_sql_proxy
+  pkill cloud_sql_proxy || true
+  rm /tmp/cloud_sql_proxy
   printf "Schema migrated successfully.\n"
 }
 
