@@ -30,15 +30,15 @@ data class ResourceIdentifierDescriptor(val resource: String, val version: Strin
  * Policy Enforcement Point
  * It will enforce the decision of the PDP
  */
-class ControlAccessInterceptor : HandlerInterceptorAdapter() {
+class ControlAccessInterceptor(private val pdp: PDP,
+                               private val tokenGenerator: TokenGenerator,
+                               private val cache: AccessControlCache
+) : HandlerInterceptorAdapter() {
 
     private val includeType = "bearer"
     private val authenticationQueryParameter = "access_token"
     private val authenticationHeaderAuthorization = "Authorization"
 
-    private val tokenGenerator: TokenGenerator = TokenGenerator()
-    private val pdp: PDP = PDP()
-    private val cache: AccessControlCache = AccessControlCache()
 
     /**
      * Intercepts the request, tries to identify the authentication mode...

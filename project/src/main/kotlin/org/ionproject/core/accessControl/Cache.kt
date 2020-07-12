@@ -4,12 +4,10 @@ import org.ionproject.core.accessControl.pap.entities.PolicyEntity
 import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
 import org.ionproject.core.common.LogMessages
+import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.common.interceptors.LoggerInterceptor
-import org.ionproject.core.common.transaction.DataSourceHolder
-import org.ionproject.core.common.transaction.TransactionManagerImpl
 import org.slf4j.LoggerFactory
-import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
 
 /**
@@ -17,15 +15,13 @@ import org.springframework.stereotype.Component
  *  a request is made and needs authentication.
  */
 @Component
-class AccessControlCache {
+class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineConfiguration) {
 
-    private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
-    private val pap: AuthRepoImpl = AuthRepoImpl(TransactionManagerImpl(DataSourceHolder))
+    private val tokenCache = cacheConfig.tokenCache
+    private val policiesCache = cacheConfig.policiesCache
 
     companion object {
-        private val cacheManager: CacheManager = CaffeineConfiguration().cacheManager()
-        private val tokenCache = cacheManager.getCache(CaffeineConfiguration.tokenCache)
-        private val policiesCache = cacheManager.getCache(CaffeineConfiguration.policiesCache)
+        private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
     }
 
     /**
@@ -33,31 +29,37 @@ class AccessControlCache {
      * requests.
      */
     fun getToken(tokenHash: String, derived: Boolean) : TokenEntity {
+        return tokenCache.asMap().compute(tokenHash) { _, oldValue ->
+            {
+                if (oldValue == null) {
+                    logger.info("No token cache hit, reading token from database...")
 
-        val cacheValue = tokenCache?.get(tokenHash)
-        val token : TokenEntity?
-
-        if(cacheValue == null) {
-            logger.info("No cache hit, reading token from database...")
-            token = pap.getToken(tokenHash, derived)
-
-            //Check if the token exists
-            if (token == null) {
-                logger.info(
-                    LogMessages.forAuthError(
-                        LogMessages.tokenHeaderAuth,
-                        LogMessages.inexistentToken
-                    )
-                )
-                throw UnauthenticatedUserException(LogMessages.inexistentTokenMessage)
-            }
-
-            tokenCache?.put(tokenHash, token)
-            return token
-        } else {
-            logger.info("Token cache hit!")
-            return cacheValue.get() as TokenEntity
+                    val token: TokenEntity = readTokenDb(tokenHash, derived)
+                    token
+                } else {
+                    logger.info("Token cache hit!")
+                    oldValue
+                }
+            }()
         }
+            ?: throw BadRequestException("An error occurred during cache read, you're not supposed to get this message if you do contact the dev team...")
+    }
+
+    fun readTokenDb(tokenHash: String, derived: Boolean) : TokenEntity {
+        val token = pap.getToken(tokenHash, derived)
+
+        //Check if the token exists
+        if (token == null) {
+            logger.info(
+                LogMessages.forAuthError(
+                    LogMessages.tokenHeaderAuth,
+                    LogMessages.inexistentToken
+                )
+            )
+            throw UnauthenticatedUserException(LogMessages.inexistentTokenMessage)
+        }
+
+        return token
     }
 
 
@@ -74,20 +76,21 @@ class AccessControlCache {
      */
     fun getPolicies(scope: String, version: String) : List<PolicyEntity> {
         val id = "$scope.$version"
-        val cacheValue = policiesCache?.get(id)
-        val policies : List<PolicyEntity>
 
-        if(cacheValue  == null) {
-            logger.info("No cache hit, reading policies from database...")
+        return policiesCache.asMap().compute(id) { _, oldValue ->
+            {
+                if (oldValue == null) {
+                    logger.info("No policies cache hit, reading token from database...")
 
-            policies = pap.getPolicies(scope, version)
-            policiesCache?.put(id, policies)
-            return policies
-        } else {
-            logger.info("Policies cache hit!")
-            return cacheValue.get() as List<PolicyEntity>
+                    val policies : List<PolicyEntity> = pap.getPolicies(scope, version)
+                    policies
+                } else {
+                    logger.info("Policies cache hit!")
+                    oldValue
+                }
+            }()
         }
-
+            ?: throw BadRequestException("An error occurred during cache read, you're not supposed to get this message if you do contact the dev team...")
     }
 
     /**
@@ -97,7 +100,7 @@ class AccessControlCache {
      * if the cache wasn't cleared the test would fail.
      */
     fun clearCache() {
-        policiesCache?.invalidate()
-        tokenCache?.invalidate()
+        policiesCache.invalidateAll()
+        tokenCache.invalidateAll()
     }
 }

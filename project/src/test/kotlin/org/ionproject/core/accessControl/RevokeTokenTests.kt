@@ -7,15 +7,18 @@ import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.*
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import java.net.URI
 
 internal class RevokeTokenTests : ControllerTester() {
+
+    @Autowired
+    lateinit var cache : AccessControlCache
 
     companion object {
         val revokeTokenUri = URI(Uri.revokeToken)
         val issueTokenUri = URI(Uri.issueToken)
         val importClassSectionCalendarUrl = Uri.forImportClassSectionCalendar(5, "1920v", "LI61D")
-        val cache = AccessControlCache()
     }
 
     private fun issueTokenTest(scope: String): String {

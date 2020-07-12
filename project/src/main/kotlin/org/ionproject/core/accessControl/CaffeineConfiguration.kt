@@ -1,39 +1,22 @@
 package org.ionproject.core.accessControl
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import org.checkerframework.checker.nullness.qual.NonNull
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.cache.CacheManager
-import org.springframework.cache.annotation.EnableCaching
-import org.springframework.cache.caffeine.CaffeineCache
-import org.springframework.cache.caffeine.CaffeineCacheManager
-import org.springframework.cache.support.SimpleCacheManager
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.ionproject.core.accessControl.pap.entities.PolicyEntity
+import org.ionproject.core.accessControl.pap.entities.TokenEntity
+import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
-@Configuration
-class CaffeineConfiguration {
+@Component
+object CaffeineConfiguration {
 
-    companion object {
-         const val expireTime: Long = 60
-         const val tokenCache = "tokens"
-         const val policiesCache = "policies"
-    }
+     private const val expireTime: Long = 60
 
-    @Bean
-    fun cacheManager(): CacheManager {
-        val tokensCache = buildCache()
+    val tokenCache = Caffeine.newBuilder()
+        .expireAfterWrite(expireTime, TimeUnit.SECONDS)
+        .build<String, TokenEntity>()
 
-        val cacheManager = CaffeineCacheManager(tokenCache, policiesCache)
-        cacheManager.setCaffeine(tokensCache)
+    val policiesCache = Caffeine.newBuilder()
+        .expireAfterWrite(expireTime, TimeUnit.SECONDS)
+        .build<String, List<PolicyEntity>>()
 
-        return cacheManager
-    }
-
-    private fun buildCache() : Caffeine<Any, Any> {
-        return Caffeine.newBuilder()
-            .expireAfterWrite(expireTime, TimeUnit.SECONDS)
-
-    }
 }

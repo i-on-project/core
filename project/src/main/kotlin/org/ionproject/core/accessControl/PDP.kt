@@ -16,9 +16,9 @@ import javax.annotation.Resource
 private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
-class PDP {
+class PDP(private val cache: AccessControlCache) {
 
-    private val cache: AccessControlCache = AccessControlCache()
+    //private val cache: AccessControlCache = AccessControlCache()
 
     /**
      * Authentication path when authorization header is present and access_token query parameter is not.
