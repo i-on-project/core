@@ -29,19 +29,7 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
      * requests.
      */
     fun getToken(tokenHash: String, derived: Boolean) : TokenEntity {
-        return tokenCache.asMap().compute(tokenHash) { _, oldValue ->
-            {
-                if (oldValue == null) {
-                    logger.info("No token cache hit, reading token from database...")
-
-                    val token: TokenEntity = readTokenDb(tokenHash, derived)
-                    token
-                } else {
-                    logger.info("Token cache hit!")
-                    oldValue
-                }
-            }()
-        }
+        return tokenCache.get(tokenHash) { readTokenDb(tokenHash, derived) }
             ?: throw BadRequestException("An error occurred during cache read, you're not supposed to get this message if you do contact the dev team...")
     }
 
@@ -77,19 +65,7 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
     fun getPolicies(scope: String, version: String) : List<PolicyEntity> {
         val id = "$scope.$version"
 
-        return policiesCache.asMap().compute(id) { _, oldValue ->
-            {
-                if (oldValue == null) {
-                    logger.info("No policies cache hit, reading token from database...")
-
-                    val policies : List<PolicyEntity> = pap.getPolicies(scope, version)
-                    policies
-                } else {
-                    logger.info("Policies cache hit!")
-                    oldValue
-                }
-            }()
-        }
+        return policiesCache.get(id) { pap.getPolicies(scope, version) }
             ?: throw BadRequestException("An error occurred during cache read, you're not supposed to get this message if you do contact the dev team...")
     }
 
