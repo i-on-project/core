@@ -18,4 +18,5 @@ object ResourceIds {
 
     const val INSERT_CLASS_SECTION_EVENTS = "insertClassSectionEvents"
     const val INSERT_CLASS_SECTION_FACULTY = "insertClassSectionFaculty"
+    const val INSERT_CALENDAR_TERM = "insertCalendarTerm"
 }

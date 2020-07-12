@@ -1,0 +1,63 @@
+{
+  "definitions": {
+    "academicObject": {
+      "$id": "#academicObject",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "acr": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 10
+        }
+      },
+      "required": [ "acr" ],
+      "additionalProperties": false
+    },
+    "date": {
+      "$id": "#date",
+      "type": "string"
+    },
+    "interval": {
+      "$id": "#interval",
+      "properties": {
+        "startDate": { "$ref": "#date" },
+        "endDate": { "$ref": "#date" },
+        "name": { "type": "string" },
+        "curricularTerm": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "excludes": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "categories": {
+          "type": "array",
+          "items": { "type": "integer" }
+        }
+      },
+      "required": [ "name", "startDate", "endDate" ],
+      "additionalProperties": false
+    }
+  },
+  "$id": "#root",
+  "type": "object",
+  "properties": {
+    "school": { "$ref": "#academicObject" },
+    "calendarTerm": { "type": "string" },
+    "language": { "type": "string" },
+    "startDate": { "$ref": "#date" },
+    "endDate": { "$ref": "#date" },
+    "intervals": {
+      "type": "array",
+      "items": { "$ref": "#course" }
+    }
+  },
+  "required": [ "school", "calendarTerm", "startDate", "endDate", "intervals" ],
+  "additionalProperties": false
+}
