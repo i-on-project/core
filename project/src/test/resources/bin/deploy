@@ -51,11 +51,6 @@ auth_gcp() {
     fi
   }
   trap 'auth_gcp_clean' EXIT
-  trap 'auth_gcp_clean' HUP
-  trap 'auth_gcp_clean' TERM
-  trap 'auth_gcp_clean' INT
-  trap 'auth_gcp_clean' 1
-  trap 'auth_gcp_clean' 2
   printf "%s\n" "$GCP_KEY" > "$key_file"
   
   gcloud auth activate-service-account "$GCP_ACCOUNT" --key-file="$key_file"
@@ -84,6 +79,7 @@ schema_migration() {
 
   backup_dir="$(pwd)"
   cd .docker/src/res/bin/schema_diff
+  # TODO: Copy the sql scripts to the docker image on build time (i.e. don't use a mount point)
   docker build -t "$schema_diff_img" .
   docker run --rm --network="host" \
     -e DEV_DB_URL="$dev_db_con_string" \
