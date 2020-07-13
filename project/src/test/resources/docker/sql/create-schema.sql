@@ -647,18 +647,26 @@ BEGIN
     );
 
   -- Insert or update CalendarTerm
-  INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
-  INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
+  --INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
+  --INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
 
-  INSERT INTO
-    dbo._CalendarTerm(id, start_date, end_date)
-  SELECT
-    calendarTerm, start_date, end_date
-  WHERE
-    NOT EXISTS(
-      SELECT id FROM dbo.CalendarTerm c WHERE c.id=calendarTerm
-    ) AND calendarTerm IS NOT NULL;
+  --INSERT INTO
+  --  dbo._CalendarTerm(id, start_date, end_date)
+  --SELECT
+  --  calendarTerm, start_date, end_date
+  --WHERE
+  --  NOT EXISTS(
+  --    SELECT id FROM dbo._CalendarTerm c WHERE c.id=calendarTerm
+  --  ) AND calendarTerm IS NOT NULL;
 
+  IF calendarTerm IS NOT NULL AND NOT EXISTS (SELECT id FROM dbo._CalendarTerm c WHERE c.id=calendarTerm) THEN
+    INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
+    INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
+    INSERT INTO
+      dbo._CalendarTerm(id, start_date, end_date)
+    VALUES
+      (calendarTerm, start_date, end_date);
+  END IF;
 END
 $$ LANGUAGE plpgsql;
 
@@ -843,14 +851,11 @@ BEGIN
     AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
 
   SELECT
-    CT.start_date INTO cal_term_start
+    CT.start_date, CT.end_date INTO cal_term_start, cal_term_end
   FROM
-    dbo._CalendarTerm CT;
-
-  SELECT
-    CT.end_date INTO cal_term_end
-  FROM
-    dbo._CalendarTerm CT;
+    dbo._CalendarTerm CT
+  WHERE
+    CT.id = calTerm;
 
   SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang;
 
