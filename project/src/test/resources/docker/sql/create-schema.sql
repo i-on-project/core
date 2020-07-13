@@ -47,15 +47,18 @@ CREATE TABLE dbo._CalendarTerm (
 -- New view to maintain old functionality
 CREATE VIEW dbo.CalendarTerm AS
     SELECT
-        id,
-        (
-            SELECT date + COALESCE(time, TIME '00:00:00') FROM dbo.Instant WHERE id = start_date
-        ) as start_date,
-        (
-            SELECT date + COALESCE(time, TIME '00:00:00') FROM dbo.Instant WHERE id = end_date
-        ) as end_date,
+        _CalendarTerm.id,
+        start_instant.date + COALESCE(start_instant.time, TIME '00:00:00') as start_date,
+        end_instant.date + COALESCE(end_instant.time, TIME '00:00:00') as end_date,
         document
-    FROM dbo._CalendarTerm;
+    FROM dbo._CalendarTerm
+    JOIN dbo.Instant start_instant ON start_date = start_instant.id
+    JOIN dbo.Instant end_instant ON end_date = end_instant.id
+    WHERE
+        start_instant.date IS NOT NULL
+        AND
+        end_instant.date IS NOT NULL
+    ;
 
 
 CREATE TABLE dbo.Class (
