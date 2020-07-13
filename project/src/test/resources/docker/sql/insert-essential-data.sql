@@ -285,7 +285,8 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (1, 'GET', 'v0', 'getCalendarTerm'),
 (2, 'PUT', 'v0', 'insertClassSectionFaculty'),
 (2, 'PUT', 'v0', 'insertClassSectionEvents'),
-(1, 'GET,POST', '*', 'error'),  
+(2, 'PUT', 'v0', 'insertCalendarTerm'),
+(1, 'GET,POST', '*', 'error'),
 (2, 'GET,POST', '*', 'error'),
 (3, 'GET,POST', '*', 'error'),
 (4, 'GET,POST', '*', 'error')
