@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class InsertClassSectionFacultyController(private val services: InsertClassSectionFacultyServices) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.INSERT_CLASS_SECTION_EVENTS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.INSERT_CLASS_SECTION_FACULTY, ResourceIds.VERSION)
     @PutMapping(Uri.insertClassSectionFaculty, consumes = [Media.APPLICATION_JSON])
     fun insertClassSectionFaculty(@RequestBody json: JsonNode): ResponseEntity<Any> {
 

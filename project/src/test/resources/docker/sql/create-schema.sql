@@ -29,18 +29,42 @@ CREATE TABLE dbo.ProgrammeOffer(
 	PRIMARY KEY(programmeId, courseId, termNumber)
 );
 
-CREATE TABLE dbo.CalendarTerm (
+CREATE TABLE dbo.Instant (
+    id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    date            DATE,
+    time            TIME
+);
+
+CREATE TABLE dbo._CalendarTerm (
 	id         VARCHAR(20) PRIMARY KEY, -- e.g. "1920v"
-	start_date TIMESTAMP,
-	end_date   TIMESTAMP CHECK(end_date > start_date),
+	start_date INT REFERENCES dbo.Instant(id),
+	end_date   INT REFERENCES dbo.Instant(id),
+	-- CHECK((SELECT value FROM dbo.Instant WHERE id=end_date) > (SELECT value FROM dbo.Instant WHERE id=start_date)), -- This check is no longer possible with the adittion of instants
 	document   TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
 	UNIQUE(start_date, end_date)
 );
 
+-- New view to maintain old functionality
+CREATE VIEW dbo.CalendarTerm AS
+    SELECT
+        _CalendarTerm.id,
+        start_instant.date + COALESCE(start_instant.time, TIME '00:00:00') as start_date,
+        end_instant.date + COALESCE(end_instant.time, TIME '00:00:00') as end_date,
+        document
+    FROM dbo._CalendarTerm
+    JOIN dbo.Instant start_instant ON start_date = start_instant.id
+    JOIN dbo.Instant end_instant ON end_date = end_instant.id
+    WHERE
+        start_instant.date IS NOT NULL
+        AND
+        end_instant.date IS NOT NULL
+    ;
+
+
 CREATE TABLE dbo.Class (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	courseId        INT REFERENCES dbo.Course(id),
-	calendarTerm    VARCHAR(20) REFERENCES dbo.CalendarTerm(id),
+	calendarTerm    VARCHAR(20) REFERENCES dbo._CalendarTerm(id),
 	calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
 	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', calendarTerm)) STORED,
 	UNIQUE(courseId, calendarTerm)
@@ -68,13 +92,24 @@ CREATE TABLE dbo.CalendarComponents (
 	PRIMARY KEY (calendar_id, comp_id)
 );
 
-CREATE TABLE dbo.RecurrenceRule (
+CREATE TABLE dbo._RecurrenceRule (
 	comp_id     	INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
 	freq            VARCHAR(20),
 	byday           VARCHAR(20),
-	until           TIMESTAMP,
+	until           INT REFERENCES dbo.Instant(id),
 	PRIMARY KEY (comp_id, byday)
 );
+
+CREATE VIEW dbo.RecurrenceRule AS
+    SELECT
+        comp_id,
+        freq,
+        byday,
+        date + COALESCE(time, TIME '00:00:00') as until
+    FROM
+        dbo._RecurrenceRule
+    JOIN
+        dbo.Instant ON id = until;
 
 CREATE TABLE IF NOT EXISTS dbo.ICalendarDataType (
     id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -125,17 +160,19 @@ CREATE TABLE IF NOT EXISTS dbo.Due (
 	PRIMARY KEY(comp_id)
 );
 
-CREATE TABLE IF NOT EXISTS dbo.Dtend (
+CREATE TABLE IF NOT EXISTS dbo._Dtend (
     comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     type           INT REFERENCES dbo.ICalendarDataType(id),
-    value          TIMESTAMP,
+    date           INT REFERENCES dbo.Instant(id),
+    time           TIME,
 	PRIMARY KEY(comp_id)
 );
 
-CREATE TABLE IF NOT EXISTS dbo.Dtstart (
+CREATE TABLE IF NOT EXISTS dbo._Dtstart (
     comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     type           INT REFERENCES dbo.ICalendarDataType(id),
-    value          TIMESTAMP,
+    date           INT REFERENCES dbo.Instant(id),
+    time           TIME,
 	PRIMARY KEY(comp_id)
 );
 
@@ -149,6 +186,28 @@ CREATE TABLE IF NOT EXISTS dbo.Location (
     comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     value          VARCHAR(128) NOT NULL
 );
+
+
+------- VIEWS --------
+
+CREATE OR REPLACE VIEW dbo.Dtend AS
+    SELECT
+        comp_id,
+        type,
+        i.date + COALESCE(dt.time, i.time, TIME '00:00:00') as value
+    FROM dbo._Dtend dt
+    JOIN dbo.Instant i ON dt.date = i.id
+    WHERE i.date IS NOT NULL;
+
+CREATE OR REPLACE VIEW dbo.Dtstart AS
+    SELECT
+        comp_id,
+        type,
+        i.date + COALESCE(dt.time, i.time, TIME '00:00:00') as value
+    FROM dbo._Dtstart dt
+    JOIN dbo.Instant i ON dt.date = i.id
+    WHERE i.date IS NOT NULL;
+
 
 CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 	SELECT DISTINCT
@@ -273,21 +332,16 @@ CREATE OR REPLACE VIEW dbo.v_Journal AS
 ---- for creation of calendar components
 ---- these will verify constraints and insert in the appropriate tables
 -- VEVENT
-CREATE OR REPLACE PROCEDURE dbo.newEvent(
+CREATE OR REPLACE FUNCTION dbo.newEvent(
 	cid INT,
 	summary VARCHAR(50)[],
 	summary_language INT[],
 	description VARCHAR(200)[],
 	description_language INT[],
 	category INT[],
-	dtstart TIMESTAMP,
-  dtend TIMESTAMP,
-  dtstart_dtend_type INT,
-  location VARCHAR(128),
-  byday VARCHAR(20),
-  until TIMESTAMP,
-  stamp_time TIMESTAMP DEFAULT now()
-) AS $$
+    location VARCHAR(128),
+    stamp_time TIMESTAMP DEFAULT now()
+) RETURNS INT AS $$
 #print_strict_params ON
 DECLARE
 	component_id INT;
@@ -296,33 +350,106 @@ BEGIN
     ('E', stamp_time, stamp_time)
     RETURNING id INTO component_id;
 
-	INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
+  INSERT INTO dbo.CalendarComponents(calendar_id, comp_id) VALUES (cid, component_id);
 	
   INSERT INTO dbo.Summary (comp_id, value, language)
 	SELECT component_id, UNNEST(summary), UNNEST(summary_language);
 	
-	INSERT INTO dbo.Description (comp_id, value, language)
+  INSERT INTO dbo.Description (comp_id, value, language)
 	SELECT component_id, UNNEST(description), UNNEST(description_language);
-	
-	INSERT INTO dbo.Categories (comp_id, value)
-	SELECT component_id, UNNEST(category);
-	
-	INSERT INTO dbo.Dtstart (comp_id, type, value) VALUES
-    (component_id, dtstart_dtend_type, dtstart);
-	
-  INSERT INTO dbo.Dtend (comp_id, type, value) VALUES
-    (component_id, dtstart_dtend_type, dtend);
 
-    IF location IS NOT NULL THEN
-        INSERT INTO dbo.Location(comp_id, value) VALUES
-        (component_id, location);
-    END IF;
-	
-	IF byday IS NOT NULL THEN
-		INSERT INTO dbo.RecurrenceRule(comp_id, freq, byday, until) VALUES
-        (component_id, 'WEEKLY', byday, until);
-	END IF;
-	
+  INSERT INTO dbo.Categories (comp_id, value)
+	SELECT component_id, UNNEST(category);
+
+  IF location IS NOT NULL THEN
+    INSERT INTO dbo.Location(comp_id, value) VALUES
+      (component_id, location);
+  END IF;
+
+  RETURN component_id;
+END
+$$ LANGUAGE PLpgSQL;
+
+CREATE OR REPLACE PROCEDURE dbo.newEventWithInstants(
+	cid INT,
+	summary VARCHAR(50)[],
+	summary_language INT[],
+	description VARCHAR(200)[],
+	description_language INT[],
+	category INT[],
+	dtstart TIMESTAMP,
+    dtend TIMESTAMP,
+    dtstart_dtend_type INT,
+    location VARCHAR(128),
+    byday VARCHAR(20),
+    until TIMESTAMP,
+    stamp_time TIMESTAMP DEFAULT now()
+) AS $$
+#print_strict_params ON
+DECLARE
+	component_id INT;
+	start_instant INT;
+	end_instant INT;
+	until_instant INT;
+BEGIN
+
+  SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time)
+  INTO component_id;
+
+  INSERT INTO dbo.Instant(date, time) VALUES (dtstart::DATE, dtstart::TIME) RETURNING id INTO start_instant;
+  INSERT INTO dbo.Instant(date, time) VALUES (dtend::DATE, dtend::TIME) RETURNING id INTO end_instant;
+
+  INSERT INTO dbo._Dtstart (comp_id, type, date, time) VALUES
+    (component_id, dtstart_dtend_type, start_instant, null);
+
+  INSERT INTO dbo._Dtend (comp_id, type, date, time) VALUES
+    (component_id, dtstart_dtend_type, end_instant, null);
+
+  IF byday IS NOT NULL THEN
+    INSERT INTO dbo.Instant(date, time) VALUES (until::DATE, until::TIME) RETURNING id INTO until_instant;
+
+    INSERT INTO dbo._RecurrenceRule(comp_id, freq, byday, until) VALUES
+      (component_id, 'WEEKLY', byday, until_instant);
+  END IF;
+
+END
+$$ LANGUAGE PLpgSQL;
+
+CREATE OR REPLACE PROCEDURE dbo.newEventWithDateReferences(
+	cid INT,
+	summary VARCHAR(50)[],
+	summary_language INT[],
+	description VARCHAR(200)[],
+	description_language INT[],
+	category INT[],
+	start_instant INT,
+    start_time TIME,
+    end_time TIME,
+    dtstart_dtend_type INT,
+    location VARCHAR(128),
+    byday VARCHAR(20),
+    until INT,
+    stamp_time TIMESTAMP DEFAULT now()
+) AS $$
+#print_strict_params ON
+DECLARE
+	component_id INT;
+BEGIN
+
+  SELECT dbo.newEvent(cid, summary, summary_language, description, description_language, category, location, stamp_time)
+  INTO component_id;
+
+  INSERT INTO dbo._Dtstart (comp_id, type, date, time) VALUES
+    (component_id, dtstart_dtend_type, start_instant, start_time);
+
+  INSERT INTO dbo._Dtend (comp_id, type, date, time) VALUES
+    (component_id, dtstart_dtend_type, start_instant, end_time);
+
+  IF byday IS NOT NULL THEN
+    INSERT INTO dbo._RecurrenceRule(comp_id, freq, byday, until) VALUES
+      (component_id, 'WEEKLY', byday, until);
+  END IF;
+
 END
 $$ LANGUAGE PLpgSQL;
 
@@ -405,7 +532,6 @@ BEGIN
 END
 $$ LANGUAGE PLpgSQL;
 
-------- VIEWS --------
 CREATE VIEW dbo.courseWithTerm AS
 	SELECT co.*, cl.calendarterm FROM 
 		(SELECT coI.id,coI.acronym,coI.name FROM dbo.Course AS coI 
@@ -491,6 +617,9 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createOrReplaceSchool (
   calendarTerm VARCHAR(50))
 AS $$
 #print_strict_params ON
+DECLARE
+    start_date INT;
+    end_date INT;
 BEGIN
   IF (schoolName IS NULL AND schoolAcr IS NULL) OR (programmeAcr IS NULL AND programmeName IS NULL) THEN
     RAISE 'For the School and Programme parameters, you must provide at least a "name" or an "acronym"';
@@ -518,15 +647,26 @@ BEGIN
     );
 
   -- Insert or update CalendarTerm
-  INSERT INTO
-    dbo.CalendarTerm(id, start_date, end_date)
-  SELECT
-    calendarTerm, NULL, NULL
-  WHERE
-    NOT EXISTS(
-      SELECT id FROM dbo.CalendarTerm c WHERE c.id=calendarTerm
-    ) AND calendarTerm IS NOT NULL;
+  --INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
+  --INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
 
+  --INSERT INTO
+  --  dbo._CalendarTerm(id, start_date, end_date)
+  --SELECT
+  --  calendarTerm, start_date, end_date
+  --WHERE
+  --  NOT EXISTS(
+  --    SELECT id FROM dbo._CalendarTerm c WHERE c.id=calendarTerm
+  --  ) AND calendarTerm IS NOT NULL;
+
+  IF calendarTerm IS NOT NULL AND NOT EXISTS (SELECT id FROM dbo._CalendarTerm c WHERE c.id=calendarTerm) THEN
+    INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO start_date;
+    INSERT INTO dbo.Instant (date, time) VALUES (null, null) RETURNING id INTO end_date;
+    INSERT INTO
+      dbo._CalendarTerm(id, start_date, end_date)
+    VALUES
+      (calendarTerm, start_date, end_date);
+  END IF;
 END
 $$ LANGUAGE plpgsql;
 
@@ -631,6 +771,7 @@ CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEvent(
   dtstart TIMESTAMP,
   dtend TIMESTAMP,
   week_days VARCHAR(20),
+  until TIMESTAMP,
   location VARCHAR(128)
 ) AS $$
 #print_strict_params ON
@@ -659,7 +800,7 @@ BEGIN
 
   raise notice '% cal, % category, % lang', calid, categid, langid;
 	
-  CALL dbo.newEvent(calid,
+  CALL dbo.newEventWithInstants(calid,
       ARRAY[summary],
       ARRAY[langid],
       ARRAY[description],
@@ -670,8 +811,72 @@ BEGIN
       dttype, -- dtstart dtend type
       location,
       week_days, -- by day
-      NULL -- until
+      until -- until
   );
 END
 $$ LANGUAGE PLpgSQL;
 
+CREATE OR REPLACE PROCEDURE dbo.sp_createClassSectionEventAssociatedToCalendarTerm(
+  courseName VARCHAR(100),
+  courseAcr VARCHAR(50),
+  calendarSection VARCHAR(50),
+  calTerm VARCHAR(50),
+  summary VARCHAR(50),
+  description VARCHAR(200),
+  lang VARCHAR(10),
+  categid INTEGER,
+  start_time TIME,
+  end_time TIME,
+  week_days VARCHAR(20),
+  location VARCHAR(128)
+) AS $$
+#print_strict_params ON
+DECLARE
+  calid INT;
+  component_id INT;
+  langid INT;
+  dttype INT;
+  cal_term_start INT;
+  cal_term_end INT;
+BEGIN
+  -- get target calendar ID (the class section's calendar)
+  SELECT
+    CS.calendar INTO calid
+  FROM
+    dbo.Course C JOIN
+    dbo.Class CL ON C.id = CL.courseid JOIN
+    dbo.ClassSection CS ON CS.classid = CL.id
+  WHERE
+    ( C.acronym = courseAcr OR C.name = courseName )
+    AND CL.calendarTerm = calTerm AND CS.id = calendarSection;
+
+  SELECT
+    CT.start_date, CT.end_date INTO cal_term_start, cal_term_end
+  FROM
+    dbo._CalendarTerm CT
+  WHERE
+    CT.id = calTerm;
+
+  SELECT L.id INTO langid FROM dbo.Language L WHERE L.name = lang;
+
+  -- get the DATE TIME icalendar type
+  SELECT id INTO dttype FROM dbo.icalendardatatype WHERE name = 'DATE-TIME';
+
+  raise notice '% cal, % category, % lang', calid, categid, langid;
+
+  CALL dbo.newEventWithDateReferences(calid,
+      ARRAY[summary],
+      ARRAY[langid],
+      ARRAY[description],
+      ARRAY[langid],
+      ARRAY[categid],
+      cal_term_start,
+      start_time,
+      end_time,
+      dttype, -- dtstart dtend type
+      location,
+      week_days, -- by day
+      cal_term_end -- until
+  );
+END
+$$ LANGUAGE PLpgSQL;

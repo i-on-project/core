@@ -5,7 +5,7 @@ internal object InsertClassSectionEventsData {
 
     const val UPSERT_SCHOOL_PROC = "sp_createOrReplaceSchool"
     const val UPSERT_COURSE_PROC = "sp_createOrReplaceCourse"
-    const val CREATE_CLASS_SECTION_EVENT_PROC = "sp_createClassSectionEvent"
+    const val CREATE_CLASS_SECTION_EVENT_PROC = "sp_createClassSectionEventAssociatedToCalendarTerm"
 
     const val SCHOOL_NAME_PARAM = "schoolName"
     const val SCHOOL_ACR_PARAM = "schoolAcr"
@@ -20,8 +20,8 @@ internal object InsertClassSectionEventsData {
     const val CATEGORY_PARAM = "categid"
     const val SUMMARY_PARAM = "summary"
     const val DESCRIPTION_PARAM = "description"
-    const val DTSTART_PARAM = "dtstart"
-    const val DTEND_PARAM = "dtend"
+    const val DTSTART_PARAM = "start_time"
+    const val DTEND_PARAM = "end_time"
     const val WEEK_DAYS_PARAM = "week_days"
     const val LOCATION_PARAM = "location"
 
