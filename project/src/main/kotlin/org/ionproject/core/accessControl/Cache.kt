@@ -40,7 +40,6 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
         if (token == null) {
             logger.info(
                 LogMessages.forAuthError(
-                    LogMessages.tokenHeaderAuth,
                     LogMessages.inexistentToken
                 )
             )

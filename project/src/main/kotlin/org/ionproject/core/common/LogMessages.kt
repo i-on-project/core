@@ -2,13 +2,19 @@ package org.ionproject.core.common
 
 import org.ionproject.core.common.filters.REQUEST_ID
 import org.slf4j.MDC
+import java.util.concurrent.atomic.AtomicLong
 
 object LogMessages {
-    var logMessageId : Long = 0
+    var logMessageId : AtomicLong = AtomicLong(0)
 
-    //Authentication modes
-    const val importUrlAuth = "IMPORT URL"
-    const val tokenHeaderAuth = "AUTHORIZATION HEADER"
+    //Event type
+    const val authenticationQueryParamEvent = "query_param_auth"
+    const val authenticationTokenEvent = "access_token_auth"
+    const val httpStartEvent = "http_in_start"
+    const val httpEndEvent = "http_in_end"
+    const val exceptionEvent = "exception_in_processing"
+    const val successAuthEvent = "success_auth"
+    const val unsuccessAuthEvent = "unsuccessful_auth"
 
     //Authentication Errors & Exceptions
     const val lackPrivileges = "Lack of privileges."
@@ -22,7 +28,7 @@ object LogMessages {
     const val tokenHashError = "Error obtaining hash out of presented token reference."
 
     //This messages are meant for the user, therefore they must have more information than the error messages that we log
-    const val noTokenException = "User not authenticated, no token on Authorization Header"
+    const val noTokenException = "User not authenticated, no token presented in the Authorization Header"
     const val incorrectAuthHeaderFormatException = "Incorrect authorization header format value."
     const val unsupportedIncludeTypeException = "Unsupported include token type, it must be Bearer."
     const val inexistentTokenMessage = "The token you have presented can't be found or doesn't exist, try requesting a new one."
@@ -30,7 +36,6 @@ object LogMessages {
     const val tokenExpiredMessage = "The token you have presented is expired, try requesting a new one."
     const val tokenRevokedMessage = "The token you have presented is revoked, try requesting a new one."
     const val lackOfPrivilegesMessage = "The token you possess doesn't give you permissions for that action."
-    const val unsafeMethodMessage = "This type of access doesn't allow unsafe methods (PUT, POST...)."
 
     //Exception Errors
     const val internalServerError = "Internal Server Error, something on our side happened, try again later. If the problem persists contact the development team."
@@ -39,25 +44,24 @@ object LogMessages {
     const val unknownError = "It seems the error you received isn't yet documented, inform the developers."
 
     //Authentication Messages
-    fun forAuthError(authenticationMode: String, reason: String) =
-        "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] | RESULT:[ACCESS DENIED] | REASON:[$reason]"
+    fun forAuthError(reason: String) =
+        "$unsuccessAuthEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | REASON:[$reason]"
 
-    fun forAuthErrorDetail(authenticationMode: String, tokenHash: String, method: String, requestUrl: String, reason: String) =
-        "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] | TOKEN_HASH:[${tokenHash}] " +
-        "| METHOD:[${method}] | LOCATION:[${requestUrl}] | RESULT:[ACCESS DENIED] " +
+    fun forAuthErrorDetail(tokenHash: String, reason: String) =
+        "$unsuccessAuthEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | TOKEN_HASH:[${tokenHash}] " +
         "| REASON:[$reason]"
 
-    fun forAuthSuccess(authenticationMode: String, tokenHash: String, method: String, url: String) =
-        "[ID:${logMessageId++}] [AUTHENTICATION] | TYPE:[$authenticationMode] | TOKEN:[${tokenHash}] | METHOD:[${method}] | LOCATION:[${url}] | RESULT:[ACCESS GRANTED]"
+    fun forAuthSuccess(tokenHash: String) =
+        "$successAuthEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | TOKEN:[${tokenHash}]"
 
     //Exception Messages
     fun forException(url: String, detail: String) =
-        "[ID:${logMessageId++}] [EXCEPTION] | LOCATION:[$url] | DETAIL:[$detail]"
+        "$exceptionEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | LOCATION:[$url] | DETAIL:[$detail]"
 
     //Logger interceptor message
-    fun forLoggerAccessMessage(ip: String, method: String, url: String, startTime: Long) =
-        "[ID:${logMessageId++}] |  Request-Id:${MDC.get(REQUEST_ID)} |[INFORMATION] | IP:[${ip}] | Method:[${method}] | Endpoint:[${url}] | Timestamp:[${startTime}]"
+    fun forLoggerAccessMessage(ip: String, method: String, url: String) =
+        "$httpStartEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | IP:[${ip}] | Method:[${method}] | Endpoint:[${url}]"
 
     fun forLoggerCompletionMessage(startTime: Long, endTime: Long) =
-        "[ID:${logMessageId++}] |  Request-Id:${MDC.get(REQUEST_ID)} | [INFORMATION] | Total time taken to process request in milliseconds: ${endTime - startTime} ms"
+        "$httpEndEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | Total time taken to process request in milliseconds: ${endTime - startTime} ms"
 }

@@ -17,8 +17,7 @@ class LoggerInterceptor : HandlerInterceptorAdapter() {
             LogMessages.forLoggerAccessMessage(
                 request.remoteAddr,
                 request.method,
-                request.requestURI,
-                startTime
+                request.requestURI
             )
         )
         request.setAttribute("startTime", startTime)
