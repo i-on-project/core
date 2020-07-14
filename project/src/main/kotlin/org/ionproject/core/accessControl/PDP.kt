@@ -5,16 +5,18 @@ import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
-import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.ionproject.core.common.interceptors.Request
 import org.ionproject.core.common.interceptors.ResourceIdentifierDescriptor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class PDP(private val cache: AccessControlCache) {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(PDP::class.java)
+    }
 
     /**
      * Authentication path when authorization header is present and access_token query parameter is not.

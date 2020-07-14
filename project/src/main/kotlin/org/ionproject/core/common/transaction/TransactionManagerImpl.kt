@@ -1,7 +1,7 @@
 package org.ionproject.core.common.transaction
 
 import org.ionproject.core.common.customExceptions.InternalServerErrorException
-import org.ionproject.core.common.interceptors.LoggerInterceptor
+import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.jdbi.v3.core.ConnectionException
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
@@ -9,7 +9,6 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
@@ -18,6 +17,10 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      */
     private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
         // setSqlLogger(SqlLogger()) // uncomment this line to see what request are being sent to the database
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(TransactionManagerImpl::class.java)
     }
 
     /**

@@ -1,7 +1,6 @@
 package org.ionproject.core.error
 
 import org.ionproject.core.common.*
-import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.http.HttpStatus
@@ -14,7 +13,9 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 class MyErrorController : ErrorController {
 
-    private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
+    companion object {
+        private val logger = LoggerFactory.getLogger(MyErrorController::class.java)
+    }
 
     /**
      * Last frontier to catch all error that we miss.

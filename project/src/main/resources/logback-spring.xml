@@ -3,15 +3,6 @@
     <springProfile name="default">
         <include resource="org/springframework/boot/logging/logback/base.xml"/>
         <logger name="org.springframework.web" level="INFO"/>
-        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level- %msg%n</pattern>
-            </encoder>
-        </appender>
-
-        <root level="info">
-            <appender-ref ref="STDOUT" />
-        </root>
     </springProfile>
 
     <springProfile name="gcp">
@@ -27,8 +18,7 @@
                 <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level- %msg%n</pattern>
             </encoder>
             <log>application.log</log> <!-- Optional : default java.log -->
-            <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
-            <enhancer>com.example.logging.logback.enhancers.ExampleEnhancer</enhancer> <!-- Optional -->
+            <resourceType>gce_instance</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
             <flushLevel>WARN</flushLevel> <!-- Optional : default ERROR -->
         </appender>
 

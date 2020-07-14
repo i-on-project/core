@@ -5,11 +5,9 @@ import org.slf4j.MDC
 import java.util.concurrent.atomic.AtomicLong
 
 object LogMessages {
-    var logMessageId : AtomicLong = AtomicLong(0)
+    private var logMessageId : AtomicLong = AtomicLong(0)
 
     //Event type
-    const val authenticationQueryParamEvent = "query_param_auth"
-    const val authenticationTokenEvent = "access_token_auth"
     const val httpStartEvent = "http_in_start"
     const val httpEndEvent = "http_in_end"
     const val exceptionEvent = "exception_in_processing"
@@ -56,12 +54,12 @@ object LogMessages {
 
     //Exception Messages
     fun forException(url: String, detail: String) =
-        "$exceptionEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | LOCATION:[$url] | DETAIL:[$detail]"
+        "$exceptionEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | URI:[$url] | DETAIL:[$detail]"
 
     //Logger interceptor message
-    fun forLoggerAccessMessage(ip: String, method: String, url: String) =
-        "$httpStartEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | IP:[${ip}] | Method:[${method}] | Endpoint:[${url}]"
+    fun forLoggerAccessMessage(ip: String, method: String, url: String, template: String) =
+        "$httpStartEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | IP:[${ip}] | Method:[${method}] | URI:[${url}] | Template:[${template}]"
 
-    fun forLoggerCompletionMessage(startTime: Long, endTime: Long) =
-        "$httpEndEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | Total time taken to process request in milliseconds: ${endTime - startTime} ms"
+    fun forLoggerCompletionMessage(total: Long) =
+        "$httpEndEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | Total time taken to process request in milliseconds: ${total} ms"
 }

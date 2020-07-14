@@ -15,7 +15,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
 data class ResourceIdentifierDescriptor(val resource: String, val version: String)
@@ -28,6 +27,10 @@ class ControlAccessInterceptor(private val pdp: PDP,
                                private val tokenGenerator: TokenGenerator,
                                private val cache: AccessControlCache
 ) : HandlerInterceptorAdapter() {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(ControlAccessInterceptor::class.java)
+    }
 
     private val includeType = "bearer"
     private val authenticationQueryParameter = "access_token"

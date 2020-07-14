@@ -6,7 +6,6 @@ import org.ionproject.core.accessControl.pap.sql.AuthRepoImpl
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
-import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -21,7 +20,7 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
     private val policiesCache = cacheConfig.policiesCache
 
     companion object {
-        private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
+        private val logger = LoggerFactory.getLogger(AccessControlCache::class.java)
     }
 
     /**
