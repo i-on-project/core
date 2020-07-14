@@ -20,7 +20,7 @@ internal object CourseData {
         select
             '${SearchableEntities.COURSE}' as ${SearchData.TYPE},
             $ID::VARCHAR(32) as ${SearchData.ID},
-            $NAME as ${SearchData.NAME},
+            COALESCE($NAME,$ACR) as ${SearchData.NAME},
             '${Uri.courses}/' || $ID as ${SearchData.HREF},
             ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
         from $SCHEMA.$COURSE
