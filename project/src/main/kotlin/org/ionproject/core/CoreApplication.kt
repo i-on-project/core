@@ -3,6 +3,9 @@ package org.ionproject.core
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import org.ionproject.core.accessControl.AccessControlCache
+import org.ionproject.core.accessControl.PDP
+import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.calendar.ICalendarHttpMessageConverter
 import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.CalendarSerializer
@@ -15,11 +18,14 @@ import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.cache.annotation.EnableCaching
+
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
@@ -73,7 +79,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(LoggerInterceptor())
-        registry.addInterceptor(ControlAccessInterceptor())
+        registry.addInterceptor(controlAccessInterceptor())
 
         registry.addInterceptor(PageLimitQueryParamInterceptor())
             .addPathPatterns("/v?/calendar-terms*")
@@ -88,6 +94,20 @@ class CoreSerializationConfig : WebMvcConfigurer {
             filter = RequestIDFilter()
             order = 1
         }
+
+    @Autowired
+    lateinit var pdp : PDP
+
+    @Autowired
+    lateinit var tokenGenerator: TokenGenerator
+
+    @Autowired
+    lateinit var cache: AccessControlCache
+
+    @Bean
+    fun controlAccessInterceptor() : ControlAccessInterceptor {
+        return ControlAccessInterceptor(pdp, tokenGenerator, cache)
+    }
 }
 
 fun main(args: Array<String>) {
