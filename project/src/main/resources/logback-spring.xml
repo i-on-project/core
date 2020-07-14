@@ -24,7 +24,7 @@
                 <level>INFO</level>
             </filter>
             <encoder>
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level- %msg%n</pattern>
             </encoder>
             <log>application.log</log> <!-- Optional : default java.log -->
             <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
