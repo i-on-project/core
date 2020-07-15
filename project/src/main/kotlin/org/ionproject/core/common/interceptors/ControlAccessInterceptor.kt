@@ -1,7 +1,6 @@
 package org.ionproject.core.common.interceptors
 
 import org.ionproject.core.accessControl.AccessControlCache
-import org.ionproject.core.accessControl.CaffeineConfiguration
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.accessControl.pap.entities.DerivedTokenClaims
@@ -11,17 +10,11 @@ import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.CacheManager
-import org.springframework.context.annotation.Bean
-import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
-import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
 data class ResourceIdentifierDescriptor(val resource: String, val version: String)
@@ -34,6 +27,10 @@ class ControlAccessInterceptor(private val pdp: PDP,
                                private val tokenGenerator: TokenGenerator,
                                private val cache: AccessControlCache
 ) : HandlerInterceptorAdapter() {
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(ControlAccessInterceptor::class.java)
+    }
 
     private val includeType = "bearer"
     private val authenticationQueryParameter = "access_token"
@@ -72,7 +69,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
         if (header == null) {
             logger.info(
                 LogMessages.forAuthError(
-                    LogMessages.tokenHeaderAuth,
                     LogMessages.noToken
                 )
             )
@@ -86,7 +82,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
         if (pair.size != 2) {
             logger.info(
                 LogMessages.forAuthError(
-                    LogMessages.tokenHeaderAuth,
                     LogMessages.invalidFormatHeader
                 )
             )
@@ -100,7 +95,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
 
             logger.info(
                 LogMessages.forAuthError(
-                    LogMessages.tokenHeaderAuth,
                     LogMessages.unsupportedIncludeType
                 )
             )
@@ -111,15 +105,12 @@ class ControlAccessInterceptor(private val pdp: PDP,
         val reference = pair[1]
 
         //Check remaining policies
-        val tokenHash = getTokenHash(
-            reference,
-            LogMessages.tokenHeaderAuth
-        )
+        val tokenHash = getTokenHash(reference)
 
         val token = cache.getToken(tokenHash, false)
         val claims = token.claims as TokenClaims
 
-        pdp.evaluateAuthorization(token, requestDescriptor, claims.scope, LogMessages.tokenHeaderAuth)
+        pdp.evaluateAuthorization(token, requestDescriptor, claims.scope)
         request.setAttribute("token", token)
     }
 
@@ -131,15 +122,12 @@ class ControlAccessInterceptor(private val pdp: PDP,
         val reference = request.getParameter(authenticationQueryParameter)
         if (reference != null) {
 
-            val tokenHash = getTokenHash(
-                reference,
-                LogMessages.importUrlAuth
-            )
+            val tokenHash = getTokenHash(reference)
 
             val token = cache.getToken(tokenHash, true)
             val claims = token.claims as DerivedTokenClaims
 
-            pdp.evaluateAuthorization(token, requestDescriptor, claims.scope, LogMessages.importUrlAuth)
+            pdp.evaluateAuthorization(token, requestDescriptor, claims.scope)
             return true
         }
 
@@ -162,8 +150,7 @@ class ControlAccessInterceptor(private val pdp: PDP,
      * Builds the hash out of the reference
      */
     private fun getTokenHash(
-        tokenReference: String,
-        authMode: String
+        tokenReference: String
     ): String {
         try {
             val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
@@ -172,7 +159,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
         } catch (e: Exception) {
             logger.info(
                 LogMessages.forAuthError(
-                    authMode,
                     LogMessages.tokenHashError
                 )
             )

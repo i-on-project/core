@@ -1,7 +1,6 @@
 package org.ionproject.core.common
 
 import org.ionproject.core.common.customExceptions.*
-import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -25,7 +24,9 @@ import javax.servlet.http.HttpServletRequest
  */
 @RestControllerAdvice
 class ExceptionHandler {
-    private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
+    companion object {
+        private val logger = LoggerFactory.getLogger("ExceptionHandler")
+    }
 
     @ExceptionHandler(value = [BadRequestException::class])
     private fun handleBadRequestException(

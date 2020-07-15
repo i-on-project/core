@@ -5,20 +5,18 @@ import org.ionproject.core.accessControl.pap.entities.TokenEntity
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
-import org.ionproject.core.common.interceptors.LoggerInterceptor
 import org.ionproject.core.common.interceptors.Request
 import org.ionproject.core.common.interceptors.ResourceIdentifierDescriptor
 import org.slf4j.LoggerFactory
-import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Component
-import javax.annotation.Resource
 
-private val logger = LoggerFactory.getLogger(LoggerInterceptor::class.java)
 
 @Component
 class PDP(private val cache: AccessControlCache) {
 
-    //private val cache: AccessControlCache = AccessControlCache()
+    companion object {
+        private val logger = LoggerFactory.getLogger(PDP::class.java)
+    }
 
     /**
      * Authentication path when authorization header is present and access_token query parameter is not.
@@ -26,18 +24,14 @@ class PDP(private val cache: AccessControlCache) {
     fun evaluateAuthorization(
         token: TokenEntity,
         requestDescriptor: Request,
-        scope: String,
-        authMode: String
+        scope: String
     ): TokenEntity {
 
         //Check if the token is revoked
         if (!token.isValid) {
             logger.info(
                 LogMessages.forAuthErrorDetail(
-                    authMode,
                     token.hash,
-                    requestDescriptor.method,
-                    requestDescriptor.path,
                     LogMessages.revokedToken
                 )
             )
@@ -49,10 +43,7 @@ class PDP(private val cache: AccessControlCache) {
         if (System.currentTimeMillis() > token.expiresAt) {
             logger.info(
                 LogMessages.forAuthErrorDetail(
-                    authMode,
                     token.hash,
-                    requestDescriptor.method,
-                    requestDescriptor.path,
                     LogMessages.tokenExpired
                 )
             )
@@ -60,15 +51,12 @@ class PDP(private val cache: AccessControlCache) {
         }
 
         //Check permissions
-        if (checkPolicies(token, scope, requestDescriptor, authMode))
+        if (checkPolicies(token, scope, requestDescriptor))
             return token
         else {
             logger.info(
                 LogMessages.forAuthErrorDetail(
-                    LogMessages.tokenHeaderAuth,
                     token.hash,
-                    requestDescriptor.method,
-                    requestDescriptor.path,
                     LogMessages.lackPrivileges
                 )
             )
@@ -83,8 +71,7 @@ class PDP(private val cache: AccessControlCache) {
     private fun checkPolicies(
         token: TokenEntity,
         scope: String,
-        requestDescriptor: Request,
-        authMode: String
+        requestDescriptor: Request
     ): Boolean {
 
         val policies = cache.getPolicies(scope, requestDescriptor.resourceIdentifier.version)
@@ -99,10 +86,7 @@ class PDP(private val cache: AccessControlCache) {
 
                 logger.info(
                     LogMessages.forAuthSuccess(
-                        authMode,
-                        token.hash,
-                        requestDescriptor.method,
-                        requestDescriptor.path
+                        token.hash
                     )
                 )
 
