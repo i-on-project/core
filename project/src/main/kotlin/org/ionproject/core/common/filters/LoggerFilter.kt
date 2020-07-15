@@ -21,23 +21,24 @@ class LoggerFilter : OncePerRequestFilter() {
         var startTime = 0L
         try {
             startTime = System.currentTimeMillis()
-            val matchingPattern = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE)?.toString() ?: ""
+
 
             logger.info(
                 LogMessages.forLoggerAccessMessage(
                     request.remoteAddr,
                     request.method,
-                    request.requestURI,
-                    matchingPattern
+                    request.requestURI
                 )
             )
-
             filterChain.doFilter(request, response)
         } finally {
+            val matchingPattern = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE)?.toString() ?: ""
+
             val endTime = System.currentTimeMillis()
             logger.info(
                 LogMessages.forLoggerCompletionMessage(
-                    endTime - startTime
+                    endTime - startTime,
+                    matchingPattern
                 )
             )
         }

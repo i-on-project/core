@@ -26,7 +26,7 @@ dependencies    {
     implementation("org.json:json:20171018")
     implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
-    implementation("com.google.cloud:google-cloud-logging-logback:0.94.0-alpha")
+    implementation("com.google.cloud:google-cloud-logging-logback:0.118.0-alpha")
 
     // test dependencies
     testImplementation("org.mnode.ical4j:ical4j:3.0.+")

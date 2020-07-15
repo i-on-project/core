@@ -57,9 +57,9 @@ object LogMessages {
         "$exceptionEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | URI:[$url] | DETAIL:[$detail]"
 
     //Logger interceptor message
-    fun forLoggerAccessMessage(ip: String, method: String, url: String, template: String) =
-        "$httpStartEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | IP:[${ip}] | Method:[${method}] | URI:[${url}] | Template:[${template}]"
+    fun forLoggerAccessMessage(ip: String, method: String, url: String) =
+        "$httpStartEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | IP:[${ip}] | Method:[${method}] | URI:[${url}]"
 
-    fun forLoggerCompletionMessage(total: Long) =
-        "$httpEndEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | Total time taken to process request in milliseconds: ${total} ms"
+    fun forLoggerCompletionMessage(total: Long, template: String) =
+        "$httpEndEvent [rid:${MDC.get(REQUEST_ID)} | uid:${logMessageId.getAndIncrement()}] | Processing time for [$template] was [$total] ms"
 }
