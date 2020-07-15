@@ -1,11 +1,13 @@
-FROM openjdk:11 AS builder
+FROM alpine AS my-jdk-image
+RUN apk add --no-cache openjdk11-jdk
 
+FROM my-jdk-image AS builder
 WORKDIR /proj
 COPY . .
 RUN ./gradlew assemble
 RUN mv "$(find ./build/libs/*.jar | head -n 1)" ./build/libs/server.jar
 
-FROM openjdk:11
+FROM my-jdk-image
 
 RUN addgroup -S spring && adduser -S spring -G spring
 EXPOSE 8080/tcp
