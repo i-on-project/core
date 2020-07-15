@@ -14,4 +14,4 @@ WORKDIR /home/spring/server
 COPY --from=builder /proj/build/libs/server.jar ./
 USER spring
 
-ENTRYPOINT ["java", "-server", "-jar", "server.jar", "--spring.profiles.active=default"]
+ENTRYPOINT ["java", "-server", "-jar", "server.jar", "--spring.profiles.active=gcp"]
