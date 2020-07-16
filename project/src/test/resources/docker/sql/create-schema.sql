@@ -232,16 +232,16 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
     JOIN 
 		dbo.Categories AS Cat ON Comp.id = Cat.comp_id
 	WHERE
-		NOT (  -- if is event and not a valid event don't include in the result
-			Comp.type = 'E'
-			AND
-			(
-			    Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
+        NOT (  -- if is event and not a valid event don't include in the result
+            Comp.type = 'E'
+            AND
+            (
+                Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
                 OR
                 Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd))
-		    )
-	ORDER BY
-		uid;
+            )
+    ORDER BY
+        uid;
 
 -- Mashup of all component types
 CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS 
