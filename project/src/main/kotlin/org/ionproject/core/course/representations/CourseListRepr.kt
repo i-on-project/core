@@ -50,12 +50,15 @@ fun List<Course>.courseToListRepr(page: Int, limit: Int) = SirenBuilder()
     }
     .toSiren()
 
-private fun Course.buildSubentities(): EmbeddedRepresentation =
-    SirenBuilder(SmallCourseRepr(id, acronym))
+private fun Course.buildSubentities(): EmbeddedRepresentation {
+    val builder = SirenBuilder(SmallCourseRepr(id, acronym))
         .klass("class")
         .rel("item")
         .link("self", href = Uri.forCourseById(id))
-        .link("current", href = Uri.forKlassByCalTerm(id, term!!))
-        .link("collection", href = Uri.forCourses())
+
+    term?.let { builder.link("current", href = Uri.forKlassByCalTerm(id, it)) }
+
+    return builder.link("collection", href = Uri.forCourses())
         .toEmbed()
+}
 

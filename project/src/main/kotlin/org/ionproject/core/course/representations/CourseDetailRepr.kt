@@ -1,9 +1,6 @@
 package org.ionproject.core.course.representations
 
-import org.ionproject.core.common.Action
-import org.ionproject.core.common.SirenBuilder
-import org.ionproject.core.common.Uri
-import org.ionproject.core.common.toTemplate
+import org.ionproject.core.common.*
 import org.ionproject.core.course.model.Course
 import org.springframework.http.HttpMethod
 
@@ -12,8 +9,8 @@ import org.springframework.http.HttpMethod
  */
 private data class CourseReducedOutputModel(val id: Int, val acronym: String, val name: String? = null)
 
-fun Course.courseToDetailRepr() =
-    SirenBuilder(CourseReducedOutputModel(id, acronym, name))
+fun Course.courseToDetailRepr(): Siren {
+    val builder = SirenBuilder(CourseReducedOutputModel(id, acronym, name))
         .klass("course")
         .entities(buildSubentities(id))
         .action(
@@ -37,9 +34,13 @@ fun Course.courseToDetailRepr() =
             )
         )
         .link("self", href = Uri.forCourseById(id))
-        .link("current", href = Uri.forKlassByCalTerm(id, term!!))
+
+    term?.let { builder.link("current", href = Uri.forKlassByCalTerm(id, it)) }
+
+    return builder
         .link("collection", href = Uri.forCourses())
         .toSiren()
+}
 
 
 private fun buildSubentities(courseId: Int) =
