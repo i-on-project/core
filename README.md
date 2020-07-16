@@ -17,7 +17,7 @@ Docker Compose
 ==============
 
 You may execute repetitive procedures running one command using only `Docker` + [Docker compose](https://docs.docker.com/compose/) (Docker does not ship with `docker-compose`, so you'll have to install it separately).
-The `compose` configuration files are used to automate these procedures such as setting up a database and building (/running) the server, running the integration tests, deploying, and so on without the need to manually build or install any dependencies (e.g. OpenJDK).
+The `compose` configuration files are used to automate procedures such as setting up a database and building (/running) the server, running the integration tests, deploying, and so on without the need to manually build or install any dependencies (e.g. OpenJDK).
 
 ```sh
 $ # Run the integration tests and exit
@@ -37,8 +37,6 @@ $ docker-compose -f .docker/compose_run.yaml down
 ```
 The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
 
-If you don't want to install docker-compose, you can run `` instead.
-
 The following tokens will be inserted to the database container, for ease of use:
 - Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`
 - Write: `hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok`
@@ -56,6 +54,7 @@ The following is an example of operation:
 $ cd core/project
 $
 $ # Start DB container (loaded with testing data)
+$ # Use the SET command if in a Microsoft Windows shell
 $ export JDBC_DATABASE_URL="jdbc:postgresql://localhost:10020/ion?user=unpriv&password=changeit"
 $ ./gradlew pgSetupDb
 $
@@ -65,8 +64,6 @@ $
 $ # Stop the DB running in the background
 $ ./gradlew pgStop
 ```
-
-In Microsoft Window's shell the procedure should be similar with the exception of `export` being `SET` and paths `/` being `\`.
 
 You may also connect to the database running in the container with `docker exec -it pq-container psql -h localhost -d ion -U unpriv` (you may also use `psql` locally).
 The parameters of the command may vary depending on the contents of the `JDBC_DATABASE_URL` variable you have defined earlier.
@@ -98,9 +95,6 @@ All requests will be locked under an access control mechanism.
 The following task creates the Issue token, used for creation of the client's read and write tokens.
 
 ```sh
-$ # Clean cached DB config objects
-$ ./gradlew clean -p buildSrc
-$
 $ export JDBC_DATABASE_URL="jdbc:postgresql://10.0.2.15:10020/myrealdb?user=unpriv&password=realdbsafepw"
 $
 $ # Get issue token
@@ -108,7 +102,6 @@ $ ./gradlew pgInsertIssueToken
 $
 $ # This task will insert a short lived read token, for convenience at test time
 $ ./gradlew pgInsertReadToken
-$
 ```
 
 These tasks will output the string value of the token, which you may include in further requests.
