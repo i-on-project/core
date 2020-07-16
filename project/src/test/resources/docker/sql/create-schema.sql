@@ -235,10 +235,11 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 		NOT (  -- if is event and not a valid event don't include in the result
 			Comp.type = 'E'
 			AND
-			Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
-			AND
-			Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd)
-		)
+			(
+			    Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
+                OR
+                Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd))
+		    )
 	ORDER BY
 		uid;
 
