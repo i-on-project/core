@@ -19,8 +19,8 @@ internal class CourseControllerTest : ControllerTester() {
             Course(c.id, c.acronym, c.name, "1920i")
 
         fun getCourseCollection() = listOf(
-            Course(1, "SL", "Software Laboratory"),
-            Course(2, "WAD", "Web Applications Development")
+            Course(1, "SL", "Software Laboratory", "test_value"),
+            Course(2, "WAD", "Web Applications Development", "test_value")
         )
     }
 

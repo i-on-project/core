@@ -533,14 +533,15 @@ END
 $$ LANGUAGE PLpgSQL;
 
 CREATE VIEW dbo.courseWithTerm AS
-	SELECT co.*, cl.calendarterm FROM 
-		(SELECT coI.id,coI.acronym,coI.name FROM dbo.Course AS coI 
-			INNER JOIN dbo.Class AS clI ON coI.id=clI.courseId GROUP BY coI.id) AS co
-		INNER JOIN
-		(SELECT DISTINCT ON (clI.courseId) clI.courseId,clI.calendarterm, ctI.start_date FROM dbo.class AS clI
-                        INNER JOIN dbo.CalendarTerm AS ctI ON clI.calendarterm=ctI.id 
-				ORDER BY clI.courseId,ctI.start_date DESC) AS cl
-		ON co.id=cl.courseId;
+	SELECT co.*, cl.calendarterm
+	FROM dbo.Course co
+	LEFT JOIN
+        (
+            SELECT DISTINCT ON (courseId) calendarTerm, courseId
+            FROM dbo.Class
+            INNER JOIN dbo.CalendarTerm ON Class.calendarTerm = CalendarTerm.id
+            ORDER BY courseId, start_date DESC
+        ) cl ON co.id=cl.courseId;
 
 CREATE OR REPLACE FUNCTION dbo.f_classCalendarCreate (calterm VARCHAR(200), courseid INT)
 RETURNS INT

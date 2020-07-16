@@ -7,7 +7,7 @@ class Course(
     val id: Int,
     val acronym: String,
     val name: String? = "",
-    val term: String? = ""
+    val term: String?
 ) {
     //Term field is not part of the entity but is needed to represent the most recent term that is offered
 
