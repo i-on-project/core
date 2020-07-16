@@ -231,7 +231,7 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 		dbo.Description AS Descr ON Comp.id = Descr.comp_id
     JOIN 
 		dbo.Categories AS Cat ON Comp.id = Cat.comp_id
-	WHERE
+    WHERE
         NOT (  -- if is event and not a valid event don't include in the result
             Comp.type = 'E'
             AND
