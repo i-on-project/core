@@ -231,8 +231,17 @@ CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 		dbo.Description AS Descr ON Comp.id = Descr.comp_id
     JOIN 
 		dbo.Categories AS Cat ON Comp.id = Cat.comp_id
-	ORDER BY 
-		uid;
+    WHERE
+        NOT (  -- if is event and not a valid event don't include in the result
+            Comp.type = 'E'
+            AND
+            (
+                Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
+                OR
+                Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd))
+            )
+    ORDER BY
+        uid;
 
 -- Mashup of all component types
 CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS 
@@ -274,13 +283,13 @@ CREATE OR REPLACE VIEW dbo.v_Todo AS
 		Att.value AS attachments,
 		D.value AS due,
         D.type AS due_value_data_type
-    FROM 
+    FROM
 		dbo.v_ComponentsCommon AS Comp
     LEFT JOIN 
 		dbo.Attachment AS Att ON Comp.uid = Att.comp_id
 	JOIN
 		dbo.Due AS D ON Comp.uid=D.comp_id
-    WHERE 
+    WHERE
 		Comp.type = 'T'
 	ORDER BY 
 		uid;
