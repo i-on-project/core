@@ -4,7 +4,6 @@ import org.ionproject.core.common.*
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpMethod
 
 internal class ClassSectionControllerTest : ControllerTester() {
 

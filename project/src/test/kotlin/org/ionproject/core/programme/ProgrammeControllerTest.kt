@@ -6,7 +6,6 @@ import org.ionproject.core.programme.model.ProgrammeOffer
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpMethod
 
 internal class ProgrammeControllerTest : ControllerTester() {
 

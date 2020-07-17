@@ -121,7 +121,7 @@ internal class KlassControllerTest : ControllerTester() {
             .link("about", href = Uri.forCourseById(cid))
             .toSiren()
 
-        isValidSiren(selfHrefPage)
+        isValidSiren(selfHrefPage, true)
             .andDo { print() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()

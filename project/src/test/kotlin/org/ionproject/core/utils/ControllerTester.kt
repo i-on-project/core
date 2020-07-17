@@ -19,15 +19,22 @@ internal class ControllerTester {
     @Autowired
     lateinit var mocker: MockMvc
 
-    fun isValidSiren(uri: URI) = mocker.get(uri) {
+    /**
+     * Actions is not a mandatory component of the Siren representation
+     * but it is necessary for some responses to test if they have actions
+     */
+    fun isValidSiren(uri: URI, actions: Boolean = false) = mocker.get(uri) {
         accept = Media.MEDIA_SIREN
         header("Authorization", readTokenTest)
     }.andExpect {
         status { isOk }
         content { contentType("application/vnd.siren+json") }
         jsonPath("$.links") { exists() }
-        //jsonPath("$.actions") { exists() }
+
+        if(actions)
+            jsonPath("$.actions") { exists() }
     }
+
 
     fun doGet(uri: URI, dsl: MockHttpServletRequestDsl.() -> Unit = {}) = mocker.get(uri, dsl)
 

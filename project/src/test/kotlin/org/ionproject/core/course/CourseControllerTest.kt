@@ -114,7 +114,7 @@ internal class CourseControllerTest : ControllerTester() {
             .link("next", href = Uri.forPagingCourses(page + 1, limit))
             .toSiren()
 
-        isValidSiren(selfHrefPaged)
+        isValidSiren(selfHrefPaged, true)
             .andDo { print() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
