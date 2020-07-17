@@ -103,6 +103,20 @@ internal class KlassControllerTest : ControllerTester() {
                     .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
                     .toEmbed()
             })
+            .action(
+                Action(
+                    name = "search",
+                    title = "Search items",
+                    method = HttpMethod.GET,
+                    href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                    isTemplated = true,
+                    type = Media.SIREN_TYPE,
+                    fields = listOf(
+                        Field(name = "limit", type = "number", klass = "param/limit"),
+                        Field(name = "page", type = "number", klass = "param/page")
+                    )
+                )
+            )
             .link("self", href = selfHrefPage)
             .link("about", href = Uri.forCourseById(cid))
             .toSiren()
@@ -123,6 +137,7 @@ internal class KlassControllerTest : ControllerTester() {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
+            jsonPath("$.actions") { exists() }
             jsonPath("$.entities.length()") { value(limit) }
         }
 
@@ -134,6 +149,7 @@ internal class KlassControllerTest : ControllerTester() {
             status { isOk }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
+            jsonPath("$.actions") { exists() }
             jsonPath("$.entities.length()") { value(limit) }
         }
     }

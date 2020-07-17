@@ -44,6 +44,20 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
     return SirenBuilder(KlassCollectionOutputModel(cid))
         .klass(*klassClasses, "collection")
         .entities(map { klass -> klass.toSiren() })
+        .action(
+            Action(
+                name = "search",
+                title = "Search items",
+                method = HttpMethod.GET,
+                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
+                isTemplated = true,
+                type = Media.SIREN_TYPE,
+                fields = listOf(
+                    Field(name = "limit", type = "number", klass = "param/limit"),
+                    Field(name = "page", type = "number", klass = "param/page")
+                )
+            )
+        )
         .link("self", href = Uri.forPagingKlass(cid, page, limit))
         .link("about", href = Uri.forCourseById(cid))
         .toSiren()
