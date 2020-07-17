@@ -10,7 +10,7 @@ import org.springframework.http.HttpMethod
  */
 data class ShortProgrammeReprWithoutOffer(val id: Int, val name: String? = null, val acronym: String, val termSize: Int)
 
-data class ShortOfferRepr(val id: Int, val courseId: Int, val termNumber: Int)
+data class ShortOfferRepr(val id: Int, val courseId: Int, val termNumber: List<Int>)
 
 /**
  * Builds the Siren representations

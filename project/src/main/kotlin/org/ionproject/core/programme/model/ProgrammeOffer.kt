@@ -5,6 +5,6 @@ class ProgrammeOffer(
     val courseAcr: String,
     val programmeId: Int,
     val courseId: Int,
-    val termNumber: Int,
+    val termNumber: List<Int>,
     val optional: Boolean
 )

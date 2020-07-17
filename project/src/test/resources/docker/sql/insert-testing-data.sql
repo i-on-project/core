@@ -66,6 +66,7 @@ INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional) VALUES
 (2, 3, FALSE);
 
 INSERT INTO dbo.ProgrammeOfferTerm(offerId, termNumber) VALUES
+(1, 4),
 (1, 6),
 (2, 6),
 (3, 1),
