@@ -12,16 +12,6 @@ fun ClassSection.toSiren(): Siren {
         .entities(buildSubEntities(courseId, calendarTerm, id))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
-        .action(
-            Action(
-                name = "delete",
-                href = selfHref.toTemplate(),
-                method = HttpMethod.DELETE,
-                type = Media.ALL,
-                isTemplated = false,
-                fields = listOf()
-            )
-        )
         .toSiren()
 }
 

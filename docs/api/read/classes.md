@@ -86,24 +86,6 @@ Since the number of class sections is thought to be very reduced, all of them wi
       ]
     }
   ],
-  "actions": [
-    {
-      "name": "delete",
-      "method": "DELETE",
-      "isTemplated": false,
-      "href": "/v0/courses/1/classes/1920v",
-      "fields": [ ]
-    },
-    {
-      "name": "edit",
-      "title": "Edit class",
-      "method": "PATCH",
-      "isTemplated": false,
-      "type": "*/*",
-      "href": "/v0/courses/1/classes/1920v",
-      "fields": [ ]
-    } 
-  ],
   "links": [
     { "rel" : [ "self" ], "href": "/v0/courses/1/classes/1920v" },
     { "rel" : [ "collection" ], "href": "/v0/courses/1/classes/" }

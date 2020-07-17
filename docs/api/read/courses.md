@@ -54,25 +54,6 @@ A course representation:
       ]
     }
   ],
-  "actions": [
-    {
-      "name": "delete",
-      "title": "Delete course",
-      "method": "DELETE",
-      "isTemplated": false,
-      "href": "/v0/courses/1",
-      "fields": [ ]
-    },
-    {
-      "name": "edit",
-      "title": "Edit course",
-      "method": "PATCH",
-      "isTemplated": false,
-      "type": "application/json",
-      "href": "/v0/courses/1",
-      "fields": [ ]
-    }
-  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1" },
     { "rel": [ "current" ], "href": "/v0/courses/1/classes/1920v" },
@@ -167,15 +148,6 @@ The following fields are parameters of the action `search`:
     }
   ],
   "actions": [
-    {
-      "name": "add-item",
-      "title": "Add a new Course",
-      "method": "POST",
-      "href": "/v0/courses",
-      "isTemplated": false,
-      "type": "application/json",
-      "fields": [ ]
-    },
     {
       "name": "search",
       "title": "Search items",

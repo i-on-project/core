@@ -18,16 +18,6 @@ fun List<Course>.courseToListRepr(page: Int, limit: Int) = SirenBuilder()
     .entities(this.map { course -> course.buildSubentities() })
     .action(
         Action(
-            name = "add-item",
-            title = "Add a new Course",
-            method = HttpMethod.POST,
-            href = Uri.forCourses().toTemplate(),
-            isTemplated = false,
-            type = Media.APPLICATION_JSON
-        )
-    )
-    .action(
-        Action(
             name = "search",
             title = "Search Items",
             method = HttpMethod.GET,

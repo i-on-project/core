@@ -53,26 +53,6 @@ internal class CourseControllerTest : ControllerTester() {
                     .link("about", href = Uri.forCourseById(course.id))
                     .toEmbed()
             )
-            .action(
-                Action(
-                    name = "delete",
-                    title = "delete course",
-                    method = HttpMethod.DELETE,
-                    href = Uri.forCourseById(course.id).toTemplate(),
-                    isTemplated = false,
-                    fields = listOf()
-                )
-            )
-            .action(
-                Action(
-                    name = "edit",
-                    title = "edit course",
-                    method = HttpMethod.PATCH,
-                    href = Uri.forCourseById(course.id).toTemplate(),
-                    isTemplated = false,
-                    fields = listOf()
-                )
-            )
             .link("self", href = Uri.forCourseById(course.id))
             .link(
                 "current", href = Uri.forKlassByCalTerm(
@@ -116,16 +96,6 @@ internal class CourseControllerTest : ControllerTester() {
                     .link("collection", href = selfHref)
                     .toEmbed()
             })
-            .action(
-                Action(
-                    name = "add-item",
-                    title = "Add a new Course",
-                    method = HttpMethod.POST,
-                    href = selfHref.toTemplate(),
-                    isTemplated = false,
-                    type = Media.APPLICATION_JSON
-                )
-            )
             .action(
                 Action(
                     name = "search",

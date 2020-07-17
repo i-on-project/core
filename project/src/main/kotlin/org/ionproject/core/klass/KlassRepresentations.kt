@@ -46,31 +46,6 @@ fun List<Klass>.toSiren(cid: Int, page: Int, limit: Int): Siren {
         .entities(map { klass -> klass.toSiren() })
         .link("self", href = Uri.forPagingKlass(cid, page, limit))
         .link("about", href = Uri.forCourseById(cid))
-        .action(
-            Action(
-                name = "add-item",
-                title = "Add Item",
-                method = HttpMethod.POST,
-                href = selfHref.toTemplate(),
-                isTemplated = false,
-                type = Media.APPLICATION_JSON,
-                fields = listOf()
-            )
-        )
-        .action(
-            Action(
-                name = "search",
-                title = "Search items",
-                method = HttpMethod.GET,
-                href = UriTemplate("${selfHref}${Uri.rfcPagingQuery}"),
-                isTemplated = true,
-                type = Media.SIREN_TYPE,
-                fields = listOf(
-                    Field(name = "limit", type = "number", klass = "param/limit"),
-                    Field(name = "page", type = "number", klass = "param/page")
-                )
-            )
-        )
         .toSiren()
 }
 
@@ -107,23 +82,5 @@ fun FullKlass.toSiren(): Siren {
         .entities(buildSubEntities(sections))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlasses(courseId))
-        .action(
-            Action(
-                name = "delete",
-                href = selfHref.toTemplate(),
-                method = HttpMethod.DELETE,
-                type = Media.ALL,
-                isTemplated = false
-            )
-        )
-        .action(
-            Action(
-                name = "edit",
-                href = selfHref.toTemplate(),
-                method = HttpMethod.PATCH,
-                type = Media.ALL,
-                isTemplated = false
-            )
-        )
         .toSiren()
 }

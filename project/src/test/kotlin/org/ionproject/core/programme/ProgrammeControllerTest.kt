@@ -45,37 +45,6 @@ internal class ProgrammeControllerTest : ControllerTester() {
                     .link("self", href = Uri.forProgrammeOfferById(it.programmeId, it.id))
                     .toEmbed()
             })
-            .action(
-                Action(
-                    name = "edit-programme",
-                    title = "Edit Programme",
-                    method = HttpMethod.PUT,
-                    href = Uri.forProgrammesById(p.id).toTemplate(),
-                    type = Media.APPLICATION_JSON,
-                    fields = listOf(
-                        Field(
-                            name = "ProgrammeName",
-                            type = "text"
-                        ),   //name may be null, but the action allows to modify
-                        Field(name = "Acronym", type = "text"),
-                        Field(name = "TermSize", type = "number")
-                    )
-                )
-            )
-            .action(
-                Action(
-                    name = "add-offer",
-                    title = "Add Offer",
-                    method = HttpMethod.POST,
-                    href = Uri.forProgrammesByIdOffer(p.id).toTemplate(),
-                    type = Media.APPLICATION_JSON,
-                    fields = listOf(
-                        Field(name = "CourseId", type = "number"),
-                        Field(name = "CurricularTerm", type = "number"),
-                        Field(name = "Optional", type = "boolean")
-                    )
-                )
-            )
             .link("self", href = Uri.forProgrammesById(p.id))
             .link("up", href = Uri.forProgrammes())
             .toSiren()
@@ -102,19 +71,6 @@ internal class ProgrammeControllerTest : ControllerTester() {
                     .link("self", href = Uri.forProgrammesById(programme.id))
                     .toEmbed()
             })
-            .action(
-                Action(
-                    name = "add-programme",
-                    title = "Add Programme",
-                    method = HttpMethod.POST,
-                    href = Uri.forProgrammes().toTemplate(),
-                    type = Media.APPLICATION_JSON,
-                    fields = listOf(
-                        Field(name = "ProgrammeAcr", type = "text"),
-                        Field(name = "TermSize", type = "number")
-                    )
-                )
-            )
             .link("self", href = Uri.forProgrammes())
             .toSiren()
 
@@ -140,20 +96,6 @@ internal class ProgrammeControllerTest : ControllerTester() {
                     .rel(Uri.relCourse)
                     .link("self", href = Uri.forCourseById(o.courseId))
                     .toEmbed()
-            )
-            .action(
-                Action(
-                    name = "edit",
-                    title = "edit offer",
-                    method = HttpMethod.PUT,
-                    type = Media.APPLICATION_JSON,
-                    href = selfHref.toTemplate(),
-                    fields = listOf(
-                        Field(name = "Acronym", type = "text"),
-                        Field(name = "TermNumber", type = "number"),
-                        Field(name = "Optional", type = "boolean")
-                    )
-                )
             )
             .link("self", href = selfHref)
             .link("related", href = Uri.forProgrammesById(o.programmeId))
