@@ -57,13 +57,21 @@ INSERT INTO dbo.Token(hash,isValid,issuedAt,expiresAt,derivedToken,fatherHash,cl
 ('d09e6277cb226dc7ed1bab94028461b2b1e3b693618a77ae76e049538be846ce','t',1593338132242,9999999999999,FALSE,'','{"scope":"urn:org:ionproject:scopes:api:revoke"}');
 
 
-INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional, termNumber) VALUES 
-(1, 2, TRUE,  6),
-(1, 1, FALSE, 6),
-(1, 3, FALSE, 1),
-(1, 4, FALSE, 6),
-(1, 5, TRUE, 6),
-(2, 3, FALSE, 1);
+INSERT INTO dbo.ProgrammeOffer(programmeId, courseId, optional) VALUES
+(1, 2, TRUE),
+(1, 1, FALSE),
+(1, 3, FALSE),
+(1, 4, FALSE),
+(1, 5, TRUE),
+(2, 3, FALSE);
+
+INSERT INTO dbo.ProgrammeOfferTerm(offerId, termNumber) VALUES
+(1, 6),
+(2, 6),
+(3, 1),
+(4, 6),
+(5, 6),
+(6, 1);
 
 SELECT dbo.f_classCalendarCreate('1718v', 1);
 SELECT dbo.f_classCalendarCreate('1718v', 2);
