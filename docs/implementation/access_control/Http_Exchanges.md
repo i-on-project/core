@@ -146,6 +146,13 @@ For that goal the token revoke endpoint is used.
 
 All there is to do is make a simple PUT request to the endpoint with the token.
 
+It's also possible to specify a special revokation operation if you are presenting a special "revoke token".
+That operation is specified by adding the field "operation" to the body and as a value specify 1,2 or 3.
+
+1: Revoke child (child here being the derived token of the read access token presented in the body)
+2: Revoke presented
+3: Revoke both child & presented
+
 ## Revoke Endpoint Request
 POST /revokeToken
 Authorization: Bearer xcL...
@@ -153,6 +160,11 @@ Content-Type: application/x-www-form-urlencoded
 
 Body:
 token=xcL...
+
+or
+
+Body:
+token=xcL...&operation=3
 
 The body of the request repeats the information in this phase as preparation for the next stage of the access manager where there is client authentication.
 

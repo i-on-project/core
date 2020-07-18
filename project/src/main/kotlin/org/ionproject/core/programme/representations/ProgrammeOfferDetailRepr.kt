@@ -16,20 +16,6 @@ fun ProgrammeOffer.offerToDetailRepr() =
     SirenBuilder(ShortOfferForOfferRepr(id, courseAcr, termNumber, optional))
         .klass("offer")
         .entities(buildSubentities(courseId))
-        .action(
-            Action(
-                name = "edit",
-                title = "edit offer",
-                method = HttpMethod.PUT,
-                type = Media.APPLICATION_JSON,
-                href = Uri.forProgrammeOfferById(programmeId, id).toTemplate(),
-                fields = listOf(
-                    Field(name = "Acronym", type = "text"),
-                    Field(name = "TermNumber", type = "number"),
-                    Field(name = "Optional", type = "boolean")
-                )
-            )
-        )
         .link("self", href = Uri.forProgrammeOfferById(programmeId, id))
         .link("related", href = Uri.forProgrammesById(id))
         .toSiren()

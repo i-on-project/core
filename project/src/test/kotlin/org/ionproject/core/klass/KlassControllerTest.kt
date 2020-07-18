@@ -75,24 +75,6 @@ internal class KlassControllerTest : ControllerTester() {
             .entities(entities)
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlasses(klass.courseId))
-            .action(
-                Action(
-                    name = "delete",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.DELETE,
-                    type = Media.ALL,
-                    isTemplated = false
-                )
-            )
-            .action(
-                Action(
-                    name = "edit",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.PATCH,
-                    type = Media.ALL,
-                    isTemplated = false
-                )
-            )
             .toSiren()
 
         isValidSiren(selfHref)
@@ -121,19 +103,6 @@ internal class KlassControllerTest : ControllerTester() {
                     .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
                     .toEmbed()
             })
-            .link("self", href = selfHrefPage)
-            .link("about", href = Uri.forCourseById(cid))
-            .action(
-                Action(
-                    name = "add-item",
-                    title = "Add Item",
-                    method = HttpMethod.POST,
-                    href = selfHref.toTemplate(),
-                    isTemplated = false,
-                    type = Media.APPLICATION_JSON,
-                    fields = listOf()
-                )
-            )
             .action(
                 Action(
                     name = "search",
@@ -148,9 +117,11 @@ internal class KlassControllerTest : ControllerTester() {
                     )
                 )
             )
+            .link("self", href = selfHrefPage)
+            .link("about", href = Uri.forCourseById(cid))
             .toSiren()
 
-        isValidSiren(selfHrefPage)
+        isValidSiren(selfHrefPage, true)
             .andDo { print() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()

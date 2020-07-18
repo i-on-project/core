@@ -62,7 +62,7 @@ internal class CalendarTermControllerTest : ControllerTester() {
                 .link("collection", href = Uri.forCalTerms())
                 .toSiren()
 
-        isValidSiren(selfHref)
+        isValidSiren(selfHref, true)
                 .andDo{ print() }
                 .andExpect { expected.matchMvc(this) }
                 .andReturn()

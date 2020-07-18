@@ -106,7 +106,7 @@ In case the user is trying to obtain an invalid calendar (Bad Request or Not Fou
 When an URL import link is requested, if the resource is valid the server will answer with something like:
 
 {
-  "link": "https://host1.dev.ionproject.org/v0/courses/5/classes/1920v/calendar?type=todo&access_token=mF6_7Ab..."
+  "url": "https://host1.dev.ionproject.org/v0/courses/5/classes/1920v/calendar?type=todo&access_token=mF6_7Ab..."
 }
 
 The above URL contains the necessary authentication in the access_token query parameters, when requested will return the expected resource to be found at that location.

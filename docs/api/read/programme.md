@@ -85,32 +85,6 @@ A programme is composed by a set of _offers_.
             ]
         }
     ],
-    "actions": [
-        {
-            "name": "edit-programme",
-            "title": "Edit Programme",
-            "method": "PUT",
-            "href": "/v0/programmes/1",
-            "type": "application/json",
-            "fields": [
-                { "name": "ProgrammeName", "type": "text"}, 
-                { "name": "Acronym", "type": "text"},
-                { "name": "TermSize", "type": "number"}
-            ]
-        },
-                {
-            "name": "add-offer",
-            "title": "Add Offer",
-            "method": "POST",
-            "href": "/v0/programmes/1/offers",
-            "type": "application/json",
-            "fields": [
-                { "name": "CourseId", "type": "number"},
-                { "name": "CurricularTerm", "type": "number" },
-                { "name": "Optional", "type": "boolean"}
-            ]
-        }
-    ],
     "links": [
         { "rel": [ "self" ], "href": "/v0/programmes/1" },
         { "rel": [ "up" ], "href": "/v0/programmes/" }
@@ -155,19 +129,6 @@ A collection of the possible programmes.
             },
             "links" : [
                 { "rel": [ "self" ], "href": "/v0/programmes/2" }
-            ]
-        }
-    ],
-    "actions": [
-        {
-            "name": "add-programme",
-            "title": "Add Programme",
-            "method": "POST",
-            "href": "/v0/programmes/",
-            "type": "application/json",
-            "fields": [
-                { "name": "ProgrammeAcr", "type": "text"},
-                { "name": "TermSize", "type": "number"}
             ]
         }
     ],
@@ -230,20 +191,6 @@ A collection of the possible programmes.
               {"rel": [ "self" ], "href": "/v0/courses/1"}
           ]
        }
-    ],
-    "actions": [
-        {
-            "name": "edit",
-            "title": "Edit Offer",
-            "method": "PUT",
-            "type": "application/json",
-            "href": "/v0/programmes/1/offers/1",
-            "fields": [
-                { "name": "Acronym", "type": "text"},
-                { "name": "TermNumber", "type": "number"},
-                { "name": "Optional", "type": "boolean"}
-            ]
-        }
     ],
     "links": [
         { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1" }

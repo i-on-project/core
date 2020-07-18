@@ -20,34 +20,6 @@ fun Programme.programmeToDetailRepr() =
         .entities(
             offers.map { offer -> this.buildSubentities(offer) }
         )
-        .action(
-            Action(
-                name = "edit-programme",
-                title = "Edit Programme",
-                method = HttpMethod.PUT,
-                href = Uri.forProgrammesById(id).toTemplate(),
-                type = Media.APPLICATION_JSON,
-                fields = listOf(
-                    Field(name = "ProgrammeName", type = "text"),   //name may be null, but the action allows to modify
-                    Field(name = "Acronym", type = "text"),
-                    Field(name = "TermSize", type = "number")
-                )
-            )
-        )
-        .action(
-            Action(
-                name = "add-offer",
-                title = "Add Offer",
-                method = HttpMethod.POST,
-                href = Uri.forProgrammesByIdOffer(id).toTemplate(),
-                type = Media.APPLICATION_JSON,
-                fields = listOf(
-                    Field(name = "CourseId", type = "number"),
-                    Field(name = "CurricularTerm", type = "number"),
-                    Field(name = "Optional", type = "boolean")
-                )
-            )
-        )
         .link("self", href = Uri.forProgrammesById(id))
         .link("up", href = Uri.forProgrammes())
         .toSiren()

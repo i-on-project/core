@@ -13,26 +13,6 @@ fun Course.courseToDetailRepr(): Siren {
     val builder = SirenBuilder(CourseReducedOutputModel(id, acronym, name))
         .klass("course")
         .entities(buildSubentities(id))
-        .action(
-            Action(
-                name = "delete",
-                title = "delete course",
-                method = HttpMethod.DELETE,
-                href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = false,
-                fields = listOf()
-            )
-        )
-        .action(
-            Action(
-                name = "edit",
-                title = "edit course",
-                method = HttpMethod.PATCH,
-                href = Uri.forCourseById(id).toTemplate(),
-                isTemplated = false,
-                fields = listOf()
-            )
-        )
         .link("self", href = Uri.forCourseById(id))
 
     term?.let { builder.link("current", href = Uri.forKlassByCalTerm(id, it)) }

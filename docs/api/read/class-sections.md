@@ -57,16 +57,6 @@ A `class section` representation includes a description of the available actions
       ]
     }
   ],
-  "actions": [
-    {
-      "name": "delete",
-      "method": "DELETE",
-      "href": "/v0/courses/1/classes/1920v/1d/",
-      "type": "*/*",
-      "isTemplated": false,
-      "fields": [ ]
-    }
-  ],
   "links": [
     { "rel": [ "self" ], "href": "/v0/courses/1/classes/1920v/1d" },
     { "rel": [ "collection" ], "href": "/v0/courses/1/classes/1920v" }

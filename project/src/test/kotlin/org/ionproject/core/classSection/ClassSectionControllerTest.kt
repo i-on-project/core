@@ -4,7 +4,6 @@ import org.ionproject.core.common.*
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpMethod
 
 internal class ClassSectionControllerTest : ControllerTester() {
 
@@ -37,16 +36,6 @@ internal class ClassSectionControllerTest : ControllerTester() {
             )
             .link("self", href = selfHref)
             .link("collection", href = Uri.forKlassByCalTerm(cs.courseId, cs.calendarTerm))
-            .action(
-                Action(
-                    name = "delete",
-                    href = selfHref.toTemplate(),
-                    method = HttpMethod.DELETE,
-                    type = Media.ALL,
-                    isTemplated = false,
-                    fields = listOf()
-                )
-            )
             .toSiren()
 
         isValidSiren(selfHref)
