@@ -10,7 +10,6 @@ services:
       env_file: ./env_schema_diff
       network_mode: host
       container_name: core-schema-diff-container
-      # The entrypoint script will apply the migration patches if Argument 1 = "apply"
-      # This process will abort if the generated pacthes are possibly unsafe
-      command: [ "apply" ]
+      # The entrypoint script will apply the migration patches if Argument 1 = "force"
+      command: [ "force" ]
 
