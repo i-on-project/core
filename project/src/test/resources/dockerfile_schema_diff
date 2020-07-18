@@ -4,5 +4,8 @@ RUN apk add --no-cache postgresql-client libc-dev python3-dev python3 postgresql
 
 RUN apk del libc-dev postgresql-dev python3-dev gcc
 
-COPY ./sdiff ./
-ENTRYPOINT [ "./sdiff" ]
+WORKDIR /src
+COPY ./bin/schema_diff .
+COPY ./docker/sql ./sql
+
+ENTRYPOINT [ "./schema_diff" ]
