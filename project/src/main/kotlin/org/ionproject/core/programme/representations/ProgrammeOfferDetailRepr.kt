@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod
 /**
  * Output models
  */
-data class ShortOfferForOfferRepr(val id: Int, val acronym: String, val termNumber: Int, val optional: Boolean)
+data class ShortOfferForOfferRepr(val id: Int, val acronym: String, val termNumber: List<Int>, val optional: Boolean)
 
 /**
  * Siren representation generators

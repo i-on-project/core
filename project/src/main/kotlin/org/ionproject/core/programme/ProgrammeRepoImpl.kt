@@ -5,14 +5,15 @@ import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.programme.model.ProgrammeOffer
 import org.ionproject.core.programme.sql.ProgrammeData
 import org.ionproject.core.programme.sql.ProgrammeMapper
-import org.ionproject.core.programme.sql.ProgrammeOfferMapper
+import org.ionproject.core.programme.sql.ProgrammeOfferRowReducer
 import org.springframework.stereotype.Component
+import kotlin.streams.toList
 
 @Component
 class ProgrammeRepoImpl(
     private val tm: TransactionManager,
     private val programmeMapper: ProgrammeMapper,
-    private val offerMapper: ProgrammeOfferMapper
+    private val offerRowReducer: ProgrammeOfferRowReducer
 ) : ProgrammeRepo {
 
     override fun getProgrammes(): List<Programme> = tm.run { handle ->
@@ -33,8 +34,8 @@ class ProgrammeRepoImpl(
             programme = res.get()
             val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY)
                 .bind(ProgrammeData.ID, id)
-                .map(offerMapper)
-                .list()
+                .reduceRows(offerRowReducer)
+                .toList()
 
             programme.offers.addAll(offers)
         }
@@ -42,10 +43,15 @@ class ProgrammeRepoImpl(
     }
 
     override fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer? = tm.run { handle ->
-        handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
+        val optional = handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
             .bind(ProgrammeData.ID, idOffer)
             .bind(ProgrammeData.PROGRAMME_ID, idProgramme)
-            .map(offerMapper)
-            .firstOrNull()
+            .reduceRows(offerRowReducer)
+            .findFirst()
+
+        if (optional.isPresent)
+            optional.get()
+        else
+            null
     }
 }

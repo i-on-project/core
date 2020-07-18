@@ -15,9 +15,9 @@ internal class ProgrammeControllerTest : ControllerTester() {
             val pid = 1
             return Programme(
                 pid, "licenciatura eng. inf.", "LEIC", 6, mutableListOf(
-                    ProgrammeOffer(1, "WAD", pid, 2, 3, true),
-                    ProgrammeOffer(2, "SL", pid, 1, 3, false),
-                    ProgrammeOffer(3, "DM", pid, 3, 1, false)
+                    ProgrammeOffer(1, "WAD", pid, 2, listOf(6), true),
+                    ProgrammeOffer(2, "SL", pid, 1, listOf(6), false),
+                    ProgrammeOffer(3, "DM", pid, 3, listOf(1), false)
                 )
             )
         }
@@ -34,7 +34,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
         val selfHref = Uri.forProgrammesById(p.id)
 
         data class OutputModel(val id: Int, val name: String? = null, val acronym: String, val termSize: Int)
-        data class ItemOutputModel(val id: Int, val courseId: Int, val termNumber: Int)
+        data class ItemOutputModel(val id: Int, val courseId: Int, val termNumber: List<Int>)
 
         val expected = SirenBuilder(OutputModel(p.id, p.name, p.acronym, p.termSize))
             .entities(p.offers.map {
@@ -130,7 +130,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
         val o = p.offers[0]
         val selfHref = Uri.forProgrammeOfferById(o.programmeId, o.id)
 
-        data class OutputModel(val id: Int, val acronym: String, val termNumber: Int, val optional: Boolean)
+        data class OutputModel(val id: Int, val acronym: String, val termNumber: List<Int>, val optional: Boolean)
 
         val expected = SirenBuilder(OutputModel(o.id, o.courseAcr, o.termNumber, o.optional))
             .klass("offer")

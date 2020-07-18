@@ -26,7 +26,7 @@ internal class ProgrammeModelTest {
         val acr = "WAD"
         val pid = 1
         val cid = 2
-        val termNumber = 3
+        val termNumber = listOf(3)
         val optional = false
         val p = ProgrammeOffer(id, acr, pid, cid, termNumber, optional)
 

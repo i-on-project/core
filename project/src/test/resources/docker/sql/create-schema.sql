@@ -21,12 +21,17 @@ CREATE TABLE dbo.Course (
 );
 
 CREATE TABLE dbo.ProgrammeOffer(
-	id              INT GENERATED ALWAYS AS IDENTITY,
+	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	programmeId     INT REFERENCES dbo.Programme(id),
 	courseId        INT REFERENCES dbo.Course(id),
-	termNumber      INT, 
 	optional        BOOLEAN,
-	PRIMARY KEY(programmeId, courseId, termNumber)
+	UNIQUE(programmeId, courseId)
+);
+
+CREATE TABLE dbo.ProgrammeOfferTerm(
+	offerId         INT REFERENCES dbo.ProgrammeOffer(id),
+	termNumber      INT NOT NULL,
+	PRIMARY KEY(offerId, termNumber)
 );
 
 CREATE TABLE dbo.Instant (
