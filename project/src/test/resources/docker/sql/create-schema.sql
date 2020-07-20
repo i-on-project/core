@@ -549,7 +549,7 @@ $$ LANGUAGE PLpgSQL;
 CREATE VIEW dbo.courseWithTerm AS
 	SELECT co.*, cl.calendarterm
 	FROM dbo.Course co
-	LEFT JOIN
+	JOIN
         (
             SELECT DISTINCT ON (courseId) calendarTerm, courseId
             FROM dbo.Class
