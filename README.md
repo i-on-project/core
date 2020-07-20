@@ -56,7 +56,7 @@ $
 $ # Start DB container (loaded with testing data)
 $ # Use the SET command if in a Microsoft Windows shell
 $ export JDBC_DATABASE_URL="jdbc:postgresql://localhost:10020/ion?user=unpriv&password=changeit"
-$ ./gradlew pgSetupDb
+$ ./gradlew pgreset
 $
 $ # Runs the integration tests and builds
 $ ./gradlew build
