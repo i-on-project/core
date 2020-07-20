@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class InsertCalendarTermServices(private val repo: InsertCalendarTermRepo) {
     fun insertCalendarTerm(params: OperationParams): String? {
-        //TODO
+        repo.insertCalTerm(params)
         return null
     }
 }
