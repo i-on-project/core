@@ -6,7 +6,9 @@ object InsertCalendarTerm {
     const val UPSERT_SCHOOL_PROC = "sp_createOrReplaceSchool"
     const val UPSERT_COURSE_PROC = "sp_createOrReplaceCourse"
     const val CREATE_CLASS_SECTION_EVENT_PROC = "sp_createClassSectionEvent"
+    const val INSERT_CAL_TERM = "sp_insertCalTerm"
 
+    const val ID = "id"
     const val SCHOOL_NAME_PARAM = "schoolName"
     const val SCHOOL_ACR_PARAM = "schoolAcr"
     const val COURSE_NAME_PARAM = "courseName"
@@ -59,4 +61,11 @@ object InsertCalendarTerm {
         :$WEEK_DAYS_PARAM,
         :$LOCATION_PARAM)
   """
+
+    const val INSERT_CAL_TERM_DATES = """
+    CALL $SCHEMA.$INSERT_CAL_TERM(
+        :$ID, 
+        :$DTSTART_PARAM, 
+        :$DTEND_PARAM)
+    """
 }

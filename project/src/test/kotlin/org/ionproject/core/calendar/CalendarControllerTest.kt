@@ -37,9 +37,9 @@ DESCRIPTION;LANGUAGE=en-US:The first assignment. The goal is to implement
 ATTACH:https://tools.ietf.org/html/rfc7231
 CREATED:20200101T163530Z
 DUE:20200419T235900Z
-CATEGORIES;LANGUAGE=pt-PT:Exame, Aula
-CATEGORIES;LANGUAGE=en-US:Exam, Lecture
-CATEGORIES;LANGUAGE=en-GB:Exam, Lecture
+CATEGORIES;LANGUAGE=pt-PT:LaboratÃ³rio
+CATEGORIES;LANGUAGE=en-US:Laboratory
+CATEGORIES;LANGUAGE=en-GB:Laboratory
 END:VTODO
 BEGIN:VTODO
 UID:20
@@ -49,9 +49,9 @@ DESCRIPTION;LANGUAGE=en-US:The second assignment. The goal is to implemen
  t a Web Client for the API...
 CREATED:20200101T163530Z
 DUE:20200525T235900Z
-CATEGORIES;LANGUAGE=pt-PT:Exame, Aula
-CATEGORIES;LANGUAGE=en-US:Exam, Lecture
-CATEGORIES;LANGUAGE=en-GB:Exam, Lecture
+CATEGORIES;LANGUAGE=pt-PT:LaboratÃ³rio
+CATEGORIES;LANGUAGE=en-US:Laboratory
+CATEGORIES;LANGUAGE=en-GB:Laboratory
 END:VTODO
 BEGIN:VTODO
 UID:21
@@ -61,9 +61,9 @@ DESCRIPTION;LANGUAGE=en-US:The third and final assignment. Wrapping it up
  ...
 CREATED:20200101T163530Z
 DUE:20200705T235900Z
-CATEGORIES;LANGUAGE=pt-PT:Exame, Aula
-CATEGORIES;LANGUAGE=en-US:Exam, Lecture
-CATEGORIES;LANGUAGE=en-GB:Exam, Lecture
+CATEGORIES;LANGUAGE=pt-PT:LaboratÃ³rio
+CATEGORIES;LANGUAGE=en-US:Laboratory
+CATEGORIES;LANGUAGE=en-GB:Laboratory
 END:VTODO
 BEGIN:VEVENT
 UID:2c
@@ -157,9 +157,9 @@ END:VCALENDAR"""
           Attach(rfcAttachment),
           Created("20200101T163530Z"),
           Due("20200419T235900Z"),
-          Categories(ptLang, "Exame,Aula"),
-          Categories(enLang, "Exam,Lecture"),
-          Categories(gbLang, "Exam,Lecture")
+          Categories(ptLang, "LaboratÃ³rio"),
+          Categories(enLang, "Laboratory"),
+          Categories(gbLang, "Laboratory")
         ) as PropertyList<Property>
       )
 
@@ -171,9 +171,9 @@ END:VCALENDAR"""
           Description(enLang, "The second assignment. The goal is to implement a Web Client for the API..."),
           Created("20200101T163530Z"),
           Due("20200525T235900Z"),
-          Categories(ptLang, "Exame,Aula"),
-          Categories(enLang, "Exam,Lecture"),
-          Categories(gbLang, "Exam,Lecture")
+          Categories(ptLang, "LaboratÃ³rio"),
+          Categories(enLang, "Laboratory"),
+          Categories(gbLang, "Laboratory")
         ) as PropertyList<Property>
       )
 
@@ -185,9 +185,9 @@ END:VCALENDAR"""
           Description(enLang, "The third and final assignment. Wrapping it up..."),
           Created("20200101T163530Z"),
           Due("20200705T235900Z"),
-          Categories(ptLang, "Exame,Aula"),
-          Categories(enLang, "Exam,Lecture"),
-          Categories(gbLang, "Exam,Lecture")
+          Categories(ptLang, "LaboratÃ³rio"),
+          Categories(enLang, "Laboratory"),
+          Categories(gbLang, "Laboratory")
         ) as PropertyList<Property>
       )
 

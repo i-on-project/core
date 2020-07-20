@@ -895,3 +895,41 @@ BEGIN
   );
 END
 $$ LANGUAGE PLpgSQL;
+
+
+CREATE OR REPLACE PROCEDURE dbo.sp_insertCalTerm(
+  calTerm VARCHAR(50),
+  start_date VARCHAR(50),
+  end_date VARCHAR(50)
+) AS $$
+#print_strict_params ON
+DECLARE
+  calid VARCHAR(50);
+  cal_term_start_id INT;
+  cal_term_end_id INT;
+  start_date_val DATE;
+  end_date_val DATE;
+BEGIN
+
+  start_date_val := start_date;
+  end_date_val := end_date;
+
+  IF EXISTS (SELECT * FROM dbo._CalendarTerm WHERE id=calTerm) THEN
+    SELECT CAL.start_date INTO cal_term_start_id FROM dbo._CalendarTerm AS CAL WHERE id=calTerm;
+    SELECT CAL.end_date INTO cal_term_end_id FROM dbo._CalendarTerm AS CAL WHERE id=calTerm;
+
+    UPDATE dbo.Instant SET date = start_date_val WHERE id = cal_term_start_id;
+    UPDATE dbo.Instant SET date = end_date_val WHERE id = cal_term_end_id;
+
+  ELSE
+    INSERT INTO dbo.Instant(date, time) VALUES
+      (start_date_val, null),
+      (end_date_val, null);
+
+    SELECT id INTO cal_term_start_id FROM dbo.Instant WHERE date=start_date_val;
+    SELECT id INTO cal_term_end_id FROM dbo.Instant WHERE date=end_date_val;
+
+    INSERT INTO dbo._CalendarTerm(id, start_date, end_date) VALUES (calTerm, cal_term_start_id, cal_term_end_id);
+  END IF;
+END
+$$ LANGUAGE PLpgSQL;

@@ -1,6 +1,7 @@
 package org.ionproject.core.writeApi.insertCalendarTerm.json
 
 import com.fasterxml.jackson.databind.JsonNode
+import org.ionproject.core.asSanitizedText
 
 /**
  * Extract all values from the controller's JSON Node parameter.
@@ -28,7 +29,7 @@ class OperationParams(
                 json["startDate"]?.asText(),
                 json["endDate"]?.asText(),
                 json["language"]?.asText(),
-                json["calendarTerm"]?.asText(),
+                json["calendarTerm"].asSanitizedText(),
                 json["intervals"].map { IntervalParams.of(it) }
             )
         }
