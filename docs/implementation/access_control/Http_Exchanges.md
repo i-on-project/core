@@ -107,7 +107,7 @@ The token issue endpoint creates a token with the scope that it was requested in
 
 In the beta version this endpoint is only available to whom possesses the correct token with the scope "issue".
 
-This "issue" token is created during the deploy process of the web application, and only accessible to who has access to the server. It is used to issue other tokens (e.g. read and write tokens).
+This "issue" token is created by the developers with gradle and a proxy tool, and only accessible to who has access to the server. It is used to issue other tokens (e.g. read and write tokens).
 (Side note, if the application is running in local environment it's easier to run the task "pgInsertReadToken")
 
 ## Issue Endpoint Request
@@ -137,6 +137,18 @@ Body:
 
 The error messages are the same messages already defined in the general requests section.
 Example, trying to access this endpoint with a token that has an invalid scope will result in an error 403 FORBIDDEN.
+
+# Create Issue Token on GCP environment
+
+To create an issue token and be able to issue the client tokens on the deployed environment, you need to execute the following steps:
+1º Setup the GCP database proxy
+./cloud_sql_proxy -instances=<ProjectName>:<Zone>:postgres-1=tcp:<port>
+
+2º Replace the JDBC Database URL by the deployed Database configurations: (the next command only was tested on linux distributions)
+export JDBC_DATABASE_URL='jdbc:postgresql://localhost:<port>/<db>?user=<user>&password=<password>'
+
+3º Run the desired gradle task
+./gradlew pgInsertIssueToken
 
 
 # Token Revoke Endpoint
