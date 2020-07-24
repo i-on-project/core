@@ -17,12 +17,12 @@ private val datatypeMapper = DatatypeMapper.forType(Media.MEDIA_SIREN)
 private const val CALENDAR_CLASS = "calendar"
 
 private val fields = listOf(
-        Field(name = "type", type = "text", klass = "https://example.org/param/free-text-query"),
-        Field(name = "startBefore", type = "date", klass = "https://example.org/param/date-query"),
-        Field(name = "startAfter", type = "date", klass = "https://example.org/param/date-query"),
-        Field(name = "endBefore", type = "date", klass = "https://example.org/param/date-query"),
-        Field(name = "endAfter", type = "date", klass = "https://example.org/param/date-query"),
-        Field(name = "summary", type = "text", klass = "https://example.org/param/free-text-query")
+        Field(name = "type", type = "text", klass = "param/free-text-query"),
+        Field(name = "startBefore", type = "date", klass = "param/date-query"),
+        Field(name = "startAfter", type = "date", klass = "param/date-query"),
+        Field(name = "endBefore", type = "date", klass = "param/date-query"),
+        Field(name = "endAfter", type = "date", klass = "param/date-query"),
+        Field(name = "summary", type = "text", klass = "param/free-text-query")
 )
 
 fun Calendar.toSiren(): Siren =
