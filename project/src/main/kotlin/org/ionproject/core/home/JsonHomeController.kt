@@ -21,7 +21,7 @@ private val programmesSpecUri = URI("$specLocation/programme.md")
 private val accessManagerSpecUri = URI("$amSpecLocation/Http_Exchanges.md")
 
 
-private const val apiName = "i-on Core"
+private const val apiName = "i-on Core Read API"
 
 @RestController
 class JsonHomeController {

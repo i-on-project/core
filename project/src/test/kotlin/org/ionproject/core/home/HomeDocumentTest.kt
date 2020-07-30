@@ -10,7 +10,7 @@ internal class HomeDocumentTest : ControllerTester() {
     companion object {
         val expected = Home(
             Api(
-                "i-on Core",
+                "i-on Core Read API",
                 "https://github.com/i-on-project/core/tree/master/docs/api"
             ),
             mapOf(
