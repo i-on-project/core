@@ -27,7 +27,7 @@ class InsertClassSectionFacultyServices(private val repo: InsertClassSectionFacu
         } catch (se: UnableToExecuteStatementException) {
             // PostgreSQL reported an error and the transaction was aborted...
             val ex = se.cause as PSQLException
-            ex.serverErrorMessage.message
+            ex.serverErrorMessage?.message
         }
 
     /**

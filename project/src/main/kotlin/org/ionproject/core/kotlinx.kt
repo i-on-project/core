@@ -56,9 +56,10 @@ fun String.removeWhitespace() =
     replace("\\s".toRegex(), "")
 
 fun PGobject.split(): List<String> {
-    value = value.removeSurrounding("(", ")")
+    val observedValue = value ?: return emptyList()
+    val trimmedValue = observedValue.removeSurrounding("(", ")")
 
-    if (value.isEmpty()) return emptyList()
+    if (trimmedValue.isEmpty()) return emptyList()
 
     val list = mutableListOf<String>()
 
@@ -66,17 +67,17 @@ fun PGobject.split(): List<String> {
     var endIndex = 0
 
     var parsingString = false
-    while (endIndex < value.length) {
-        val c = value[endIndex]
+    while (endIndex < trimmedValue.length) {
+        val c = trimmedValue[endIndex]
         if (c == '"') parsingString = !parsingString
         if (c == ',' && !parsingString) {
             parsingString = false
-            list.add(value.substring(startIndex, endIndex))
+            list.add(trimmedValue.substring(startIndex, endIndex))
             startIndex = endIndex + 1
         }
         ++endIndex
     }
-    list.add(value.substring(startIndex, endIndex))
+    list.add(trimmedValue.substring(startIndex, endIndex))
 
     return list
 }
