@@ -14,7 +14,7 @@ class MutableProgrammeOffer(
     val termNumber: MutableList<Int>,
     val optional: Boolean
 ) {
-    fun toProgrammeOffer() : ProgrammeOffer = ProgrammeOffer(id, courseAcr, programmeId, courseId, termNumber, optional)
+    fun toProgrammeOffer(): ProgrammeOffer = ProgrammeOffer(id, courseAcr, programmeId, courseId, termNumber, optional)
 }
 
 @Component
@@ -35,7 +35,6 @@ class ProgrammeOfferRowReducer : RowReducer<MutableMap<Int, MutableProgrammeOffe
         } else {
             offer.termNumber.add(termNumber)
         }
-
     }
 
     override fun stream(container: MutableMap<Int, MutableProgrammeOffer>): Stream<ProgrammeOffer> {
@@ -45,6 +44,6 @@ class ProgrammeOfferRowReducer : RowReducer<MutableMap<Int, MutableProgrammeOffe
     override fun container(): MutableMap<Int, MutableProgrammeOffer> = mutableMapOf()
 }
 
-private fun RowView.getInt(name: String) : Int = getColumn(name, Integer::class.java).toInt()
-private fun RowView.getBoolean(name: String) : Boolean = getColumn(name, java.lang.Boolean::class.java).booleanValue()
-private fun RowView.getString(name: String) : String = getColumn(name, String::class.java)
+private fun RowView.getInt(name: String): Int = getColumn(name, Integer::class.java).toInt()
+private fun RowView.getBoolean(name: String): Boolean = getColumn(name, java.lang.Boolean::class.java).booleanValue()
+private fun RowView.getString(name: String): String = getColumn(name, String::class.java)

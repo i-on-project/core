@@ -14,5 +14,4 @@ class PolicyMapper : RowMapper<PolicyEntity> {
             rs.getString("resource")
         )
     }
-
 }

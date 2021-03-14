@@ -17,7 +17,6 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
             val res = transaction(it)
             it.rollback()
             return res
-
         }
     }
 }

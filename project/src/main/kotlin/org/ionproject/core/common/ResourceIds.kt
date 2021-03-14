@@ -13,35 +13,35 @@ object ResourceIds {
     const val VERSION = "v0"
     const val ALL_VERSIONS = "*"
 
-    //ERROR
+    // ERROR
     const val ERROR = "error"
 
-    //HOME
+    // HOME
     const val GET_HOME = "getHome"
 
     // SEARCH
     const val SEARCH = "search"
 
-    //ACCESS MANAGER
+    // ACCESS MANAGER
     const val ISSUE_TOKEN = "issueToken"
     const val REVOKE_TOKEN = "revokeToken"
     const val IMPORT_CLASS_CALENDAR = "importClassCalendar"
     const val IMPORT_CLASS_SECTION_CALENDAR = "importClassSectionCalendar"
 
-    //PROGRAMMES
+    // PROGRAMMES
     const val GET_PROGRAMMES = "getProgrammes"
     const val GET_PROGRAMME = "getProgramme"
     const val GET_OFFER = "getOffer"
 
-    //COURSES
+    // COURSES
     const val GET_COURSES = "getCourses"
     const val GET_COURSE = "getCourse"
 
-    //CLASS
+    // CLASS
     const val GET_CLASSES = "getClasses"
     const val GET_CLASS = "getClass"
 
-    //CLASS SECTION
+    // CLASS SECTION
     const val GET_CLASS_SECTION = "getClassSection"
 
     // CALENDAR
@@ -53,5 +53,4 @@ object ResourceIds {
     // CALENDAR TERM
     const val GET_CALENDAR_TERMS = "getCalendarTerms"
     const val GET_CALENDAR_TERM = "getCalendarTerm"
-
 }

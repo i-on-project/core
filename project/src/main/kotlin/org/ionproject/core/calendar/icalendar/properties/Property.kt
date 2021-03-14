@@ -6,4 +6,3 @@ interface Property {
     val name: String
     val value: ICalendarDataType
 }
-

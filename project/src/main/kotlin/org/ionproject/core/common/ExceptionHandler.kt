@@ -1,6 +1,11 @@
 package org.ionproject.core.common
 
-import org.ionproject.core.common.customExceptions.*
+import org.ionproject.core.common.customExceptions.BadRequestException
+import org.ionproject.core.common.customExceptions.ForbiddenActionException
+import org.ionproject.core.common.customExceptions.IncorrectParametersException
+import org.ionproject.core.common.customExceptions.InternalServerErrorException
+import org.ionproject.core.common.customExceptions.ResourceNotFoundException
+import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -253,5 +258,4 @@ class ExceptionHandler {
             .headers(customHeaders)
             .body(ProblemJson(type, title, status, detail, instance))
     }
-
 }

@@ -38,7 +38,6 @@ internal class AccessControlTest : ControllerTester() {
         val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()
         val homeDocumentUri = URI("/")
-
     }
 
     /**
@@ -185,5 +184,4 @@ internal class AccessControlTest : ControllerTester() {
             .andExpect { status { isBadRequest } }
             .andReturn()
     }
-
 }

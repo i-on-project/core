@@ -27,7 +27,6 @@ fun assertSiren(expected: Siren?, actual: Siren?) {
         assertEquals(expected.title, actual.title)
         assertCollection(expected.actions, actual.actions, ::assertAction)
         assertCollection(expected.links, actual.links, ::assertRelation)
-
     } else {
         assertNull(actual, "Expected actual to be null but is wasn't.")
     }
@@ -51,7 +50,6 @@ fun assertEmbeddedSiren(expected: EmbeddedRepresentation?, actual: EmbeddedRepre
         assertEquals(expected.title, actual.title)
         assertCollection(expected.actions, actual.actions, ::assertAction)
         assertCollection(expected.links, actual.links, ::assertRelation)
-
     } else {
         assertNull(actual, "Expected actual to be null but is wasn't.")
     }
@@ -114,7 +112,6 @@ fun <T> assertCollection(expected: Collection<T>?, actual: Collection<T>?, itemA
             itemAsserter(expectedIterator.next(), actualIterator.next())
         }
         if (actualIterator.hasNext()) fail("The expected collection is shorter.")
-
     } else {
         assertNull(actual, "Expected actual to be null but it wasn't.")
     }

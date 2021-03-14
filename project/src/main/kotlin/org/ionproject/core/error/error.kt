@@ -1,6 +1,10 @@
 package org.ionproject.core.error
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.LogMessages
+import org.ionproject.core.common.ProblemJson
+import org.ionproject.core.common.ResourceIdentifierAnnotation
+import org.ionproject.core.common.ResourceIds
+import org.ionproject.core.common.Uri
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.http.HttpStatus
@@ -22,14 +26,14 @@ class MyErrorController : ErrorController {
      */
     @RequestMapping(Uri.error)
     @ResourceIdentifierAnnotation(ResourceIds.ERROR, ResourceIds.ALL_VERSIONS)
-    fun handleError(request : HttpServletRequest) : ResponseEntity<ProblemJson> {
+    fun handleError(request: HttpServletRequest): ResponseEntity<ProblemJson> {
         val status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)
         val requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString()
 
-        if(status != null) {
+        if (status != null) {
             val statusCode = Integer.valueOf(status.toString())
 
-            when(statusCode) {
+            when (statusCode) {
                 406 -> {
                     logger.error(
                         LogMessages.forException(
@@ -82,7 +86,8 @@ class MyErrorController : ErrorController {
                             "Error",
                             500,
                             LogMessages.internalServerError,
-                            requestUri),
+                            requestUri
+                        ),
                         HttpStatus.INTERNAL_SERVER_ERROR
                     )
                 }
@@ -106,11 +111,9 @@ class MyErrorController : ErrorController {
             ),
             HttpStatus.NOT_ACCEPTABLE
         )
-
     }
 
     override fun getErrorPath(): String {
         return Uri.error
     }
-
 }

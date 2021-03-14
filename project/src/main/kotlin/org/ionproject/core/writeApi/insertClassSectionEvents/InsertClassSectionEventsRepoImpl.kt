@@ -152,5 +152,4 @@ class InsertClassSectionEventsTransactionRepo(
         t(this)
         return true
     }
-
 }

@@ -23,7 +23,6 @@ fun Course.courseToDetailRepr(): Siren {
         .toSiren()
 }
 
-
 private fun buildSubentities(courseId: Int) =
     SirenBuilder()
         .klass("class", "collection")

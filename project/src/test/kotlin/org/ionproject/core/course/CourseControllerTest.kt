@@ -59,8 +59,10 @@ internal class CourseControllerTest : ControllerTester() {
             )
             .link("self", href = Uri.forCourseById(course.id))
             .link(
-                "current", href = Uri.forKlassByCalTerm(
-                    current.id, current.term
+                "current",
+                href = Uri.forKlassByCalTerm(
+                    current.id,
+                    current.term
                         ?: throw AssertionError("The Calendar Term of the current course must not be null")
                 )
             )
@@ -85,22 +87,25 @@ internal class CourseControllerTest : ControllerTester() {
 
         val expected = SirenBuilder()
             .klass("course", "collection")
-            .entities(list.map { course ->
-                val current = getCurrentCourse(course)
-                SirenBuilder(OutputModel(course.id, course.acronym))
-                    .klass("class")
-                    .rel("item")
-                    .link("self", href = Uri.forCourseById(course.id))
-                    .link(
-                        "current", href = Uri.forKlassByCalTerm(
-                            current.id, current.term
-                                ?: throw AssertionError("The Calendar Term of the current course must not be null")
+            .entities(
+                list.map { course ->
+                    val current = getCurrentCourse(course)
+                    SirenBuilder(OutputModel(course.id, course.acronym))
+                        .klass("class")
+                        .rel("item")
+                        .link("self", href = Uri.forCourseById(course.id))
+                        .link(
+                            "current",
+                            href = Uri.forKlassByCalTerm(
+                                current.id,
+                                current.term
+                                    ?: throw AssertionError("The Calendar Term of the current course must not be null")
+                            )
                         )
-                    )
-                    .link("collection", href = selfHref)
-                    .toEmbed()
-            })
-            .action(
+                        .link("collection", href = selfHref)
+                        .toEmbed()
+                }
+            ).action(
                 Action(
                     name = "search",
                     title = "Search Items",

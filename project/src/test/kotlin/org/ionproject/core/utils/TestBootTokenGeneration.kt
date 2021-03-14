@@ -1,6 +1,5 @@
 package org.ionproject.core.utils
 
-
 import org.ionproject.core.accessControl.TokenGenerator
 import org.ionproject.core.accessControl.pap.sql.AuthRepo
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -25,19 +24,18 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
 
     @EventListener(ApplicationReadyEvent::class)
     fun startup() {
-        //check the database for tokens before issuing
+        // check the database for tokens before issuing
         generateTokens()
     }
 
-
     fun generateTokens() {
-        //generate the token needed for issuing other tokens
+        // generate the token needed for issuing other tokens
         val token = generateToken(readScope)
         val issueToken = generateToken(issueScope)
         val writeToken = generateToken(writeScope)
         val revokeToken = generateToken(revokeScope)
 
-        //with the issueToken issue read & write token
+        // with the issueToken issue read & write token
         issueTokenTest = "Bearer $issueToken"
         readTokenTest = "Bearer $token"
         writeTokenTest = "Bearer $writeToken"
@@ -53,10 +51,8 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
         val tokenHash = tokenGenerator.getHash(tokenRaw)
 
         val token = tokenGenerator.buildToken(tokenHash, System.currentTimeMillis(), scope)
-        authRepo.storeToken(token)  //token needs to be stored so it can be used to issue other tokens
+        authRepo.storeToken(token) // token needs to be stored so it can be used to issue other tokens
 
         return tokenBase64
     }
-
 }
-

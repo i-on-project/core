@@ -1,6 +1,10 @@
 package org.ionproject.core.calendar
 
-import net.fortuna.ical4j.model.*
+import net.fortuna.ical4j.model.Calendar
+import net.fortuna.ical4j.model.Parameter
+import net.fortuna.ical4j.model.ParameterList
+import net.fortuna.ical4j.model.Property
+import net.fortuna.ical4j.model.PropertyList
 import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.component.VToDo
 import net.fortuna.ical4j.model.parameter.Language
@@ -23,7 +27,6 @@ import org.ionproject.core.common.Uri
 import org.ionproject.core.fluentAdd
 import org.ionproject.core.removeWhitespace
 import org.ionproject.core.utils.ControllerTester
-import org.ionproject.core.utils.ParameterList
 import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -86,11 +89,9 @@ END:VCALENDAR"""
          * Builds a cal4j calendar with the data defined by the Read API
          * Cal Mock Data for comparison with the one generated
          * by the core calendar.
-         *
-         * https://github.com/ical4j/ical4j
          */
         private fun buildCalendarForClass(): Calendar {
-            val calendar = Calendar()   //ical4j calendar (not the one implemented by the group)
+            val calendar = Calendar() // ical4j calendar (not the one implemented by the group)
             calendar.properties.add(ProdId("/v0/courses/$courseID/classes/$calTerm"))
             calendar.properties.add(Version.VERSION_2_0)
 
@@ -100,86 +101,86 @@ END:VCALENDAR"""
             val rfcAttachment = URI.create("https://tools.ietf.org/html/rfc7231")
 
             val todoWad1Assignment = VToDo(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("1f"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "[WAD]: Assignment #1"),
-                            Description(enLang, "The first assignment. The goal is to implement an HTTP API..."),
-                            Attach(rfcAttachment),
-                            Created("20200101T163530Z"),
-                            Due("20200419T235900Z"),
-                            Categories(ptLang, "Laboratório"),
-                            Categories(enLang, "Laboratory"),
-                            Categories(gbLang, "Laboratory")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("1f"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "[WAD]: Assignment #1"),
+                    Description(enLang, "The first assignment. The goal is to implement an HTTP API..."),
+                    Attach(rfcAttachment),
+                    Created("20200101T163530Z"),
+                    Due("20200419T235900Z"),
+                    Categories(ptLang, "Laboratório"),
+                    Categories(enLang, "Laboratory"),
+                    Categories(gbLang, "Laboratory")
+                ) as PropertyList<Property>
             )
 
             val todoWad2Assignment = VToDo(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("20"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "[WAD]: Assignment #2"),
-                            Description(enLang, "The second assignment. The goal is to implement a Web Client for the API..."),
-                            Created("20200101T163530Z"),
-                            Due("20200525T235900Z"),
-                            Categories(ptLang, "Laboratório"),
-                            Categories(enLang, "Laboratory"),
-                            Categories(gbLang, "Laboratory")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("20"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "[WAD]: Assignment #2"),
+                    Description(enLang, "The second assignment. The goal is to implement a Web Client for the API..."),
+                    Created("20200101T163530Z"),
+                    Due("20200525T235900Z"),
+                    Categories(ptLang, "Laboratório"),
+                    Categories(enLang, "Laboratory"),
+                    Categories(gbLang, "Laboratory")
+                ) as PropertyList<Property>
             )
 
             val todoWad3Assignment = VToDo(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("21"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "[WAD]: Assignment #3"),
-                            Description(enLang, "The third and final assignment. Wrapping it up..."),
-                            Created("20200101T163530Z"),
-                            Due("20200705T235900Z"),
-                            Categories(ptLang, "Laboratório"),
-                            Categories(enLang, "Laboratory"),
-                            Categories(gbLang, "Laboratory")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("21"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "[WAD]: Assignment #3"),
+                    Description(enLang, "The third and final assignment. Wrapping it up..."),
+                    Created("20200101T163530Z"),
+                    Due("20200705T235900Z"),
+                    Categories(ptLang, "Laboratório"),
+                    Categories(enLang, "Laboratory"),
+                    Categories(gbLang, "Laboratory")
+                ) as PropertyList<Property>
             )
 
             val eventWad1Exam = VEvent(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("2c"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "1st Exam WAD"),
-                            Description(enLang, "Normal season exam for WAD-1920v"),
-                            Created("20200101T163530Z"),
-                            Categories(ptLang, "Exame"),
-                            Categories(enLang, "Exam"),
-                            Categories(gbLang, "Exam"),
-                            DtStart("20200619T180000Z"),
-                            DtEnd("20200619T193000Z"),
-                            Location("Room A.2.10")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("2c"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "1st Exam WAD"),
+                    Description(enLang, "Normal season exam for WAD-1920v"),
+                    Created("20200101T163530Z"),
+                    Categories(ptLang, "Exame"),
+                    Categories(enLang, "Exam"),
+                    Categories(gbLang, "Exam"),
+                    DtStart("20200619T180000Z"),
+                    DtEnd("20200619T193000Z"),
+                    Location("Room A.2.10")
+                ) as PropertyList<Property>
             )
 
             val eventWad2Exam = VEvent(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("2d"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "2nd Exam WAD"),
-                            Description(enLang, "Second season exam for WAD-1920v"),
-                            Created("20200101T163530Z"),
-                            Categories(ptLang, "Exame"),
-                            Categories(enLang, "Exam"),
-                            Categories(gbLang, "Exam"),
-                            DtStart("20200701T100000Z"),
-                            DtEnd("20200701T123000Z"),
-                            Location("Room A.2.10")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("2d"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "2nd Exam WAD"),
+                    Description(enLang, "Second season exam for WAD-1920v"),
+                    Created("20200101T163530Z"),
+                    Categories(ptLang, "Exame"),
+                    Categories(enLang, "Exam"),
+                    Categories(gbLang, "Exam"),
+                    DtStart("20200701T100000Z"),
+                    DtEnd("20200701T123000Z"),
+                    Location("Room A.2.10")
+                ) as PropertyList<Property>
             )
 
             calendar.components.fluentAdd(
-                    todoWad1Assignment,
-                    todoWad2Assignment,
-                    todoWad3Assignment,
-                    eventWad1Exam,
-                    eventWad2Exam
+                todoWad1Assignment,
+                todoWad2Assignment,
+                todoWad3Assignment,
+                eventWad1Exam,
+                eventWad2Exam
             )
 
             return calendar
@@ -195,48 +196,48 @@ END:VCALENDAR"""
             val ptLang = buildParameterList(Language("pt-PT"))
 
             val eventWadLectureMonday = VEvent(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("15"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "WAD Lecture"),
-                            Description(enLang, "Lectures of the WAD curricular unit for the 1920v-LI61D Class section"),
-                            Created("20200101T163530Z"),
-                            Categories(ptLang, "Aula"),
-                            Categories(enLang, "Lecture"),
-                            Categories(gbLang, "Lecture"),
-                            DtStart("20190201T110000Z"),
-                            DtEnd("20190201T123000Z"),
-                            Location("Room G.0.1"),
-                            RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("15"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "WAD Lecture"),
+                    Description(enLang, "Lectures of the WAD curricular unit for the 1920v-LI61D Class section"),
+                    Created("20200101T163530Z"),
+                    Categories(ptLang, "Aula"),
+                    Categories(enLang, "Lecture"),
+                    Categories(gbLang, "Lecture"),
+                    DtStart("20190201T110000Z"),
+                    DtEnd("20190201T123000Z"),
+                    Location("Room G.0.1"),
+                    RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO")
+                ) as PropertyList<Property>
             )
 
             val eventWadLectureWednesday = VEvent(
-                    PropertyList<Property>().fluentAdd(
-                            Uid("16"),
-                            DtStamp("20200101T163530Z"),
-                            Summary(enLang, "WAD Lecture"),
-                            Description(enLang, "Lectures of the WAD curricular unit for the 1920v-LI61D Class section"),
-                            Created("20200101T163530Z"),
-                            Categories(ptLang, "Aula"),
-                            Categories(enLang, "Lecture"),
-                            Categories(gbLang, "Lecture"),
-                            DtStart("20190201T110000Z"),
-                            DtEnd("20190201T140000Z"),
-                            Location("Room G.0.11"),
-                            RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH")
-                    ) as PropertyList<Property>
+                PropertyList<Property>().fluentAdd(
+                    Uid("16"),
+                    DtStamp("20200101T163530Z"),
+                    Summary(enLang, "WAD Lecture"),
+                    Description(enLang, "Lectures of the WAD curricular unit for the 1920v-LI61D Class section"),
+                    Created("20200101T163530Z"),
+                    Categories(ptLang, "Aula"),
+                    Categories(enLang, "Lecture"),
+                    Categories(gbLang, "Lecture"),
+                    DtStart("20190201T110000Z"),
+                    DtEnd("20190201T140000Z"),
+                    Location("Room G.0.11"),
+                    RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH")
+                ) as PropertyList<Property>
             )
 
             calendar.components.fluentAdd(
-                    eventWadLectureMonday,
-                    eventWadLectureWednesday
+                eventWadLectureMonday,
+                eventWadLectureWednesday
             )
 
             return calendar
         }
 
-        //Adds parameters to a component property
+        // Adds parameters to a component property
         fun buildParameterList(param: Parameter): ParameterList {
             val paramList = ParameterList()
             paramList.add(param)
@@ -291,8 +292,8 @@ END:VCALENDAR"""
             accept = Media.MEDIA_TEXT_CALENDAR
             header("Authorization", readTokenTest)
         }.andReturn()
-                .response
-                .getContentAsString(StandardCharsets.UTF_8)
+            .response
+            .getContentAsString(StandardCharsets.UTF_8)
 
         /**
          * Had a small problem with the way the messageConverter
@@ -313,8 +314,8 @@ END:VCALENDAR"""
             accept = Media.MEDIA_TEXT_CALENDAR
             header("Authorization", readTokenTest)
         }.andReturn()
-                .response
-                .getContentAsString(StandardCharsets.UTF_8)
+            .response
+            .getContentAsString(StandardCharsets.UTF_8)
 
         val expected: String = calendarByClassSection.removeWhitespace()
         val obtained: String = result.removeWhitespace()
@@ -326,17 +327,17 @@ END:VCALENDAR"""
      */
     @Test
     fun checkIfValidCalClass() {
-        //Get the core calendar representation
+        // Get the core calendar representation
         val result = doGet(Uri.forCalendarByClass(courseID, calTerm)) {
             accept = Media.MEDIA_TEXT_CALENDAR
             header("Authorization", readTokenTest)
         }.andReturn()
-                .response
-                .getContentAsString(StandardCharsets.UTF_8)
+            .response
+            .getContentAsString(StandardCharsets.UTF_8)
 
         Assertions.assertEquals(
-                classCalendarCal4j.toString().removeWhitespace(),
-                result.removeWhitespace()
+            classCalendarCal4j.toString().removeWhitespace(),
+            result.removeWhitespace()
         )
     }
 
@@ -346,12 +347,12 @@ END:VCALENDAR"""
             accept = Media.MEDIA_TEXT_CALENDAR
             header("Authorization", readTokenTest)
         }.andReturn()
-                .response
-                .getContentAsString(StandardCharsets.UTF_8)
+            .response
+            .getContentAsString(StandardCharsets.UTF_8)
 
         Assertions.assertEquals(
-                classSectionCalendarCal4j.toString().removeWhitespace(),
-                result.removeWhitespace()
+            classSectionCalendarCal4j.toString().removeWhitespace(),
+            result.removeWhitespace()
         )
     }
 }

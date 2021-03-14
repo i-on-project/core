@@ -83,11 +83,9 @@ class CalendarRepoImpl(
                 null,
                 mutableListOf(component)
             )
-
         } catch (e: IllegalStateException) {
             return null
         }
-
     }
 
     override fun getClassSectionCalendarComponent(

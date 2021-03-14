@@ -23,7 +23,6 @@ class InsertClassSectionEventsServices(private val repo: InsertClassSectionEvent
             } else {
                 "An unknown error has occurred during the execution of the transaction."
             }
-
         } catch (se: UnableToExecuteStatementException) {
             // PostgreSQL reported an error and the transaction was aborted...
             val ex = se.cause as PSQLException

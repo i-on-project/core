@@ -28,8 +28,8 @@ internal abstract class SearchControllerTest : ControllerTester() {
         page: Int = defaultPage,
         types: List<String> = defaultTypes,
         expectedResults: List<SearchResult> = defaultResults(limit, page, types),
-        uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI)
-    {
+        uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI
+    ) {
         val expected = SearchSirenTest.buildSiren(search, limit, page, types, expectedResults)
 
         mocker.get(uriBuilder(search, limit, page, types)) {

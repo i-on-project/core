@@ -19,5 +19,4 @@ class InsertClassSectionFacultyRepoImpl : InsertClassSectionFacultyRepo {
     override fun insertClassSectionFacultyInfo(courseName: String?, courseAcr: String?, teachers: List<String>) {
         // sink
     }
-
 }

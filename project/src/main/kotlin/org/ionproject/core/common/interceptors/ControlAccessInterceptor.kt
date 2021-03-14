@@ -15,7 +15,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 data class Request(val method: String, val path: String, val resourceIdentifier: ResourceIdentifierDescriptor)
 data class ResourceIdentifierDescriptor(val resource: String, val version: String)
 
@@ -23,9 +22,10 @@ data class ResourceIdentifierDescriptor(val resource: String, val version: Strin
  * Policy Enforcement Point
  * It will enforce the decision of the PDP
  */
-class ControlAccessInterceptor(private val pdp: PDP,
-                               private val tokenGenerator: TokenGenerator,
-                               private val cache: AccessControlCache
+class ControlAccessInterceptor(
+    private val pdp: PDP,
+    private val tokenGenerator: TokenGenerator,
+    private val cache: AccessControlCache
 ) : HandlerInterceptorAdapter() {
 
     companion object {
@@ -36,7 +36,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
     private val authenticationQueryParameter = "access_token"
     private val authenticationHeaderAuthorization = "Authorization"
 
-
     /**
      * Intercepts the request, tries to identify the authentication mode...
      * returns true if access was granted
@@ -44,15 +43,15 @@ class ControlAccessInterceptor(private val pdp: PDP,
      */
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
 
-        //Obtain name of resource trying to access (the name of the resource is the one in the annotation
+        // Obtain name of resource trying to access (the name of the resource is the one in the annotation
         val resourceIdentifier = buildResourceIdentifier(handler)
         val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
 
-        //Checks if its an import link verification path
+        // Checks if its an import link verification path
         if (checkAccessToken(request, requestDescriptor))
             return true
 
-        //Authorization Header verification path
+        // Authorization Header verification path
         checkAuthorizationHeader(request, requestDescriptor)
         return true
     }
@@ -65,7 +64,7 @@ class ControlAccessInterceptor(private val pdp: PDP,
     private fun checkAuthorizationHeader(request: HttpServletRequest, requestDescriptor: Request) {
         val header = request.getHeader(authenticationHeaderAuthorization)
 
-        //Checks to see if request has authorization header
+        // Checks to see if request has authorization header
         if (header == null) {
             logger.info(
                 LogMessages.forAuthError(
@@ -78,7 +77,7 @@ class ControlAccessInterceptor(private val pdp: PDP,
 
         val pair = header.trim().split(" ")
 
-        //Client includes header "Authorization" with bad value e.g. "Bearer      "
+        // Client includes header "Authorization" with bad value e.g. "Bearer      "
         if (pair.size != 2) {
             logger.info(
                 LogMessages.forAuthError(
@@ -89,7 +88,7 @@ class ControlAccessInterceptor(private val pdp: PDP,
             throw BadRequestException(LogMessages.incorrectAuthHeaderFormatException)
         }
 
-        //Client include token type is different than "Bearer"
+        // Client include token type is different than "Bearer"
         val tokenIncludeType = pair[0].toLowerCase()
         if (tokenIncludeType != includeType) {
 
@@ -104,7 +103,7 @@ class ControlAccessInterceptor(private val pdp: PDP,
 
         val reference = pair[1]
 
-        //Check remaining policies
+        // Check remaining policies
         val tokenHash = getTokenHash(reference)
 
         val token = cache.getToken(tokenHash, false)
@@ -155,7 +154,6 @@ class ControlAccessInterceptor(private val pdp: PDP,
         try {
             val tokenBase64Decoded = tokenGenerator.decodeBase64url(tokenReference)
             return tokenGenerator.getHash(tokenBase64Decoded)
-
         } catch (e: Exception) {
             logger.info(
                 LogMessages.forAuthError(
@@ -166,5 +164,4 @@ class ControlAccessInterceptor(private val pdp: PDP,
             throw UnauthenticatedUserException(LogMessages.incorrectTokenFormat)
         }
     }
-
 }

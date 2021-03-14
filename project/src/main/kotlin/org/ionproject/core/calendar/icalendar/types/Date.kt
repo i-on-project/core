@@ -25,7 +25,6 @@ class Date private constructor(
                 dateComp.subSequence(4, 6).toInt(),
                 dateComp.subSequence(6, 8).toInt()
             )
-
     }
 
     override val value: Any

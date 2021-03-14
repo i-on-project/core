@@ -9,7 +9,7 @@ import org.ionproject.core.writeApi.insertCalendarTerm.sql.InsertCalendarTerm.IN
 import org.springframework.stereotype.Component
 
 @Component
-class InsertCalendarTermRepoImpl (
+class InsertCalendarTermRepoImpl(
     private val tm: TransactionManager
 ) : InsertCalendarTermRepo {
 
@@ -27,5 +27,4 @@ class InsertCalendarTermRepoImpl (
             }()
         }
     }
-
 }

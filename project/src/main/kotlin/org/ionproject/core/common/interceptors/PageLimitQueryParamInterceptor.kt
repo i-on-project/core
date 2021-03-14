@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletResponse
 
 class PageLimitQueryParamInterceptor : HandlerInterceptorAdapter() {
     companion object {
-        const val MAX_LIMIT = 100   //It's unlikely to have anything above it but just in case a limit is established.
+        const val MAX_LIMIT = 100 // It's unlikely to have anything above it but just in case a limit is established.
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val pageValue = request.getParameter("page")
         val limitValue = request.getParameter("limit")
 
-        if (pageValue != null) {            //If its null, user didn't use query params and there is nothing to test
+        if (pageValue != null) { // If its null, user didn't use query params and there is nothing to test
             val page = pageValue.toInt()
             if (page < 0) {
                 throw IncorrectParametersException("The parameter page can't be negative, page=$page")

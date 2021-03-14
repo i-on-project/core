@@ -21,5 +21,4 @@ class ProgrammeMapper : RowMapper<Programme> {
             mutableListOf()
         )
     }
-
 }

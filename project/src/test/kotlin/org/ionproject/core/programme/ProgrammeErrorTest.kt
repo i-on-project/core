@@ -12,10 +12,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
     companion object {
         val notFoundUri = Uri.forProgrammesById(-1)
         val validUri = Uri.forProgrammesById(1)
-
         val notFoundProgrammeOffer = Uri.forProgrammeOfferById(1, -1)
         val badRequestProgrammeOffer = URI("/v0/programmes/1/offers/a")
-        val badRequestUri = URI("/v0/programmes/a")  //Can't use forProgrammesById as won't accept a bad value
+        val badRequestUri = URI("/v0/programmes/a") // Can't use forProgrammesById as won't accept a bad value
     }
 
     /**
@@ -27,10 +26,10 @@ internal class ProgrammeErrorTest : ControllerTester() {
         doGet(notFoundUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -43,9 +42,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     /**
@@ -56,9 +55,9 @@ internal class ProgrammeErrorTest : ControllerTester() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
 
     /**
@@ -66,13 +65,13 @@ internal class ProgrammeErrorTest : ControllerTester() {
      */
     @Test
     fun getInvalidProgrammeOffer() {
-        doGet(notFoundProgrammeOffer)  {
+        doGet(notFoundProgrammeOffer) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -83,8 +82,8 @@ internal class ProgrammeErrorTest : ControllerTester() {
         doGet(badRequestProgrammeOffer) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
 }

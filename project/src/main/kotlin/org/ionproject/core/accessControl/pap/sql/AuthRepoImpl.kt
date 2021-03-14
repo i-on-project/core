@@ -24,8 +24,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
-    private val tokenMapper = TokenMapper { claims : String -> TokenClaims.deserialize(claims) }
-    private val derivedTokenMapper = TokenMapper { claims : String -> DerivedTokenClaims.deserialize(claims) }
+    private val tokenMapper = TokenMapper { claims: String -> TokenClaims.deserialize(claims) }
+    private val derivedTokenMapper = TokenMapper { claims: String -> DerivedTokenClaims.deserialize(claims) }
     private val policyMapper = PolicyMapper()
 
     private val tokenGenerator = TokenGenerator()
@@ -33,7 +33,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
     override fun getToken(tokenHash: String, derived: Boolean): TokenEntity? = tm.run { handle ->
         {
             var mapper = tokenMapper
-            if(derived)
+            if (derived)
                 mapper = derivedTokenMapper
 
             handle.createQuery(GET_TOKEN_QUERY)
@@ -121,7 +121,7 @@ class AuthRepoImpl(private val tm: TransactionManager) : AuthRepo {
 
             val tokenReference: String
             if (importToken == null) {
-                //No token found for the requesting resource, generate new token
+                // No token found for the requesting resource, generate new token
                 val token = generateToken(fatherTokenHash, "urn:org:ionproject:scopes:api:read:calendar")
 
                 val mapper = jacksonObjectMapper()

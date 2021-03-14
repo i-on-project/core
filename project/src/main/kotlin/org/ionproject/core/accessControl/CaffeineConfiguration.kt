@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 @Component
 object CaffeineConfiguration {
 
-     private const val expireTime: Long = 60
+    private const val expireTime: Long = 60
 
     val tokenCache = Caffeine.newBuilder()
         .expireAfterWrite(expireTime, TimeUnit.SECONDS)
@@ -18,5 +18,4 @@ object CaffeineConfiguration {
     val policiesCache = Caffeine.newBuilder()
         .expireAfterWrite(expireTime, TimeUnit.SECONDS)
         .build<String, List<PolicyEntity>>()
-
 }

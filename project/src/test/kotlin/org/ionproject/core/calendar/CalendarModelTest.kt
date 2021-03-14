@@ -29,14 +29,14 @@ import org.junit.jupiter.api.Test
 internal class CalendarModelTest {
     @Test
     fun createCalendar() {
-        val calendar: Calendar =
-                Calendar(
-                        ProductIdentifier("product"),
-                        Version("version"),
-                        CalendarScale("GREGORIAN"),
-                        Method("METHOD"),
-                        mutableListOf()
-                )
+        val calendar =
+            Calendar(
+                ProductIdentifier("product"),
+                Version("version"),
+                CalendarScale("GREGORIAN"),
+                Method("METHOD"),
+                mutableListOf()
+            )
 
         Assertions.assertEquals(calendar.prod.value, "product")
         Assertions.assertEquals(calendar.version.value, "version")
@@ -48,61 +48,67 @@ internal class CalendarModelTest {
     @Test
     fun createTodo() {
         val todo =
-                Todo(
-                        UniqueIdentifier("uid"),
-                        arrayOf(Summary("summary")),
-                        arrayOf(Description("description")),
-                        arrayOf(Attachment(Uri("something"))),
-                        DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeDue(Date.of(2020, 0, 31)),
-                        arrayOf(Categories("categorie"))
-                )
+            Todo(
+                UniqueIdentifier("uid"),
+                arrayOf(Summary("summary")),
+                arrayOf(Description("description")),
+                arrayOf(Attachment(Uri("something"))),
+                DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeDue(Date.of(2020, 0, 31)),
+                arrayOf(Categories("categorie"))
+            )
 
         Assertions.assertEquals(todo.uid.value, "uid")
         Assertions.assertEquals(todo.componentName, "VTODO")
-        Assertions.assertEquals(todo.dtStamp.value.value,
-                DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString())
+        Assertions.assertEquals(
+            todo.dtStamp.value.value,
+            DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString()
+        )
     }
 
     @Test
     fun createJournal() {
         val journal =
-                Journal(
-                        UniqueIdentifier("uid"),
-                        arrayOf(Summary("summary")),
-                        arrayOf(Description("description")),
-                        arrayOf(Attachment(Uri("something"))),
-                        DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        arrayOf(Categories("categorie"))
-                )
+            Journal(
+                UniqueIdentifier("uid"),
+                arrayOf(Summary("summary")),
+                arrayOf(Description("description")),
+                arrayOf(Attachment(Uri("something"))),
+                DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                arrayOf(Categories("categorie"))
+            )
 
         Assertions.assertEquals(journal.uid.value, "uid")
         Assertions.assertEquals(journal.componentName, "VJOURNAL")
-        Assertions.assertEquals(journal.dtStamp.value.value,
-                DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString())
+        Assertions.assertEquals(
+            journal.dtStamp.value.value,
+            DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString()
+        )
     }
 
     @Test
     fun createEvent() {
         val event =
-                Event(
-                        UniqueIdentifier("uid"),
-                        arrayOf(Summary("summary")),
-                        arrayOf(Description("description")),
-                        DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        arrayOf(Categories("categorie")),
-                        DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        DateTimeEnd(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
-                        null
-                )
+            Event(
+                UniqueIdentifier("uid"),
+                arrayOf(Summary("summary")),
+                arrayOf(Description("description")),
+                DateTimeStamp(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeCreated(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                arrayOf(Categories("categorie")),
+                DateTimeStart(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                DateTimeEnd(DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1))),
+                null
+            )
 
         Assertions.assertEquals(event.uid.value, "uid")
         Assertions.assertEquals(event.componentName, "VEVENT")
-        Assertions.assertEquals(event.dtStamp.value.value,
-                DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString())
+        Assertions.assertEquals(
+            event.dtStamp.value.value,
+            DateTime(Date.of(2020, 0, 31), Time.of(1, 1, 1)).toString()
+        )
     }
 }

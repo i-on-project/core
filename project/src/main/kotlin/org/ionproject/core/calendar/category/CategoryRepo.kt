@@ -36,7 +36,6 @@ class CategoryRepoImpl(
 
     override fun byId(id: Int): List<Category>? =
         categories[id]
-
 }
 
 class Category(

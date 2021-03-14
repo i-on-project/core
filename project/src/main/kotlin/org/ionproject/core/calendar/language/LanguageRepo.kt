@@ -34,5 +34,4 @@ class LanguagaRepoImpl(
 
     override fun byId(id: Int): Language? =
         languages[id]
-
 }

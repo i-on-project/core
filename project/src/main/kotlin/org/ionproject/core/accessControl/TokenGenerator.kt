@@ -7,8 +7,7 @@ import org.ionproject.core.common.customExceptions.BadRequestException
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.security.SecureRandom
-import java.util.*
-
+import java.util.Base64
 
 @Component
 class TokenGenerator {
@@ -16,7 +15,7 @@ class TokenGenerator {
     private val STRING_LENGTH = STRING_BIT_SIZE / 8
 
     private val HASH_ALGORITHM = "SHA-256"
-    private val TOKEN_DURATION: Long = 1000L * 60 * 60 * 24 * 365 //Time in milliseconds before token expiring
+    private val TOKEN_DURATION: Long = 1000L * 60 * 60 * 24 * 365 // Time in milliseconds before token expiring
 
     fun generateRandomString(): ByteArray {
         val bytes = ByteArray(STRING_LENGTH)
@@ -27,8 +26,8 @@ class TokenGenerator {
 
     fun encodeBase64url(tokenBytes: ByteArray): String {
         return Base64
-            .getUrlEncoder()                //replaces '+' , '/'  for '-' , '_'
-            .withoutPadding()               //Remove the '='
+            .getUrlEncoder() // replaces '+' , '/'  for '-' , '_'
+            .withoutPadding() // Remove the '='
             .encodeToString(tokenBytes)
     }
 
@@ -52,7 +51,7 @@ class TokenGenerator {
         val md = MessageDigest.getInstance(HASH_ALGORITHM)
         val digest = md.digest(tokenBytes)
 
-        //Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
+        // Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
         return digest.fold("", { str, it -> str + "%02x".format(it) })
     }
 

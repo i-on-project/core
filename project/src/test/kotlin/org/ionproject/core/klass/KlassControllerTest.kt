@@ -25,11 +25,14 @@ internal class KlassControllerTest : ControllerTester() {
             val cacr = "SL"
             val calTerm = "1718v"
             return FullKlass(
-                cid, cacr, calTerm, sections = listOf(
-              ClassSection(cid, cacr, calTerm, "1D"),
-              ClassSection(cid, cacr, calTerm, "1N"),
-              ClassSection(cid, cacr, calTerm, "2D")
-            )
+                cid,
+                cacr,
+                calTerm,
+                sections = listOf(
+                    ClassSection(cid, cacr, calTerm, "1D"),
+                    ClassSection(cid, cacr, calTerm, "1N"),
+                    ClassSection(cid, cacr, calTerm, "2D")
+                )
             )
         }
 
@@ -100,14 +103,15 @@ internal class KlassControllerTest : ControllerTester() {
 
         val expected = SirenBuilder(OutputModel(cid))
             .klass(*klassClasses, "collection")
-            .entities(list.map { klass ->
-                SirenBuilder()
-                    .klass(*klassClasses)
-                    .rel("item")
-                    .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
-                    .toEmbed()
-            })
-            .action(
+            .entities(
+                list.map { klass ->
+                    SirenBuilder()
+                        .klass(*klassClasses)
+                        .rel("item")
+                        .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
+                        .toEmbed()
+                }
+            ).action(
                 Action(
                     name = "search",
                     title = "Search items",
@@ -157,5 +161,4 @@ internal class KlassControllerTest : ControllerTester() {
             jsonPath("$.entities.length()") { value(limit) }
         }
     }
-
 }

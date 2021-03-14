@@ -10,7 +10,6 @@ import org.ionproject.core.common.interceptors.ResourceIdentifierDescriptor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
-
 @Component
 class PDP(private val cache: AccessControlCache) {
 
@@ -27,7 +26,7 @@ class PDP(private val cache: AccessControlCache) {
         scope: String
     ): TokenEntity {
 
-        //Check if the token is revoked
+        // Check if the token is revoked
         if (!token.isValid) {
             logger.info(
                 LogMessages.forAuthErrorDetail(
@@ -39,7 +38,7 @@ class PDP(private val cache: AccessControlCache) {
             throw UnauthenticatedUserException(LogMessages.tokenRevokedMessage)
         }
 
-        //Check if the token is expired
+        // Check if the token is expired
         if (System.currentTimeMillis() > token.expiresAt) {
             logger.info(
                 LogMessages.forAuthErrorDetail(
@@ -50,7 +49,7 @@ class PDP(private val cache: AccessControlCache) {
             throw UnauthenticatedUserException(LogMessages.tokenExpiredMessage)
         }
 
-        //Check permissions
+        // Check permissions
         if (checkPolicies(token, scope, requestDescriptor))
             return token
         else {
@@ -63,7 +62,6 @@ class PDP(private val cache: AccessControlCache) {
             throw ForbiddenActionException(LogMessages.lackOfPrivilegesMessage)
         }
     }
-
 
     /**
      * Check if the user is allowed to do the action he requested
@@ -78,10 +76,10 @@ class PDP(private val cache: AccessControlCache) {
 
         val policy = matchResources(requestDescriptor.resourceIdentifier, policies)
         if (policy != null) {
-            //A path matched with the request, check the associated HTTP method
+            // A path matched with the request, check the associated HTTP method
             val methods = policy.method
 
-            //Check if requested method is valid
+            // Check if requested method is valid
             if (methods.contains(requestDescriptor.method)) {
 
                 logger.info(
@@ -96,7 +94,6 @@ class PDP(private val cache: AccessControlCache) {
 
         return false
     }
-
 
     /**
      * Returns the policy that matches, if any matches

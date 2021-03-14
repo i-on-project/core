@@ -8,8 +8,8 @@ import java.net.URI
 internal class InterceptorsErrorTest : ControllerTester() {
     companion object {
         val badQueryParamsRequest = URI("/v0/courses?page=1&limit=50")
-        val goodQueryParamsRequest = URI("/v0/courses?page=0&limit=50") //Page 0 should always return empty list
-        val excedingQueryParamsLimit = URI("/v0/courses?page=0&limit=500") //Limit is 100
+        val goodQueryParamsRequest = URI("/v0/courses?page=0&limit=50") // Page 0 should always return empty list
+        val excedingQueryParamsLimit = URI("/v0/courses?page=0&limit=500") // Limit is 100
 
         /**
          * No point in testing all endpoints that use
@@ -21,33 +21,33 @@ internal class InterceptorsErrorTest : ControllerTester() {
     @Test
     fun badQueryParamsTest() {
         doGet(badQueryParamsRequest) {
-          header("Authorization", readTokenTest)
+            header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     @Test
     fun goodQueryParamsTest() {
         doGet(goodQueryParamsRequest) {
-          header("Authorization", readTokenTest)
+            header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isOk}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isOk }
+            }.andReturn()
     }
 
     @Test
     fun excedingQueryParamsLimits() {
         doGet(excedingQueryParamsLimit) {
-          header("Authorization", readTokenTest)
+            header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isBadRequest}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isBadRequest }
+            }.andReturn()
     }
 }

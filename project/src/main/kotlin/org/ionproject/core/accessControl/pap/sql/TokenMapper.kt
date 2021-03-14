@@ -8,7 +8,7 @@ import java.sql.ResultSet
 
 class TokenMapper(private val deserialize: (String) -> ClaimsEntity) : RowMapper<TokenEntity> {
     override fun map(rs: ResultSet, ctx: StatementContext?): TokenEntity {
-         val claims = rs.getString("claims")
+        val claims = rs.getString("claims")
 
         return TokenEntity(
             rs.getString("hash"),

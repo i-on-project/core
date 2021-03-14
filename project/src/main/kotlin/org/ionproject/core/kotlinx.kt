@@ -82,4 +82,3 @@ fun PGobject.split(): List<String> {
 }
 
 fun JsonNode.asSanitizedText() = this.asText().removeWhitespace().replace("/", "-")
-

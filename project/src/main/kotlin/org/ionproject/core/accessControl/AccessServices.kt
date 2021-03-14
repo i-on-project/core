@@ -18,13 +18,13 @@ class AccessServices(
         if (!authRepo.checkScopeExistence(scope))
             throw BadRequestException("Inexistent scope")
 
-        //generate the raw string
+        // generate the raw string
         val tokenString = tokenGenerator.generateRandomString()
 
-        //base64url encode the string
+        // base64url encode the string
         val tokenBase64encoded = tokenGenerator.encodeBase64url(tokenString)
 
-        //hash the raw string & store it
+        // hash the raw string & store it
         val tokenHash = tokenGenerator.getHash(tokenString)
         val issueTime = System.currentTimeMillis()
         val token = tokenGenerator.buildToken(tokenHash, issueTime, scope)
@@ -99,5 +99,4 @@ class AccessServices(
         val tokenReference = authRepo.generateImportToken(fatherTokenHash)
         return "access_token=$tokenReference"
     }
-
 }

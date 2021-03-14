@@ -30,33 +30,47 @@ internal class ClassSearchControllerTest : SearchControllerTest() {
 
     @Test
     fun defaultSearch() {
-        test(uriBuilder = { search, _, _, _ ->
-            URI.create("/v0/search?query=$search")
-        })
+        test(
+            uriBuilder = { search, _, _, _ ->
+                URI.create("/v0/search?query=$search")
+            }
+        )
     }
     @Test
     fun searchWithDifferentLimit() {
-        test(5, uriBuilder = { search, limit, _, _ ->
-            URI.create("/v0/search?query=$search&limit=$limit")
-        })
+        test(
+            5,
+            uriBuilder = { search, limit, _, _ ->
+                URI.create("/v0/search?query=$search&limit=$limit")
+            }
+        )
     }
     @Test
     fun searchWithDifferentPage() {
-        test(page = 1, uriBuilder = { search, _, page, _ ->
-            URI.create("/v0/search?query=$search&page=$page")
-        })
+        test(
+            page = 1,
+            uriBuilder = { search, _, page, _ ->
+                URI.create("/v0/search?query=$search&page=$page")
+            }
+        )
     }
     @Test
     fun searchWithDifferentLimitAndPage() {
-        test(5, 1, uriBuilder = { search, limit, page, _ ->
-            URI.create("/v0/search?query=$search&page=$page&limit=$limit")
-        })
+        test(
+            5, 1,
+            uriBuilder = { search, limit, page, _ ->
+                URI.create("/v0/search?query=$search&page=$page&limit=$limit")
+            }
+        )
     }
     @Test
     fun searchWithDifferentTypes() {
-        test(types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION), uriBuilder = { search, _, _, types ->
-            URI.create("/v0/search?query=$search&types=${types.joinToString(",")}")
-        })
+        test(
+            types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION),
+            uriBuilder = { search, _, _, types ->
+                URI.create("/v0/search?query=$search&types=${types.joinToString(",")}")
+            }
+        )
     }
 
     fun test(
