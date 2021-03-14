@@ -1,6 +1,10 @@
 package org.ionproject.core.course
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.course.model.Course
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc

@@ -1,7 +1,13 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.*
-import org.junit.jupiter.api.Assertions.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Relation
+import org.ionproject.core.common.Siren
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.fail
 
 fun assertSiren(expected: Siren?, actual: Siren?) {

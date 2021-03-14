@@ -1,6 +1,10 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Relation
+import org.ionproject.core.common.Siren
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 
 fun Siren.matchMvc(matcher: MockMvcResultMatchersDsl, root: String = "$") {

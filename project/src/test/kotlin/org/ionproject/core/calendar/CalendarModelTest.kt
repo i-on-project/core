@@ -1,6 +1,10 @@
 package org.ionproject.core.calendar
 
-import org.ionproject.core.calendar.icalendar.*
+import org.ionproject.core.calendar.icalendar.Calendar
+import org.ionproject.core.calendar.icalendar.CalendarComponent
+import org.ionproject.core.calendar.icalendar.Event
+import org.ionproject.core.calendar.icalendar.Journal
+import org.ionproject.core.calendar.icalendar.Todo
 import org.ionproject.core.calendar.icalendar.properties.calendar.CalendarScale
 import org.ionproject.core.calendar.icalendar.properties.calendar.Method
 import org.ionproject.core.calendar.icalendar.properties.calendar.ProductIdentifier
