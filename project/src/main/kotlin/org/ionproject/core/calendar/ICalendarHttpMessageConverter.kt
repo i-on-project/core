@@ -14,9 +14,9 @@ import org.springframework.http.converter.AbstractGenericHttpMessageConverter
 import java.io.PrintWriter
 import java.io.Writer
 import java.lang.reflect.Type
+import java.nio.charset.StandardCharsets
 
 class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(Media.MEDIA_TEXT_CALENDAR) {
-
 
     override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
 
@@ -26,7 +26,7 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
         throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        PrintWriter(outputMessage.body).apply {
+        outputMessage.body.writer().apply {
             writeCalendar(t, this)
             close()
         }
