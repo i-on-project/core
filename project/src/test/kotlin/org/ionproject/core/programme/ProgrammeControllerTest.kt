@@ -1,6 +1,7 @@
 package org.ionproject.core.programme
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.programme.model.ProgrammeOffer
 import org.ionproject.core.utils.ControllerTester
@@ -13,7 +14,11 @@ internal class ProgrammeControllerTest : ControllerTester() {
         fun getProgramme(): Programme {
             val pid = 1
             return Programme(
-                pid, "licenciatura eng. inf.", "LEIC", 6, mutableListOf(
+                pid,
+                "licenciatura eng. inf.",
+                "LEIC",
+                6,
+                mutableListOf(
                     ProgrammeOffer(1, "WAD", pid, 2, listOf(6), true),
                     ProgrammeOffer(2, "SL", pid, 1, listOf(6), false),
                     ProgrammeOffer(3, "DM", pid, 3, listOf(1), false)
@@ -36,14 +41,16 @@ internal class ProgrammeControllerTest : ControllerTester() {
         data class ItemOutputModel(val id: Int, val courseId: Int, val termNumber: List<Int>)
 
         val expected = SirenBuilder(OutputModel(p.id, p.name, p.acronym, p.termSize))
-            .entities(p.offers.map {
-                SirenBuilder(ItemOutputModel(it.id, it.courseId, it.termNumber))
-                    .klass("offer")
-                    .title("${it.courseAcr} Offer")
-                    .rel(Uri.relProgrammeOffer)
-                    .link("self", href = Uri.forProgrammeOfferById(it.programmeId, it.id))
-                    .toEmbed()
-            })
+            .entities(
+                p.offers.map {
+                    SirenBuilder(ItemOutputModel(it.id, it.courseId, it.termNumber))
+                        .klass("offer")
+                        .title("${it.courseAcr} Offer")
+                        .rel(Uri.relProgrammeOffer)
+                        .link("self", href = Uri.forProgrammeOfferById(it.programmeId, it.id))
+                        .toEmbed()
+                }
+            )
             .link("self", href = Uri.forProgrammesById(p.id))
             .link("up", href = Uri.forProgrammes())
             .toSiren()
@@ -63,13 +70,15 @@ internal class ProgrammeControllerTest : ControllerTester() {
 
         val expected = SirenBuilder()
             .klass("collection", "programme")
-            .entities(list.map { programme ->
-                SirenBuilder(OutputModel(programme.id, programme.acronym))
-                    .klass("programme")
-                    .rel("item")
-                    .link("self", href = Uri.forProgrammesById(programme.id))
-                    .toEmbed()
-            })
+            .entities(
+                list.map { programme ->
+                    SirenBuilder(OutputModel(programme.id, programme.acronym))
+                        .klass("programme")
+                        .rel("item")
+                        .link("self", href = Uri.forProgrammesById(programme.id))
+                        .toEmbed()
+                }
+            )
             .link("self", href = Uri.forProgrammes())
             .toSiren()
 

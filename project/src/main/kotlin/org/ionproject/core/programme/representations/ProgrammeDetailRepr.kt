@@ -1,9 +1,10 @@
 package org.ionproject.core.programme.representations
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.programme.model.Programme
 import org.ionproject.core.programme.model.ProgrammeOffer
-import org.springframework.http.HttpMethod
 
 /**
  * Output models

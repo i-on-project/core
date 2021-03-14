@@ -1,6 +1,7 @@
 package org.ionproject.core.classSection
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.junit.jupiter.api.Test

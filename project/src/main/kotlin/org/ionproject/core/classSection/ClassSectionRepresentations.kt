@@ -1,7 +1,8 @@
 package org.ionproject.core.classSection
 
-import org.ionproject.core.common.*
-import org.springframework.http.HttpMethod
+import org.ionproject.core.common.Siren
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 
 val classSectionClasses = arrayOf("class", "section")
 

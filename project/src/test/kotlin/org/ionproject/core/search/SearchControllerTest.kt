@@ -5,7 +5,6 @@ import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.ionproject.core.utils.readTokenTest
-import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import java.net.URI
 

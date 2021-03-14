@@ -1,6 +1,5 @@
 package org.ionproject.core.writeApi.insertClassSectionEvents
 
-import org.ionproject.core.calendarTerm.sql.CalendarTermData
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.CALENDAR_SECTION_PARAM
 import org.ionproject.core.writeApi.insertClassSectionEvents.sql.InsertClassSectionEventsData.CALENDAR_TERM_PARAM
@@ -26,7 +25,6 @@ import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
-import java.time.OffsetDateTime
 
 @Component
 class InsertClassSectionEventsRepoImpl(

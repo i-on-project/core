@@ -1,14 +1,12 @@
 package org.ionproject.core.common.transaction
 
 import org.ionproject.core.common.customExceptions.InternalServerErrorException
-import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.jdbi.v3.core.ConnectionException
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-
 
 @Component
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
@@ -33,11 +31,11 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
     override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         var handle: Handle? = null
         try {
-            handle = jdbi.open() //Obtaining a handle wrapper to the datasource
+            handle = jdbi.open() // Obtaining a handle wrapper to the datasource
 
-            handle.begin() //Initiates the transaction
+            handle.begin() // Initiates the transaction
             handle.setTransactionIsolation(isolationLevel)
-            val result = transaction(handle) //Executing transaction code
+            val result = transaction(handle) // Executing transaction code
 
             handle.commit()
             return result
@@ -52,5 +50,4 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
             handle?.close()
         }
     }
-
 }
