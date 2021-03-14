@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.2.6.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    kotlin("jvm") version "1.3.71"
-    kotlin("plugin.spring") version "1.3.71"
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    kotlin("jvm") version "1.4.30"
+    kotlin("plugin.spring") version "1.4.30"
 }
 
 group = "org.ionproject"
@@ -15,7 +16,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies    {
+dependencies {
     // main dependencies
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
