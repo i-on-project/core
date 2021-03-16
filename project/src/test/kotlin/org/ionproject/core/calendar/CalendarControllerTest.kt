@@ -44,43 +44,97 @@ internal class CalendarControllerTest : ControllerTester() {
 
         val calendarByClass =
             """
-                BEGIN:VCALENDARPRODID:/v0/courses/2/classes/1920vVERSION:2.0BEGIN:VTODOUID:1fDTSTAMP:20200101T163530ZSUMMARY;LANGUAGE=en-US:[WAD]:Assignment#1DESCRIPTION;LANGUAGE=en-US:Thefirstassignment.ThegoalistoimplementanHTTPAPI...ATTACH:https://tools.ietf.org/html/rfc7231CREATED:20200101T163530ZDUE:20200419T235900ZCATEGORIES;LANGUAGE=pt-PT:LaboratórioCATEGORIES;LANGUAGE=en-US:LaboratoryCATEGORIES;LANGUAGE=en-GB:LaboratoryEND:VTODOBEGIN:VTODOUID:20DTSTAMP:20200101T163530ZSUMMARY;LANGUAGE=en-US:[WAD]:Assignment#2DESCRIPTION;LANGUAGE=en-US:Thesecondassignment.ThegoalistoimplementaWebClientfortheAPI...CREATED:20200101T163530ZDUE:20200525T235900ZCATEGORIES;LANGUAGE=pt-PT:LaboratórioCATEGORIES;LANGUAGE=en-US:LaboratoryCATEGORIES;LANGUAGE=en-GB:LaboratoryEND:VTODOBEGIN:VTODOUID:21DTSTAMP:20200101T163530ZSUMMARY;LANGUAGE=en-US:[WAD]:Assignment#3DESCRIPTION;LANGUAGE=en-US:Thethirdandfinalassignment.Wrappingitup...CREATED:20200101T163530ZDUE:20200705T235900ZCATEGORIES;LANGUAGE=pt-PT:LaboratórioCATEGORIES;LANGUAGE=en-US:LaboratoryCATEGORIES;LANGUAGE=en-GB:LaboratoryEND:VTODOBEGIN:VEVENTUID:2cDTSTAMP:20200101T163530ZSUMMARY;LANGUAGE=en-US:1stExamWADDESCRIPTION;LANGUAGE=en-US:NormalseasonexamforWAD-1920vCREATED:20200101T163530ZCATEGORIES;LANGUAGE=pt-PT:ExameCATEGORIES;LANGUAGE=en-US:ExamCATEGORIES;LANGUAGE=en-GB:ExamDTSTART:20200619T180000ZDTEND:20200619T193000ZLOCATION:RoomA.2.10END:VEVENTBEGIN:VEVENTUID:2dDTSTAMP:20200101T163530ZSUMMARY;LANGUAGE=en-US:2ndExamWADDESCRIPTION;LANGUAGE=en-US:SecondseasonexamforWAD-1920vCREATED:20200101T163530ZCATEGORIES;LANGUAGE=pt-PT:ExameCATEGORIES;LANGUAGE=en-US:ExamCATEGORIES;LANGUAGE=en-GB:ExamDTSTART:20200701T100000ZDTEND:20200701T123000ZLOCATION:RoomA.2.10END:VEVENTEND:VCALENDAR
+                BEGIN:VCALENDAR
+                PRODID:/v0/courses/2/classes/1920v
+                VERSION:2.0
+                BEGIN:VTODO
+                UID:1f
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:[WAD]:Assignment#1
+                DESCRIPTION;LANGUAGE=en-US:Thefirstassignment.ThegoalistoimplementanHTTPAPI...ATTACH:https://tools.ietf.org/html/rfc7231
+                CREATED:20200101T163530Z
+                DUE:20200419T235900Z
+                CATEGORIES;LANGUAGE=pt-PT:Laboratório
+                CATEGORIES;LANGUAGE=en-US:Laboratory
+                CATEGORIES;LANGUAGE=en-GB:Laboratory
+                END:VTODOBEGIN:VTODOUID:20
+                DTSTAMP:20200101T163530Z
+                SUMMARY;
+                LANGUAGE=en-US:[WAD]:Assignment#2
+                DESCRIPTION;LANGUAGE=en-US:Thesecondassignment.ThegoalistoimplementaWebClientfortheAPI...
+                CREATED:20200101T163530Z
+                DUE:20200525T235900Z
+                CATEGORIES;LANGUAGE=pt-PT:Laboratório
+                CATEGORIES;LANGUAGE=en-US:Laboratory
+                CATEGORIES;LANGUAGE=en-GB:Laboratory
+                END:VTODOBEGIN:VTODOUID:21
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:[WAD]:Assignment#3DESCRIPTION;LANGUAGE=en-US:Thethirdandfinalassignment.Wrappingitup...
+                CREATED:20200101T163530Z
+                DUE:20200705T235900Z
+                CATEGORIES;LANGUAGE=pt-PT:Laboratório
+                CATEGORIES;LANGUAGE=en-US:Laboratory
+                CATEGORIES;LANGUAGE=en-GB:Laboratory
+                END:VTODOBEGIN:VEVENTUID:2c
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:1stExamWADDESCRIPTION;LANGUAGE=en-US:NormalseasonexamforWAD-1920v
+                CREATED:20200101T163530Z
+                CATEGORIES;LANGUAGE=pt-PT:Exame
+                CATEGORIES;LANGUAGE=en-US:Exam
+                CATEGORIES;LANGUAGE=en-GB:Exam
+                DTSTART:20200619T180000Z
+                DTEND:20200619T193000Z
+                LOCATION:RoomA.2.10
+                END:VEVENTBEGIN:VEVENTUID:2d
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:2ndExamWADDESCRIPTION;LANGUAGE=en-US:SecondseasonexamforWAD-1920v
+                CREATED:20200101T163530Z
+                CATEGORIES;LANGUAGE=pt-PT:Exame
+                CATEGORIES;LANGUAGE=en-US:Exam
+                CATEGORIES;LANGUAGE=en-GB:Exam
+                DTSTART:20200701T100000Z
+                DTEND:20200701T123000Z
+                LOCATION:RoomA.2.10
+                END:VEVENTEND:VCALENDAR
             """
 
-        val calendarByClassSection = """BEGIN:VCALENDAR
-PRODID:/v0/courses/2/classes/1920v/LI61D
-VERSION:2.0
-BEGIN:VEVENT
-UID:15
-DTSTAMP:20200101T163530Z
-SUMMARY;LANGUAGE=en-US:WAD Lecture
-DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 19
- 20v-LI61D Class section
-CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=pt-PT:Aula
-CATEGORIES;LANGUAGE=en-US:Lecture
-CATEGORIES;LANGUAGE=en-GB:Lecture
-DTSTART:20190201T110000Z
-DTEND:20190201T123000Z
-LOCATION:Room G.0.1
-RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO
-END:VEVENT
-BEGIN:VEVENT
-UID:16
-DTSTAMP:20200101T163530Z
-SUMMARY;LANGUAGE=en-US:WAD Lecture
-DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 19
- 20v-LI61D Class section
-CREATED:20200101T163530Z
-CATEGORIES;LANGUAGE=pt-PT:Aula
-CATEGORIES;LANGUAGE=en-US:Lecture
-CATEGORIES;LANGUAGE=en-GB:Lecture
-DTSTART:20190201T110000Z
-DTEND:20190201T140000Z
-LOCATION:Room G.0.11
-RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH
-END:VEVENT
-END:VCALENDAR"""
+        val calendarByClassSection =
+            """
+                BEGIN:VCALENDAR
+                PRODID:/v0/courses/2/classes/1920v/LI61D
+                VERSION:2.0
+                BEGIN:VEVENT
+                UID:15
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:WAD Lecture
+                DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 19
+                 20v-LI61D Class section
+                CREATED:20200101T163530Z
+                CATEGORIES;LANGUAGE=pt-PT:Aula
+                CATEGORIES;LANGUAGE=en-US:Lecture
+                CATEGORIES;LANGUAGE=en-GB:Lecture
+                DTSTART:20190201T110000Z
+                DTEND:20190201T123000Z
+                LOCATION:Room G.0.1
+                RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO
+                END:VEVENT
+                BEGIN:VEVENT
+                UID:16
+                DTSTAMP:20200101T163530Z
+                SUMMARY;LANGUAGE=en-US:WAD Lecture
+                DESCRIPTION;LANGUAGE=en-US:Lectures of the WAD curricular unit for the 19
+                 20v-LI61D Class section
+                CREATED:20200101T163530Z
+                CATEGORIES;LANGUAGE=pt-PT:Aula
+                CATEGORIES;LANGUAGE=en-US:Lecture
+                CATEGORIES;LANGUAGE=en-GB:Lecture
+                DTSTART:20190201T110000Z
+                DTEND:20190201T140000Z
+                LOCATION:Room G.0.11
+                RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH
+                END:VEVENT
+                END:VCALENDAR
+            """
 
         val classCalendarCal4j = buildCalendarForClass()
         val classSectionCalendarCal4j = buildCalendarForClassSection()
