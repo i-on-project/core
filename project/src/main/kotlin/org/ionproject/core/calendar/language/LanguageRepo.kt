@@ -22,11 +22,11 @@ class LanguagaRepoImpl(
 
     private fun populateLanguageMap() {
         val languages = transactionManager.run {
-            it
-                .createQuery(LanguageData.ALL_LANGUAGES_QUERY)
+            it.createQuery(LanguageData.ALL_LANGUAGES_QUERY)
                 .map(languageMapper)
                 .list()
         }
+
         languages?.forEach {
             this.languages += it
         }

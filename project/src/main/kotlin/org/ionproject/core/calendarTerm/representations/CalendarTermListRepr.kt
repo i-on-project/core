@@ -32,11 +32,10 @@ fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
         .link("self", href = Uri.forPagingCalTerms(page, limit))
         .link("next", href = Uri.forPagingCalTerms(page + 1, limit))
         .let {
-            {
-                if (page > 0)
-                    it.link("previous", href = Uri.forPagingCalTerms(page - 1, limit))
-                it
-            }()
+            if (page > 0)
+                it.link("previous", href = Uri.forPagingCalTerms(page - 1, limit))
+
+            it
         }.toSiren()
 
 private fun CalendarTerm.toEmbed() =
