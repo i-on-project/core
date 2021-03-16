@@ -1,6 +1,10 @@
 package org.ionproject.core.course
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.course.model.Course
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
@@ -55,8 +59,10 @@ internal class CourseControllerTest : ControllerTester() {
             )
             .link("self", href = Uri.forCourseById(course.id))
             .link(
-                "current", href = Uri.forKlassByCalTerm(
-                    current.id, current.term
+                "current",
+                href = Uri.forKlassByCalTerm(
+                    current.id,
+                    current.term
                         ?: throw AssertionError("The Calendar Term of the current course must not be null")
                 )
             )
@@ -81,22 +87,25 @@ internal class CourseControllerTest : ControllerTester() {
 
         val expected = SirenBuilder()
             .klass("course", "collection")
-            .entities(list.map { course ->
-                val current = getCurrentCourse(course)
-                SirenBuilder(OutputModel(course.id, course.acronym))
-                    .klass("class")
-                    .rel("item")
-                    .link("self", href = Uri.forCourseById(course.id))
-                    .link(
-                        "current", href = Uri.forKlassByCalTerm(
-                            current.id, current.term
-                                ?: throw AssertionError("The Calendar Term of the current course must not be null")
+            .entities(
+                list.map { course ->
+                    val current = getCurrentCourse(course)
+                    SirenBuilder(OutputModel(course.id, course.acronym))
+                        .klass("class")
+                        .rel("item")
+                        .link("self", href = Uri.forCourseById(course.id))
+                        .link(
+                            "current",
+                            href = Uri.forKlassByCalTerm(
+                                current.id,
+                                current.term
+                                    ?: throw AssertionError("The Calendar Term of the current course must not be null")
+                            )
                         )
-                    )
-                    .link("collection", href = selfHref)
-                    .toEmbed()
-            })
-            .action(
+                        .link("collection", href = selfHref)
+                        .toEmbed()
+                }
+            ).action(
                 Action(
                     name = "search",
                     title = "Search Items",

@@ -1,7 +1,18 @@
 package org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.parameters.*
+import org.ionproject.core.calendar.icalendar.properties.parameters.CalendarUserType
+import org.ionproject.core.calendar.icalendar.properties.parameters.CommonName
+import org.ionproject.core.calendar.icalendar.properties.parameters.Delegatees
+import org.ionproject.core.calendar.icalendar.properties.parameters.Delegators
+import org.ionproject.core.calendar.icalendar.properties.parameters.DirectoryEntryReference
+import org.ionproject.core.calendar.icalendar.properties.parameters.GroupListMembership
+import org.ionproject.core.calendar.icalendar.properties.parameters.Language
+import org.ionproject.core.calendar.icalendar.properties.parameters.ParticipationRole
+import org.ionproject.core.calendar.icalendar.properties.parameters.ParticipationStatus
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
+import org.ionproject.core.calendar.icalendar.properties.parameters.RSVPExpectation
+import org.ionproject.core.calendar.icalendar.properties.parameters.SentBy
 import org.ionproject.core.calendar.icalendar.types.CalendarUserAddress
 
 class Attendee(

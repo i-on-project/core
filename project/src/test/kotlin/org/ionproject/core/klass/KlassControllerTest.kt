@@ -1,7 +1,11 @@
 package org.ionproject.core.klass
 
 import org.ionproject.core.classSection.ClassSection
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.fluentAdd
 import org.ionproject.core.klass.model.FullKlass
 import org.ionproject.core.klass.model.Klass
@@ -21,11 +25,14 @@ internal class KlassControllerTest : ControllerTester() {
             val cacr = "SL"
             val calTerm = "1718v"
             return FullKlass(
-                cid, cacr, calTerm, sections = listOf(
-              ClassSection(cid, cacr, calTerm, "1D"),
-              ClassSection(cid, cacr, calTerm, "1N"),
-              ClassSection(cid, cacr, calTerm, "2D")
-            )
+                cid,
+                cacr,
+                calTerm,
+                sections = listOf(
+                    ClassSection(cid, cacr, calTerm, "1D"),
+                    ClassSection(cid, cacr, calTerm, "1N"),
+                    ClassSection(cid, cacr, calTerm, "2D")
+                )
             )
         }
 
@@ -96,14 +103,15 @@ internal class KlassControllerTest : ControllerTester() {
 
         val expected = SirenBuilder(OutputModel(cid))
             .klass(*klassClasses, "collection")
-            .entities(list.map { klass ->
-                SirenBuilder()
-                    .klass(*klassClasses)
-                    .rel("item")
-                    .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
-                    .toEmbed()
-            })
-            .action(
+            .entities(
+                list.map { klass ->
+                    SirenBuilder()
+                        .klass(*klassClasses)
+                        .rel("item")
+                        .link("self", href = Uri.forKlassByCalTerm(klass.courseId, klass.calendarTerm))
+                        .toEmbed()
+                }
+            ).action(
                 Action(
                     name = "search",
                     title = "Search items",
@@ -153,5 +161,4 @@ internal class KlassControllerTest : ControllerTester() {
             jsonPath("$.entities.length()") { value(limit) }
         }
     }
-
 }

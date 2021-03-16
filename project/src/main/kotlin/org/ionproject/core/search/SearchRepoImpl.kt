@@ -37,8 +37,6 @@ class SearchRepoImpl(
                     throw InvalidSearchQuerySyntaxException(query.query, cause)
                 else throw e
             }
-
         }
     }
-
 }

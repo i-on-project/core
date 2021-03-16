@@ -23,12 +23,11 @@ internal class CalTermsErrorTest : ControllerTester() {
         doGet(notFoundUriByWrongTerm) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
-
 
     /**
      * Requesting course with a content-type "JSON-HOME"
@@ -40,9 +39,9 @@ internal class CalTermsErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     @Test
@@ -51,9 +50,8 @@ internal class CalTermsErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
-
 }

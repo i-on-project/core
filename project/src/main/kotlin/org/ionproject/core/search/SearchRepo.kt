@@ -18,8 +18,6 @@ object SearchableEntities {
 
     const val ALL =
         "$PROGRAMME,$COURSE,$CLASS,$CLASS_SECTION,$CALENDAR_TERM"
-
-
 }
 
 enum class SearchableEntity(

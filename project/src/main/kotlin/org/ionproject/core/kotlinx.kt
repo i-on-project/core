@@ -5,7 +5,6 @@ import org.ionproject.core.common.querybuilder.Condition
 import org.jdbi.v3.core.statement.Query
 import org.postgresql.util.PGobject
 import org.springframework.util.MultiValueMap
-import java.sql.Timestamp
 
 fun CharSequence.toInt(): Int {
     var acc = 0
@@ -83,4 +82,3 @@ fun PGobject.split(): List<String> {
 }
 
 fun JsonNode.asSanitizedText() = this.asText().removeWhitespace().replace("/", "-")
-

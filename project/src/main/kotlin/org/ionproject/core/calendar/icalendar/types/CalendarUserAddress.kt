@@ -8,5 +8,4 @@ class CalendarUserAddress(override val value: String) : ICalendarDataType {
 
     override val name: String
         get() = Companion.name
-
 }

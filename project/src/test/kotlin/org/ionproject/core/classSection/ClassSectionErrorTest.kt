@@ -13,11 +13,8 @@ internal class ClassSectionErrorTest : ControllerTester() {
         val notFoundUriByWrongCID = Uri.forClassSectionById(-1, "1920i", "1D")
         val notFoundUriByWrongCalTerm = Uri.forClassSectionById(1, "505050", "1D")
         val notFoundUriByWrongSID = Uri.forClassSectionById(1, "1920i", "505050")
-
         val validUri = Uri.forClassSectionById(1, "1920i", "1D")
-
         val badRequestUri = URI("/v0/courses/a/classes/1920i/1D")
-
     }
 
     /**
@@ -29,10 +26,10 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(notFoundUriByWrongCID) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -44,10 +41,10 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(notFoundUriByWrongCalTerm) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -59,10 +56,10 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(notFoundUriByWrongSID) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -75,9 +72,9 @@ internal class ClassSectionErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     /**
@@ -88,10 +85,8 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
-
-
 }

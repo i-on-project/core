@@ -1,7 +1,11 @@
 package org.ionproject.core.calendar.icalendar.properties.components.relationship
 
 import org.ionproject.core.calendar.icalendar.properties.ParameterizedProperty
-import org.ionproject.core.calendar.icalendar.properties.parameters.*
+import org.ionproject.core.calendar.icalendar.properties.parameters.CommonName
+import org.ionproject.core.calendar.icalendar.properties.parameters.DirectoryEntryReference
+import org.ionproject.core.calendar.icalendar.properties.parameters.Language
+import org.ionproject.core.calendar.icalendar.properties.parameters.PropertyParameter
+import org.ionproject.core.calendar.icalendar.properties.parameters.SentBy
 import org.ionproject.core.calendar.icalendar.types.CalendarUserAddress
 
 class Organizer(

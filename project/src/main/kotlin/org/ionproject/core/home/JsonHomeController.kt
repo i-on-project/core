@@ -14,12 +14,11 @@ private const val specLocation = "https://github.com/i-on-project/core/tree/mast
 private const val amSpecLocation = "https://github.com/i-on-project/core/tree/master/docs/access_control"
 
 private val specUri = URI(specLocation)
-private val coursesSpecUri = URI("${specLocation}/courses.md")
+private val coursesSpecUri = URI("$specLocation/courses.md")
 private val calendarTermsSpecUri = URI("$specLocation/calendar-terms.md")
 private val searchSpecUri = URI("$specLocation/search.md")
 private val programmesSpecUri = URI("$specLocation/programme.md")
 private val accessManagerSpecUri = URI("$amSpecLocation/Http_Exchanges.md")
-
 
 private const val apiName = "i-on Core"
 

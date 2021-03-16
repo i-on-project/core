@@ -22,5 +22,4 @@ class Text(
     override fun hashCode(): Int {
         return value.hashCode()
     }
-
 }

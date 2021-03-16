@@ -1,6 +1,6 @@
 package org.ionproject.core.calendar.icalendar.types
 
-import java.util.*
+import java.util.Base64
 
 class Binary(override val value: String) : ICalendarDataType {
 

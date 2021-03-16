@@ -48,11 +48,11 @@ class SearchSirenTest {
 
         val noResultsSiren = buildSiren(noResultsQuery, noResultsResults)
 
-        fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>) : Siren {
+        fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>): Siren {
             return buildSiren(searchQuery.query, searchQuery.limit, searchQuery.page, searchQuery.types.map { it.toString() }, results)
         }
 
-        fun buildSiren(search: String, limit: Int, page: Int, types: List<String>, results: List<SearchResult>) : Siren =
+        fun buildSiren(search: String, limit: Int, page: Int, types: List<String>, results: List<SearchResult>): Siren =
             SirenBuilder()
                 .klass(SEARCH, RESULT, COLLECTION)
                 .entities(

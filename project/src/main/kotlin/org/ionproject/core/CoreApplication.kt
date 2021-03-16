@@ -40,7 +40,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
         // Additional options for Jackson
         converter.objectMapper // default used by spring
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)  // ignore null properties
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL) // ignore null properties
             .configure(SerializationFeature.INDENT_OUTPUT, true) // json pretty output
             .registerModule(
                 SimpleModule()
@@ -48,14 +48,13 @@ class CoreSerializationConfig : WebMvcConfigurer {
                     .addSerializer(Calendar::class.java, CalendarSerializer())
             )
 
-
         converter.supportedMediaTypes = listOf(Media.MEDIA_JSON)
 
-        //Registering Message Converters
+        // Registering Message Converters
         converters.add(0, SirenMessageConverter(converter))
         converters.add(0, JsonHomeMessageConverter(converter))
         converters.add(0, ProblemJsonMessageConverter(converter))
-        converters.add(0, ICalendarHttpMessageConverter())  // Calendar -> text/calendar || application/vdn.siren+json
+        converters.add(0, ICalendarHttpMessageConverter()) // Calendar -> text/calendar || application/vdn.siren+json
 
         /**
          * Converters were added to position 0 to be more privileged than the default
@@ -81,7 +80,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
     }
 
     @Autowired
-    lateinit var pdp : PDP
+    lateinit var pdp: PDP
 
     @Autowired
     lateinit var tokenGenerator: TokenGenerator
@@ -90,7 +89,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
     lateinit var cache: AccessControlCache
 
     @Bean
-    fun controlAccessInterceptor() : ControlAccessInterceptor {
+    fun controlAccessInterceptor(): ControlAccessInterceptor {
         return ControlAccessInterceptor(pdp, tokenGenerator, cache)
     }
 }

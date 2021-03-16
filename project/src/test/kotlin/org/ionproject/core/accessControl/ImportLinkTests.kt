@@ -44,7 +44,6 @@ internal class ImportLinkTests : ControllerTester() {
             .andDo { print() }
             .andExpect { status { isOk } }
             .andReturn()
-
     }
 
     /**
@@ -71,7 +70,6 @@ internal class ImportLinkTests : ControllerTester() {
             .andDo { print() }
             .andExpect { status { isOk } }
             .andReturn()
-
     }
 
     /**
@@ -87,7 +85,6 @@ internal class ImportLinkTests : ControllerTester() {
             .andExpect { status { isNotFound } }
             .andReturn()
     }
-
 
     /**
      * Tries to issue an import URL two times and check if its shared,
@@ -117,7 +114,6 @@ internal class ImportLinkTests : ControllerTester() {
 
         Assertions.assertEquals(link1.url, link2.url)
     }
-
 
     private fun convertToJson(result: String): ImportLinkRepr {
         val mapper = jacksonObjectMapper()

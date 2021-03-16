@@ -22,7 +22,6 @@ class LoggerFilter : OncePerRequestFilter() {
         try {
             startTime = System.currentTimeMillis()
 
-
             logger.info(
                 LogMessages.forLoggerAccessMessage(
                     request.remoteAddr,
@@ -43,5 +42,4 @@ class LoggerFilter : OncePerRequestFilter() {
             )
         }
     }
-
 }

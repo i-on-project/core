@@ -1,6 +1,10 @@
 package org.ionproject.core.calendar.representations
 
-import org.ionproject.core.calendar.icalendar.types.*
+import org.ionproject.core.calendar.icalendar.types.Date
+import org.ionproject.core.calendar.icalendar.types.DateTime
+import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
+import org.ionproject.core.calendar.icalendar.types.Recur
+import org.ionproject.core.calendar.icalendar.types.Time
 
 class SirenDatatypeMapper : DatatypeMapper() {
     override fun map(value: ICalendarDataType): Any {
@@ -24,7 +28,7 @@ class SirenDatatypeMapper : DatatypeMapper() {
 
             recur.until?.let {
                 val value = map(it)
-                append(";UNTIL=${value}")
+                append(";UNTIL=$value")
             }
 
             recur.count?.let {

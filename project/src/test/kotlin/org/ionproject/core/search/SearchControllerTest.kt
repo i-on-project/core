@@ -5,7 +5,6 @@ import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
 import org.ionproject.core.utils.readTokenTest
-import org.junit.jupiter.api.Test
 import org.springframework.test.web.servlet.get
 import java.net.URI
 
@@ -29,8 +28,8 @@ internal abstract class SearchControllerTest : ControllerTester() {
         page: Int = defaultPage,
         types: List<String> = defaultTypes,
         expectedResults: List<SearchResult> = defaultResults(limit, page, types),
-        uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI)
-    {
+        uriBuilder: (search: String, limit: Int, page: Int, types: List<String>) -> URI
+    ) {
         val expected = SearchSirenTest.buildSiren(search, limit, page, types, expectedResults)
 
         mocker.get(uriBuilder(search, limit, page, types)) {

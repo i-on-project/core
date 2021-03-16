@@ -43,4 +43,3 @@ internal object ClassSectionData {
        where CR.$COURSE_ID=:$CID and $CAL_TERM=:$CAL_TERM and CS.$ID=:$ID 
     """
 }
-

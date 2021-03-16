@@ -11,7 +11,6 @@ internal class IssueTokenTests : ControllerTester() {
 
     companion object {
         val issueTokenUri = URI(Uri.issueToken)
-
     }
 
     /**
@@ -54,7 +53,6 @@ internal class IssueTokenTests : ControllerTester() {
         doPost(issueTokenUri) {
             header("Authorization", "Bearer $issueTokenTest")
             header("Content-Type", "application/json")
-
         }
             .andDo { print() }
             .andExpect { status { isBadRequest } }

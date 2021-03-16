@@ -1,6 +1,5 @@
 package org.ionproject.core.course
 
-
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
@@ -13,9 +12,7 @@ internal class CourseErrorTest : ControllerTester() {
     companion object {
         val notFoundUri = Uri.forCourseById(-1)
         val validUri = Uri.forCourseById(1)
-
         val badRequestUri = URI("/v0/courses/a")
-
     }
 
     /**
@@ -27,10 +24,10 @@ internal class CourseErrorTest : ControllerTester() {
         doGet(notFoundUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -43,9 +40,9 @@ internal class CourseErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     /**
@@ -56,10 +53,8 @@ internal class CourseErrorTest : ControllerTester() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
-
-
 }

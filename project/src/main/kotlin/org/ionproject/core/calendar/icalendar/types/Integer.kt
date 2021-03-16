@@ -7,5 +7,4 @@ class Integer(
 
     override val name: String
         get() = "INTEGER"
-
 }

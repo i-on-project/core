@@ -1,6 +1,5 @@
 package org.ionproject.core.klass
 
-
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
@@ -13,11 +12,9 @@ internal class KlassErrorTest : ControllerTester() {
     companion object {
         val notFoundUriByCourseId = Uri.forKlasses(-1)
         val validUriByCourseId = Uri.forKlasses(1)
-
         val notFoundUriByCalTerm = Uri.forKlassByCalTerm(1, "xijsx")
         val notFoundUriByCalTermWithBadCID = Uri.forKlassByCalTerm(-1, "1920i")
         val validUriByCalTerm = Uri.forKlassByCalTerm(1, "1920i")
-
         val badRequestUri = URI("/v0/courses/a/classes")
         val badRequestUriCalTerm = URI("/v0/courses/a/classes/1920i/")
     }
@@ -30,10 +27,10 @@ internal class KlassErrorTest : ControllerTester() {
         doGet(notFoundUriByCourseId) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -46,9 +43,9 @@ internal class KlassErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     /**
@@ -59,9 +56,9 @@ internal class KlassErrorTest : ControllerTester() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
 
     /**
@@ -72,10 +69,10 @@ internal class KlassErrorTest : ControllerTester() {
         doGet(notFoundUriByCalTerm) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 
     /**
@@ -87,9 +84,9 @@ internal class KlassErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isNotAcceptable} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isNotAcceptable } }
+            .andReturn()
     }
 
     /**
@@ -100,9 +97,9 @@ internal class KlassErrorTest : ControllerTester() {
         doGet(badRequestUriCalTerm) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect { status {isBadRequest} }
-                .andReturn()
+            .andDo { print() }
+            .andExpect { status { isBadRequest } }
+            .andReturn()
     }
 
     /**
@@ -113,9 +110,9 @@ internal class KlassErrorTest : ControllerTester() {
         doGet(notFoundUriByCalTermWithBadCID) {
             header("Authorization", readTokenTest)
         }
-                .andDo { print() }
-                .andExpect {
-                    status {isNotFound}
-                }.andReturn()
+            .andDo { print() }
+            .andExpect {
+                status { isNotFound }
+            }.andReturn()
     }
 }

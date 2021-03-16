@@ -1,8 +1,9 @@
 package org.ionproject.core.course.representations
 
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Siren
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.ionproject.core.course.model.Course
-import org.springframework.http.HttpMethod
 
 /**
  * Output models
@@ -21,7 +22,6 @@ fun Course.courseToDetailRepr(): Siren {
         .link("collection", href = Uri.forCourses())
         .toSiren()
 }
-
 
 private fun buildSubentities(courseId: Int) =
     SirenBuilder()

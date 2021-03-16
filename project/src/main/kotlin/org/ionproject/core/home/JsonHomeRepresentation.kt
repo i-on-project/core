@@ -13,7 +13,8 @@ enum class Status {
 
 // Immutables
 class ApiObject(
-    val title: String, val links: Map<String, URI>? = null
+    val title: String,
+    val links: Map<String, URI>? = null
 )
 
 /**
@@ -49,7 +50,8 @@ class ResourceObject(
 )
 
 class AuthenticationScheme(
-    val scheme: String, val realms: List<String>
+    val scheme: String,
+    val realms: List<String>
 )
 
 // Mutables

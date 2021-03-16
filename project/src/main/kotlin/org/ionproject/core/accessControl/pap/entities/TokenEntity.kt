@@ -18,7 +18,7 @@ class TokenClaims(
     val scope: String
 ) : ClaimsEntity {
     companion object {
-         fun deserialize(claims: String): TokenClaims {
+        fun deserialize(claims: String): TokenClaims {
             val mapper = jacksonObjectMapper()
             return mapper.readValue(claims, TokenClaims::class.java)
         }

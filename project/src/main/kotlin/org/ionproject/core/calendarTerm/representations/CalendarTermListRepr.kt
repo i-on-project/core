@@ -1,7 +1,11 @@
 package org.ionproject.core.calendarTerm.representations
 
 import org.ionproject.core.calendarTerm.model.CalendarTerm
-import org.ionproject.core.common.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Media
+import org.ionproject.core.common.SirenBuilder
+import org.ionproject.core.common.Uri
 import org.springframework.http.HttpMethod
 
 /**

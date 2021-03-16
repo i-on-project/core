@@ -38,4 +38,3 @@ internal class ProgrammeModelTest {
         Assertions.assertEquals(optional, p.optional)
     }
 }
-

@@ -23,4 +23,3 @@ class Categories(
 
     override val value: MultiValue<Text> = MultiValue(*categories.toText())
 }
-

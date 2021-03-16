@@ -13,7 +13,7 @@ object ResourceIds {
     const val VERSION = "v0"
     const val ALL_VERSIONS = "*"
 
-    //ERROR
+    // ERROR
     const val ERROR = "error"
 
     const val INSERT_CLASS_SECTION_EVENTS = "insertClassSectionEvents"

@@ -31,32 +31,47 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
 
     @Test
     fun defaultSearch() {
-        test("Lab", expectedResults = results.take(4), uriBuilder = { search, _, _, _ ->
-            URI.create("/v0/search?query=$search")
-        })
+        test(
+            "Lab", expectedResults = results.take(4),
+            uriBuilder = { search, _, _, _ ->
+                URI.create("/v0/search?query=$search")
+            }
+        )
     }
     @Test
     fun searchWithDifferentLimit() {
-        test("Lab", 5, uriBuilder = { search, limit, _, _ ->
-            URI.create("/v0/search?query=$search&limit=$limit")
-        })
+        test(
+            "Lab", 5,
+            uriBuilder = { search, limit, _, _ ->
+                URI.create("/v0/search?query=$search&limit=$limit")
+            }
+        )
     }
     @Test
     fun searchWithDifferentPage() {
-        test("Lab", page = 1, expectedResults = emptyList(), uriBuilder = { search, _, page, _ ->
-            URI.create("/v0/search?query=$search&page=$page")
-        })
+        test(
+            "Lab", page = 1, expectedResults = emptyList(),
+            uriBuilder = { search, _, page, _ ->
+                URI.create("/v0/search?query=$search&page=$page")
+            }
+        )
     }
     @Test
     fun searchWithDifferentLimitAndPage() {
-        test("Lab", 1, 1, expectedResults = results.drop(1).take(1), uriBuilder = { search, limit, page, _ ->
-            URI.create("/v0/search?query=$search&page=$page&limit=$limit")
-        })
+        test(
+            "Lab", 1, 1, expectedResults = results.drop(1).take(1),
+            uriBuilder = { search, limit, page, _ ->
+                URI.create("/v0/search?query=$search&page=$page&limit=$limit")
+            }
+        )
     }
     @Test
     fun searchWithDifferentTypes() {
-        test("Lab", expectedResults = results.take(1), types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION), uriBuilder = { search, _, _, types ->
-            URI.create("/v0/search?query=$search&types=${types.joinToString(",")}")
-        })
+        test(
+            "Lab", expectedResults = results.take(1), types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION),
+            uriBuilder = { search, _, _, types ->
+                URI.create("/v0/search?query=$search&types=${types.joinToString(",")}")
+            }
+        )
     }
 }

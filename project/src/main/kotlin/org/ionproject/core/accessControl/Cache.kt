@@ -27,15 +27,15 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
      * saves the requested token by the hash for future
      * requests.
      */
-    fun getToken(tokenHash: String, derived: Boolean) : TokenEntity {
+    fun getToken(tokenHash: String, derived: Boolean): TokenEntity {
         return tokenCache.get(tokenHash) { readTokenDb(tokenHash, derived) }
             ?: throw BadRequestException("An error occurred during cache read, you're not supposed to get this message if you do contact the dev team...")
     }
 
-    fun readTokenDb(tokenHash: String, derived: Boolean) : TokenEntity {
+    fun readTokenDb(tokenHash: String, derived: Boolean): TokenEntity {
         val token = pap.getToken(tokenHash, derived)
 
-        //Check if the token exists
+        // Check if the token exists
         if (token == null) {
             logger.info(
                 LogMessages.forAuthError(
@@ -48,7 +48,6 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
         return token
     }
 
-
     /**
      * gets the policies out of the cash if they exist
      * or reads them from the database.
@@ -60,7 +59,7 @@ class AccessControlCache(private val pap: AuthRepoImpl, cacheConfig: CaffeineCon
      * occur a 403 Forbidden because of the wrong policies for the incorrect version.
      *
      */
-    fun getPolicies(scope: String, version: String) : List<PolicyEntity> {
+    fun getPolicies(scope: String, version: String): List<PolicyEntity> {
         val id = "$scope.$version"
 
         return policiesCache.get(id) { pap.getPolicies(scope, version) }

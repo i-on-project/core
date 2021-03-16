@@ -16,5 +16,4 @@ class UriTemplateSerializer : StdSerializer<UriTemplate>(UriTemplate::class.java
         }
         gen.writeString(value.toString())
     }
-
 }

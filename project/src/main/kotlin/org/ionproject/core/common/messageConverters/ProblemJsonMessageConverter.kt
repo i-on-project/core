@@ -25,5 +25,4 @@ class ProblemJsonMessageConverter(private val converter: MappingJackson2HttpMess
 
     override fun readInternal(clazz: Class<out ProblemJson>, inputMessage: HttpInputMessage): ProblemJson =
         throw UnsupportedOperationException("This converter can't read.")
-
 }

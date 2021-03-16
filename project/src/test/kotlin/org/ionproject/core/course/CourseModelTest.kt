@@ -20,4 +20,3 @@ internal class CourseModelTest {
         Assertions.assertEquals(calterm, course.term)
     }
 }
-

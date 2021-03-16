@@ -29,5 +29,4 @@ class SirenMessageConverter(private val converter: MappingJackson2HttpMessageCon
 
     override fun readInternal(clazz: Class<out Any>, inputMessage: HttpInputMessage): Any =
         throw UnsupportedOperationException("This converter can't read.")
-
 }

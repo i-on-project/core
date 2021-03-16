@@ -11,12 +11,10 @@ import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpOutputMessage
 import org.springframework.http.MediaType
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter
-import java.io.PrintWriter
 import java.io.Writer
 import java.lang.reflect.Type
 
 class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calendar>(Media.MEDIA_TEXT_CALENDAR) {
-
 
     override fun canRead(clazz: Class<*>, mediaType: MediaType?): Boolean = false
 
@@ -26,7 +24,7 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
         throw UnsupportedOperationException("This message converter can't read.")
 
     override fun writeInternal(t: Calendar, type: Type?, outputMessage: HttpOutputMessage) {
-        PrintWriter(outputMessage.body).apply {
+        outputMessage.body.writer().apply {
             writeCalendar(t, this)
             close()
         }
@@ -74,7 +72,9 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
             val parameters = if (this is ParameterizedProperty) {
                 parameters.map { ";${it.name}=${it.values.joinToString(",")}" }
                     .let { if (it.isNotEmpty()) it.reduce(String::plus) else "" }
-            } else ""
+            } else {
+                ""
+            }
 
             val value =
                 if (this is MultiValuedProperty<*>) {
@@ -84,10 +84,13 @@ class ICalendarHttpMessageConverter : AbstractGenericHttpMessageConverter<Calend
                             (it as Text).iCalendarFormat()
                         }.joinToString()
                     } else value.joinToString()
-                } else
+                } else {
                     if (value is Text) {
                         (value as Text).iCalendarFormat()
-                    } else value.toString()
+                    } else {
+                        value.toString()
+                    }
+                }
 
             writer.writeICalendar("$name$parameters:$value")
         }

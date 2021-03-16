@@ -1,7 +1,13 @@
 package org.ionproject.core.utils
 
-import org.ionproject.core.common.*
-import org.junit.jupiter.api.Assertions.*
+import org.ionproject.core.common.Action
+import org.ionproject.core.common.EmbeddedRepresentation
+import org.ionproject.core.common.Field
+import org.ionproject.core.common.Relation
+import org.ionproject.core.common.Siren
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.fail
 
 fun assertSiren(expected: Siren?, actual: Siren?) {
@@ -21,7 +27,6 @@ fun assertSiren(expected: Siren?, actual: Siren?) {
         assertEquals(expected.title, actual.title)
         assertCollection(expected.actions, actual.actions, ::assertAction)
         assertCollection(expected.links, actual.links, ::assertRelation)
-
     } else {
         assertNull(actual, "Expected actual to be null but is wasn't.")
     }
@@ -45,7 +50,6 @@ fun assertEmbeddedSiren(expected: EmbeddedRepresentation?, actual: EmbeddedRepre
         assertEquals(expected.title, actual.title)
         assertCollection(expected.actions, actual.actions, ::assertAction)
         assertCollection(expected.links, actual.links, ::assertRelation)
-
     } else {
         assertNull(actual, "Expected actual to be null but is wasn't.")
     }
@@ -108,7 +112,6 @@ fun <T> assertCollection(expected: Collection<T>?, actual: Collection<T>?, itemA
             itemAsserter(expectedIterator.next(), actualIterator.next())
         }
         if (actualIterator.hasNext()) fail("The expected collection is shorter.")
-
     } else {
         assertNull(actual, "Expected actual to be null but it wasn't.")
     }

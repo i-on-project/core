@@ -54,29 +54,28 @@ internal class HomeDocumentTest : ControllerTester() {
                 ),
                 "programmes" to Resource(
                     "/v0/programmes",
-                     Hints(
+                    Hints(
                         listOf("GET"),
                         mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
-                    "https://github.com/i-on-project/core/tree/master/docs/api/programme.md"
+                        "https://github.com/i-on-project/core/tree/master/docs/api/programme.md"
                     )
                 ),
                 "revokeToken" to Resource(
                     "/revokeToken",
                     Hints(
-                            listOf("POST"),
-                            mapOf("application/x-www-form-urlencoded" to mapOf<String, Any>()),
-                            "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
+                        listOf("POST"),
+                        mapOf("application/x-www-form-urlencoded" to mapOf<String, Any>()),
+                        "https://github.com/i-on-project/core/tree/master/docs/access_control/Http_Exchanges.md"
                     )
                 )
             )
         )
     }
 
-
     @Test
     fun getHomeDocument() {
         doGet(URI.create("/")) {
-          header("Authorization", readTokenTest)
+            header("Authorization", readTokenTest)
         }
             .andDo { print() }
             .andExpect {
@@ -94,10 +93,10 @@ internal class HomeDocumentTest : ControllerTester() {
                 jsonPath("$.resources.calendar-terms") {
                     exists()
                 }
-                jsonPath("$.resources.programmes"){
+                jsonPath("$.resources.programmes") {
                     exists()
                 }
-                jsonPath("$.resources.revokeToken"){
+                jsonPath("$.resources.revokeToken") {
                     exists()
                 }
                 jsonPath("$") {

@@ -40,5 +40,4 @@ class CourseRepoImpl(
             .map(courseMapper)
             .firstOrNull()
     }
-
 }

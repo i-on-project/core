@@ -10,10 +10,19 @@ import org.ionproject.core.calendar.icalendar.properties.components.change_manag
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeDue
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeEnd
 import org.ionproject.core.calendar.icalendar.properties.components.datetime.DateTimeStart
-import org.ionproject.core.calendar.icalendar.properties.components.descriptive.*
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Attachment
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Categories
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Description
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Location
+import org.ionproject.core.calendar.icalendar.properties.components.descriptive.Summary
 import org.ionproject.core.calendar.icalendar.properties.components.recurrence.RecurrenceRule
 import org.ionproject.core.calendar.icalendar.properties.components.relationship.UniqueIdentifier
-import org.ionproject.core.calendar.icalendar.types.*
+import org.ionproject.core.calendar.icalendar.types.Date
+import org.ionproject.core.calendar.icalendar.types.DateTime
+import org.ionproject.core.calendar.icalendar.types.Recur
+import org.ionproject.core.calendar.icalendar.types.Time
+import org.ionproject.core.calendar.icalendar.types.Uri
+import org.ionproject.core.calendar.icalendar.types.WeekDay
 import org.ionproject.core.calendar.language.LanguageRepo
 import org.ionproject.core.common.customExceptions.ForeignKeyException
 import org.ionproject.core.common.customExceptions.UnknownCalendarComponentTypeException
@@ -49,8 +58,8 @@ class CalendarComponentMapper(
                 dtStamp,
                 created,
                 categories,
-                DateTimeStart(rs.getDatetime(CalendarData.DTSTART)),
-                DateTimeEnd(rs.getDatetime(CalendarData.DTEND)),
+                DateTimeStart(dateTime = rs.getDatetime(CalendarData.DTSTART)),
+                DateTimeEnd(dateTime = rs.getDatetime(CalendarData.DTEND)),
                 rs.getLocation(CalendarData.LOCATION),
                 rs.getRecurrenceRule(CalendarData.BYDAY)
             )
@@ -60,7 +69,7 @@ class CalendarComponentMapper(
                 description,
                 rs.getAttachments(CalendarData.ATTACHMENTS),
                 dtStamp,
-                DateTimeStart(rs.getDatetime(CalendarData.DTSTART)),
+                DateTimeStart(dateTime = rs.getDatetime(CalendarData.DTSTART)),
                 created,
                 categories
             )
@@ -71,7 +80,7 @@ class CalendarComponentMapper(
                 rs.getAttachments(CalendarData.ATTACHMENTS),
                 dtStamp,
                 created,
-                DateTimeDue(rs.getDatetime(CalendarData.DUE)),
+                DateTimeDue(dateTime = rs.getDatetime(CalendarData.DUE)),
                 categories
             )
             else -> throw UnknownCalendarComponentTypeException("The type represented by $type is not known.")
@@ -204,7 +213,6 @@ class CalendarComponentMapper(
         return attachments.toTypedArray()
     }
 
-
     private fun ResultSet.getLocation(column: String): Location? {
         val value = getString(column)
 
@@ -213,5 +221,3 @@ class CalendarComponentMapper(
         }
     }
 }
-
-

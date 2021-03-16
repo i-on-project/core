@@ -25,5 +25,4 @@ class JsonHomeMessageConverter(private val converter: MappingJackson2HttpMessage
 
     override fun readInternal(clazz: Class<out JsonHome>, inputMessage: HttpInputMessage): JsonHome =
         throw UnsupportedOperationException("This converter can't read.")
-
 }

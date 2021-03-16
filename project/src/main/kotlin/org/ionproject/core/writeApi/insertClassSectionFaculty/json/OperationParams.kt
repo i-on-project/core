@@ -52,7 +52,8 @@ class CourseParams(
             return CourseParams(
                 label["name"]?.asText(),
                 label["acr"]?.asText(),
-                json["teachers"].map { TeacherParams.of(it) })
+                json["teachers"].map { TeacherParams.of(it) }
+            )
         }
     }
 }
@@ -69,4 +70,3 @@ class TeacherParams(
         }
     }
 }
-

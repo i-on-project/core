@@ -13,7 +13,13 @@ import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.springframework.http.ResponseEntity
 import org.springframework.util.MultiValueMap
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestAttribute
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class AccessController(private val services: AccessServices, private val tokenGenerator: TokenGenerator) {
@@ -62,28 +68,27 @@ class AccessController(private val services: AccessServices, private val tokenGe
 
         val tokenBodyHash = tokenGenerator.getHash(tokenGenerator.decodeBase64url(tokenBody))
 
-        //Check for special revoke token
+        // Check for special revoke token
         val claims = token.claims as TokenClaims
         if (claims.scope == privilegedRevokeScope) {
-            //Privileged path
+            // Privileged path
 
             when (body["operation"]) {
-                "1" -> {    //revokeChild
+                "1" -> { // revokeChild
                     services.revokeChild(tokenBodyHash)
                 }
-                "2" -> {    //revokePresented
+                "2" -> { // revokePresented
                     services.revokeToken(tokenBodyHash)
                 }
-                "3" -> {    //revokePresentedAndChild
+                "3" -> { // revokePresentedAndChild
                     services.revokePresentedAndChild(tokenBodyHash)
                 }
-                else -> {   //DEFAULT revokePresented
+                else -> { // DEFAULT revokePresented
                     services.revokeToken(tokenBodyHash)
                 }
             }
-
         } else {
-            //Unprivileged path, can only revoke the presented token
+            // Unprivileged path, can only revoke the presented token
 
             if (token.hash != tokenBodyHash)
                 throw ForbiddenActionException("You can't revoke another token besides the presented one.")
@@ -135,7 +140,6 @@ class AccessController(private val services: AccessServices, private val tokenGe
         return ResponseEntity.ok().body(ImportLinkRepr(url))
     }
 
-
     private fun buildUrl(query: MultiValueMap<String, String>, parameterPath: String, derivedToken: String): String {
         var queryParams = "?"
         if (query.size == 0)
@@ -165,10 +169,9 @@ class AccessController(private val services: AccessServices, private val tokenGe
             else
                 query[key]?.fold(query[key]?.get(0), { str, it -> "$str,$it" }) ?: ""
 
-            queryString += "$key=${listParams}&"
+            queryString += "$key=$listParams&"
         }
 
         return queryString.dropLast(1) // removes the last &
     }
-
 }
