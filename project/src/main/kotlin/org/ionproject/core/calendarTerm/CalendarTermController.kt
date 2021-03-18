@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class CalendarTermController(private val calendarTermServices: CalendarTermServices) {
+class CalendarTermController(private val repo: CalendarTermRepoImpl) {
 
     @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERMS, ResourceIds.VERSION)
     @GetMapping(Uri.calendarTerms)
@@ -21,7 +21,7 @@ class CalendarTermController(private val calendarTermServices: CalendarTermServi
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") limit: Int
     ): ResponseEntity<Siren> {
-        val calTerms = calendarTermServices.getTerms(page, limit)
+        val calTerms = repo.getTerms(page, limit)
 
         return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
     }
@@ -33,7 +33,7 @@ class CalendarTermController(private val calendarTermServices: CalendarTermServi
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") limit: Int
     ): ResponseEntity<Siren> {
-        val calTerm = calendarTermServices.getTermByCalId(calterm, page, limit)
+        val calTerm = repo.getTermByCalId(calterm, page, limit)
 
         calTerm?.let { return ResponseEntity.ok(it.toCalendarTermDetailRepr(page, limit)) }
         return ResponseEntity.notFound().build()

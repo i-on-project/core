@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class CourseController(private val courseServices: CourseServices) {
+class CourseController(private val repo: CourseRepoImpl) {
 
     @ResourceIdentifierAnnotation(ResourceIds.GET_COURSES, ResourceIds.VERSION)
     @GetMapping(Uri.courses)
@@ -21,7 +21,7 @@ class CourseController(private val courseServices: CourseServices) {
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") limit: Int
     ): ResponseEntity<Siren> {
-        val courses = courseServices.getCourses(page, limit)
+        val courses = repo.getCourses(page, limit)
         val siren = courses.courseToListRepr(page, limit)
 
         return ResponseEntity.ok(siren)
@@ -30,7 +30,7 @@ class CourseController(private val courseServices: CourseServices) {
     @ResourceIdentifierAnnotation(ResourceIds.GET_COURSE, ResourceIds.VERSION)
     @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
-        val course = courseServices.getCourseById(cid)
+        val course = repo.getCourseById(cid)
 
         course?.let { return ResponseEntity.ok(it.courseToDetailRepr()) }
         return ResponseEntity.notFound().build()
