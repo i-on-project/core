@@ -38,11 +38,10 @@ fun List<Course>.courseToListRepr(page: Int, limit: Int) =
         )
         .link("self", href = Uri.forPagingCourses(page, limit))
         .link("next", href = Uri.forPagingCourses(page + 1, limit)).let {
-            {
-                if (page > 0)
-                    it.link("previous", href = Uri.forPagingCourses(page - 1, limit))
-                it
-            }()
+            if (page > 0)
+                it.link("previous", href = Uri.forPagingCourses(page - 1, limit))
+
+            it
         }
         .toSiren()
 

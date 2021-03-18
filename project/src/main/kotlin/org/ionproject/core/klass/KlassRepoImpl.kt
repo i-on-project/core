@@ -62,27 +62,24 @@ class KlassRepoImplementation(
      * Retrieve a list of [Class]es, with only the essential information i.e. IDs, name, etc.
      */
     override fun getPage(id: Int, page: Int, limit: Int): List<Klass> {
-        var result = tm.run { handle ->
-            {
-                val count = handle
-                    .createQuery(CHECK_IF_COURSE_EXISTS)
-                    .bind(CID, id)
-                    .mapTo(Integer::class.java)
-                    .one() ?: 0
+        val result = tm.run { handle ->
+            val count = handle
+                .createQuery(CHECK_IF_COURSE_EXISTS)
+                .bind(CID, id)
+                .mapTo(Integer::class.java)
+                .one() ?: 0
 
-                if (count == 0)
-                    throw ResourceNotFoundException("There is no course with id $id.")
+            if (count == 0)
+                throw ResourceNotFoundException("There is no course with id $id.")
 
-                val result: List<Klass> = handle
-                    .createQuery(GET_CLASSES_QUERY)
-                    .bind(CID, id)
-                    .bind(OFFSET, page * limit)
-                    .bind(LIMIT, limit)
-                    .map(klassMapper)
-                    .list()
-
-                result
-            }()
+            val result: List<Klass> = handle
+                .createQuery(GET_CLASSES_QUERY)
+                .bind(CID, id)
+                .bind(OFFSET, page * limit)
+                .bind(LIMIT, limit)
+                .map(klassMapper)
+                .list()
+            result
         }
 
         if (result.isEmpty()) {
