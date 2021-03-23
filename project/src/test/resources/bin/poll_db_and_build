@@ -22,7 +22,7 @@ done
 # Gradle is very slow at starting the daemon
 # Since the CI process will not make use of it anyway, might as well disable it
 mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
-./gradlew build "${GRADLE_OPTIONS}" --stacktrace --no-daemon
+./gradlew build "${GRADLE_OPTIONS:-}" --stacktrace --no-daemon
 
 if [ $# -gt 0 ] && [ "$1" = "run" ]; then
   java -server \
