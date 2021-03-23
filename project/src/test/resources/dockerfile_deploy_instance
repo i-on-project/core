@@ -1,0 +1,8 @@
+FROM alpine:latest
+
+RUN apk update
+RUN apk upgrade
+RUN apk add docker docker-compose grep git
+
+COPY . .
+ENTRYPOINT [ "./project/res/bin/deploy" ]

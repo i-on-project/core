@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+image_tag="${DOCKER_USERNAME}/ion-core-deployment:latest"
+
+docker build -f project/res/dockerfile_deploy_instance -t "${image_tag}" .
+docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+docker push "${image_tag}"

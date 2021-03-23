@@ -1,4 +1,4 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+FROM docker:latest
 
 COPY . .
-ENTRYPOINT [ "./project/res/bin/deploy" ]
+ENTRYPOINT [ "./project/res/bin/build_image" ]

@@ -1,0 +1,23 @@
+version: '3'
+# WARNING!
+# In order for this procedure to work, you need to run docker-compose
+# from the root of the project, such that PWD=<root of the repo folder>
+# e.g. cd <root of project> && docker-compose -f .docker/compose_deploy.yaml run --rm core-deploy
+#
+# Credentials. Create a file named `env_prod` in this folder, with the contents:
+# DB_HOST
+# DB_PORT
+# DB_DATABASE
+# DB_USER
+# DB_PASSWORD
+# ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
+# ION_CORE_BASE_URL="localhost:8080"
+
+services:
+    ion-core-deployment:
+      image: xploitedd/ion-core-deployment:latest
+      env_file: ./env_prod
+      network_mode: host
+      container_name: ion-core-deployment
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
