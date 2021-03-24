@@ -28,20 +28,32 @@ $ docker-compose -f .docker/compose_ci.yaml down
 $
 $ # In case you don't feel like installing docker-compose, you may use its docker-image as such
 $ docker run --rm -it -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock docker/compose:1.24.0 -f .docker/compose_ci.yaml up --abort-on-container-exit core
-$
-$ # Run the server and database on two containers
-$ docker-compose -f .docker/compose_run.yaml up core
-$ 
-$ # Remove docker images and clean resources
-$ docker-compose -f .docker/compose_run.yaml down
 ```
 The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
+
+## Running i-on Core
+
+To run i-on core locally we can use the `compose_run` docker compose file:
+
+```sh
+$ # Run the server and database on two containers
+$ docker-compose -f .docker/compose_run.yaml up core
+```
+
+After running this command the i-on Core should be available on port `10023` and the database on port `10021`.
 
 The following tokens will be inserted to the database container, for ease of use:
 - Read: `l7kowOOkliu21oXxNpuCyM47u2omkysxb8lv3qEhm5U`
 - Write: `hfk0DXJ9LIPuhvrjDEmhYRv5Z0YRhOl1DMEEPIp42ok`
 - Issue: `vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144`
 - Revoke: `5eN-N7muBGix6X0N8jfau7Ou-3KcNHPAGVZNGWQ6ryw`
+
+To clean up the core and database containers we can use docker compose again:
+
+```sh
+$ # Remove docker images and clean resources
+$ docker-compose -f .docker/compose_run.yaml down
+```
 
 Build
 =====
