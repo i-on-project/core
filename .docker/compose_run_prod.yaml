@@ -15,7 +15,7 @@ version: '3'
 
 services:
     ion-core-deployment:
-      image: xploitedd/ion-core-deployment:latest
+      image: ghcr.io/i-on-project/core:latest
       env_file: ./env_prod
       network_mode: host
       container_name: ion-core-deployment
