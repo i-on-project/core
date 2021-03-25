@@ -8,7 +8,7 @@ if [ -z "$DB_HOST" ] ||\
   [ -z "$DB_DATABASE" ] ||\
   [ -z "$DB_USER" ] ||\
   [ -z "$DB_PASSWORD" ]; then
-  printf "You need to set the following environment variables:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n" \
+  printf "You need to set the following environment variables:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n" \
     "DB_HOST" \
     "DB_PORT" \
     "DB_DATABASE" \

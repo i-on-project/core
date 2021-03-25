@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build and test
+      - name: Build an  d test
         run: docker-compose -f .docker/compose_ci.yaml run --rm core
   deploy:
     name: Deploy to Docker Hub
@@ -25,9 +25,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set env file for Docker Compose
-        env:
-          ENV_FILE_CONTENTS: ${{ secrets.DEPLOY_ENV }}
-        run: echo "$ENV_FILE_CONTENTS" > .docker/env_deploy
+        run: echo -e "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\nGITHUB_ACTOR=${GITHUB_ACTOR}" > .docker/env_deploy
 
       # Docker steps:
       - name: Docker Compose run deploy
