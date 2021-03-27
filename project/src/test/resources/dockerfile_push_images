@@ -4,6 +4,6 @@ RUN apk update
 RUN apk update
 RUN apk add docker docker-compose postgresql-client
 
-RUN chmod +x ./project/res/bin/build_and_push_images
+COPY . .
 
 ENTRYPOINT ["./project/res/bin/build_and_push_images"]
