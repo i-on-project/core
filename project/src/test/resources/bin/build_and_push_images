@@ -50,7 +50,7 @@ if [ -z "${GITHUB_ACTOR:-}" ] ||\
   exit 0
 fi
 
-echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
 
 docker push "${core_image_tag}"
 docker push "${deploy_image_tag}"
