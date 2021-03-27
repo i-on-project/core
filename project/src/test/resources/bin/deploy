@@ -59,6 +59,9 @@ schema_migration() {
 
   stop_core
 
+  # Create V1__Initial migration from create-schema and insert-essential-data
+  cat ./docker/sql/create-schema.sql .docker/sql/insert-essential-data.sql > ./migrations/V1__Initial.sql
+
   set +e
   flyway -url="${db_con_string}" \
     -locations="filesystem:migrations/" \
