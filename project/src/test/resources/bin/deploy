@@ -2,12 +2,14 @@
 
 # Check for needed evvars
 if [ -z "$DB_HOST" ] ||\
+  [ -z "$DB_CORE_HOST" ] ||\
   [ -z "$DB_PORT" ] ||\
   [ -z "$DB_DATABASE" ] ||\
   [ -z "$DB_USER" ] ||\
   [ -z "$DB_PASSWORD" ]; then
-  printf "You need to set the following environment variables:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n" \
+  printf "You need to set the following environment variables:\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n" \
     "DB_HOST" \
+    "DB_CORE_HOST" \
     "DB_PORT" \
     "DB_DATABASE" \
     "DB_USER" \
@@ -20,6 +22,10 @@ set -eu
 core_image="ghcr.io/i-on-project/core:latest"
 core_container_name="core-production"
 core_port="8080"
+
+db_suffix="${DB_PORT}/${DB_DATABASE}?user=${DB_USER}&password=${DB_PASSWORD}"
+db_con_string="jdbc:postgresql://${DB_HOST}:${db_suffix}"
+db_core_con_string="jdbc:postgresql://${DB_CORE_HOST}:${db_suffix}"
 
 stop_core() {
   printf "Stopping core container\n"
@@ -39,7 +45,7 @@ start_core_container() {
 
   docker run --name ${core_container_name} \
     -p "${core_port}:${core_port}" \
-    -e JDBC_DATABASE_URL="${db_con_string}" \
+    -e JDBC_DATABASE_URL="${db_core_con_string}" \
     -e ION_CORE_SECRET_KEY="${ION_CORE_SECRET_KEY}" \
     -e ION_CORE_BASE_URL="${ION_CORE_BASE_URL}" \
     -d "${core_image}"
@@ -54,7 +60,6 @@ schema_migration() {
   stop_core
 
   set +e
-  db_con_string="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USER}&password=${DB_PASSWORD}"
   flyway -url="${db_con_string}" \
     -locations="filesystem:migrations/" \
     migrate

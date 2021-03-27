@@ -6,6 +6,7 @@ version: '3'
 #
 # Credentials. Create a file named `env_prod` in this folder, with the contents:
 # DB_HOST
+# DB_CORE_HOST
 # DB_PORT
 # DB_DATABASE
 # DB_USER
