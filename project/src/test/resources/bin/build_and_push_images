@@ -45,7 +45,7 @@ docker build -f ./project/res/dockerfile_deploy \
 
 # Try to push both images to GitHub Container Registry
 if [ -z "${GITHUB_ACTOR:-}" ] ||\
-    [ -z "${$GITHUB_TOKEN:-}" ]; then
+    [ -z "${GITHUB_TOKEN:-}" ]; then
   printf "Set the GITHUB_ACTOR and GITHUB_TOKEN environment variables to push the image to the registry!\n"
   exit 0
 fi
