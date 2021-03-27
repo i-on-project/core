@@ -47,6 +47,14 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.register<Copy>("extractUberJar") {
+    dependsOn("build")
+    dependsOn("test")
+    dependsOn("ktlintCheck")
+    from(zipTree("$buildDir/libs/${rootProject.name}-$version.jar"))
+    into("$buildDir/dependency")
+}
+
 // DB automation
 tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is already running
 tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist

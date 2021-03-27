@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -eu
+
+core_image_tag="ghcr.io/i-on-project/core:latest"
+deploy_image_tag="ghcr.io/i-on-project/core-deploy:latest"
+
+# Start the database container
+docker-compose -f .docker/compose_db.yaml up -d
+
+jdbc_database_url="jdbc:postgresql://localhost:10021/core?user=bob&password=changeit"
+ion_core_secret_key="t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"
+
+# Wait for the database to be available
+timeout=120
+start_time="$(date +%s)"
+while true; do
+  if psql -Atx "$(echo "$jdbc_database_url" | sed 's;jdbc:;;g')" -1 -c "select" >/dev/null 2>/dev/null; then
+    printf "Connection established with the database.\\n"
+    break
+  fi
+
+  current_time="$(date +%s)"
+  if [ "$(( current_time - start_time ))" -ge "$timeout" ]; then
+    printf "Timeout reached. Exiting...\\n"
+    exit 1
+  fi
+  sleep 1
+done
+
+# Build core image
+docker build -f ./project/res/dockerfile_core \
+  --network host \
+  --build-arg "JDBC_DATABASE_URL=${jdbc_database_url}" \
+  --build-arg "ION_CORE_SECRET_KEY=${ion_core_secret_key}" \
+  -t "${core_image_tag}" .
+
+# Stop the database container
+docker-compose -f .docker/compose_db.yaml down
+
+# Build the deploy image
+docker build -f ./project/res/dockerfile_deploy \
+  --build-arg "COMMIT_SHA=${COMMIT_SHA:-no_sha}" \
+  -t "${deploy_image_tag}" .
+
+# Try to push both images to GitHub Container Registry
+if [ -z "${GITHUB_ACTOR:-}" ] ||\
+    [ -z "${$GITHUB_TOKEN:-}" ]; then
+  printf "Set the GITHUB_ACTOR and GITHUB_TOKEN environment variables to push the image to the registry!\n"
+  exit 0
+fi
+
+echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+docker push "${core_image_tag}"
+docker push "${deploy_image_tag}"

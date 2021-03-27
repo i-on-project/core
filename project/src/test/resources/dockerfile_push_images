@@ -1,0 +1,7 @@
+FROM alpine:latest
+
+RUN apk update
+RUN apk update
+RUN apk add docker docker-compose postgresql-client
+
+ENTRYPOINT ["./project/res/bin/build_and_push_images"]

@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -eu
-
 # Check for needed evvars
 if [ -z "$DB_HOST" ] ||\
   [ -z "$DB_PORT" ] ||\
@@ -17,7 +15,9 @@ if [ -z "$DB_HOST" ] ||\
   exit 1
 fi
 
-core_image_name="ion-core"
+set -eu
+
+core_image="ghcr.io/i-on-project/core:latest"
 core_container_name="core-production"
 core_port="8080"
 
@@ -28,14 +28,10 @@ stop_core() {
   printf "Core container has stopped\n"
 }
 
-build_core_image() {
-  printf "Building core image\n"
-  cd project
-
-  docker build -f ./res/dockerfile_ci -t "${core_image_name}:latest" .
-
-  cd ..
-  printf "Core image built\n"
+pull_core_image() {
+  printf "Pulling core image\n"
+  docker pull "${core_image}" || true
+  printf "Core image pulled\n"
 }
 
 start_core_container() {
@@ -43,11 +39,10 @@ start_core_container() {
 
   docker run --name ${core_container_name} \
     -p "${core_port}:${core_port}" \
-    -e GRADLE_OPTIONS="-xtest" \
-    -e JDBC_DATABASE_URL="jdbc:${db_con_string}" \
+    -e JDBC_DATABASE_URL="${db_con_string}" \
     -e ION_CORE_SECRET_KEY="${ION_CORE_SECRET_KEY}" \
     -e ION_CORE_BASE_URL="${ION_CORE_BASE_URL}" \
-    -d "${core_image_name}:latest" run
+    -d "${core_image}"
 
   printf "Core container has started and it'll be available on port ${core_port}\n"
 }
@@ -56,46 +51,20 @@ start_core_container() {
 schema_migration() {
   printf "Attempting to migrate DB schema...\n"
 
-  schema_diff_img="core-db-schema-diff"
-  schema_diff_dockerfile="dockerfile_schema_diff"
-  db_img="core-aux-db"
-  db_dockerfile="dockerfile_db"
-
-  dev_db_user="migration"
-  dev_db_password="migration"
-  dev_db_database="core"
-  dev_db_port="10021"
-
-  db_con_string="postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USER}&password=${DB_PASSWORD}"
-  dev_db_con_string="postgresql://localhost:${dev_db_port}/${dev_db_database}?user=${dev_db_user}&password=${dev_db_password}"
-
   stop_core
 
-  backup_dir="$(pwd)"
-  cd .docker/src/res
-
-  docker build -f "${db_dockerfile}" -t "${db_img}" .
-  docker run --rm \
-    --name dev-db \
-    -e POSTGRES_USER="${dev_db_user}" \
-    -e POSTGRES_PASSWORD="${dev_db_password}" \
-    -e POSTGRES_DB="${dev_db_database}" \
-    -p "${dev_db_port}:5432" \
-    -d "${db_img}"
-
-  docker build -f "$schema_diff_dockerfile" -t "$schema_diff_img" .
-  docker run --rm --network="host" \
-    -e DEV_DB_URL="$dev_db_con_string" \
-    -e DB_URL="$db_con_string" \
-    "$schema_diff_img" apply
+  set +e
+  db_con_string="jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?user=${DB_USER}&password=${DB_PASSWORD}"
+  flyway -url="${db_con_string}" \
+    -locations="filesystem:migrations/" \
+    migrate
 
   migra_success=$?
-  cd "$backup_dir"
-  docker stop dev-db
+  set -e
 
   if [ $migra_success -eq 0 ]; then
     printf "Schema migrated successfully.\n"
-    build_core_image
+    pull_core_image
     start_core_container
   else
     printf "Error migrating schema.\n"
@@ -118,9 +87,5 @@ deploy_watchtower() {
 # ENTRYPOINT
 schema_migration
 deploy_watchtower
-
-cleanup() {
-  exit 0
-}
 
 while : ; do sleep 1 ; done

@@ -5,13 +5,19 @@ version: '3'
 # e.g. cd <root of project> && docker-compose -f .docker/compose_deploy.yaml run --rm core-deploy
 #
 # Credentials. Create a file named `env_deploy` in this folder, with the contents:
-# DOCKER_USERNAME
-# DOCKER_PASSWORD
+# GITHUB_ACTOR
+# GITHUB_TOKEN
+# COMMIT_SHA
 
 services:
-    core-deploy:
+    push-images:
       build:
         context: ..
-        dockerfile: ./project/res/dockerfile_deploy
+        dockerfile: ./project/res/dockerfile_push_images
       env_file: ./env_deploy
-      container_name: core-deploy-container
+      container_name: push-images-container
+      working_dir: "${PWD}"
+      network_mode: host
+      volumes:
+        - "${PWD}:${PWD}"
+        - "/var/run/docker.sock:/var/run/docker.sock"

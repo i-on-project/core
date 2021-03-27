@@ -1,0 +1,25 @@
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+ARG JDBC_DATABASE_URL
+ARG ION_CORE_SECRET_KEY
+
+COPY . .
+WORKDIR /project
+RUN ./gradlew extractUberJar --no-daemon --stacktrace
+
+FROM adoptopenjdk/openjdk11:alpine AS run
+
+RUN addgroup -S spring && adduser -S spring -G spring
+WORKDIR /home/spring
+RUN mkdir -p ./app/resources
+RUN chown spring ./app/resources
+
+USER spring:spring
+
+ARG EXTRACT_DEPENDENCY_PATH=/project/build/dependency
+
+COPY --from=build ${EXTRACT_DEPENDENCY_PATH}/BOOT-INF/lib ./app/lib
+COPY --from=build ${EXTRACT_DEPENDENCY_PATH}/META-INF ./app/META-INF
+COPY --from=build ${EXTRACT_DEPENDENCY_PATH}/BOOT-INF/classes ./app
+
+ENTRYPOINT ["java", "-cp", "app:app/lib/*", "org.ionproject.core.CoreApplicationKt"]

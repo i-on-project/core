@@ -14,10 +14,10 @@ version: '3'
 # ION_CORE_BASE_URL="localhost:8080"
 
 services:
-    ion-core-deployment:
-      image: ghcr.io/i-on-project/core:latest
+    ion-core-deploy:
+      image: ghcr.io/i-on-project/core-deploy:latest
       env_file: ./env_prod
       network_mode: host
-      container_name: ion-core-deployment
+      container_name: ion-core-deploy
       volumes:
         - "/var/run/docker.sock:/var/run/docker.sock"
