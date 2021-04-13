@@ -1,17 +1,20 @@
 package org.ionproject.core.search
 
-import org.ionproject.core.common.ProblemJson
 import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.argumentResolvers.parameters.Pagination
+import org.ionproject.core.common.handleExceptionResponse
 import org.ionproject.core.search.model.InvalidSearchQuerySyntaxException
 import org.ionproject.core.search.model.InvalidSearchTypeException
 import org.ionproject.core.search.model.SearchQuery
 import org.ionproject.core.search.representations.toSearchResultListRepr
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 class SearchController(

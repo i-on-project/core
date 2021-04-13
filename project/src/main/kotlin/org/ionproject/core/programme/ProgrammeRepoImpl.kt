@@ -18,11 +18,20 @@ class ProgrammeRepoImpl(
     private val offerRowReducer: ProgrammeOfferRowReducer
 ) : ProgrammeRepo {
 
-    override fun getProgrammes(): List<Programme> = tm.run { handle ->
-        handle.createQuery(ProgrammeData.GET_PROGRAMMES_QUERY)
+    override fun getProgrammes(page: Int, limit: Int): List<Programme> = tm.run { handle ->
+        val programmes = handle.createQuery(ProgrammeData.GET_PROGRAMMES_QUERY)
+            .bind(ProgrammeData.OFFSET, page * limit)
+            .bind(ProgrammeData.LIMIT, limit)
             .map(programmeMapper)
             .list()
-    } as List<Programme>
+
+        if (programmes.isEmpty()) {
+            if (page > 0)
+                throw ResourceNotFoundException("No results for page $page with limit $limit.")
+        }
+
+        programmes
+    }
 
     override fun getProgrammeById(id: Int): Programme = tm.run { handle ->
         val programme = findProgrammeById(id, handle)
@@ -31,7 +40,6 @@ class ProgrammeRepoImpl(
 
     override fun getProgrammeOffers(id: Int, page: Int, limit: Int): List<ProgrammeOffer> = tm.run { handle ->
         findProgrammeById(id, handle)
-
         val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY)
             .bind(ProgrammeData.ID, id)
             .bind(ProgrammeData.OFFSET, page * limit)
@@ -39,13 +47,18 @@ class ProgrammeRepoImpl(
             .reduceRows(offerRowReducer)
             .toList()
 
+        if (offers.isEmpty()) {
+            if (page > 0)
+                throw ResourceNotFoundException("No results for page $page with limit $limit.")
+        }
+
         offers
     }
 
     override fun getOfferById(idProgramme: Int, idOffer: Int): ProgrammeOffer = tm.run { handle ->
         // check first if the programme exists, or else throws
         findProgrammeById(idProgramme, handle)
-        val optional = handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
+        handle.createQuery(ProgrammeData.GET_OFFER_DETAILS_BY_ID)
             .bind(ProgrammeData.ID, idOffer)
             .bind(ProgrammeData.PROGRAMME_ID, idProgramme)
             .reduceRows(offerRowReducer)
@@ -53,8 +66,6 @@ class ProgrammeRepoImpl(
             .orElseThrow {
                 ResourceNotFoundException("Could not find the specified offer id: \"$idOffer\" of the programme \"$idProgramme\".")
             }
-
-        optional
     }
 
     private fun findProgrammeById(id: Int, handle: Handle): Programme =
@@ -63,5 +74,4 @@ class ProgrammeRepoImpl(
             .map(programmeMapper)
             .findOne()
             .orElseThrow { ResourceNotFoundException("Could not find the specified programme id: \"$id\".") }
-
 }

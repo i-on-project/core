@@ -40,6 +40,8 @@ internal object ProgrammeData {
 
     const val GET_PROGRAMMES_QUERY = """
         SELECT * FROM $SCHEMA.$PROGRAMME
+        offset :$OFFSET
+        limit :$LIMIT
     """
 
     const val GET_PROGRAMME_BY_ID_QUERY = """
@@ -58,7 +60,7 @@ internal object ProgrammeData {
     """
 
     const val GET_OFFER_DETAILS_BY_ID = """
-        select po.$ID as $ID, $ACRONYM as courseAcr, $PROGRAMME_ID, $COURSE_ID, $TERM_NUMBER, $OPTIONAL 
+        select po.$ID as $ID, $ACRONYM as courseAcr, c.$NAME as $COURSE_NAME, $PROGRAMME_ID, $COURSE_ID, $TERM_NUMBER, $OPTIONAL 
         from $SCHEMA.$PROGRAMME_OFFER po
         join $SCHEMA.course c on po.$COURSE_ID=c.$ID
         join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID

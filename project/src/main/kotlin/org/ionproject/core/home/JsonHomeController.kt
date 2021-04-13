@@ -66,7 +66,9 @@ class JsonHomeController {
             }
             .newResource("programmes") {
                 it
-                    .href(Uri.forProgrammes())
+                    .hrefTemplate(Uri.pagingProgrammes)
+                    .hrefVar("limit", URI("/api-docs/params/limit"))
+                    .hrefVar("page", URI("/api-docs/params/page"))
                     .docs(programmesSpecUri)
                     .formats(Media.MEDIA_SIREN)
                     .allow(HttpMethod.GET)
