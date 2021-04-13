@@ -11,8 +11,8 @@ import org.ionproject.core.calendar.icalendar.Calendar
 import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
+import org.ionproject.core.common.argumentResolvers.PaginationResolver
 import org.ionproject.core.common.interceptors.ControlAccessInterceptor
-import org.ionproject.core.common.interceptors.PageLimitQueryParamInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -71,12 +72,10 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(controlAccessInterceptor())
+    }
 
-        registry.addInterceptor(PageLimitQueryParamInterceptor())
-            .addPathPatterns("/v?/calendar-terms*")
-            .addPathPatterns("/v?/courses/**")
-            .addPathPatterns("/v?/programmes*")
-            .addPathPatterns("/v?/search*")
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(PaginationResolver())
     }
 
     @Autowired

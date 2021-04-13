@@ -4,10 +4,11 @@ import org.ionproject.core.common.ResourceIdentifierAnnotation
 import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.argumentResolvers.PaginationDefaults
+import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -17,12 +18,10 @@ class KlassController(private val repo: KlassRepo) {
     @GetMapping(Uri.klasses)
     fun getCollection(
         @PathVariable cid: Int,
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "5") limit: Int
+        @PaginationDefaults(defaultLimit = 5) pagination: Pagination
     ): ResponseEntity<Siren> {
-        val klasses = repo.getPage(cid, page, limit)
-
-        return ResponseEntity.ok(klasses.toSiren(cid, page, limit))
+        val klasses = repo.getPage(cid, pagination.page, pagination.limit)
+        return ResponseEntity.ok(klasses.toSiren(cid, pagination.page, pagination.limit))
     }
 
     @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS, ResourceIds.VERSION)
