@@ -27,18 +27,41 @@ import javax.servlet.http.HttpServletRequest
  * This handling replaces 'Jackson' default messages when an exception
  * is thrown.
  */
+
+private val logger = LoggerFactory.getLogger("ExceptionHandler")
+
+fun handleExceptionResponse(
+    type: String,
+    title: String,
+    status: Int,
+    detail: String,
+    instance: String,
+    customHeaders: HttpHeaders = HttpHeaders()
+): ResponseEntity<ProblemJson> {
+    customHeaders.add("Content-Type", Media.PROBLEM_JSON)
+
+    logger.error(
+        LogMessages.forException(
+            instance,
+            detail
+        )
+    )
+
+    return ResponseEntity
+        .status(status)
+        .headers(customHeaders)
+        .body(ProblemJson(type, title, status, detail, instance))
+}
+
 @RestControllerAdvice
 class ExceptionHandler {
-    companion object {
-        private val logger = LoggerFactory.getLogger("ExceptionHandler")
-    }
 
     @ExceptionHandler(value = [BadRequestException::class])
     private fun handleBadRequestException(
         ex: BadRequestException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/bad-request",
             "Bad request",
             400,
@@ -52,7 +75,7 @@ class ExceptionHandler {
         ex: DateTimeParseException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "https://github.com/i-on-project/core/tree/master/docs/api/events.md#invalid-date-type",
             "Invalid Date format",
             400,
@@ -66,7 +89,7 @@ class ExceptionHandler {
         ex: PSQLException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/internal-db-error",
             "Internal Error (DB)",
             500,
@@ -80,7 +103,7 @@ class ExceptionHandler {
         ex: HttpRequestMethodNotSupportedException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/method-not-allowed",
             "Method not allowed for the target resource",
             405,
@@ -94,7 +117,7 @@ class ExceptionHandler {
         ex: HttpMediaTypeNotSupportedException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/media-type-not-supported",
             "This resource does not support the provided media type",
             415,
@@ -108,7 +131,7 @@ class ExceptionHandler {
         ex: HttpMessageNotReadableException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/message-not-readable",
             "Could not interpret the contents of the message body.",
             400,
@@ -122,7 +145,7 @@ class ExceptionHandler {
         ex: InternalServerErrorException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/internal-error",
             "Internal Error",
             500,
@@ -136,7 +159,7 @@ class ExceptionHandler {
         ex: ResourceNotFoundException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/resource-not-found",
             "Resource not found",
             404,
@@ -155,7 +178,7 @@ class ExceptionHandler {
         ex: NumberFormatException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/bad-request",
             "Bad request",
             400,
@@ -169,7 +192,7 @@ class ExceptionHandler {
         ex: NumberFormatException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/bad-request",
             "Bad request",
             400,
@@ -187,7 +210,7 @@ class ExceptionHandler {
         ex: IncorrectParametersException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/incorrect-params",
             "Incorrect Query Parameters",
             400,
@@ -208,7 +231,7 @@ class ExceptionHandler {
         val headers = HttpHeaders()
         headers.add("WWW-Authenticate", "Bearer realm=\"I-ON\"")
 
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/unauthorized",
             "UNAUTHORIZED",
             401,
@@ -227,35 +250,12 @@ class ExceptionHandler {
         ex: ForbiddenActionException,
         request: HttpServletRequest
     ): ResponseEntity<ProblemJson> {
-        return handleResponse(
+        return handleExceptionResponse(
             "/err/forbidden",
             "FORBIDDEN",
             403,
             ex.localizedMessage,
             request.requestURI
         )
-    }
-
-    private fun handleResponse(
-        type: String,
-        title: String,
-        status: Int,
-        detail: String,
-        instance: String,
-        customHeaders: HttpHeaders = HttpHeaders()
-    ): ResponseEntity<ProblemJson> {
-        customHeaders.add("Content-Type", Media.PROBLEM_JSON)
-
-        logger.error(
-            LogMessages.forException(
-                instance,
-                detail
-            )
-        )
-
-        return ResponseEntity
-            .status(status)
-            .headers(customHeaders)
-            .body(ProblemJson(type, title, status, detail, instance))
     }
 }

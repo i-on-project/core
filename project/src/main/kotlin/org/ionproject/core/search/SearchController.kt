@@ -18,40 +18,39 @@ class SearchController(
     private val searchRepo: SearchRepo
 ) {
 
+    @ExceptionHandler(value = [InvalidSearchTypeException::class])
+    fun handleInvalidSearchType(
+        ex: InvalidSearchTypeException,
+        request: HttpServletRequest
+    ) = handleExceptionResponse(
+        "https://github.com/i-on-project/core/docs/api/search.md#invalid-type",
+        "Invalid type defined in [types] query parameter.",
+        400,
+        "The not supported type \"${ex.type}\" was used.",
+        "https://github.com/i-on-project/core/docs/api/search.md#invalid-type"
+    )
+
+    @ExceptionHandler(value = [InvalidSearchQuerySyntaxException::class])
+    fun handleInvalidSearchQuerySyntax(
+        ex: InvalidSearchQuerySyntaxException,
+        request: HttpServletRequest
+    ) = handleExceptionResponse(
+        "https://github.com/i-on-project/core/docs/api/search.md#invalid-query",
+        "Invalid search syntax used in [query] query parameter.",
+        400,
+        "The \"${ex.query}\" query has invalid syntax.",
+        "https://github.com/i-on-project/core/docs/api/search.md#invalid-query"
+    )
+
     @ResourceIdentifierAnnotation(ResourceIds.SEARCH, ResourceIds.VERSION_0)
     @GetMapping(Uri.search)
     fun search(
         @RequestParam("query") query: String,
         @RequestParam("types", required = false, defaultValue = SearchableEntities.ALL) types: List<String>,
-        @RequestParam("limit", required = false, defaultValue = "10") limit: Int,
-        @RequestParam("page", required = false, defaultValue = "0") page: Int
+        pagination: Pagination
     ): ResponseEntity<Any> {
-        try {
-            val searchQuery = SearchQuery(query, types, limit, page)
-
-            val searchResults = searchRepo.search(searchQuery)
-
-            return ResponseEntity.ok(searchResults.toSearchResultListRepr())
-        } catch (e: InvalidSearchTypeException) {
-            return ResponseEntity.badRequest().body(
-                ProblemJson(
-                    "https://github.com/i-on-project/core/docs/api/search.md#invalid-type",
-                    "Invalid type defined in [types] query parameter.",
-                    400,
-                    "The not supported type \"${e.type}\" was used.",
-                    "https://github.com/i-on-project/core/docs/api/search.md#invalid-type"
-                )
-            )
-        } catch (e: InvalidSearchQuerySyntaxException) {
-            return ResponseEntity.badRequest().body(
-                ProblemJson(
-                    "https://github.com/i-on-project/core/docs/api/search.md#invalid-query",
-                    "Invalid search syntax used in [query] query parameter.",
-                    400,
-                    "The \"${e.query}\" query has invalid syntax.",
-                    "https://github.com/i-on-project/core/docs/api/search.md#invalid-query"
-                )
-            )
-        }
+        val searchQuery = SearchQuery(query, types, pagination.limit, pagination.page)
+        val searchResults = searchRepo.search(searchQuery)
+        return ResponseEntity.ok(searchResults.toSearchResultListRepr())
     }
 }
