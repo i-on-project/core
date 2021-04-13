@@ -1,3 +1,50 @@
+# Programme Collection
+A collection of the possible programmes.
+
+## Link Relations
+   * A programme representation
+    - must include a link to its context, using the self link relation.
+    - must include links to the details of a programme, using the `/rel/programme` relation.
+
+## Example Representation
+```json
+{
+    "class": ["collection", "programmes"],
+    "entities": [
+        {
+            "rel": ["/rel/programme"],
+            "class": ["programme"],
+            "properties": {
+                "programmeId": 1,
+                "name": "licenciatura eng. inf.",
+                "acronym": "LEIC"
+            },
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1" }
+            ]
+        },
+        {
+            "rel": ["/rel/programme"],
+            "class": ["programme"],
+            "properties": {
+                "programmeId": 2,
+                "name": "mestrado eng. inf.",
+                "acronym": "MEIC"
+            },
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/2" }
+            ]
+        }
+    ],
+    "links": [
+        { "rel": ["self"], "href": "/v0/programmes?page=0&limit=10" },
+        { "rel": ["next"], "href": "/v0/programmes?page=1&limit=10" }
+    ]
+}
+```
+
+---------------------------------------------------------------------
+
 # Programme
 
 A programme represents a type of graduation such as LEIC or MEIC. 
@@ -9,7 +56,6 @@ A programme is composed by a set of _offers_.
       - type: number
       - Identifies uniquely a Programme
    * Name   
-      -  OPTIONAL (it may not appear in this phase)
       -  type: text
       -  e.g. "Licenciatura em Engenharia Informática e de Computadores"
     
@@ -27,123 +73,131 @@ A programme is composed by a set of _offers_.
 ## Link Relations
    * A programme representation
       - must include a link to its context, using the self link relation.
-      - may include a link to the collection it belongs, using the collection link relation.
-      - must include a link to its _offers_.
+      - must include a link to the collection it belongs, using the `/rel/programmes` relation.
+      - must include a link to its _offers_, using the `/rel/offers` relation.
 
-## Actions
-    * edit: edit's a programme
-    * add Offer: add's a curricular unit offer to the programme
-
-## Example representation
+## Example Representation
 ```json
 {
-    "class": [ "programme" ],
+    "class": ["programme"],
     "properties": {
         "id": 1,
-        "name": "Licenciatura em Engenharia Informática e de Computadores", 
+        "name": "licenciatura eng. inf.",
         "acronym": "LEIC",
         "termSize": 6
     },
-    "entities": [
-        {
-            "class": [ "offer" ],
-            "title": "LS Offer",
-            "rel": [ "/rel/programmeOffer" ],
-            "properties": {
-                "id": 1,
-                "courseId": 2,
-                "termNumber": 3
-            },
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1"}
-            ]
-        },
-        {
-            "class": [ "offer" ],
-            "title": "AED Offer",
-            "rel": [ "/rel/programmeOffer" ],
-            "properties": {
-                "id": 2,
-                "CourseId": 5,
-                "TermNumber": 3
-            },
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/2"}
-            ]
-        },
-        {
-            "class": [ "offer" ],
-            "title": "POO Offer",
-            "rel": [ "/rel/programmeOffer" ],
-            "properties": {
-                "id": 3,
-                "CourseId": 4,
-                "TermNumber": 1
-            },
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/1/offers/3"}
-            ]
-        }
-    ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/1" },
-        { "rel": [ "up" ], "href": "/v0/programmes/" }
+        { "rel": ["self"], "href": "/v0/programmes/1"},
+        { "rel": ["/rel/programmes"], "href": "/v0/programmes?page=0&limit=0" },
+        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers?page=0&limit=0" }
     ]
 }
 ```
 
----------------------------------------------------------------------
-# Programme Collection
-A collection of the possible programmes.
+# Programme Offer Collection
+
+The Programme Offer collection describes the available set of offers for a specified Programme.
+
+## Properties
+   * programmeId
+      - MANDATORY
+      - type: number
+      - Identifies the programme
 
 ## Link Relations
    * A programme representation
-    - must include a link to its context, using the self link relation.
-    - may include links to the details of a programme, using the item link relation.
+      - must include a link to its context, using the self link relation.
+      - must include a link to the next page
+      - may include a link to the previous page
 
-## Actions
-    * add: add's a programme
+## Example Representation
 
-## Example representation
 ```json
 {
-    "class": [ "collection", "programme" ],
+    "class": ["collection", "offers"],
+    "properties": {
+        "programmeId": 1
+    },
     "entities": [
         {
-            "class": [ "programme" ],
-            "rel": [ "item" ],
+            "rel": ["/rel/offer"],
             "properties": {
-                "programmeId": 1,
-                "acronym": "LEIC"
+                "id": 1,
+                "name": "Web Applications Development",
+                "courseId": 2,
+                "termNumber": [6, 4]
             },
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/1" }
+            "title": "Web Applications Development",
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/1" }
             ]
         },
         {
-            "class": [ "programme" ],
-            "rel": [ "item" ],
+            "rel": ["/rel/offer"],
             "properties": {
                 "id": 2,
-                "acronym": "MEIC"
+                "name": "Software Laboratory",
+                "courseId": 1,
+                "termNumber": [6]
             },
-            "links" : [
-                { "rel": [ "self" ], "href": "/v0/programmes/2" }
+            "title": "Software Laboratory",
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/2" }
+            ]
+        },
+        {
+            "rel": ["/rel/offer"],
+            "properties": {
+                "id": 3,
+                "name": "Discrete Mathematics",
+                "courseId": 3,
+                "termNumber": [1]
+            },
+            "title": "Discrete Mathematics",
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/3" }
+            ]
+        },
+        {
+            "rel": ["/rel/offer"],
+            "properties": {
+                "id": 4,
+                "name": "Project and Seminary",
+                "courseId": 4,
+                "termNumber": [6]
+            },
+            "title": "Project and Seminary",
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/4" }
+            ]
+        },
+        {
+            "rel": ["/rel/offer"],
+            "properties": {
+                "id": 5,
+                "name": "Cloud computing",
+                "courseId": 5,
+                "termNumber": [6]
+            },
+            "title": "Cloud computing",
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/5" }
             ]
         }
     ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/" }
+        { "rel": ["self"], "href": "/v0/programmes/1/offers?page=0&limit=10" },
+        { "rel": ["next"], "href": "/v0/programmes/1/offers?page=1&limit=10" },
+        { "rel": ["/rel/programme"], "href": "/v0/programmes/1" }
     ]
 }
 ```
 
-
 ---------------------------------------------------------------------
 
-# ProgrammeOffer
-   A ProgrammeOffer defines a CurricularUnit/Course that can be taken, in the context of a ProgrammeOffer.
-   A ProgrammeOffer may have a set of pre-conditions, for example the curricularTerm set where the offer is available or the curricularUnits that precede it.
+# Programme Offer
+   A Programme Offer defines a Curricular Unit/Course that can be taken, in the context of a Programme Offer.
+   A Programme Offer may have a set of pre-conditions, for example the curricularTerm set where the offer is available or the curricularUnits that precede it.
 
 # Properties
    * Id
@@ -167,34 +221,37 @@ A collection of the possible programmes.
 ## Link Relations
    A programme representation:
        * must include a link to its context, using the self link relation.
-       * must include a link to the programme it belongs, using the up link relation.
-       * must include a link to the curricular unit details.
-
-## Actions
-    * edit: edit's the offer
+       * must include a link to the programme offers, using the `/rel/offers` relation.
+       * must include a link to the programme, using the `/rel/programme` relation.
 
 ## Example representation
 ```json
 {
-    "class": [ "offer" ],
+    "class": ["offer"],
     "properties": {
         "id": 1,
-        "acronym": "LS",
-        "termNumber": 2,
-        "optional": "true"
+        "name": "Web Applications Development",
+        "acronym": "WAD",
+        "termNumber": [4, 6],
+        "optional": true
     },
     "entities": [
-      {
-          "class": [ "course" ],
-          "rel": [ "/rel/course/" ],
-          "links": [
-              {"rel": [ "self" ], "href": "/v0/courses/1"}
-          ]
-       }
+        {
+            "rel": ["/rel/course"],
+            "class": ["course"],
+            "properties": {
+                "id": 2,
+                "name": "Web Applications Development",
+                "acronym": "WAD"
+            },
+            "links": [
+                { "rel": ["self"], "href": "/v0/courses/2" }
+            ]
+        }
     ],
     "links": [
-        { "rel": [ "self" ], "href": "/v0/programmes/1/offers/1" }
-        { "rel": [ "related" ], "href": "/v0/programmes/1" }
+        { "rel": ["self"],"href": "/v0/programmes/1/offers/1" },
+        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers?page=0&limit=0" }
     ]
 }
 ```

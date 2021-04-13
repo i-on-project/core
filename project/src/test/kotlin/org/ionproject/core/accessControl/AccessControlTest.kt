@@ -33,7 +33,7 @@ internal class AccessControlTest : ControllerTester() {
          * Uri's for testing according to the tokens scopes
          */
         val notFoundUri = URI("somethingnotfound")
-        val programmesUri = Uri.forProgrammes()
+        val programmesUri = Uri.forPagingProgrammes(0, 0)
         val programmesDetailUri = Uri.forProgrammesById(1)
         val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()

@@ -268,6 +268,7 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (4, 'GET', 'v0', 'getProgramme'), --Testing read restricted scope
 (4, 'GET', 'v0', 'getProgrammes'), --Testing read restricted scope
 (1, 'GET', 'v0', 'getOffer'),
+(1, 'GET', 'v0', 'getOffers'),
 (1, 'GET', 'v0', 'importClassCalendar'),
 (1, 'GET', 'v0', 'importClassSectionCalendar'),
 (1, 'GET', 'v0', 'getCourses'),
