@@ -88,8 +88,8 @@ A programme is composed by a set of _offers_.
     },
     "links": [
         { "rel": ["self"], "href": "/v0/programmes/1"},
-        { "rel": ["/rel/programmes"], "href": "/v0/programmes?page=0&limit=0" },
-        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers?page=0&limit=0" }
+        { "rel": ["/rel/programmes"], "href": "/v0/programmes" },
+        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers" }
     ]
 }
 ```
@@ -251,7 +251,7 @@ The Programme Offer collection describes the available set of offers for a speci
     ],
     "links": [
         { "rel": ["self"],"href": "/v0/programmes/1/offers/1" },
-        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers?page=0&limit=0" }
+        { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers" }
     ]
 }
 ```
