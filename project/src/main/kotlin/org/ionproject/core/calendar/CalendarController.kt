@@ -21,7 +21,7 @@ import java.net.URI
 @RestController
 class CalendarController(private val repository: CalendarRepo) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarByClass)
     fun fromClass(
         @PathVariable cid: Int,
@@ -36,7 +36,7 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS_SECTION, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_CLASS_SECTION, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarByClassSection)
     fun fromClassSection(
         @PathVariable sid: String,
@@ -56,7 +56,7 @@ class CalendarController(private val repository: CalendarRepo) {
             ResponseEntity.notFound().build()
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS, ResourceIds.VERSION_0)
     @GetMapping(Uri.componentByClassCalendar)
     fun fromClassCalendar(
         @PathVariable cid: Int,
@@ -80,7 +80,7 @@ class CalendarController(private val repository: CalendarRepo) {
             throw ResourceNotFoundException("This component doesn't exist.")
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS_SECTION, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COMPONENT_CLASS_SECTION, ResourceIds.VERSION_0)
     @GetMapping(Uri.componentByClassSectionCalendar)
     fun fromClassSectionCalendar(
         @PathVariable sid: String,

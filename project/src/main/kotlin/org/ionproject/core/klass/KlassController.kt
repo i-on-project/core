@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class KlassController(private val repo: KlassRepo) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASSES, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASSES, ResourceIds.VERSION_0)
     @GetMapping(Uri.klasses)
     fun getCollection(
         @PathVariable cid: Int,
@@ -25,7 +25,7 @@ class KlassController(private val repo: KlassRepo) {
         return ResponseEntity.ok(klasses.toSiren(cid, page, limit))
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS, ResourceIds.VERSION_0)
     @GetMapping(Uri.klassByCalTerm)
     fun get(@PathVariable cid: Int, @PathVariable calterm: String): ResponseEntity<Siren> {
         val klass = repo.get(cid, calterm)

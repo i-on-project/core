@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val repo: CalendarTermRepoImpl) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERMS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERMS, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarTerms)
     fun getTerms(
         @RequestParam(defaultValue = "0") page: Int,
@@ -26,7 +26,7 @@ class CalendarTermController(private val repo: CalendarTermRepoImpl) {
         return ResponseEntity.ok(calTerms.toCalendarTermListRepr(page, limit))
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERM, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERM, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarTermById)
     fun getCalendarTerm(
         @PathVariable calterm: String,

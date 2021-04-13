@@ -18,7 +18,7 @@ class SearchController(
     private val searchRepo: SearchRepo
 ) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.SEARCH, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.SEARCH, ResourceIds.VERSION_0)
     @GetMapping(Uri.search)
     fun search(
         @RequestParam("query") query: String,
