@@ -21,8 +21,8 @@ The challenge sent by the server should be in the following format:
 
 ```json
 {
-    id: "Unique ID for the challenge",
-    challenge: "octopus"
+    "id": "Unique ID for the challenge",
+    "challenge": "octopus"
 }
 ```
 
@@ -34,8 +34,8 @@ Upon completion of the challenge a request is sent to the server with the `id` o
 
 ```json
 {
-    id: "Unique ID for the challenge",
-    typed_word: "not_octopus"
+    "id": "Unique ID for the challenge",
+    "typed_word": "not_octopus"
 }
 ```
 

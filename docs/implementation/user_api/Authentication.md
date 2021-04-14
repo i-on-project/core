@@ -27,10 +27,9 @@ For the email challenge the flow #2 should return:
 ```json
 [
     {
-        type: "email",
-        allowed_domains: ["*.isel.pt", "*.isel.ipl.pt"]
+        "type": "email",
+        "allowed_domains": ["*.isel.pt", "*.isel.ipl.pt"]
     },
-    ...
 ]
 ```
 
@@ -49,10 +48,10 @@ After receiving the request for the `access_token` the server validates the `cod
 
 ```json
 {
-    access_token: "...",
-    id_token: "JWT that contains claims about the user",
-    refresh_token: "Token used to refresh the access_token when it expires",
-    expires_in: "Seconds remaining to the expiration of the access_token"
+    "access_token": "...",
+    "id_token": "JWT that contains claims about the user",
+    "refresh_token": "Token used to refresh the access_token when it expires",
+    "expires_in": "Seconds remaining to the expiration of the access_token"
 }
 ```
 
