@@ -15,7 +15,7 @@ To that end it was created the following information removal flow, that represen
 3| S -> C | Replies with the necessary challenge
 4| C -> U | Presents the challenge to the user
 5| U -> C | Acknowledges or cancels the challenge
-6| C -> S | Checks the challenge decision
+6| C -> S | Sends the challenge response
 
 The challenge sent by the server should be in the following format:
 
