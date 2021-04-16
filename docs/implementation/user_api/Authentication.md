@@ -16,6 +16,11 @@ This diagram presents a similar behaviour to the [OpenID Connect Client Initiate
 4|  U <- C  | ----------- | Presents the Methods
 5|  U -> C  | ----------- | Responds to the Authentication Method
 6|  C -> S  |     POST    | Sends Method Response with `client_id`, `redirect_uri` and `state`<br>(in the context of the example it would be a student email: `AXXXXX@alunos.isel.pt`)
+7|  U -> S  |     GET     | Polling for the authentication to be completed
+8|  U <- S  | ----------- | Polling Response
+.|   ...    |     ...     | ...
+9|  U -> S  |     GET     | Polling for the authentication to be completed
+10|  U <- S  | ----------- | Authentication Completed or Denied
 
 After the POST request to the server, the user will serve as an actor between the third-party and the server in order to provide proof of possession (proof that the user possesses a specified email address, for instance).
 
@@ -67,9 +72,30 @@ If an error has occurred the [Authentication Error Response](https://openid.net/
 
 After the flow #6 the server will send an email challenge to the user email (for example, `AXXXXX@alunos.isel.pt`), whilst the user needs to acknowledge this challenge by logging in to the `alunos.isel.pt` email server and accepting the challenge (a URL that redirects back to the server).
 
-If the `POLL` method was chosen the client should poll the server, with the specified interval between poll requests, and the server will respond if the authentication request has been fulfilled by the user.
+If the `POLL` method was chosen the user should poll the server, with the specified interval between poll requests, and the server will respond if the authentication request has been fulfilled by the user.
 
-The responses sent by the server to the client follow the [OpenID Successful Token Response](https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse), and the [OpenID Token Error Response](https://openid.net/specs/openid-connect-core-1_0.html#TokenErrorResponse) if an error has been found, or if the user hasn't fulfilled the request at the time of the response.
+The responses sent by the server to the client if an error has been found, or if the user hasn't fulfilled the request follow the [OpenID Token Error Response](https://openid.net/specs/openid-connect-core-1_0.html#TokenErrorResponse).
+
+If the user has fulfilled the authorization request the response is presented as follows:
+
+```json
+{
+    "code": "The code used to obtain the access_token"
+}
+```
+
+The received code can be then used to obtain the `access_token` and more information by the client (the user gives the `code` to the client application). The response to the authorization code grant is:
+
+```json
+{
+    "id_token": "...",
+    "access_token": "...",
+    "refresh_token": "...",
+    "expires_in": 120
+}
+```
+
+Where this response follows the OpenID standard.
 
 The available error responses to the client polling event are defined in the [OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749#section-5.2), however the error codes presented in the [OAuth 2.0 Device Authorization Grant](https://tools.ietf.org/html/rfc8628#section-3.5) are also applicable as per the [OpenID CIBA Documentation](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#token_error_response).
 
