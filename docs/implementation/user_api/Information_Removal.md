@@ -12,8 +12,8 @@ To that end it was created the following information removal flow, that represen
 -|:------:|-------------
 1| U -> C | Requests information removal
 2| C -> S | Requests information removal challenge
-3| S -> C | Replies with the necessary challenge
-4| C -> U | Presents the challenge to the user
+3| C <- S | Replies with the necessary challenge
+4| U <- C | Presents the challenge to the user
 5| U -> C | Acknowledges or cancels the challenge
 6| C -> S | Sends the challenge response
 
