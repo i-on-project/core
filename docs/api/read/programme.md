@@ -4,16 +4,17 @@ A collection of the possible programmes.
 ## Link Relations
    * A programme representation
     - must include a link to its context, using the self link relation.
-    - must include links to the details of a programme, using the `/rel/programme` relation.
+    - must include a link to the next page
+    - may include a link to the previous page
 
 ## Example Representation
 ```json
 {
-    "class": ["collection", "programmes"],
+    "class": ["collection", "programme"],
     "entities": [
         {
-            "rel": ["/rel/programme"],
             "class": ["programme"],
+            "rel": ["item"],
             "properties": {
                 "programmeId": 1,
                 "name": "licenciatura eng. inf.",
@@ -24,8 +25,8 @@ A collection of the possible programmes.
             ]
         },
         {
-            "rel": ["/rel/programme"],
             "class": ["programme"],
+            "rel": ["item"],
             "properties": {
                 "programmeId": 2,
                 "name": "mestrado eng. inf.",
@@ -55,6 +56,7 @@ A programme is composed by a set of _offers_.
       - MANDATORY
       - type: number
       - Identifies uniquely a Programme
+
    * Name   
       -  type: text
       -  e.g. "Licenciatura em Engenharia Informática e de Computadores"
@@ -73,8 +75,8 @@ A programme is composed by a set of _offers_.
 ## Link Relations
    * A programme representation
       - must include a link to its context, using the self link relation.
-      - must include a link to the collection it belongs, using the `/rel/programmes` relation.
-      - must include a link to its _offers_, using the `/rel/offers` relation.
+      - must include a link to the collection it belongs, using the `collection` relation.
+      - must include a link to the offers collection, using the `/rel/offers` relation.
 
 ## Example Representation
 ```json
@@ -86,9 +88,39 @@ A programme is composed by a set of _offers_.
         "acronym": "LEIC",
         "termSize": 6
     },
+    "entities": [
+        {
+            "class": ["offer"],
+            "rel": ["/rel/programmeOffer"],
+            "title": "Software Laboratory",
+            "properties": {
+                "id": 1,
+                "acronym": "SL",
+                "courseId": 2,
+                "termNumber": [3]
+            },
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/1" }
+            ]
+        },
+        {
+            "class": ["offer"],
+            "rel": ["/rel/programmeOffer"],
+            "title": "Algorithms and Data Structures",
+            "properties": {
+                "id": 1,
+                "acronym": "ADS",
+                "courseId": 2,
+                "termNumber": [3]
+            },
+            "links": [
+                { "rel": ["self"], "href": "/v0/programmes/1/offers/2" }
+            ]
+        }
+    ],
     "links": [
+        { "rel": ["collection"], "href": "/v0/programmes" },
         { "rel": ["self"], "href": "/v0/programmes/1"},
-        { "rel": ["/rel/programmes"], "href": "/v0/programmes" },
         { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers" }
     ]
 }
@@ -99,87 +131,92 @@ A programme is composed by a set of _offers_.
 The Programme Offer collection describes the available set of offers for a specified Programme.
 
 ## Properties
-   * programmeId
+   * programmeId: The id of the programme
       - MANDATORY
       - type: number
-      - Identifies the programme
 
 ## Link Relations
    * A programme representation
       - must include a link to its context, using the self link relation.
       - must include a link to the next page
+      - must include a link to the programme
       - may include a link to the previous page
 
 ## Example Representation
 
 ```json
 {
-    "class": ["collection", "offers"],
+    "class": ["collection", "offer"],
     "properties": {
         "programmeId": 1
     },
     "entities": [
         {
-            "rel": ["/rel/offer"],
+            "class": ["offer"],
+            "rel": ["item"],
+            "title": "Web Applications Development",
             "properties": {
                 "id": 1,
-                "name": "Web Applications Development",
+                "acronym": "WAD",
                 "courseId": 2,
                 "termNumber": [6, 4]
             },
-            "title": "Web Applications Development",
             "links": [
                 { "rel": ["self"], "href": "/v0/programmes/1/offers/1" }
             ]
         },
         {
-            "rel": ["/rel/offer"],
+            "class": ["offer"],
+            "rel": ["item"],
+            "title": "Software Laboratory",
             "properties": {
                 "id": 2,
-                "name": "Software Laboratory",
+                "acronym": "SL",
                 "courseId": 1,
                 "termNumber": [6]
             },
-            "title": "Software Laboratory",
             "links": [
                 { "rel": ["self"], "href": "/v0/programmes/1/offers/2" }
             ]
         },
         {
-            "rel": ["/rel/offer"],
+            "class": ["offer"],
+            "rel": ["item"],
+            "title": "Discrete Mathematics",
             "properties": {
                 "id": 3,
-                "name": "Discrete Mathematics",
+                "acronym": "DM",
                 "courseId": 3,
                 "termNumber": [1]
             },
-            "title": "Discrete Mathematics",
             "links": [
                 { "rel": ["self"], "href": "/v0/programmes/1/offers/3" }
             ]
         },
         {
-            "rel": ["/rel/offer"],
+            "class": ["offer"],
+            "rel": ["item"],
+            "title": "Project and Seminary",
             "properties": {
                 "id": 4,
-                "name": "Project and Seminary",
+                "acronym": "PS",
                 "courseId": 4,
                 "termNumber": [6]
             },
-            "title": "Project and Seminary",
             "links": [
                 { "rel": ["self"], "href": "/v0/programmes/1/offers/4" }
             ]
         },
         {
-            "rel": ["/rel/offer"],
+            "class": ["offer"],
+            "rel": ["item"],
+            "title": "Cloud computing",
             "properties": {
                 "id": 5,
-                "name": "Cloud computing",
+                "acronym": "CC",
                 "courseId": 5,
                 "termNumber": [6]
             },
-            "title": "Cloud computing",
             "links": [
                 { "rel": ["self"], "href": "/v0/programmes/1/offers/5" }
             ]
@@ -204,11 +241,16 @@ The Programme Offer collection describes the available set of offers for a speci
       - MANDATORY
       - type: number
       - Uniquely identifies a ProgrammeOffer
-      
+
+   * Name: the name of the curricular unit
+      - mandatory
+      - type: text
+      - e.g. "Software Laboratory"
+
    * Acronym: the curricular unit acronym
       - mandatory
       - type: text
-      - e.g. "LS"
+      - e.g. "SL"
 
    * Term Number: the term that this offer is available
       - mandatory
@@ -237,12 +279,10 @@ The Programme Offer collection describes the available set of offers for a speci
     },
     "entities": [
         {
-            "rel": ["/rel/course"],
             "class": ["course"],
+            "rel": ["/rel/course"],
             "properties": {
-                "id": 2,
-                "name": "Web Applications Development",
-                "acronym": "WAD"
+                "id": 2
             },
             "links": [
                 { "rel": ["self"], "href": "/v0/courses/2" }
@@ -250,7 +290,8 @@ The Programme Offer collection describes the available set of offers for a speci
         }
     ],
     "links": [
-        { "rel": ["self"],"href": "/v0/programmes/1/offers/1" },
+        { "rel": ["self"], "href": "/v0/programmes/1/offers/1" },
+        { "rel": ["/rel/programme"], "href": "/v0/programmes/1" },
         { "rel": ["/rel/offers"], "href": "/v0/programmes/1/offers" }
     ]
 }

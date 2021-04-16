@@ -35,12 +35,18 @@ class ProgrammeRepoImpl(
 
     override fun getProgrammeById(id: Int): Programme = tm.run { handle ->
         val programme = findProgrammeById(id, handle)
+        val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY)
+            .bind(ProgrammeData.ID, id)
+            .reduceRows(offerRowReducer)
+            .toList()
+
+        programme.offers.addAll(offers)
         programme
     }
 
     override fun getProgrammeOffers(id: Int, page: Int, limit: Int): List<ProgrammeOffer> = tm.run { handle ->
         findProgrammeById(id, handle)
-        val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY)
+        val offers = handle.createQuery(ProgrammeData.GET_PROGRAMME_OFFERS_QUERY_LIMIT)
             .bind(ProgrammeData.ID, id)
             .bind(ProgrammeData.OFFSET, page * limit)
             .bind(ProgrammeData.LIMIT, limit)

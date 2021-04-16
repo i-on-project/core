@@ -55,6 +55,10 @@ internal object ProgrammeData {
         inner join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID
         where $PROGRAMME_ID=:$ID 
         order by po.$ID
+    """
+
+    const val GET_PROGRAMME_OFFERS_QUERY_LIMIT = """
+        $GET_PROGRAMME_OFFERS_QUERY
         offset :$OFFSET
         limit :$LIMIT
     """

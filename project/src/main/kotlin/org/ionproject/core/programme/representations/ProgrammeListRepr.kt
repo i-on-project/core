@@ -13,8 +13,8 @@ data class ProgrammeReducedOutputModel(val programmeId: Int, val name: String, v
  * Siren representation generators
  */
 fun List<Programme>.programmesListRepr(page: Int, limit: Int) = SirenBuilder()
-    .klass("collection", "programmes")
-    .entities(this.map { programme -> programme.buildSubentities() })
+    .klass("collection", "programme")
+    .entities(map { it.buildSubentities() })
     .link("self", href = Uri.forPagingProgrammes(page, limit)).let {
         if (page > 0)
             it.link("previous", href = Uri.forPagingProgrammes(page - 1, limit))
@@ -27,6 +27,6 @@ fun List<Programme>.programmesListRepr(page: Int, limit: Int) = SirenBuilder()
 private fun Programme.buildSubentities() =
     SirenBuilder(ProgrammeReducedOutputModel(id, name, acronym))
         .klass("programme")
-        .rel(Uri.relProgramme)
+        .rel("item")
         .link("self", href = Uri.forProgrammesById(id))
         .toEmbed()

@@ -125,7 +125,7 @@ object Uri {
     // custom link rel
     const val relClass = "/rel/class"
     const val relClassSection = "/rel/class-section"
-    const val relProgrammeOffer = "/rel/offer"
+    const val relProgrammeOffer = "/rel/programmeOffer"
     const val relCourse = "/rel/course"
     const val relCalendar = "/rel/calendar"
     const val relProgramme = "/rel/programme"
