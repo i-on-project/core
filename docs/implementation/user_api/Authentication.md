@@ -80,22 +80,15 @@ If the user has fulfilled the authorization request the response is presented as
 
 ```json
 {
-    "code": "The code used to obtain the access_token"
-}
-```
-
-The received code can be then used to obtain the `access_token` and more information by the client (the user gives the `code` to the client application). The response to the authorization code grant is:
-
-```json
-{
-    "id_token": "...",
     "access_token": "...",
+    "token_type": "Bearer",
     "refresh_token": "...",
-    "expires_in": 120
+    "expires_in": 3600,
+    "id_token": "..."
 }
 ```
 
-Where this response follows the OpenID standard.
+Where this response follows the OpenID standard [Successful Token Response](https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse).
 
 The available error responses to the client polling event are defined in the [OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749#section-5.2), however the error codes presented in the [OAuth 2.0 Device Authorization Grant](https://tools.ietf.org/html/rfc8628#section-3.5) are also applicable as per the [OpenID CIBA Documentation](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html#token_error_response).
 
@@ -103,4 +96,4 @@ The available error responses to the client polling event are defined in the [OA
 
 The `scope` parameter must be validated for each request depending on the presented `client_id`.
 
-A malicious user may initiate an authentication request and therefore trick a user into accepting the request. For instance, if the request is using the email method, the user must be aware of the client that initiated the request and time, so he/she can make an informed decision about allowing or denying the request.
+A malicious user may initiate an authentication request and therefore trick a user into accepting the request. For instance, if the request is using the email method, the user must be aware of the client that initiated the request and time, so he/she can make an informed decision about allowing or denying the request, and this requires that the email is sent with enough information so the user can perform the decision.
