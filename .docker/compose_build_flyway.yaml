@@ -4,20 +4,16 @@ version: '3'
 # from the root of the project, such that PWD=<root of the repo folder>
 # e.g. cd <root of project> && docker-compose -f .docker/compose_deploy.yaml run --rm core-deploy
 #
-# Credentials. Create a file named `env_deploy` in this folder, with the contents:
+# Credentials. Create a file named `env_flyway` in this folder, with the contents:
 # GITHUB_ACTOR
 # GITHUB_TOKEN
-# COMMIT_SHA
 
 services:
-    push-images:
+    build-flyway:
       build:
         context: ..
-        dockerfile: ./project/res/dockerfile_push_images
-      env_file: ./env_deploy
-      container_name: push-images-container
-      working_dir: "${PWD}"
-      network_mode: host
+        dockerfile: ./project/res/dockerfile_build_flyway
+      env_file: ./env_flyway
+      container_name: build-flyway-container
       volumes:
-        - "${PWD}:${PWD}"
         - "/var/run/docker.sock:/var/run/docker.sock"

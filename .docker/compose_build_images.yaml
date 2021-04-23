@@ -1,0 +1,23 @@
+version: '3'
+# WARNING!
+# In order for this procedure to work, you need to run docker-compose
+# from the root of the project, such that PWD=<root of the repo folder>
+# e.g. cd <root of project> && docker-compose -f .docker/compose_deploy.yaml run --rm core-deploy
+#
+# Credentials. Create a file named `env_deploy` in this folder, with the contents:
+# GITHUB_ACTOR
+# GITHUB_TOKEN
+# COMMIT_SHA
+
+services:
+    build-images:
+      build:
+        context: ..
+        dockerfile: ./project/res/dockerfile_build_images
+      env_file: ./env_deploy
+      container_name: build-images-container
+      working_dir: "${PWD}"
+      network_mode: host
+      volumes:
+        - "${PWD}:${PWD}"
+        - "/var/run/docker.sock:/var/run/docker.sock"

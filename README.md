@@ -21,15 +21,12 @@ The `compose` configuration files are used to automate procedures such as settin
 
 ```sh
 $ # Run the integration tests and exit
-$ docker-compose -f .docker/compose_ci.yaml up --abort-on-container-exit core
+$ docker-compose -f .docker/compose_ci.yaml up --build --abort-on-container-exit core
 $ 
 $ # Remove docker images and clean resources
 $ docker-compose -f .docker/compose_ci.yaml down
-$
-$ # In case you don't feel like installing docker-compose, you may use its docker-image as such
-$ docker run --rm -it -v $PWD:$PWD -w $PWD -v /var/run/docker.sock:/var/run/docker.sock docker/compose:1.24.0 -f .docker/compose_ci.yaml up --abort-on-container-exit core
 ```
-The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
+The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_run.yaml`).
 
 ## Running i-on Core
 
@@ -37,7 +34,7 @@ To run i-on core locally we can use the `compose_run` docker compose file:
 
 ```sh
 $ # Run the server and database on two containers
-$ docker-compose -f .docker/compose_run.yaml up core
+$ docker-compose -f .docker/compose_run.yaml up -d core
 ```
 
 After running this command the i-on Core should be available on port `10023` and the database on port `10021`.

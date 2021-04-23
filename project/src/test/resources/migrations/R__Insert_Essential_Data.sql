@@ -291,4 +291,3 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (3, 'GET,POST', '*', 'error'),
 (4, 'GET,POST', '*', 'error')
 ON CONFLICT DO NOTHING;
-

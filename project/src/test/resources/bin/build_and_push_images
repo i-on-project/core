@@ -6,27 +6,10 @@ core_image_tag="ghcr.io/i-on-project/core:latest"
 deploy_image_tag="ghcr.io/i-on-project/core-deploy:latest"
 
 # Start the database container
-docker-compose -f .docker/compose_db.yaml up -d
+docker-compose -f .docker/compose_db.yaml run --rm db
 
 jdbc_database_url="jdbc:postgresql://localhost:10021/core?user=bob&password=changeit"
 ion_core_secret_key="t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"
-
-# Wait for the database to be available
-timeout=120
-start_time="$(date +%s)"
-while true; do
-  if psql -Atx "$(echo "$jdbc_database_url" | sed 's;jdbc:;;g')" -1 -c "select" >/dev/null 2>/dev/null; then
-    printf "Connection established with the database.\\n"
-    break
-  fi
-
-  current_time="$(date +%s)"
-  if [ "$(( current_time - start_time ))" -ge "$timeout" ]; then
-    printf "Timeout reached. Exiting...\\n"
-    exit 1
-  fi
-  sleep 1
-done
 
 # Build core image
 docker build -f ./project/res/dockerfile_core \
@@ -36,7 +19,7 @@ docker build -f ./project/res/dockerfile_core \
   -t "${core_image_tag}" .
 
 # Stop the database container
-docker-compose -f .docker/compose_db.yaml down
+docker stop core-ci-database 2>/dev/null | true
 
 # Build the deploy image
 docker build -f ./project/res/dockerfile_deploy \

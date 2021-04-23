@@ -23,3 +23,9 @@ done
 # Since the CI process will not make use of it anyway, might as well disable it
 mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
 ./gradlew build --stacktrace --no-daemon
+
+if [ $# -gt 0 ] && [ "$1" = "run" ]; then
+  java -server \
+    -jar "$(find build/libs -name "*.jar" | head -n 1)" \
+    -Dserver.port=8080
+fi

@@ -1,9 +1,20 @@
-FROM postgres:13-alpine
+FROM ghcr.io/i-on-project/flyway-postgres:latest AS flyway
+FROM postgres:alpine
+
+RUN apk add --no-cache docker docker-compose openjdk11-jre-headless
+
+# RUN mkdir -p /var/lib/postgres
+# RUN chown postgres:postgres /var/lib/postgres
+
+COPY --from=flyway ./flyway ./
+RUN chmod -R a+rx ./flyway
 
 USER postgres
-COPY ./docker/sql/create-schema.sql /docker-entrypoint-initdb.d/1_create.sql
-COPY ./docker/sql/insert-essential-data.sql /docker-entrypoint-initdb.d/2_insert-essentials.sql
-COPY ./docker/sql/insert-testing-data.sql /docker-entrypoint-initdb.d/3_insert-testing-data.sql
+
+COPY . ./db
+
+ENTRYPOINT [ "./db/bin/start_test_database" ]
 
 EXPOSE 5432
 
+CMD [ "postgres" ]

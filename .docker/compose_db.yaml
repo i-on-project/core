@@ -4,10 +4,12 @@ services:
       build:
         context: ./src/res
         dockerfile: ./dockerfile_db
-      container_name: core-db-container
-      ports:
-        - 10021:5432
+      container_name: core-ci-flyway
+      network_mode: host
       environment:
         - POSTGRES_USER=bob
         - POSTGRES_PASSWORD=changeit
         - POSTGRES_DB=core
+        - POSTGRES_PORT=10021
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"

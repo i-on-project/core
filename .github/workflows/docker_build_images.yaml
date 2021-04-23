@@ -1,0 +1,20 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - release/*
+
+jobs:
+  build_and_deploy:
+    name: Build And Deploy to GitHub Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Set env file for Docker Compose
+        run: echo -e "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\nGITHUB_ACTOR=${GITHUB_ACTOR}\nCOMMIT_SHA=${GITHUB_SHA}" > .docker/env_deploy
+
+      - name: Build & Deploy
+        run: docker-compose -f .docker/compose_build_images.yaml run --rm build-images

@@ -1,8 +1,8 @@
 FROM adoptopenjdk/openjdk11:alpine
 
-RUN apk add postgresql-client
+RUN apk add docker docker-compose postgresql-client
 
 WORKDIR /proj
 COPY . .
-RUN mv ./res/bin/poll_db_and_build .
-ENTRYPOINT [ "./poll_db_and_build" ]
+
+ENTRYPOINT [ "./res/bin/poll_db_and_build" ]

@@ -1,0 +1,16 @@
+FROM alpine:latest
+
+ARG FLYWAY_VERSION=7.7.1
+
+RUN apk update
+RUN apk add --no-cache docker docker-compose grep wget bash openjdk11-jre-headless postgresql-client
+RUN wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/$FLYWAY_VERSION/flyway-commandline-$FLYWAY_VERSION-linux-x64.tar.gz | tar xvz
+RUN mv /flyway-$FLYWAY_VERSION /flyway
+RUN ln -s /flyway/flyway /usr/bin
+
+# Use installed openjdk
+RUN rm -r /flyway/jre
+RUN mkdir -p /flyway/jre/bin && ln -s /usr/bin/java /flyway/jre/bin/
+
+# Delete unnecessary drivers
+RUN mv /flyway/drivers/postgresql* /flyway && rm -r /flyway/drivers && mkdir -p /flyway/drivers && mv /flyway/postgresql* /flyway/drivers

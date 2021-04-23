@@ -811,4 +811,3 @@ CALL dbo.newEventWithInstants(15,
 
 
 -- End of 1920v calendar information --
-
