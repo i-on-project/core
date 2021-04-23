@@ -15,5 +15,8 @@ services:
         dockerfile: ./project/res/dockerfile_build_flyway
       env_file: ./env_flyway
       container_name: build-flyway-container
+      working_dir: "${PWD}"
+      network_mode: host
       volumes:
+        - "${PWD}:${PWD}"
         - "/var/run/docker.sock:/var/run/docker.sock"
