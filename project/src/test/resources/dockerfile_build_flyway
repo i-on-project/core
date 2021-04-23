@@ -3,6 +3,4 @@ FROM alpine:latest
 RUN apk update
 RUN apk add docker docker-compose
 
-WORKDIR ./project/res
-
-ENTRYPOINT ["./bin/build_and_push_flyway"]
+ENTRYPOINT ["./project/res/bin/build_and_push_flyway"]

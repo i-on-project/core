@@ -4,7 +4,7 @@ set -eu
 
 flyway_image_tag="ghcr.io/i-on-project/flyway-postgres:latest"
 
-docker build -f ./dockerfile_flyway \
+docker build -f ./project/res/dockerfile_flyway \
     -t "${flyway_image_tag}" .
 
 if [ -z "${GITHUB_ACTOR:-}" ] ||\
