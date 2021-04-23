@@ -20,6 +20,7 @@ jobs:
         run: docker-compose -f .docker/compose_build_flyway.yaml run --rm build-flyway
   build:
     name: Continuous Integration
+    needs: build_and_push_flyway
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
