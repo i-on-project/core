@@ -56,22 +56,7 @@ tasks.register<Copy>("extractUberJar") {
 }
 
 // DB automation
-tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is already running
-tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist
-tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
 tasks.register<PgInsertReadToken>("pgInsertReadToken")
 tasks.register<PgInsertWriteToken>("pgInsertWriteToken")
 tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
 tasks.register<PgInsertRevokeToken>("pgInsertRevokeToken")
-
-/**
- * Will destroy the container before setting the database (which will be done inside
- * a new container).
- */
-tasks.register("pgReset") {
-    val setupTask = "pgStart"
-    val stopTask = "pgStop"
-
-    dependsOn(setupTask, stopTask)
-    tasks[setupTask].mustRunAfter(stopTask)
-}

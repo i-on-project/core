@@ -2,7 +2,6 @@
 
 set -eu
 
-# 2 minutes of timeout
 timeout=120
 start_time="$(date +%s)"
 while true; do
@@ -19,8 +18,13 @@ while true; do
   sleep 1
 done
 
-# Gradle is very slow at starting the daemon
-# Since the CI process will not make use of it anyway, might as well disable it
+container_name="core-migrate"
+docker run --name "${container_name}" \
+  -e JDBC_DATABASE_URL=${JDBC_DATABASE_URL} \
+  --network host \
+  --rm \
+  "${container_name}" test
+
 mkdir -p ~/.gradle && echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
 ./gradlew build --stacktrace --no-daemon
 

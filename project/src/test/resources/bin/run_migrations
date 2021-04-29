@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -eu
+
+echo
+echo "Running migrations"
+echo
+
+
+if [ $# -gt 0 ] && [ "$1" = "test" ]; then
+	echo "Running test migrations"
+	flyway -url="${JDBC_DATABASE_URL}" \
+    	-locations="filesystem:migrations/,filesystem:test_migrations/" \
+    	migrate
+else
+	flyway -url="${JDBC_DATABASE_URL}" \
+    	-locations="filesystem:migrations/" \
+    	migrate
+fi
+
+
+echo
+echo "The migration process has ended"
+echo

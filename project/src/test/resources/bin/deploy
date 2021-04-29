@@ -60,9 +60,12 @@ schema_migration() {
   stop_core
 
   set +e
-  flyway -url="${db_con_string}" \
-    -locations="filesystem:migrations/" \
-    migrate
+  container_name="core-migrate"
+  docker run --name "${container_name}" \
+    -e JDBC_DATABASE_URL=${db_con_string} \
+    --network host \
+    --rm \
+    "${container_name}" test
 
   migra_success=$?
   set -e

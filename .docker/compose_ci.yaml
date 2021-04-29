@@ -6,13 +6,14 @@ services:
         dockerfile: ./res/dockerfile_ci
       container_name: core-ci-container
       depends_on: [ db ]
+      network_mode: host
       environment:
-        - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
+        - JDBC_DATABASE_URL=jdbc:postgresql://localhost:10021/core?user=bob&password=changeit
         - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
     db:
-      build:
-        context: ./src/res
-        dockerfile: ./dockerfile_db
+      image: postgres:latest
       container_name: core-ci-database
       ports:
         - 10021:5432
