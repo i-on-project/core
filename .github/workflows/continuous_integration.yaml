@@ -6,18 +6,18 @@ on:
       - release/*
 
 jobs:
-  build_and_push_flyway:
-    name: Build and Push Flyway Image to GitHub Container Registry
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
+  # build_and_push_flyway:
+  #   name: Build and Push Flyway Image to GitHub Container Registry
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v2
 
-      - name: Set env file for Docker Compose
-        run: echo -e "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\nGITHUB_ACTOR=${GITHUB_ACTOR}" > .docker/env_flyway
+  #     - name: Set env file for Docker Compose
+  #       run: echo -e "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}\nGITHUB_ACTOR=${GITHUB_ACTOR}" > .docker/env_flyway
 
-      - name: Build & Deploy
-        run: docker-compose -f .docker/compose_build_flyway.yaml run --rm build-flyway
+  #     - name: Build & Deploy
+  #       run: docker-compose -f .docker/compose_build_flyway.yaml run --rm build-flyway
   build:
     name: Continuous Integration
     needs: build_and_push_flyway
