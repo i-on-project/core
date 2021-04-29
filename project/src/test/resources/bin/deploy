@@ -43,6 +43,9 @@ pull_core_image() {
 start_core_container() {
   printf "Starting core container\n"
 
+  docker build -t "${container_name}" \
+    -f dockerfile_flyway .
+
   docker run --name ${core_container_name} \
     -p "${core_port}:${core_port}" \
     -e JDBC_DATABASE_URL="${db_core_con_string}" \

@@ -19,6 +19,9 @@ while true; do
 done
 
 container_name="core-migrate"
+docker build -t "${container_name}" \
+  -f ./res/dockerfile_flyway .
+
 docker run --name "${container_name}" \
   -e JDBC_DATABASE_URL=${JDBC_DATABASE_URL} \
   --network host \
