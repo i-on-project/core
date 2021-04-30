@@ -45,14 +45,17 @@ class ControlAccessInterceptor(
 
         // Obtain name of resource trying to access (the name of the resource is the one in the annotation
         val resourceIdentifier = buildResourceIdentifier(handler)
-        val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
+        if (resourceIdentifier != null) {
+            val requestDescriptor = Request(request.method, request.requestURI, resourceIdentifier)
 
-        // Checks if its an import link verification path
-        if (checkAccessToken(request, requestDescriptor))
-            return true
+            // Checks if its an import link verification path
+            if (checkAccessToken(request, requestDescriptor))
+                return true
 
-        // Authorization Header verification path
-        checkAuthorizationHeader(request, requestDescriptor)
+            // Authorization Header verification path
+            checkAuthorizationHeader(request, requestDescriptor)
+        }
+
         return true
     }
 
@@ -137,12 +140,13 @@ class ControlAccessInterceptor(
      * Builds an object that describes the controller trying to gain access (id, version)
      * used to check policies
      */
-    private fun buildResourceIdentifier(handler: Any): ResourceIdentifierDescriptor {
+    private fun buildResourceIdentifier(handler: Any): ResourceIdentifierDescriptor? {
         val handlerMethod = handler as HandlerMethod
-        val resourceIdentifierAnnotation = handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)
-        val resourceName = resourceIdentifierAnnotation?.resourceName ?: ""
-        val resourceVersion = resourceIdentifierAnnotation?.version ?: ""
-        return ResourceIdentifierDescriptor(resourceName, resourceVersion)
+        return handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)?.let {
+            val resourceName = it.resourceName
+            val resourceVersion = it.version
+            ResourceIdentifierDescriptor(resourceName, resourceVersion)
+        }
     }
 
     /**

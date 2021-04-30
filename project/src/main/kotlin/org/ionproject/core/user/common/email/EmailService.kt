@@ -8,5 +8,4 @@ enum class EmailType(val mimeType: String) {
 abstract class EmailService(val senderEmail: String, val senderName: String) {
 
     abstract suspend fun sendEmail(recipientEmail: String, emailType: EmailType, subject: String, content: String)
-
 }

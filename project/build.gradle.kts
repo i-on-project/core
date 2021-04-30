@@ -30,6 +30,7 @@ dependencies {
     implementation("com.google.cloud:google-cloud-logging-logback:0.118.0-alpha")
 
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
 
     // test dependencies
     testImplementation("org.mnode.ical4j:ical4j:3.0.+")

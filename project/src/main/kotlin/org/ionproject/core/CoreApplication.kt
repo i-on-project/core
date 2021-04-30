@@ -19,6 +19,9 @@ import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
+import org.ionproject.core.user.auth.AuthMethod
+import org.ionproject.core.user.auth.AuthMethodRegistry
+import org.ionproject.core.user.auth.EmailAuthMethod
 import org.ionproject.core.user.common.email.EmailService
 import org.ionproject.core.user.common.email.SendGridEmailService
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
@@ -33,7 +37,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
-import java.lang.Exception
 
 private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
 private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
@@ -113,14 +116,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
         val objectMapper = jacksonObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
 
-        val apiKey = System.getenv(SENDGRID_API_KEY)
-            ?: throw EnvironmentVariableNotFoundException(SENDGRID_API_KEY)
-
-        val senderEmail = System.getenv(EMAIL_SENDER_EMAIL)
-            ?: throw EnvironmentVariableNotFoundException(EMAIL_SENDER_EMAIL)
-
-        val senderName = System.getenv(EMAIL_SENDER_NAME)
-            ?: throw EnvironmentVariableNotFoundException(EMAIL_SENDER_NAME)
+        val apiKey = System.getenv(SENDGRID_API_KEY) ?: ""
+        val senderEmail = System.getenv(EMAIL_SENDER_EMAIL) ?: ""
+        val senderName = System.getenv(EMAIL_SENDER_NAME) ?: ""
 
         return SendGridEmailService(
             httpClient,
@@ -129,6 +127,18 @@ class CoreSerializationConfig : WebMvcConfigurer {
             senderEmail,
             senderName
         )
+    }
+
+    @Bean
+    fun getAuthMethodRegistry(@Autowired emailService: EmailService): AuthMethodRegistry {
+        val registry = AuthMethodRegistry()
+
+        registry.register(EmailAuthMethod(
+            listOf("*.isel.pt", "*.isel.ipl.pt"),
+            emailService
+        ))
+
+        return registry
     }
 }
 

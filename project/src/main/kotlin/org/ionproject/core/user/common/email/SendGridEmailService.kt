@@ -1,5 +1,6 @@
 package org.ionproject.core.user.common.email
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.Call
 import okhttp3.Callback
@@ -8,9 +9,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.ionproject.core.common.customExceptions.InternalServerErrorException
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.lang.Exception
+import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
@@ -50,7 +53,11 @@ class SendGridEmailService(
                                 ?: "Unexpected error while sending the email"
 
                             logger.error(errorMessage)
-                            it.resumeWithException(Exception(errorMessage))
+                            it.resumeWithException(
+                                InternalServerErrorException("Unexpected error while sending the email")
+                            )
+                        } else {
+                            it.resume(Unit)
                         }
                     }
                 })
@@ -80,10 +87,12 @@ class SendGridEmailService(
         subject: String,
         content: String
     ) = EmailRequestBody(
-        listOf(EmailPersonalization(Email(recipientEmail))),
+        listOf(EmailPersonalization(
+            listOf(Email(recipientEmail))
+        )),
         Email(senderEmail, senderName),
         subject,
-        EmailContent(emailType.mimeType, content)
+        listOf(EmailContent(emailType.mimeType, content))
     )
 
     data class EmailError(
@@ -91,6 +100,7 @@ class SendGridEmailService(
         val id: String? = null
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class EmailErrorDetail(
         val message: String? = null,
         val field: String? = null
@@ -100,11 +110,11 @@ class SendGridEmailService(
         val personalizations: List<EmailPersonalization>,
         val from: Email,
         val subject: String,
-        val content: EmailContent
+        val content: List<EmailContent>
     )
 
     data class EmailPersonalization(
-        val to: Email
+        val to: List<Email>
     )
 
     data class EmailContent(
@@ -116,5 +126,4 @@ class SendGridEmailService(
         val email: String,
         val name: String? = null
     )
-
 }
