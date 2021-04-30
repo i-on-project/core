@@ -8,18 +8,18 @@ The following diagram represents an example of the authentication procedure wher
 
 This diagram presents a similar behaviour to the [OpenID Connect Client Initiated Backchannel Authentication Flow](https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html) where the client initiates the authentication flow on behalf of the user and the following user authentication interactions are done between the server and another third-party (IdP, Email Client, ...).
 
-#|   Flow   | HTTP Method | Description
--|:--------:|:-----------:|--------------
-1|  U -> C  |     GET     | Login Request
-2|  C -> S  |     GET     | Get Available Methods
-3|  C <- S  | ----------- | Returns the Available Methods<br>(for example `email` with the domain `alunos.isel.pt`)
-4|  U <- C  | ----------- | Presents the Methods
-5|  U -> C  | ----------- | Responds to the Authentication Method
-6|  C -> S  |     POST    | Sends Method Response with `client_id`, `redirect_uri` and `state`<br>(in the context of the example it would be a student email: `AXXXXX@alunos.isel.pt`)
-7|  U -> S  |     GET     | Polling for the authentication to be completed
-8|  U <- S  | ----------- | Polling Response
-.|   ...    |     ...     | ...
-9|  U -> S  |     GET     | Polling for the authentication to be completed
+\#|   Flow   | HTTP Method | Description
+--|:--------:|:-----------:|--------------
+1 |  U -> C  |     GET     | Login Request
+2 |  C -> S  |     GET     | Get Available Methods
+3 |  C <- S  | ----------- | Returns the Available Methods<br>(for example `email` with the domain `alunos.isel.pt`)
+4 |  U <- C  | ----------- | Presents the Methods
+5 |  U -> C  | ----------- | Responds to the Authentication Method
+6 |  C -> S  |     POST    | Sends Method Response with `client_id` and `state`<br>(in the context of the example it would be a student email: `AXXXXX@alunos.isel.pt`)
+7 |  U -> S  |     POST    | Polling for the authentication to be completed
+8 |  U <- S  | ----------- | Polling Response
+..|   ...    |     ...     | ...
+9 |  U -> S  |     POST    | Polling for the authentication to be completed
 10|  U <- S  | ----------- | Authentication Completed or Denied
 
 After the POST request to the server, the user will serve as an actor between the third-party and the server in order to provide proof of possession (proof that the user possesses a specified email address, for instance).

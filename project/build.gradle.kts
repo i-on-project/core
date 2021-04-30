@@ -29,6 +29,8 @@ dependencies {
     implementation("org.postgresql:postgresql:42.+")
     implementation("com.google.cloud:google-cloud-logging-logback:0.118.0-alpha")
 
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
     // test dependencies
     testImplementation("org.mnode.ical4j:ical4j:3.0.+")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

@@ -122,6 +122,11 @@ object Uri {
     fun forSearch(query: SearchQuery): URI =
         searchTemplate.expand(query.query, query.types.joinToString(","), query.limit, query.page)
 
+    // User Authentication
+    const val authBase = "$version/auth"
+    const val authMethods = "$authBase/methods"
+    const val authPoll = "$authBase/poll"
+
     // custom link rel
     const val relClass = "/rel/class"
     const val relClassSection = "/rel/class-section"

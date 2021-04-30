@@ -3,6 +3,8 @@ package org.ionproject.core
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import okhttp3.OkHttpClient
 import org.ionproject.core.accessControl.AccessControlCache
 import org.ionproject.core.accessControl.PDP
 import org.ionproject.core.accessControl.TokenGenerator
@@ -12,10 +14,13 @@ import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.argumentResolvers.PaginationResolver
+import org.ionproject.core.common.customExceptions.EnvironmentVariableNotFoundException
 import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
+import org.ionproject.core.user.common.email.EmailService
+import org.ionproject.core.user.common.email.SendGridEmailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -28,6 +33,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
+import java.lang.Exception
+
+private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
+private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
+private const val EMAIL_SENDER_NAME = "EMAIL_SENDER_NAME"
 
 @SpringBootApplication
 class CoreApplication
@@ -90,6 +100,35 @@ class CoreSerializationConfig : WebMvcConfigurer {
     @Bean
     fun controlAccessInterceptor(): ControlAccessInterceptor {
         return ControlAccessInterceptor(pdp, tokenGenerator, cache)
+    }
+
+    @Bean
+    fun buildHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .build()
+    }
+
+    @Bean
+    fun buildEmailService(@Autowired httpClient: OkHttpClient): EmailService {
+        val objectMapper = jacksonObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+
+        val apiKey = System.getenv(SENDGRID_API_KEY)
+            ?: throw EnvironmentVariableNotFoundException(SENDGRID_API_KEY)
+
+        val senderEmail = System.getenv(EMAIL_SENDER_EMAIL)
+            ?: throw EnvironmentVariableNotFoundException(EMAIL_SENDER_EMAIL)
+
+        val senderName = System.getenv(EMAIL_SENDER_NAME)
+            ?: throw EnvironmentVariableNotFoundException(EMAIL_SENDER_NAME)
+
+        return SendGridEmailService(
+            httpClient,
+            objectMapper,
+            apiKey,
+            senderEmail,
+            senderName
+        )
     }
 }
 
