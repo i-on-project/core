@@ -46,16 +46,14 @@ class SendGridEmailService(
 
                     override fun onResponse(call: Call, response: Response) {
                         if (!response.isSuccessful) {
-                            val errorMessage = objectMapper.readValue(
+                            val errorMessage = "Unexpected error while sending the email"
+                            val realErrorMessage = objectMapper.readValue(
                                 response.body?.string(),
                                 EmailError::class.java
-                            ).errors?.get(0)?.message
-                                ?: "Unexpected error while sending the email"
+                            ).errors?.get(0)?.message ?: errorMessage
 
-                            logger.error(errorMessage)
-                            it.resumeWithException(
-                                InternalServerErrorException("Unexpected error while sending the email")
-                            )
+                            logger.error(realErrorMessage)
+                            it.resumeWithException(InternalServerErrorException(errorMessage))
                         } else {
                             it.resume(Unit)
                         }

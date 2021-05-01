@@ -1,10 +1,15 @@
 package org.ionproject.core.user.auth
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import kotlinx.coroutines.runBlocking
+import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
+import org.ionproject.core.user.auth.model.AuthRequest
 import org.ionproject.core.user.common.email.EmailService
 import org.ionproject.core.user.common.email.EmailType
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class AuthMethodRegistry {
 
@@ -24,7 +29,7 @@ class AuthMethodRegistry {
 abstract class AuthMethod(val type: String) {
 
     // TODO: the return should be changed
-    abstract fun solve(data: String?): Boolean
+    abstract suspend fun solve(request: AuthRequest): Boolean
 
 }
 
@@ -34,26 +39,41 @@ data class EmailAuthMethod(
     private val emailService: EmailService
 ): AuthMethod("email") {
 
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
+
     private val allowedDomainsParts = allowedDomains.map {
         it.split(".")
             .asReversed()
     }
 
-    override fun solve(data: String?): Boolean {
-        // TODO: finish this
-        data ?: throw BadRequestException("The email auth method requires an email to be provided!")
+    override suspend fun solve(request: AuthRequest): Boolean {
+        val email = request.loginHint
+        email ?: throw BadRequestException("The email auth method requires an email to be provided!")
 
-        if (!validateEmail(data))
+        if (!validateEmail(email))
             throw BadRequestException("The domain of the email is not allowed!")
 
-        runBlocking {
-            emailService.sendEmail(
-                data,
-                EmailType.TEXT,
-                "Test Email",
-                "Yay! We made it boys!"
-            )
-        }
+        val zoneId = "UTC"
+        val time = timeFormatter.format(LocalDateTime.ofInstant(
+            request.time,
+            ZoneId.of(zoneId)
+        ))
+
+        val verifyUrl = Uri.forAuthVerify(request.authRequestId)
+        emailService.sendEmail(
+            email,
+            EmailType.HTML,
+            "ion - Verify your login attempt",
+            """
+                <h1>New Login Attempt</h1>
+                <h3>$time $zoneId with ${request.userAgent}</h3>
+                <b>If this was not you please ignore and delete this email!</b>
+                <br>
+                <br>
+                <p>To complete your login request please follow the link:</p>
+                <p><a href="$verifyUrl">$verifyUrl</a></p>
+            """.trimIndent()
+        )
 
         return true
     }
@@ -67,7 +87,7 @@ data class EmailAuthMethod(
             .asReversed()
 
         val adp = allowedDomainsParts.filter {
-            it.size == domainParts.size || it.size - 1 == domainParts.size
+            it.size <= domainParts.size
         }
 
         for (dp in adp) {

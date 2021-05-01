@@ -238,7 +238,6 @@ ON CONFLICT DO NOTHING;
 -- read:calendar scope only used by derived tokens
 INSERT INTO dbo.scopes (scope) VALUES
 ('urn:org:ionproject:scopes:api:read'),
-('urn:org:ionproject:scopes:api:write'),
 ('urn:org:ionproject:scopes:token:issue'),
 ('urn:org:ionproject:scopes:api:read_restricted'),
 ('urn:org:ionproject:scopes:api:revoke'),
@@ -258,15 +257,14 @@ ON CONFLICT DO NOTHING;
 INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (1, 'GET', 'v0', 'getHome'),
 (1, 'GET', 'v0', 'search'),
-(3, 'POST', '*', 'issueToken'),
+(2, 'POST', '*', 'issueToken'),
 (2, 'POST', '*', 'revokeToken'),
 (3, 'POST', '*', 'revokeToken'),
 (4, 'POST', '*', 'revokeToken'),
-(5, 'POST', '*', 'revokeToken'),
 (1, 'GET', 'v0', 'getProgramme'),
 (1, 'GET', 'v0', 'getProgrammes'),
-(4, 'GET', 'v0', 'getProgramme'), --Testing read restricted scope
-(4, 'GET', 'v0', 'getProgrammes'), --Testing read restricted scope
+(3, 'GET', 'v0', 'getProgramme'), --Testing read restricted scope
+(3, 'GET', 'v0', 'getProgrammes'), --Testing read restricted scope
 (1, 'GET', 'v0', 'getOffer'),
 (1, 'GET', 'v0', 'getOffers'),
 (1, 'GET', 'v0', 'importClassCalendar'),
@@ -278,18 +276,22 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (1, 'GET', 'v0', 'getClassSection'),
 (1, 'GET', 'v0', 'getCalendarClass'),
 (1, 'GET', 'v0', 'getCalendarClassSection'),
-(6, 'GET', 'v0', 'getCalendarClass'),           -- used by derived tokens to read calendars
-(6, 'GET', 'v0', 'getCalendarClassSection'),
+(5, 'GET', 'v0', 'getCalendarClass'),           -- used by derived tokens to read calendars
+(5, 'GET', 'v0', 'getCalendarClassSection'),
 (1, 'GET', 'v0', 'getComponentClass'),
 (1, 'GET', 'v0', 'getComponentClassSection'),
 (1, 'GET', 'v0', 'getCalendarTerms'),
 (1, 'GET', 'v0', 'getCalendarTerm'),
-(2, 'PUT', 'v0', 'insertClassSectionFaculty'),
-(2, 'PUT', 'v0', 'insertClassSectionEvents'),
-(2, 'PUT', 'v0', 'insertCalendarTerm'),
 (1, 'GET,POST', '*', 'error'),
 (2, 'GET,POST', '*', 'error'),
-(3, 'GET,POST', '*', 'error'),
-(4, 'GET,POST', '*', 'error')
+(3, 'GET,POST', '*', 'error')
 ON CONFLICT DO NOTHING;
 
+INSERT INTO dbo.authclient (client_id, client_name, client_url) VALUES
+('22dd1551-db23-481b-acde-d286440388a5', 'i-on Web', 'https://i-on-web.herokuapp.com/'),
+('14633a07-30d8-41f9-aa4d-d55341d7c7f3', 'i-on Android', null)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO dbo.authnotificationmethod (method) values
+('POLL')
+ON CONFLICT DO NOTHING;
