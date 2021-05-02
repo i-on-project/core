@@ -4,6 +4,7 @@ import org.ionproject.core.common.customExceptions.InternalServerErrorException
 import org.jdbi.v3.core.ConnectionException
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -14,6 +15,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      * Jdbi instance wraps a JDBC DataSource
      */
     private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
+        installPlugin(KotlinPlugin())
         // setSqlLogger(SqlLogger()) // uncomment this line to see what request are being sent to the database
     }
 

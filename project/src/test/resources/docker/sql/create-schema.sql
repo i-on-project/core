@@ -198,17 +198,14 @@ CREATE TABLE IF NOT EXISTS dbo.AuthClient(
     client_url     VARCHAR(200) NULL
 );
 
-CREATE TABLE IF NOT EXISTS dbo.AuthNotificationMethod(
-    method         VARCHAR(20) PRIMARY KEY
-);
-
 CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
     auth_req_id    CHAR(36) PRIMARY KEY,
     login_hint     VARCHAR(200) NULL,
     user_agent     VARCHAR(200),
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
-    ntf_method     VARCHAR(20) REFERENCES dbo.AuthNotificationMethod(method) ON DELETE CASCADE,
-    expires_on     TIMESTAMP DEFAULT NOW()
+    ntf_method     VARCHAR(20),
+    expires_on     TIMESTAMP DEFAULT NOW(),
+    verified       boolean default false
 );
 
 ------- VIEWS --------

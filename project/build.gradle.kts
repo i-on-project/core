@@ -25,9 +25,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.networknt:json-schema-validator:1.0.38")
     implementation("org.json:json:20171018")
-    implementation("org.jdbi:jdbi3-sqlobject:3.12.2")
     implementation("org.postgresql:postgresql:42.+")
     implementation("com.google.cloud:google-cloud-logging-logback:0.118.0-alpha")
+
+    implementation("org.jdbi:jdbi3-kotlin-sqlobject:3.20.0")
 
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")

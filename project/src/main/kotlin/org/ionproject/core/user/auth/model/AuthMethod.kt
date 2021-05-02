@@ -12,11 +12,3 @@ data class AuthMethodInput(
     @JsonProperty("login_hint")
     val loginHint: String?
 )
-
-data class AuthMethodResponse(
-    @JsonProperty("auth_req_id")
-    val authRequestId: String,
-    @JsonProperty("expires_in")
-    val expiresIn: Int,
-    val interval: Int
-)

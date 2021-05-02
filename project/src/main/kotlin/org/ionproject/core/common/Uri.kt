@@ -158,7 +158,7 @@ object Uri {
     // User Authentication
     private const val authBase = "$version/auth"
     const val authMethods = "$authBase/methods"
-    const val authPoll = "$authBase/poll"
+    const val authPoll = "$authBase/poll/{reqId}"
     const val authVerify = "$authBase/verify/{reqId}"
 
     fun forAuthVerify(reqId: String) =

@@ -25,7 +25,6 @@ class MyErrorController : ErrorController {
      * Last frontier to catch all error that we miss.
      */
     @RequestMapping(Uri.error)
-    @ResourceIdentifierAnnotation(ResourceIds.ERROR, ResourceIds.ALL_VERSIONS)
     fun handleError(request: HttpServletRequest): ResponseEntity<ProblemJson> {
         val status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)
         val requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString()

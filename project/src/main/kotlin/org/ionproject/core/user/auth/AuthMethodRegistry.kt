@@ -3,10 +3,9 @@ package org.ionproject.core.user.auth
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
-import org.ionproject.core.user.auth.model.AuthRequest
+import org.ionproject.core.user.auth.model.AuthRequestHelper
 import org.ionproject.core.user.common.email.EmailService
 import org.ionproject.core.user.common.email.EmailType
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -29,7 +28,7 @@ class AuthMethodRegistry {
 abstract class AuthMethod(val type: String) {
 
     // TODO: the return should be changed
-    abstract suspend fun solve(request: AuthRequest): Boolean
+    abstract suspend fun solve(request: AuthRequestHelper): Boolean
 
 }
 
@@ -46,7 +45,7 @@ data class EmailAuthMethod(
             .asReversed()
     }
 
-    override suspend fun solve(request: AuthRequest): Boolean {
+    override suspend fun solve(request: AuthRequestHelper): Boolean {
         val email = request.loginHint
         email ?: throw BadRequestException("The email auth method requires an email to be provided!")
 
@@ -65,7 +64,7 @@ data class EmailAuthMethod(
             EmailType.HTML,
             "ion - Verify your login attempt",
             """
-                <h1>New Login Attempt</h1>
+                <h1>New Login Attempt from ${request.clientName}</h1>
                 <h3>$time $zoneId with ${request.userAgent}</h3>
                 <b>If this was not you please ignore and delete this email!</b>
                 <br>

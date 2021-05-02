@@ -26,4 +26,20 @@ object AuthData {
         (:$AUTH_REQUEST_ID, :$LOGIN_HINT, :$USER_AGENT, :$CLIENT_ID, :$NOTIFICATION_METHOD, :$EXPIRES_ON)
     """
 
+    const val GET_AUTH_REQUEST = """
+        select * from dbo.AuthRequest
+        where auth_req_id = :$AUTH_REQUEST_ID
+    """
+
+    const val REMOVE_AUTH_REQUEST = """
+        delete from dbo.AuthRequest
+        where auth_req_id = :$AUTH_REQUEST_ID
+    """
+
+    const val VERIFY_AUTH_REQUEST = """
+        update dbo.AuthRequest
+        set verified = true
+        where auth_req_id = :$AUTH_REQUEST_ID
+    """
+
 }
