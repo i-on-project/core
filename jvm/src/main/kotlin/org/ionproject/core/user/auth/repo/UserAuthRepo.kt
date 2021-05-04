@@ -14,5 +14,4 @@ interface UserAuthRepo {
     fun validateAuthRequest(authRequestId: String, secretId: String)
 
     fun checkAuthRequest(authRequestId: String): AuthSuccessfulResponse
-
 }

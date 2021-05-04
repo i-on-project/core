@@ -8,6 +8,7 @@ import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.postgresql.util.PSQLException
 import org.slf4j.LoggerFactory
+import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -54,7 +55,7 @@ fun handleExceptionResponse(
 }
 
 @RestControllerAdvice
-class ExceptionHandler {
+class ExceptionHandler(val resourceLoader: ResourceLoader) {
 
     @ExceptionHandler(value = [BadRequestException::class])
     private fun handleBadRequestException(

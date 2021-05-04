@@ -13,5 +13,4 @@ class AuthNotificationRegistry {
     fun findOrThrow(method: String) =
         registry.find { it == method.toLowerCase() }
             ?: throw InvalidNotificationMethodException(registry)
-
 }

@@ -141,12 +141,15 @@ class ControlAccessInterceptor(
      * used to check policies
      */
     private fun buildResourceIdentifier(handler: Any): ResourceIdentifierDescriptor? {
-        val handlerMethod = handler as HandlerMethod
-        return handlerMethod.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)?.let {
-            val resourceName = it.resourceName
-            val resourceVersion = it.version
-            ResourceIdentifierDescriptor(resourceName, resourceVersion)
+        if (handler is HandlerMethod) {
+            return handler.getMethodAnnotation(ResourceIdentifierAnnotation::class.java)?.let {
+                val resourceName = it.resourceName
+                val resourceVersion = it.version
+                ResourceIdentifierDescriptor(resourceName, resourceVersion)
+            }
         }
+
+        return null
     }
 
     /**

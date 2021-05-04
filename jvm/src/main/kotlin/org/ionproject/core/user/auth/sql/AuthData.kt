@@ -42,5 +42,4 @@ object AuthData {
         set verified = true
         where auth_req_id = :$AUTH_REQUEST_ID
     """
-
 }

@@ -26,7 +26,7 @@ private const val apiName = "i-on Core"
 class JsonHomeController {
 
     @ResourceIdentifierAnnotation(ResourceIds.GET_HOME, ResourceIds.VERSION_0)
-    @GetMapping("/")
+    @GetMapping(Uri.apiBase)
     fun getRoot(): ResponseEntity<JsonHome> {
         val homeObject = JsonHomeBuilder(apiName)
             .link("describedBy", specUri)

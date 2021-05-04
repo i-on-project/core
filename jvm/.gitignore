@@ -31,3 +31,6 @@ out/
 ### VS Code ###
 .vscode/
 read_token.txt
+
+### React Production Build ###
+src/main/resources/static

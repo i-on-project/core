@@ -2,20 +2,27 @@ package org.ionproject.core.error
 
 import org.ionproject.core.common.LogMessages
 import org.ionproject.core.common.ProblemJson
-import org.ionproject.core.common.ResourceIdentifierAnnotation
-import org.ionproject.core.common.ResourceIds
 import org.ionproject.core.common.Uri
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.servlet.error.ErrorController
+import org.springframework.core.io.ResourceLoader
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.util.StreamUtils
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.lang.Exception
+import java.nio.charset.StandardCharsets
 import javax.servlet.RequestDispatcher
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class MyErrorController : ErrorController {
+class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
+
+    @Value("\${react.index-file}")
+    lateinit var reactIndex: String
 
     companion object {
         private val logger = LoggerFactory.getLogger(MyErrorController::class.java)
@@ -25,14 +32,12 @@ class MyErrorController : ErrorController {
      * Last frontier to catch all error that we miss.
      */
     @RequestMapping(Uri.error)
-    fun handleError(request: HttpServletRequest): ResponseEntity<ProblemJson> {
+    fun handleError(request: HttpServletRequest): ResponseEntity<Any> {
         val status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)
         val requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI).toString()
 
         if (status != null) {
-            val statusCode = Integer.valueOf(status.toString())
-
-            when (statusCode) {
+            when (Integer.valueOf(status.toString())) {
                 406 -> {
                     logger.error(
                         LogMessages.forException(
@@ -53,23 +58,34 @@ class MyErrorController : ErrorController {
                     )
                 }
                 404 -> {
-                    logger.error(
-                        LogMessages.forException(
-                            requestUri,
-                            LogMessages.notFoundResource
+                    try {
+                        resourceLoader.getResource(reactIndex)
+                            .inputStream
+                            .use {
+                                val body = StreamUtils.copyToString(it, StandardCharsets.UTF_8)
+                                return ResponseEntity.ok()
+                                    .contentType(MediaType.TEXT_HTML)
+                                    .body(body)
+                            }
+                    } catch (ex: Exception) {
+                        logger.error(
+                            LogMessages.forException(
+                                requestUri,
+                                LogMessages.notFoundResource
+                            )
                         )
-                    )
 
-                    return ResponseEntity(
-                        ProblemJson(
-                            "/err",
-                            "Error",
-                            404,
-                            "Sorry, that endpoint was not found.",
-                            requestUri
-                        ),
-                        HttpStatus.NOT_FOUND
-                    )
+                        return ResponseEntity(
+                            ProblemJson(
+                                "/err",
+                                "Error",
+                                404,
+                                "Sorry, that endpoint was not found.",
+                                requestUri
+                            ),
+                            HttpStatus.NOT_FOUND
+                        )
+                    }
                 }
                 500 -> {
                     logger.error(

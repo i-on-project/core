@@ -22,21 +22,19 @@ class AuthMethodRegistry {
 
     operator fun get(type: String) =
         registry[type] ?: throw BadRequestException("Invalid auth method type!")
-
 }
 
 abstract class AuthMethod(val type: String) {
 
     // TODO: the return should be changed
     abstract suspend fun solve(request: AuthRequestHelper): Boolean
-
 }
 
 data class EmailAuthMethod(
     @JsonProperty("allowed_domains")
     val allowedDomains: List<String>,
     private val emailService: EmailService
-): AuthMethod("email") {
+) : AuthMethod("email") {
 
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
 
@@ -53,10 +51,12 @@ data class EmailAuthMethod(
             throw BadRequestException("The domain of the email is not allowed!")
 
         val zoneId = "UTC"
-        val time = timeFormatter.format(LocalDateTime.ofInstant(
-            request.time,
-            ZoneId.of(zoneId)
-        ))
+        val time = timeFormatter.format(
+            LocalDateTime.ofInstant(
+                request.time,
+                ZoneId.of(zoneId)
+            )
+        )
 
         val verifyUrl = Uri.forAuthVerifyFrontend(request.authRequestId, request.secretId)
         emailService.sendEmail(
@@ -107,5 +107,4 @@ data class EmailAuthMethod(
 
         return false
     }
-
 }

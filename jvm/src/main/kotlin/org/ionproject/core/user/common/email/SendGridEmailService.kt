@@ -12,7 +12,6 @@ import okhttp3.Response
 import org.ionproject.core.common.customExceptions.InternalServerErrorException
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.lang.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -85,9 +84,11 @@ class SendGridEmailService(
         subject: String,
         content: String
     ) = EmailRequestBody(
-        listOf(EmailPersonalization(
-            listOf(Email(recipientEmail))
-        )),
+        listOf(
+            EmailPersonalization(
+                listOf(Email(recipientEmail))
+            )
+        ),
         Email(senderEmail, senderName),
         subject,
         listOf(EmailContent(emailType.mimeType, content))

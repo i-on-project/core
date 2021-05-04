@@ -12,7 +12,6 @@ import org.ionproject.core.user.auth.registry.AuthMethod
 import org.ionproject.core.user.auth.repo.UserAuthRepo
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
-import org.springframework.web.servlet.ModelAndView
 
 @RestController
 class UserAuthController(val repo: UserAuthRepo) {
@@ -30,10 +28,12 @@ class UserAuthController(val repo: UserAuthRepo) {
         ex: AuthInvalidRequestException
     ): ResponseEntity<AuthErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(AuthErrorResponse(
-                AuthError.INVALID_REQUEST,
-                ex.localizedMessage
-            ))
+            .body(
+                AuthErrorResponse(
+                    AuthError.INVALID_REQUEST,
+                    ex.localizedMessage
+                )
+            )
     }
 
     @ExceptionHandler(value = [RequestTokenInvalidRequestException::class])

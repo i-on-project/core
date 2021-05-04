@@ -5,7 +5,7 @@ fun Home(
     resources: Map<String, Any>
 ): Map<String, Any> = mapOf(
     "api" to api,
-    "resources" to resources
+    "static" to resources
 )
 
 fun Api(

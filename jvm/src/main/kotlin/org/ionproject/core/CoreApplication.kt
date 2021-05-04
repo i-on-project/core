@@ -24,6 +24,7 @@ import org.ionproject.core.user.auth.registry.EmailAuthMethod
 import org.ionproject.core.user.common.email.EmailService
 import org.ionproject.core.user.common.email.SendGridEmailService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -31,8 +32,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
 
@@ -44,8 +45,12 @@ private const val EMAIL_SENDER_NAME = "EMAIL_SENDER_NAME"
 class CoreApplication
 
 @Configuration
-@EnableWebMvc
+// @EnableWebMvc
 class CoreSerializationConfig : WebMvcConfigurer {
+
+    @Value("\${react.resources-locations}")
+    lateinit var resourceLocations: String
+
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val converter =
             converters.find { it is MappingJackson2HttpMessageConverter } as MappingJackson2HttpMessageConverter
@@ -87,6 +92,11 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(PaginationResolver())
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/**")
+            .addResourceLocations(resourceLocations)
     }
 
     @Autowired
@@ -131,10 +141,12 @@ class CoreSerializationConfig : WebMvcConfigurer {
     fun getAuthMethodRegistry(@Autowired emailService: EmailService): AuthMethodRegistry {
         val registry = AuthMethodRegistry()
 
-        registry.register(EmailAuthMethod(
-            listOf("*.isel.pt", "*.isel.ipl.pt"),
-            emailService
-        ))
+        registry.register(
+            EmailAuthMethod(
+                listOf("*.isel.pt", "*.isel.ipl.pt"),
+                emailService
+            )
+        )
 
         return registry
     }

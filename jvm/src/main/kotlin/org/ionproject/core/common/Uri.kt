@@ -11,13 +11,13 @@ object Uri {
         ?: DEFAULT_BASE_URL
 
     const val error = "/error"
-    const val version = "/v0"
+    const val apiBase = "/api"
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
 
     // Calendar Terms
-    const val calendarTerms = "$version/calendar-terms"
-    const val calendarTermById = "$version/calendar-terms/{calterm}"
+    const val calendarTerms = "$apiBase/calendar-terms"
+    const val calendarTermById = "$apiBase/calendar-terms/{calterm}"
 
     val calendarTermByIdTemplate = UriTemplate("$baseUrl$calendarTermById")
     val pagingCalendarTerms = UriTemplate("$baseUrl${calendarTerms}$rfcPagingQuery")
@@ -32,8 +32,8 @@ object Uri {
         UriTemplate("$baseUrl${calendarTermById}$springWebPagingQuery").expand(calterm, page, limit)
 
     // Courses
-    const val courses = "$version/courses"
-    const val courseById = "$version/courses/{cid}"
+    const val courses = "$apiBase/courses"
+    const val courseById = "$apiBase/courses/{cid}"
 
     val courseByIdTemplate = UriTemplate("$baseUrl$courseById")
     val pagingCourses = UriTemplate("$baseUrl${courses}$rfcPagingQuery")
@@ -44,10 +44,10 @@ object Uri {
         UriTemplate("$baseUrl${courses}$springWebPagingQuery").expand(page, limit)
 
     // Programmes
-    const val programmes = "$version/programmes"
-    const val programmesById = "$version/programmes/{id}"
-    const val programmeOfferById = "$version/programmes/{idProgramme}/offers/{idOffer}"
-    const val programmeByIdOffer = "$version/programmes/{id}/offers"
+    const val programmes = "$apiBase/programmes"
+    const val programmesById = "$apiBase/programmes/{id}"
+    const val programmeOfferById = "$apiBase/programmes/{idProgramme}/offers/{idOffer}"
+    const val programmeByIdOffer = "$apiBase/programmes/{id}/offers"
 
     val programmesByIdTemplate = UriTemplate("$baseUrl$programmesById")
 
@@ -73,8 +73,8 @@ object Uri {
         UriTemplate("$baseUrl${programmeByIdOffer}$springWebPagingQuery").expand(id, page, limit)
 
     // Classes
-    const val klasses = "$version/courses/{cid}/classes"
-    const val klassByCalTerm = "$version/courses/{cid}/classes/{calterm}"
+    const val klasses = "$apiBase/courses/{cid}/classes"
+    const val klassByCalTerm = "$apiBase/courses/{cid}/classes/{calterm}"
 
     val klassesTemplate = UriTemplate("$baseUrl$klasses")
     val klassByCalTermTemplate = UriTemplate("$baseUrl$klassByCalTerm")
@@ -88,7 +88,7 @@ object Uri {
         UriTemplate("$baseUrl${klasses}$springWebPagingQuery").expand(cid, page, limit)
 
     // Class Sections
-    const val classSectionById = "$version/courses/{cid}/classes/{calterm}/{sid}"
+    const val classSectionById = "$apiBase/courses/{cid}/classes/{calterm}/{sid}"
 
     val classSectionByIdTemplate = UriTemplate("$baseUrl$classSectionById")
 
@@ -96,10 +96,10 @@ object Uri {
         classSectionByIdTemplate.expand(cid, calterm, sid)
 
     // Calendars
-    const val calendarByClass = "$version/courses/{cid}/classes/{calterm}/calendar"
-    const val calendarByClassSection = "$version/courses/{cid}/classes/{calterm}/{sid}/calendar"
-    const val componentByClassCalendar = "$version/courses/{cid}/classes/{calterm}/calendar/{cmpid}"
-    const val componentByClassSectionCalendar = "$version/courses/{cid}/classes/{calterm}/{sid}/calendar/{cmpid}"
+    const val calendarByClass = "$apiBase/courses/{cid}/classes/{calterm}/calendar"
+    const val calendarByClassSection = "$apiBase/courses/{cid}/classes/{calterm}/{sid}/calendar"
+    const val componentByClassCalendar = "$apiBase/courses/{cid}/classes/{calterm}/calendar/{cmpid}"
+    const val componentByClassSectionCalendar = "$apiBase/courses/{cid}/classes/{calterm}/{sid}/calendar/{cmpid}"
 
     val calendarByClassTemplate =
         UriTemplate("$baseUrl$calendarByClass")
@@ -128,8 +128,8 @@ object Uri {
     // Access Control
     const val revokeToken = "/revokeToken"
     const val issueToken = "/issueToken"
-    const val importClassCalendar = "$version/import/courses/{cid}/classes/{calterm}/calendar"
-    const val importClassSectionCalendar = "$version/import/courses/{cid}/classes/{calterm}/{sid}/calendar"
+    const val importClassCalendar = "$apiBase/import/courses/{cid}/classes/{calterm}/calendar"
+    const val importClassSectionCalendar = "$apiBase/import/courses/{cid}/classes/{calterm}/{sid}/calendar"
 
     val importClassCalendarTemplate =
         UriTemplate("$baseUrl$importClassCalendar")
@@ -144,7 +144,7 @@ object Uri {
         importClassSectionCalendarTemplate.expand(cid, calterm, sid)
 
     // Search
-    const val search = "$version/search"
+    const val search = "$apiBase/search"
 
     val searchTemplate =
         UriTemplate("$baseUrl$search?query={query}&types={types}&limit={limit}&page={page}")
@@ -156,7 +156,7 @@ object Uri {
         searchTemplate.expand(query.query, query.types.joinToString(","), query.limit, query.page)
 
     // User Authentication
-    private const val authBase = "$version/auth"
+    private const val authBase = "$apiBase/auth"
     const val authMethods = "$authBase/methods"
     const val authPoll = "$authBase/poll/{reqId}"
     const val authVerify = "$authBase/verify"

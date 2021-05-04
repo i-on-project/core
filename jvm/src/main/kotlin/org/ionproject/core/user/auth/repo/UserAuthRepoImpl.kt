@@ -10,8 +10,8 @@ import org.ionproject.core.user.auth.RequestTokenPendingException
 import org.ionproject.core.user.auth.model.AuthClient
 import org.ionproject.core.user.auth.model.AuthMethodInput
 import org.ionproject.core.user.auth.model.AuthRequest
-import org.ionproject.core.user.auth.model.AuthRequestHelper
 import org.ionproject.core.user.auth.model.AuthRequestAcknowledgement
+import org.ionproject.core.user.auth.model.AuthRequestHelper
 import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.user.auth.registry.AuthMethodRegistry
 import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
@@ -160,5 +160,4 @@ class UserAuthRepoImpl(
 
         return base64Encoder.encodeToString(bytes)
     }
-
 }
