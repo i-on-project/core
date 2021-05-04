@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ClassSectionController(private val repo: ClassSectionRepo) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS_SECTION, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CLASS_SECTION, ResourceIds.VERSION_0)
     @GetMapping(Uri.classSectionById)
     fun get(
         @PathVariable cid: Int,

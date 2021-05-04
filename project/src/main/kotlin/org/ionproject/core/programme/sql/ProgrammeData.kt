@@ -13,6 +13,7 @@ internal object ProgrammeData {
     const val COURSE = "course"
     const val COURSE_ID = "courseid"
     const val COURSE_ACR = "courseAcr"
+    const val COURSE_NAME = "courseName"
     const val DOCUMENT = "document"
     const val ID = "id"
     const val PROGRAMME_ID = "programmeid"
@@ -23,39 +24,50 @@ internal object ProgrammeData {
     const val TERM_NUMBER = "termnumber"
     const val OPTIONAL = "optional"
 
+    const val OFFSET = "offset"
+    const val LIMIT = "limit"
+
     const val SEARCH_PROGRAMMES = """
-    select
-      '${SearchableEntities.PROGRAMME}' as ${SearchData.TYPE},
-      $ID::VARCHAR(32) as ${SearchData.ID},
-      $NAME as ${SearchData.NAME},
-      '${Uri.programmes}/' || $ID as ${SearchData.HREF},
-      ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
-    from $SCHEMA.$PROGRAMME
-    where $DOCUMENT @@ ${SearchData.QUERY}
-  """
+        select
+          '${SearchableEntities.PROGRAMME}' as ${SearchData.TYPE},
+          $ID::VARCHAR(32) as ${SearchData.ID},
+          $NAME as ${SearchData.NAME},
+          '${Uri.programmes}/' || $ID as ${SearchData.HREF},
+          ts_rank($DOCUMENT, ${SearchData.QUERY}) as ${SearchData.RANK}
+        from $SCHEMA.$PROGRAMME
+        where $DOCUMENT @@ ${SearchData.QUERY}
+    """
 
     const val GET_PROGRAMMES_QUERY = """
-    SELECT * FROM $SCHEMA.$PROGRAMME
-  """
+        SELECT * FROM $SCHEMA.$PROGRAMME
+        offset :$OFFSET
+        limit :$LIMIT
+    """
 
     const val GET_PROGRAMME_BY_ID_QUERY = """
-    select $ID, $ACRONYM, $NAME, $TERM_SIZE FROM $SCHEMA.$PROGRAMME where $ID=:$ID
-  """
+        select $ID, $ACRONYM, $NAME, $TERM_SIZE FROM $SCHEMA.$PROGRAMME where $ID=:$ID
+    """
 
     const val GET_PROGRAMME_OFFERS_QUERY = """
-    select po.*, $TERM_NUMBER, co.$ACRONYM AS $COURSE_ACR
-    from $SCHEMA.$PROGRAMME_OFFER AS po
-    inner join $SCHEMA.$COURSE as co on po.$COURSE_ID=co.$ID
-    inner join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID
-    where $PROGRAMME_ID=:$ID 
-    order by po.$ID
-  """
+        select po.*, $TERM_NUMBER, co.$ACRONYM AS $COURSE_ACR, co.$NAME AS $COURSE_NAME
+        from $SCHEMA.$PROGRAMME_OFFER AS po
+        inner join $SCHEMA.$COURSE as co on po.$COURSE_ID=co.$ID
+        inner join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID
+        where $PROGRAMME_ID=:$ID 
+        order by po.$ID
+    """
+
+    const val GET_PROGRAMME_OFFERS_QUERY_LIMIT = """
+        $GET_PROGRAMME_OFFERS_QUERY
+        offset :$OFFSET
+        limit :$LIMIT
+    """
 
     const val GET_OFFER_DETAILS_BY_ID = """
-    select po.$ID as $ID, $ACRONYM as courseAcr, $PROGRAMME_ID, $COURSE_ID, $TERM_NUMBER, $OPTIONAL 
-    from $SCHEMA.$PROGRAMME_OFFER po
-    join $SCHEMA.course c on po.$COURSE_ID=c.$ID
-    join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID
-    where po.$ID=:$ID and $PROGRAMME_ID=:$PROGRAMME_ID
-  """
+        select po.$ID as $ID, $ACRONYM as courseAcr, c.$NAME as $COURSE_NAME, $PROGRAMME_ID, $COURSE_ID, $TERM_NUMBER, $OPTIONAL 
+        from $SCHEMA.$PROGRAMME_OFFER po
+        join $SCHEMA.course c on po.$COURSE_ID=c.$ID
+        join $SCHEMA.$PROGRAMME_OFFER_TERM pot on po.$ID = pot.$OFFER_ID
+        where po.$ID=:$ID and $PROGRAMME_ID=:$PROGRAMME_ID
+    """
 }

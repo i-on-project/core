@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CourseController(private val repo: CourseRepoImpl) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSES, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSES, ResourceIds.VERSION_0)
     @GetMapping(Uri.courses)
     fun getCourses(pagination: Pagination): ResponseEntity<Siren> {
         val courses = repo.getCourses(pagination.page, pagination.limit)
@@ -23,7 +23,7 @@ class CourseController(private val repo: CourseRepoImpl) {
         return ResponseEntity.ok(siren)
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSE, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_COURSE, ResourceIds.VERSION_0)
     @GetMapping(Uri.courseById)
     fun getCourse(@PathVariable cid: Int): ResponseEntity<Siren> {
         val course = repo.getCourseById(cid)

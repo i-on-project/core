@@ -3,6 +3,7 @@ package org.ionproject.core.programme.model
 class ProgrammeOffer(
     val id: Int,
     val courseAcr: String,
+    val courseName: String,
     val programmeId: Int,
     val courseId: Int,
     val termNumber: List<Int>,

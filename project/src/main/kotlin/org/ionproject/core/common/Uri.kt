@@ -44,16 +44,20 @@ object Uri {
     const val programmes = "$version/programmes"
     const val programmesById = "$version/programmes/{id}"
     const val programmeOfferById = "$version/programmes/{idProgramme}/offers/{idOffer}"
-    const val programmeByIdOffer = "$version/programmes/{idProgramme}/offers/"
+    const val programmeByIdOffer = "$version/programmes/{id}/offers"
 
     val programmesByIdTemplate = UriTemplate(programmesById)
+
     val programmeOfferByIdTemplate = UriTemplate(programmeOfferById)
-    val programmeByIdOfferTemplate = UriTemplate(programmeByIdOffer)
+    val pagingProgrammes = UriTemplate("${programmes}$rfcPagingQuery")
 
     fun forProgrammes() = URI(programmes)
+    fun forPagingProgrammes(page: Int, limit: Int) = UriTemplate("${programmes}$springWebPagingQuery").expand(page, limit)
     fun forProgrammesById(id: Int) = programmesByIdTemplate.expand(id)
     fun forProgrammeOfferById(idProgramme: Int, idOffer: Int) = programmeOfferByIdTemplate.expand(idProgramme, idOffer)
-    fun forProgrammesByIdOffer(id: Int) = programmeByIdOfferTemplate.expand(id)
+    fun forOffers(id: Int) = UriTemplate(programmeByIdOffer).expand(id)
+    fun forPagingOffers(id: Int, page: Int, limit: Int) = UriTemplate("${programmeByIdOffer}$springWebPagingQuery")
+        .expand(id, page, limit)
 
     // Classes
     const val klasses = "$version/courses/{cid}/classes"
@@ -124,4 +128,7 @@ object Uri {
     const val relProgrammeOffer = "/rel/programmeOffer"
     const val relCourse = "/rel/course"
     const val relCalendar = "/rel/calendar"
+    const val relProgramme = "/rel/programme"
+    const val relProgrammes = "/rel/programmes"
+    const val relOffers = "/rel/offers"
 }

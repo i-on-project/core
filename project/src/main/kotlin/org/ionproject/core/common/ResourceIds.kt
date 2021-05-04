@@ -10,7 +10,7 @@ package org.ionproject.core.common
  * TODO(OVERRIDE ERROR ENDPOINT AS THIS CURRENT METHOD WONT ALLOW ACCESS TO IT)
  */
 object ResourceIds {
-    const val VERSION = "v0"
+    const val VERSION_0 = "v0"
     const val ALL_VERSIONS = "*"
 
     // ERROR
@@ -32,6 +32,7 @@ object ResourceIds {
     const val GET_PROGRAMMES = "getProgrammes"
     const val GET_PROGRAMME = "getProgramme"
     const val GET_OFFER = "getOffer"
+    const val GET_OFFERS = "getOffers"
 
     // COURSES
     const val GET_COURSES = "getCourses"

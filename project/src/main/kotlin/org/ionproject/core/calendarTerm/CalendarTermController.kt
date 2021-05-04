@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CalendarTermController(private val repo: CalendarTermRepoImpl) {
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERMS, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERMS, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarTerms)
     fun getTerms(pagination: Pagination): ResponseEntity<Siren> {
         val calTerms = repo.getTerms(pagination.page, pagination.limit)
         return ResponseEntity.ok(calTerms.toCalendarTermListRepr(pagination.page, pagination.limit))
     }
 
-    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERM, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.GET_CALENDAR_TERM, ResourceIds.VERSION_0)
     @GetMapping(Uri.calendarTermById)
     fun getCalendarTerm(
         @PathVariable calterm: String,

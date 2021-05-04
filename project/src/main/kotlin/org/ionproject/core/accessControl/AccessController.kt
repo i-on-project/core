@@ -102,7 +102,7 @@ class AccessController(private val services: AccessServices, private val tokenGe
     /**
      * Generates an import link for a class Calendar
      */
-    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_CALENDAR, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_CALENDAR, ResourceIds.VERSION_0)
     @GetMapping(Uri.importClassCalendar)
     fun importClassCalendar(
         @PathVariable cid: Int,
@@ -122,7 +122,7 @@ class AccessController(private val services: AccessServices, private val tokenGe
     /**
      * Generates an import link for a class section Calendar
      */
-    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_SECTION_CALENDAR, ResourceIds.VERSION)
+    @ResourceIdentifierAnnotation(ResourceIds.IMPORT_CLASS_SECTION_CALENDAR, ResourceIds.VERSION_0)
     @GetMapping(Uri.importClassSectionCalendar)
     fun importClassSectionCalendar(
         @PathVariable sid: String,

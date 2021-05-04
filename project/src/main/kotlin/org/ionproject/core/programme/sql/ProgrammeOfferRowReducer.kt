@@ -9,12 +9,13 @@ import java.util.stream.Stream
 class MutableProgrammeOffer(
     val id: Int,
     val courseAcr: String,
+    val courseName: String,
     val programmeId: Int,
     val courseId: Int,
     val termNumber: MutableList<Int>,
     val optional: Boolean
 ) {
-    fun toProgrammeOffer(): ProgrammeOffer = ProgrammeOffer(id, courseAcr, programmeId, courseId, termNumber, optional)
+    fun toProgrammeOffer(): ProgrammeOffer = ProgrammeOffer(id, courseAcr, courseName, programmeId, courseId, termNumber, optional)
 }
 
 @Component
@@ -27,6 +28,7 @@ class ProgrammeOfferRowReducer : RowReducer<MutableMap<Int, MutableProgrammeOffe
             container[id] = MutableProgrammeOffer(
                 id,
                 rowView.getString("courseAcr"),
+                rowView.getString("courseName"),
                 rowView.getInt("programmeId"),
                 rowView.getInt("courseId"),
                 mutableListOf(termNumber),

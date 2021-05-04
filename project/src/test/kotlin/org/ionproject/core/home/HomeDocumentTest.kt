@@ -53,7 +53,11 @@ internal class HomeDocumentTest : ControllerTester() {
                     )
                 ),
                 "programmes" to Resource(
-                    "/v0/programmes",
+                    "/v0/programmes{?page,limit}",
+                    mapOf(
+                        "limit" to "/api-docs/params/limit",
+                        "page" to "/api-docs/params/page"
+                    ),
                     Hints(
                         listOf("GET"),
                         mapOf("application/vnd.siren+json" to mapOf<String, Any>()),
