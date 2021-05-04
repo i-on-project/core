@@ -124,6 +124,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
         val objectMapper = jacksonObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
 
+        // TODO: Introduce MockEmailService if any of these variables is not specified
         val apiKey = System.getenv(SENDGRID_API_KEY) ?: ""
         val senderEmail = System.getenv(EMAIL_SENDER_EMAIL) ?: ""
         val senderName = System.getenv(EMAIL_SENDER_NAME) ?: ""
