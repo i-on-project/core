@@ -58,6 +58,9 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
                     )
                 }
                 404 -> {
+                    if (requestUri.startsWith(Uri.apiBase))
+                        return getNotFoundProblem(requestUri)
+
                     try {
                         resourceLoader.getResource(reactIndex)
                             .inputStream
@@ -68,23 +71,7 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
                                     .body(body)
                             }
                     } catch (ex: Exception) {
-                        logger.error(
-                            LogMessages.forException(
-                                requestUri,
-                                LogMessages.notFoundResource
-                            )
-                        )
-
-                        return ResponseEntity(
-                            ProblemJson(
-                                "/err",
-                                "Error",
-                                404,
-                                "Sorry, that endpoint was not found.",
-                                requestUri
-                            ),
-                            HttpStatus.NOT_FOUND
-                        )
+                        return getNotFoundProblem(requestUri)
                     }
                 }
                 500 -> {
@@ -131,4 +118,25 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
     override fun getErrorPath(): String {
         return Uri.error
     }
+
+    private fun getNotFoundProblem(requestUri: String): ResponseEntity<Any> {
+        logger.error(
+            LogMessages.forException(
+                requestUri,
+                LogMessages.notFoundResource
+            )
+        )
+
+        return ResponseEntity(
+            ProblemJson(
+                "/err",
+                "Error",
+                404,
+                "Sorry, that endpoint was not found.",
+                requestUri
+            ),
+            HttpStatus.NOT_FOUND
+        )
+    }
+
 }
