@@ -7,6 +7,7 @@ import org.ionproject.core.user.auth.model.AuthMethodInput
 import org.ionproject.core.user.auth.model.AuthRequestAcknowledgement
 import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.user.auth.model.AuthTokenError
+import org.ionproject.core.user.auth.model.AuthVerification
 import org.ionproject.core.user.auth.model.TokenError
 import org.ionproject.core.user.auth.registry.AuthMethod
 import org.ionproject.core.user.auth.repo.UserAuthRepo
@@ -68,13 +69,12 @@ class UserAuthController(val repo: UserAuthRepo) {
         return ResponseEntity.ok(repo.addAuthRequest(userAgent, methodInput))
     }
 
-//    @GetMapping(Uri.authVerify)
-//    fun verifyUserAuth(
-//        @PathVariable reqId: String
-//    ) {
-//        // TODO: show view to user
-//        repo.validateAuthRequest(reqId)
-//    }
+    @PostMapping(Uri.authVerify)
+    fun verifyUserAuth(
+        @RequestBody verification: AuthVerification
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(repo.verifyAuthRequest(verification.authReqId, verification.secret))
+    }
 
     @GetMapping(Uri.authPoll)
     fun pollForUserAuth(

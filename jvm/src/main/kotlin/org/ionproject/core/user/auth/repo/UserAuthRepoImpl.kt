@@ -4,6 +4,8 @@ import kotlinx.coroutines.runBlocking
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.toNullable
 import org.ionproject.core.user.auth.InvalidClientIdException
+import org.ionproject.core.user.auth.InvalidScopesException
+import org.ionproject.core.user.auth.InvalidUserCreationMethodException
 import org.ionproject.core.user.auth.RequestTokenExpiredException
 import org.ionproject.core.user.auth.RequestTokenInvalidRequestException
 import org.ionproject.core.user.auth.RequestTokenPendingException
@@ -12,11 +14,16 @@ import org.ionproject.core.user.auth.model.AuthMethodInput
 import org.ionproject.core.user.auth.model.AuthRequest
 import org.ionproject.core.user.auth.model.AuthRequestAcknowledgement
 import org.ionproject.core.user.auth.model.AuthRequestHelper
+import org.ionproject.core.user.auth.model.AuthRequestScope
+import org.ionproject.core.user.auth.model.AuthScope
 import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.user.auth.registry.AuthMethodRegistry
 import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.user.auth.sql.AuthData
+import org.ionproject.core.user.common.model.User
+import org.ionproject.core.user.common.sql.UserData
 import org.jdbi.v3.core.Handle
+import org.jdbi.v3.core.kotlin.bindKotlin
 import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
@@ -38,11 +45,16 @@ class UserAuthRepoImpl(
 
     override fun addAuthRequest(userAgent: String, input: AuthMethodInput) =
         tm.run(TransactionIsolationLevel.SERIALIZABLE) {
+            // get & check if the client is valid
             val client = getClientById(input.clientId, it)
 
+            // check if the notification method is valid
             notificationRegistry.findOrThrow(input.notificationMethod)
 
-            val authRequestId = generateAuthRequestId()
+            // get & check if the scopes are available
+            val scopes = getRequestedScopes(input.scope, it)
+
+            val authRequestId = generateUUID()
             val authRequest = AuthRequestHelper(
                 authRequestId,
                 generateSecretId(),
@@ -54,17 +66,29 @@ class UserAuthRepoImpl(
             )
 
             it.createUpdate(AuthData.INSERT_AUTH_REQUEST)
-                .bind(AuthData.AUTH_REQUEST_ID, authRequest.authRequestId)
-                .bind(AuthData.SECRET_ID, authRequest.secretId)
-                .bind(AuthData.LOGIN_HINT, authRequest.loginHint)
-                .bind(AuthData.USER_AGENT, authRequest.userAgent)
-                .bind(AuthData.CLIENT_ID, authRequest.clientId)
-                .bind(AuthData.NOTIFICATION_METHOD, authRequest.notificationMethod)
-                .bind(AuthData.EXPIRES_ON, authRequest.expiration)
+                .bindKotlin(authRequest)
                 .execute()
 
+            val batch = it.prepareBatch(AuthData.INSERT_REQUEST_SCOPES)
+            scopes.map { s -> AuthRequestScope(authRequestId, s) }
+                .forEach { ars ->
+                    batch.bindKotlin(ars)
+                        .add()
+                }
+
+            batch.execute()
+
             runBlocking {
-                methodRegistry[input.type].solve(authRequest)
+                val methodSolver = methodRegistry[input.type]
+                if (!methodSolver.canVerify) {
+                    it.createQuery(UserData.GET_USER_BY_EMAIL)
+                        .bind(UserData.EMAIL, input.loginHint)
+                        .mapTo<User>()
+                        .findOne()
+                        .toNullable() ?: throw InvalidUserCreationMethodException()
+                }
+
+                methodSolver.solve(authRequest)
             }
 
             AuthRequestAcknowledgement(
@@ -73,9 +97,8 @@ class UserAuthRepoImpl(
             )
         }
 
-    override fun validateAuthRequest(authRequestId: String, secretId: String) =
+    override fun verifyAuthRequest(authRequestId: String, secretId: String) =
         tm.run {
-            // TODO: improve this
             val authReq = getAuthRequestAndVerifySecret(authRequestId, secretId, it)
             if (authReq.hasExpired()) {
                 removeAuthRequest(authRequestId, it)
@@ -95,6 +118,8 @@ class UserAuthRepoImpl(
             if (authReq.verified) {
                 removeAuthRequest(authRequestId, it)
 
+                val user = getOrCreateUser(authReq.loginHint, it)
+
                 // TODO: change this later: create user and necessary tokens
                 AuthSuccessfulResponse(
                     "dummy",
@@ -113,6 +138,23 @@ class UserAuthRepoImpl(
                 throw RequestTokenPendingException()
             }
         }
+
+    private fun getRequestedScopes(scopes: String, handle: Handle): List<String> {
+        val scopeList = scopes.split(" ")
+        val availableScopes = handle.createQuery(AuthData.GET_AVAILABLE_SCOPES)
+            .mapTo<AuthScope>()
+            .map { it.scope }
+            .toSet()
+
+        val invalidScopes = scopeList.filter {
+            !availableScopes.contains(it)
+        }
+
+        if (invalidScopes.isNotEmpty())
+            throw InvalidScopesException(invalidScopes)
+
+        return scopeList
+    }
 
     private fun getClientById(clientId: String, handle: Handle): AuthClient {
         return handle.createQuery(AuthData.GET_CLIENT_BY_ID)
@@ -148,9 +190,34 @@ class UserAuthRepoImpl(
             .execute()
     }
 
+    private fun getOrCreateUser(email: String, handle: Handle): User {
+        var user = handle.createQuery(UserData.GET_USER_BY_EMAIL)
+            .bind(UserData.EMAIL, email)
+            .mapTo<User>()
+            .findOne()
+            .toNullable()
+
+        if (user == null) {
+            user = User(
+                generateUUID(),
+                email
+            )
+
+            handle.createUpdate(UserData.INSERT_USER)
+                .bindKotlin(user)
+                .execute()
+        }
+
+        return user
+    }
+
+    private fun createUserToken(userId: String, authReqId: String, handle: Handle) {
+        TODO()
+    }
+
     private fun AuthRequest.hasExpired() = expiresOn.isBefore(Instant.now())
 
-    private fun generateAuthRequestId() = UUID.randomUUID().toString()
+    private fun generateUUID() = UUID.randomUUID().toString()
 
     private fun generateSecretId(): String {
         val bytes = ByteArray(64)

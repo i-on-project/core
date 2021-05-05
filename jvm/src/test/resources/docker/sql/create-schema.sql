@@ -199,7 +199,9 @@ CREATE TABLE IF NOT EXISTS dbo.AuthClient(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthUserScope(
-    scope_id       VARCHAR(100) PRIMARY KEY
+    scope_id          VARCHAR(100) PRIMARY KEY,
+    scope_name        VARCHAR(50) NOT NULL,
+    scope_description VARCHAR(200) NULL
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
@@ -214,16 +216,32 @@ CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthRequestScope(
-    id             INT GENERATED ALWAYS AS IDENTITY,
-    auth_req_id    CHAR(36) REFERENCES dbo.AuthRequest(auth_req_id),
-    scope_id       VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id)
+    auth_req_id    CHAR(36) REFERENCES dbo.AuthRequest(auth_req_id) ON DELETE CASCADE,
+    scope_id       VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id),
+    PRIMARY KEY (auth_req_id, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccount(
     user_id        CHAR(36) PRIMARY KEY,
-    name           VARCHAR(100),
+    name           VARCHAR(100) NULL,
     email          VARCHAR(200) UNIQUE,
     created_at     TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
+    access_token   VARCHAR(100) PRIMARY KEY,
+    refresh_token  VARCHAR(100),
+    id_token       VARCHAR(500),
+    user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id),
+    client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id),
+    at_expires     TIMESTAMP,
+    created_at     TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
+    access_token  VARCHAR(100),
+    scope_id      VARCHAR(100),
+    PRIMARY KEY (access_token, scope_id)
 );
 
 ------- VIEWS --------

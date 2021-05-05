@@ -2,13 +2,14 @@ package org.ionproject.core.user.auth.sql
 
 object AuthData {
 
-    const val AUTH_REQUEST_ID = "authReqId"
+    const val AUTH_REQUEST_ID = "authRequestId"
     const val LOGIN_HINT = "loginHint"
     const val CLIENT_ID = "clientId"
     const val USER_AGENT = "userAgent"
-    const val NOTIFICATION_METHOD = "ntfMethod"
-    const val EXPIRES_ON = "expiresOn"
+    const val NOTIFICATION_METHOD = "notificationMethod"
+    const val EXPIRES_ON = "expiration"
     const val SECRET_ID = "secretId"
+    const val SCOPE = "scope"
 
     const val GET_CLIENT_BY_ID = """
         select * from dbo.AuthClient
@@ -41,5 +42,14 @@ object AuthData {
         update dbo.AuthRequest
         set verified = true
         where auth_req_id = :$AUTH_REQUEST_ID
+    """
+
+    const val GET_AVAILABLE_SCOPES = """
+        select * from dbo.AuthUserScope
+    """
+
+    const val INSERT_REQUEST_SCOPES = """
+        insert into dbo.AuthRequestScope (auth_req_id, scope_id)
+        values (:$AUTH_REQUEST_ID, :$SCOPE)
     """
 }

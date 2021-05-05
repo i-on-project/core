@@ -9,8 +9,14 @@ class InvalidClientIdException(
 ) : AuthInvalidRequestException("The client_id $clientId is invalid!")
 
 class InvalidNotificationMethodException(
-    available: Set<String>
+    available: Iterable<String>
 ) : AuthInvalidRequestException("The specified notification method is invalid! Available methods: ${available.joinToString()}")
+
+class InvalidUserCreationMethodException : AuthInvalidRequestException("A user cannot be created with the specified method!")
+
+class InvalidScopesException(
+    invalid: Iterable<String>
+) : RuntimeException("The scopes ${invalid.joinToString()} are invalid")
 
 class RequestTokenInvalidRequestException : RuntimeException()
 

@@ -11,7 +11,7 @@ interface UserAuthRepo {
 
     fun addAuthRequest(userAgent: String, input: AuthMethodInput): AuthRequestAcknowledgement
 
-    fun validateAuthRequest(authRequestId: String, secretId: String)
+    fun verifyAuthRequest(authRequestId: String, secretId: String)
 
     fun checkAuthRequest(authRequestId: String): AuthSuccessfulResponse
 }

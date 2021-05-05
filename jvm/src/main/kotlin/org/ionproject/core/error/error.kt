@@ -58,7 +58,8 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
                     )
                 }
                 404 -> {
-                    if (requestUri.startsWith(Uri.apiBase))
+                    val split = requestUri.split("/", limit = 3)
+                    if (split.size > 1 && split[1] == "api")
                         return getNotFoundProblem(requestUri)
 
                     try {

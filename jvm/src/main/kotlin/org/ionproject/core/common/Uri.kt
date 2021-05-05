@@ -157,6 +157,7 @@ object Uri {
 
     // User Authentication
     private const val authBase = "$apiBase/auth"
+    const val authInstance = "$authBase/instance"
     const val authMethods = "$authBase/methods"
     const val authPoll = "$authBase/poll/{reqId}"
     const val authVerify = "$authBase/verify"

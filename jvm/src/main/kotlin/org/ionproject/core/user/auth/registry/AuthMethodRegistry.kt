@@ -24,17 +24,22 @@ class AuthMethodRegistry {
         registry[type] ?: throw BadRequestException("Invalid auth method type!")
 }
 
-abstract class AuthMethod(val type: String) {
+abstract class AuthMethod(
+    val type: String,
+    @JsonProperty("can_verify")
+    val canVerify: Boolean = false
+) {
 
     // TODO: the return should be changed
     abstract suspend fun solve(request: AuthRequestHelper): Boolean
+
 }
 
 data class EmailAuthMethod(
     @JsonProperty("allowed_domains")
     val allowedDomains: List<String>,
     private val emailService: EmailService
-) : AuthMethod("email") {
+) : AuthMethod("email", true) {
 
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
 
