@@ -69,7 +69,7 @@ class SearchSirenTest {
                             .toEmbed()
                     }
                 )
-                .link(SELF, href = URI.create("/v0/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
+                .link(SELF, href = URI.create("${Uri.baseUrl}/api/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
                 .toSiren()
     }
 

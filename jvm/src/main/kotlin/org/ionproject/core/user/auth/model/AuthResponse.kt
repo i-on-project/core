@@ -51,7 +51,7 @@ data class AuthSuccessfulResponse(
     @JsonProperty("refresh_token")
     val refreshToken: String,
     @JsonProperty("expires_in")
-    val expiresIn: Int,
+    val expiresIn: Long,
     @JsonProperty("id_token")
     val idToken: String
 )

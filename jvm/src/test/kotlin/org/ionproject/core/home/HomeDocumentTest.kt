@@ -1,5 +1,6 @@
 package org.ionproject.core.home
 
+import org.ionproject.core.common.Uri
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Test
@@ -15,7 +16,7 @@ internal class HomeDocumentTest : ControllerTester() {
             ),
             mapOf(
                 "courses" to Resource(
-                    "/v0/courses{?page,limit}",
+                    "${Uri.baseUrl}/api/courses{?page,limit}",
                     mapOf(
                         "limit" to "/api-docs/params/limit",
                         "page" to "/api-docs/params/page"
@@ -27,7 +28,7 @@ internal class HomeDocumentTest : ControllerTester() {
                     )
                 ),
                 "calendar-terms" to Resource(
-                    "/v0/calendar-terms{?page,limit}",
+                    "${Uri.baseUrl}/api/calendar-terms{?page,limit}",
                     mapOf(
                         "limit" to "/api-docs/params/limit",
                         "page" to "/api-docs/params/page"
@@ -39,7 +40,7 @@ internal class HomeDocumentTest : ControllerTester() {
                     )
                 ),
                 "search" to Resource(
-                    "/v0/search{?query,types,limit,page}",
+                    "${Uri.baseUrl}/api/search{?query,types,limit,page}",
                     mapOf(
                         "query" to "/api-docs/params/query",
                         "types" to "/api-docs/params/types",
@@ -53,7 +54,7 @@ internal class HomeDocumentTest : ControllerTester() {
                     )
                 ),
                 "programmes" to Resource(
-                    "/v0/programmes{?page,limit}",
+                    "${Uri.baseUrl}/api/programmes{?page,limit}",
                     mapOf(
                         "limit" to "/api-docs/params/limit",
                         "page" to "/api-docs/params/page"
@@ -65,7 +66,7 @@ internal class HomeDocumentTest : ControllerTester() {
                     )
                 ),
                 "revokeToken" to Resource(
-                    "/revokeToken",
+                    "${Uri.baseUrl}/api/revokeToken",
                     Hints(
                         listOf("POST"),
                         mapOf("application/x-www-form-urlencoded" to mapOf<String, Any>()),
@@ -78,7 +79,7 @@ internal class HomeDocumentTest : ControllerTester() {
 
     @Test
     fun getHomeDocument() {
-        doGet(URI.create("/")) {
+        doGet(URI.create(Uri.apiBase)) {
             header("Authorization", readTokenTest)
         }
             .andDo { print() }

@@ -32,7 +32,6 @@ abstract class AuthMethod(
 
     // TODO: the return should be changed
     abstract suspend fun solve(request: AuthRequestHelper): Boolean
-
 }
 
 data class EmailAuthMethod(

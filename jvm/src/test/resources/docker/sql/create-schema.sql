@@ -229,7 +229,8 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccount(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
-    access_token   VARCHAR(100) PRIMARY KEY,
+    id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    access_token   VARCHAR(100),
     refresh_token  VARCHAR(100),
     id_token       VARCHAR(500),
     user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id),
@@ -239,9 +240,9 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
-    access_token  VARCHAR(100),
-    scope_id      VARCHAR(100),
-    PRIMARY KEY (access_token, scope_id)
+    id            INT REFERENCES dbo.UserAccountToken(id),
+    scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id),
+    PRIMARY KEY (id, scope_id)
 );
 
 ------- VIEWS --------

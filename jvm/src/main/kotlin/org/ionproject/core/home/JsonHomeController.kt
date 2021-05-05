@@ -76,7 +76,7 @@ class JsonHomeController {
             }
             .newResource("revokeToken") {
                 it
-                    .href(URI(Uri.revokeToken))
+                    .href(Uri.revokeTokenUri)
                     .docs(accessManagerSpecUri)
                     .formats(Media.MEDIA_FORM_URLENCODED_VALUE)
                     .allow(HttpMethod.POST)

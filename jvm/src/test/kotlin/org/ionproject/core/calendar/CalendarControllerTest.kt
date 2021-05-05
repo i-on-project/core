@@ -45,7 +45,7 @@ internal class CalendarControllerTest : ControllerTester() {
         val calendarByClass =
             """
                 BEGIN:VCALENDAR
-                PRODID:/v0/courses/2/classes/1920v
+                PRODID:${Uri.baseUrl}/api/courses/2/classes/1920v
                 VERSION:2.0
                 BEGIN:VTODO
                 UID:1f
@@ -101,7 +101,7 @@ internal class CalendarControllerTest : ControllerTester() {
         val calendarByClassSection =
             """
                 BEGIN:VCALENDAR
-                PRODID:/v0/courses/2/classes/1920v/LI61D
+                PRODID:${Uri.baseUrl}/api/courses/2/classes/1920v/LI61D
                 VERSION:2.0
                 BEGIN:VEVENT
                 UID:15
@@ -146,7 +146,7 @@ internal class CalendarControllerTest : ControllerTester() {
          */
         private fun buildCalendarForClass(): Calendar {
             val calendar = Calendar() // ical4j calendar (not the one implemented by the group)
-            calendar.properties.add(ProdId("/v0/courses/$courseID/classes/$calTerm"))
+            calendar.properties.add(ProdId("${Uri.baseUrl}/api/courses/$courseID/classes/$calTerm"))
             calendar.properties.add(Version.VERSION_2_0)
 
             val enLang = buildParameterList(Language("en-US"))
@@ -242,7 +242,7 @@ internal class CalendarControllerTest : ControllerTester() {
 
         fun buildCalendarForClassSection(): Calendar {
             val calendar = Calendar()
-            calendar.properties.add(ProdId("/v0/courses/$courseID/classes/$calTerm/$classSection"))
+            calendar.properties.add(ProdId("${Uri.baseUrl}/api/courses/$courseID/classes/$calTerm/$classSection"))
             calendar.properties.add(Version.VERSION_2_0)
 
             val enLang = buildParameterList(Language("en-US"))

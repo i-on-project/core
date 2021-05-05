@@ -9,7 +9,6 @@ import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.issueTokenTest
 import org.ionproject.core.utils.readTokenTest
 import org.ionproject.core.utils.revokeTokenTest
-import org.ionproject.core.utils.writeTokenTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.net.URI
@@ -47,7 +46,7 @@ internal class RevokeTokenTests : ControllerTester() {
      */
     @Test
     fun issueTokenAndRevoke() {
-        val tokenToRevoke = issueTokenTest("urn:org:ionproject:scopes:api:write")
+        val tokenToRevoke = issueTokenTest("urn:org:ionproject:scopes:api:revoke")
         doPost(revokeTokenUri) {
             header("Authorization", "Bearer $tokenToRevoke")
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
@@ -78,7 +77,7 @@ internal class RevokeTokenTests : ControllerTester() {
     fun tryRevokeReadTokenUsingWriteToken() {
         val token = readTokenTest.split(" ")[1]
         doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
+            header("Authorization", issueTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$token"
         }.andDo { print() }
@@ -92,7 +91,7 @@ internal class RevokeTokenTests : ControllerTester() {
     @Test
     fun revokeTokenBadRequest() {
         doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
+            header("Authorization", issueTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
         }.andDo { print() }
             .andExpect { status { isBadRequest } }
@@ -107,7 +106,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val token = readTokenTest.split(" ")[1]
 
         doPost(revokeTokenUri) {
-            header("Authorization", writeTokenTest)
+            header("Authorization", issueTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$token&operation=3"
         }.andDo { print() }
@@ -188,7 +187,8 @@ internal class RevokeTokenTests : ControllerTester() {
 
         // Checking if the issued import link is valid
         val jsonLink = convertToJson(linkResult)
-        val link = jsonLink.url.dropWhile { c -> c != '/' }
+        // val link = jsonLink.url.dropWhile { c -> c != '/' }
+        val link = jsonLink.url
         doGet(URI(link)) {
         }
             .andDo { print() }
@@ -260,7 +260,7 @@ internal class RevokeTokenTests : ControllerTester() {
         cache.clearCache()
 
         // Check if the father was revoked
-        doGet(URI("/")) {
+        doGet(URI(Uri.apiBase)) {
             header("Authorization", "Bearer $fatherToken")
         }
             .andDo { print() }

@@ -35,7 +35,7 @@ internal class AccessControlTest : ControllerTester() {
         val notFoundUri = URI("somethingnotfound")
         val programmesUri = Uri.forPagingProgrammes(0, 0)
         val programmesDetailUri = Uri.forProgrammesById(1)
-        val programmesQueryParamsUri = URI("/v0/programmes?page=1&limit=1")
+        val programmesQueryParamsUri = URI("/api/programmes?page=1&limit=1")
         val coursesUri = Uri.forCourses()
         val homeDocumentUri = URI("/")
     }

@@ -9,7 +9,7 @@ internal class SearchErrorTest : ControllerTester() {
 
     @Test
     fun searchWithoutQuery() {
-        mocker.get("/v0/search?limit=2") {
+        mocker.get("/api/search?limit=2") {
             header("Authorization", readTokenTest)
         }
             .andDo { print() }
@@ -21,7 +21,7 @@ internal class SearchErrorTest : ControllerTester() {
 
     @Test
     fun searchWithInvalidType() {
-        mocker.get("/v0/search?query=something&types=banana") {
+        mocker.get("/api/search?query=something&types=banana") {
             header("Authorization", readTokenTest)
         }
             .andDo { print() }
@@ -33,7 +33,7 @@ internal class SearchErrorTest : ControllerTester() {
 
     @Test
     fun searchWithInvalidQuerySyntax() {
-        mocker.get("/v0/search?query=!") {
+        mocker.get("/api/search?query=!") {
             header("Authorization", readTokenTest)
         }
             .andDo { print() }

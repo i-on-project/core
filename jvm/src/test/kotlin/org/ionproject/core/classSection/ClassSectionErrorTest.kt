@@ -14,7 +14,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
         val notFoundUriByWrongCalTerm = Uri.forClassSectionById(1, "505050", "1D")
         val notFoundUriByWrongSID = Uri.forClassSectionById(1, "1920i", "505050")
         val validUri = Uri.forClassSectionById(1, "1920i", "1D")
-        val badRequestUri = URI("/v0/courses/a/classes/1920i/1D")
+        val badRequestUri = URI("/api/courses/a/classes/1920i/1D")
     }
 
     /**

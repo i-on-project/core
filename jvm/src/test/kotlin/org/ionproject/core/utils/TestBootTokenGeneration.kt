@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component
 @Component
 internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private val tokenGenerator: TokenGenerator) {
     val readScope = "urn:org:ionproject:scopes:api:read"
-    val writeScope = "urn:org:ionproject:scopes:api:write"
     val issueScope = "urn:org:ionproject:scopes:token:issue"
     val revokeScope = "urn:org:ionproject:scopes:api:revoke"
 
@@ -32,13 +31,11 @@ internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private v
         // generate the token needed for issuing other tokens
         val token = generateToken(readScope)
         val issueToken = generateToken(issueScope)
-        val writeToken = generateToken(writeScope)
         val revokeToken = generateToken(revokeScope)
 
         // with the issueToken issue read & write token
         issueTokenTest = "Bearer $issueToken"
         readTokenTest = "Bearer $token"
-        writeTokenTest = "Bearer $writeToken"
         revokeTokenTest = "Bearer $revokeToken"
     }
 

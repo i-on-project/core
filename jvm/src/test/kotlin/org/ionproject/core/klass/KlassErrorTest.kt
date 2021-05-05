@@ -15,8 +15,8 @@ internal class KlassErrorTest : ControllerTester() {
         val notFoundUriByCalTerm = Uri.forKlassByCalTerm(1, "xijsx")
         val notFoundUriByCalTermWithBadCID = Uri.forKlassByCalTerm(-1, "1920i")
         val validUriByCalTerm = Uri.forKlassByCalTerm(1, "1920i")
-        val badRequestUri = URI("/v0/courses/a/classes")
-        val badRequestUriCalTerm = URI("/v0/courses/a/classes/1920i/")
+        val badRequestUri = URI("/api/courses/a/classes")
+        val badRequestUriCalTerm = URI("/api/courses/a/classes/1920i/")
     }
 
     /**

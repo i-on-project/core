@@ -13,8 +13,8 @@ internal class ProgrammeErrorTest : ControllerTester() {
         val notFoundUri = Uri.forProgrammesById(-1)
         val validUri = Uri.forProgrammesById(1)
         val notFoundProgrammeOffer = Uri.forProgrammeOfferById(1, -1)
-        val badRequestProgrammeOffer = URI("/v0/programmes/1/offers/a")
-        val badRequestUri = URI("/v0/programmes/a") // Can't use forProgrammesById as won't accept a bad value
+        val badRequestProgrammeOffer = URI("/api/programmes/1/offers/a")
+        val badRequestUri = URI("/api/programmes/a") // Can't use forProgrammesById as won't accept a bad value
     }
 
     /**

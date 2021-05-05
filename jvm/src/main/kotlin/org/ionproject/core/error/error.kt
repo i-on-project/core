@@ -139,5 +139,4 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
             HttpStatus.NOT_FOUND
         )
     }
-
 }

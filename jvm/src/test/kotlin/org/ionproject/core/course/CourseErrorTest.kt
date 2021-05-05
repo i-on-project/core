@@ -12,7 +12,7 @@ internal class CourseErrorTest : ControllerTester() {
     companion object {
         val notFoundUri = Uri.forCourseById(-1)
         val validUri = Uri.forCourseById(1)
-        val badRequestUri = URI("/v0/courses/a")
+        val badRequestUri = URI("/api/courses/a")
     }
 
     /**

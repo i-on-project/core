@@ -126,10 +126,12 @@ object Uri {
         componentByClassSectionCalendarTemplate.expand(cid, calterm, sid, cmpid)
 
     // Access Control
-    const val revokeToken = "/revokeToken"
-    const val issueToken = "/issueToken"
+    const val revokeToken = "$apiBase/revokeToken"
+    const val issueToken = "$apiBase/issueToken"
     const val importClassCalendar = "$apiBase/import/courses/{cid}/classes/{calterm}/calendar"
     const val importClassSectionCalendar = "$apiBase/import/courses/{cid}/classes/{calterm}/{sid}/calendar"
+
+    val revokeTokenUri = URI("$baseUrl$revokeToken")
 
     val importClassCalendarTemplate =
         UriTemplate("$baseUrl$importClassCalendar")

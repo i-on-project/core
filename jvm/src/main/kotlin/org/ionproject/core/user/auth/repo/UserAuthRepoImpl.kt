@@ -21,6 +21,8 @@ import org.ionproject.core.user.auth.registry.AuthMethodRegistry
 import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.user.auth.sql.AuthData
 import org.ionproject.core.user.common.model.User
+import org.ionproject.core.user.common.model.UserToken
+import org.ionproject.core.user.common.model.UserTokenScope
 import org.ionproject.core.user.common.sql.UserData
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.bindKotlin
@@ -28,6 +30,7 @@ import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.springframework.stereotype.Repository
 import java.security.SecureRandom
+import java.time.Duration
 import java.time.Instant
 import java.util.Base64
 import java.util.UUID
@@ -40,11 +43,13 @@ class UserAuthRepoImpl(
 ) : UserAuthRepo {
 
     private val base64Encoder = Base64.getUrlEncoder()
+        .withoutPadding()
 
     override fun getAuthMethods() = methodRegistry.authMethods
 
     override fun addAuthRequest(userAgent: String, input: AuthMethodInput) =
         tm.run(TransactionIsolationLevel.SERIALIZABLE) {
+            // TODO: verify if there's any pending request for the same (clientId, loginHint) combination
             // get & check if the client is valid
             val client = getClientById(input.clientId, it)
 
@@ -52,7 +57,7 @@ class UserAuthRepoImpl(
             notificationRegistry.findOrThrow(input.notificationMethod)
 
             // get & check if the scopes are available
-            val scopes = getRequestedScopes(input.scope, it)
+            val scopes = checkRequestedScopes(input.scope, it)
 
             val authRequestId = generateUUID()
             val authRequest = AuthRequestHelper(
@@ -119,14 +124,16 @@ class UserAuthRepoImpl(
                 removeAuthRequest(authRequestId, it)
 
                 val user = getOrCreateUser(authReq.loginHint, it)
+                val userToken = createUserToken(user, authReq, it)
 
                 // TODO: change this later: create user and necessary tokens
+                val duration = Duration.between(Instant.now(), userToken.accessTokenExpires)
                 AuthSuccessfulResponse(
-                    "dummy",
+                    userToken.accessToken,
                     "Bearer",
-                    "dummy",
-                    0,
-                    "dummy"
+                    userToken.refreshToken,
+                    duration.seconds,
+                    userToken.idToken
                 )
             } else {
                 if (authReq.hasExpired()) {
@@ -139,7 +146,7 @@ class UserAuthRepoImpl(
             }
         }
 
-    private fun getRequestedScopes(scopes: String, handle: Handle): List<String> {
+    private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
         val scopeList = scopes.split(" ")
         val availableScopes = handle.createQuery(AuthData.GET_AVAILABLE_SCOPES)
             .mapTo<AuthScope>()
@@ -190,6 +197,13 @@ class UserAuthRepoImpl(
             .execute()
     }
 
+    private fun getRequestScopes(authRequestId: String, handle: Handle): List<AuthScope> {
+        return handle.createQuery(AuthData.GET_REQUEST_SCOPES)
+            .bind(AuthData.AUTH_REQUEST_ID, authRequestId)
+            .mapTo<AuthScope>()
+            .list()
+    }
+
     private fun getOrCreateUser(email: String, handle: Handle): User {
         var user = handle.createQuery(UserData.GET_USER_BY_EMAIL)
             .bind(UserData.EMAIL, email)
@@ -211,8 +225,37 @@ class UserAuthRepoImpl(
         return user
     }
 
-    private fun createUserToken(userId: String, authReqId: String, handle: Handle) {
-        TODO()
+    private fun createUserToken(user: User, authReq: AuthRequest, handle: Handle): UserToken {
+        // TODO: verify how many tokens this user has for this client
+        val accessToken = generateSecretId()
+        val refreshToken = generateSecretId()
+        val idToken = "jwt here" // TODO
+
+        val userToken = UserToken(
+            user.userId,
+            authReq.clientId,
+            accessToken,
+            refreshToken,
+            idToken,
+            Instant.now().plus(Duration.ofDays(7)), // TODO: this should be configurable
+        )
+
+        val tokenId = handle.createUpdate(UserData.INSERT_USER_TOKEN)
+            .bindKotlin(userToken)
+            .executeAndReturnGeneratedKeys(UserData.ID)
+            .mapTo<Int>()
+            .first()
+
+        val scopes = getRequestScopes(authReq.authRequestId, handle)
+        val batch = handle.prepareBatch(UserData.INSERT_USER_TOKEN_SCOPE)
+
+        scopes.forEach {
+            batch.bindKotlin(UserTokenScope(tokenId, it.scope))
+                .add()
+        }
+
+        batch.execute()
+        return userToken
     }
 
     private fun AuthRequest.hasExpired() = expiresOn.isBefore(Instant.now())

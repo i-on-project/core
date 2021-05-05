@@ -26,5 +26,12 @@ data class UserToken(
     @ColumnName("at_expires")
     val accessTokenExpires: Instant,
     @ColumnName("created_at")
-    val createdAt: Instant
+    val createdAt: Instant = Instant.now(),
+    val id: Int? = null
+)
+
+data class UserTokenScope(
+    val id: Int,
+    @ColumnName("scope_id")
+    val scope: String
 )

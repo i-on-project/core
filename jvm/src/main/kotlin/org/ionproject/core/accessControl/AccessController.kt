@@ -61,7 +61,6 @@ class AccessController(private val services: AccessServices, private val tokenGe
         @RequestParam body: Map<String, String>,
         @RequestAttribute("token") token: TokenEntity
     ): ResponseEntity<Any> {
-
         val tokenBody = body["token"]
         if (tokenBody.isNullOrEmpty())
             throw BadRequestException("No token specified.")
@@ -147,7 +146,7 @@ class AccessController(private val services: AccessServices, private val tokenGe
         else
             queryParams += addQueryParams(query) + "&$derivedToken"
 
-        return Uri.baseUrl + parameterPath + queryParams
+        return parameterPath + queryParams
     }
 
     /**

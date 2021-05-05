@@ -52,4 +52,10 @@ object AuthData {
         insert into dbo.AuthRequestScope (auth_req_id, scope_id)
         values (:$AUTH_REQUEST_ID, :$SCOPE)
     """
+
+    const val GET_REQUEST_SCOPES = """
+        select s.scope_id, s.scope_name, s.scope_description
+        from (dbo.AuthRequestScope ars join dbo.AuthUserScope s on ars.scope_id = s.scope_id)
+        where ars.auth_req_id = :$AUTH_REQUEST_ID
+    """
 }
