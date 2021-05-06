@@ -4,6 +4,8 @@ import java.lang.RuntimeException
 
 abstract class AuthInvalidRequestException(message: String) : RuntimeException(message)
 
+// TODO: improve these exceptions and the associated handling
+
 class InvalidClientIdException(
     clientId: String
 ) : AuthInvalidRequestException("The client_id $clientId is invalid!")
@@ -23,3 +25,5 @@ class RequestTokenInvalidRequestException : RuntimeException()
 class RequestTokenExpiredException : RuntimeException()
 
 class RequestTokenPendingException : RuntimeException()
+
+class RequestAlreadyValidatedException : RuntimeException()

@@ -36,6 +36,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
+import java.security.KeyStore
 
 private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
 private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
@@ -158,6 +159,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
         notificationRegistry.register("POLL")
         return notificationRegistry
     }
+
 }
 
 fun main(args: Array<String>) {

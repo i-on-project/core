@@ -1,11 +1,14 @@
 package org.ionproject.core.user.auth.repo
 
+import io.jsonwebtoken.Jwts
 import kotlinx.coroutines.runBlocking
+import org.ionproject.core.common.Uri
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.toNullable
 import org.ionproject.core.user.auth.InvalidClientIdException
 import org.ionproject.core.user.auth.InvalidScopesException
 import org.ionproject.core.user.auth.InvalidUserCreationMethodException
+import org.ionproject.core.user.auth.RequestAlreadyValidatedException
 import org.ionproject.core.user.auth.RequestTokenExpiredException
 import org.ionproject.core.user.auth.RequestTokenInvalidRequestException
 import org.ionproject.core.user.auth.RequestTokenPendingException
@@ -20,6 +23,7 @@ import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.user.auth.registry.AuthMethodRegistry
 import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.user.auth.sql.AuthData
+import org.ionproject.core.user.common.jwt.JwtSecretKeyProvider
 import org.ionproject.core.user.common.model.User
 import org.ionproject.core.user.common.model.UserToken
 import org.ionproject.core.user.common.model.UserTokenScope
@@ -33,17 +37,22 @@ import java.security.SecureRandom
 import java.time.Duration
 import java.time.Instant
 import java.util.Base64
+import java.util.Date
 import java.util.UUID
+import javax.crypto.SecretKey
 
 @Repository
 class UserAuthRepoImpl(
     val tm: TransactionManager,
     val methodRegistry: AuthMethodRegistry,
-    val notificationRegistry: AuthNotificationRegistry
+    val notificationRegistry: AuthNotificationRegistry,
+    jwtSecretKeyProvider: JwtSecretKeyProvider
 ) : UserAuthRepo {
 
     private val base64Encoder = Base64.getUrlEncoder()
         .withoutPadding()
+
+    private val secretKey: SecretKey by jwtSecretKeyProvider
 
     override fun getAuthMethods() = methodRegistry.authMethods
 
@@ -105,6 +114,9 @@ class UserAuthRepoImpl(
     override fun verifyAuthRequest(authRequestId: String, secretId: String) =
         tm.run {
             val authReq = getAuthRequestAndVerifySecret(authRequestId, secretId, it)
+            if (authReq.verified)
+                throw RequestAlreadyValidatedException()
+
             if (authReq.hasExpired()) {
                 removeAuthRequest(authRequestId, it)
                 throw RequestTokenExpiredException()
@@ -145,6 +157,9 @@ class UserAuthRepoImpl(
                 throw RequestTokenPendingException()
             }
         }
+
+    override fun getRequestScopes(authRequestId: String) =
+        tm.run { getRequestScopes(authRequestId, it) }
 
     private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
         val scopeList = scopes.split(" ")
@@ -212,11 +227,7 @@ class UserAuthRepoImpl(
             .toNullable()
 
         if (user == null) {
-            user = User(
-                generateUUID(),
-                email
-            )
-
+            user = User(generateUUID(), email)
             handle.createUpdate(UserData.INSERT_USER)
                 .bindKotlin(user)
                 .execute()
@@ -229,7 +240,7 @@ class UserAuthRepoImpl(
         // TODO: verify how many tokens this user has for this client
         val accessToken = generateSecretId()
         val refreshToken = generateSecretId()
-        val idToken = "jwt here" // TODO
+        val idToken = generateIdToken(user, authReq)
 
         val userToken = UserToken(
             user.userId,
@@ -256,6 +267,23 @@ class UserAuthRepoImpl(
 
         batch.execute()
         return userToken
+    }
+
+    private fun generateIdToken(user: User, authReq: AuthRequest): String {
+        val issuedAt = Instant.now()
+        val jwtDuration = Duration.ofHours(1)
+        val expirationDate = Date.from(issuedAt.plus(jwtDuration))
+
+        return Jwts.builder()
+            .setExpiration(expirationDate)
+            .setAudience(authReq.clientId)
+            .setIssuedAt(Date.from(issuedAt))
+            .setIssuer("${Uri.baseUrl}${Uri.apiBase}")
+            .setSubject(user.userId)
+            .claim("email", user.email)
+            .claim("name", user.name)
+            .signWith(secretKey)
+            .compact()
     }
 
     private fun AuthRequest.hasExpired() = expiresOn.isBefore(Instant.now())
