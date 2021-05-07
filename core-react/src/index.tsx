@@ -4,13 +4,16 @@ import './index.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
 import App from './main/App';
+import { QueryParamProvider } from 'use-query-params';
 
 ReactDOM.render(
     <React.StrictMode>
         <Router>
-            <Switch>
-                <Route path="/auth/verify/:authReqId" children={<App />}/>
-            </Switch>
+            <QueryParamProvider ReactRouterRoute={Route}>
+                <Switch>
+                    <Route path="/auth/request/:authReqId/verify" children={<App />}/>
+                </Switch>
+            </QueryParamProvider>
         </Router>
     </React.StrictMode>,
     document.getElementById('root')
