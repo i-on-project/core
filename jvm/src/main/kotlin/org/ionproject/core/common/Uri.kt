@@ -162,12 +162,13 @@ object Uri {
     const val authMethods = "$authBase/methods"
     const val authVerify = "$authBase/verify"
 
-    private const val authRequestBase = "$authBase/request/{reqId}"
-    const val authRequestScopes = "$authRequestBase/scopes"
+    const val authRequestBase = "$authBase/request/{reqId}"
     const val authPoll = "$authRequestBase/poll"
 
+    val authVerifyUri = URI("$baseUrl$authVerify")
+
     fun forAuthVerifyFrontend(reqId: String, secret: String) =
-        UriTemplate("$baseUrl${authRequestBase}/verify?secret={secret}").expand(reqId, secret)
+        UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 
     // custom link rel
     const val relClass = "/rel/class"

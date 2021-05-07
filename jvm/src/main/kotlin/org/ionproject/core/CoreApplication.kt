@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -98,6 +99,12 @@ class CoreSerializationConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/**")
             .addResourceLocations(resourceLocations)
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        // adds cors allowance for react development purposes
+        registry.addMapping("/api/**")
+            .allowedOrigins("http://localhost:3000")
     }
 
     @Autowired

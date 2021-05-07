@@ -1,6 +1,8 @@
 package org.ionproject.core.user.auth.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.jdbi.v3.core.mapper.reflect.ColumnName
+import java.net.URI
 import java.time.Instant
 
 private const val AUTH_DEFAULT_EXPIRATION = 5L * 60 // 5 minutes
@@ -34,4 +36,15 @@ data class AuthRequest(
     @ColumnName("expires_on")
     val expiresOn: Instant,
     val verified: Boolean
+)
+
+data class AuthRequestOutput(
+    @JsonProperty("auth_req_id")
+    val authRequestId: String,
+    @JsonProperty("expires_on")
+    val expiresOn: Instant,
+    val client: AuthClient,
+    val scopes: List<AuthScope>,
+    @JsonProperty("verify_action")
+    val verifyAction: URI
 )

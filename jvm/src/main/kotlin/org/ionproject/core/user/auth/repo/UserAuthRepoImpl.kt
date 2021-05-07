@@ -17,6 +17,7 @@ import org.ionproject.core.user.auth.model.AuthMethodInput
 import org.ionproject.core.user.auth.model.AuthRequest
 import org.ionproject.core.user.auth.model.AuthRequestAcknowledgement
 import org.ionproject.core.user.auth.model.AuthRequestHelper
+import org.ionproject.core.user.auth.model.AuthRequestOutput
 import org.ionproject.core.user.auth.model.AuthRequestScope
 import org.ionproject.core.user.auth.model.AuthScope
 import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
@@ -58,7 +59,7 @@ class UserAuthRepoImpl(
 
     override fun addAuthRequest(userAgent: String, input: AuthMethodInput) =
         tm.run(TransactionIsolationLevel.SERIALIZABLE) {
-            // TODO: verify if there's any pending request for the same (clientId, loginHint) combination
+            // TODO: verify if there's any pending request for the same (clientId, loginHint) combination and rate limit
             // get & check if the client is valid
             val client = getClientById(input.clientId, it)
 
@@ -138,7 +139,6 @@ class UserAuthRepoImpl(
                 val user = getOrCreateUser(authReq.loginHint, it)
                 val userToken = createUserToken(user, authReq, it)
 
-                // TODO: change this later: create user and necessary tokens
                 val duration = Duration.between(Instant.now(), userToken.accessTokenExpires)
                 AuthSuccessfulResponse(
                     userToken.accessToken,
@@ -158,8 +158,20 @@ class UserAuthRepoImpl(
             }
         }
 
-    override fun getRequestScopes(authRequestId: String) =
-        tm.run { getRequestScopes(authRequestId, it) }
+    override fun getAuthRequest(authRequestId: String) =
+        tm.run {
+            val authRequest = getAuthRequest(authRequestId, it)
+            val client = getClientById(authRequest.clientId, it)
+            val scopes = getRequestScopes(authRequestId, it)
+
+            AuthRequestOutput(
+                authRequestId,
+                authRequest.expiresOn,
+                client,
+                scopes,
+                Uri.authVerifyUri
+            )
+        }
 
     private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
         val scopeList = scopes.split(" ")
@@ -241,6 +253,8 @@ class UserAuthRepoImpl(
         val accessToken = generateSecretId()
         val refreshToken = generateSecretId()
         val idToken = generateIdToken(user, authReq)
+        val accessTokenDuration = Duration.ofDays(7)
+        val accessTokenExpiration = Instant.now().plus(accessTokenDuration)
 
         val userToken = UserToken(
             user.userId,
@@ -248,7 +262,7 @@ class UserAuthRepoImpl(
             accessToken,
             refreshToken,
             idToken,
-            Instant.now().plus(Duration.ofDays(7)), // TODO: this should be configurable
+            accessTokenExpiration
         )
 
         val tokenId = handle.createUpdate(UserData.INSERT_USER_TOKEN)

@@ -3,6 +3,7 @@ package org.ionproject.core.user.auth
 import org.ionproject.core.common.Uri
 import org.ionproject.core.user.auth.model.AuthMethodInput
 import org.ionproject.core.user.auth.model.AuthRequestAcknowledgement
+import org.ionproject.core.user.auth.model.AuthRequestOutput
 import org.ionproject.core.user.auth.model.AuthScope
 import org.ionproject.core.user.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.user.auth.model.AuthVerification
@@ -33,11 +34,11 @@ class UserAuthController(val repo: UserAuthRepo) {
         return ResponseEntity.ok(repo.addAuthRequest(userAgent, methodInput))
     }
 
-    @GetMapping(Uri.authRequestScopes, produces = ["application/json"])
-    fun getAuthRequestScopes(
+    @GetMapping(Uri.authRequestBase, produces = ["application/json"])
+    fun getAuthRequest(
         @PathVariable reqId: String
-    ): ResponseEntity<Iterable<AuthScope>> {
-        return ResponseEntity.ok(repo.getRequestScopes(reqId))
+    ): ResponseEntity<AuthRequestOutput> {
+        return ResponseEntity.ok(repo.getAuthRequest(reqId))
     }
 
     @PostMapping(Uri.authVerify)
