@@ -34,3 +34,6 @@ read_token.txt
 
 ### React Production Build ###
 src/main/resources/static
+
+## Ignore the keys folder
+keys/
