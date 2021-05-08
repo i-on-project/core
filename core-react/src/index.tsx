@@ -3,15 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
-import App from './main/App';
+import VerifyAuth from './main/VerifyAuth';
 import { QueryParamProvider } from 'use-query-params';
+import NotFound from './main/NotFound';
 
 ReactDOM.render(
     <React.StrictMode>
         <Router>
             <QueryParamProvider ReactRouterRoute={Route}>
                 <Switch>
-                    <Route path="/auth/request/:authReqId/verify" children={<App />}/>
+                    <Route path="/auth/request/:authReqId/verify" component={VerifyAuth}/>
+                    <Route path="*" component={NotFound} />
                 </Switch>
             </QueryParamProvider>
         </Router>

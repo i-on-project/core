@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.png'
 import { useParams } from 'react-router';
 import { StringParam, useQueryParam } from 'use-query-params';
 import BoxPage from './components/boxPage/BoxPage';
@@ -9,8 +8,10 @@ import ScopeContainer from './components/scope/ScopeContainer';
 import Scope from './components/scope/Scope'
 import Form from './components/form/Form';
 import FormInputContainer from './components/form/FormInputContainer';
+import { fetchEndpoint, parseJson } from './Utils';
 
-const AUTH_REQUEST_ENDPOINT = 'http://localhost:8080/api/auth/request'
+const API_URI = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URI : 'http://localhost:8080/'
+const AUTH_REQUEST_ENDPOINT = `${API_URI}api/auth/request`
 
 interface PathParams {
     authReqId: string
@@ -36,7 +37,7 @@ interface AuthData {
     verify_action: string
 }
 
-function App() {
+const VerifyAuth = () => {
     const [success, setSuccess] = useState<Boolean>(false)
     const [data, setData] = useState<AuthData | null>(null)
     const [error, setError] = useState<Error | null>(null)
@@ -50,7 +51,8 @@ function App() {
             .catch(error => setError(error))
     }, [authReqId, secret])
 
-    let message = 'Loading'
+    let message = 'Loading...'
+    let title = 'Authorize your Login'
     let scopesHtml
 
     if (data) {
@@ -60,8 +62,10 @@ function App() {
         )
     } else if (error) {
         message = error.message
+        title = 'An error has occurred'
     } else if (success) {
         message = 'You\'re authorized! You may now close this browser tab.'
+        title = 'Authorization Successful'
     }
 
     const onFormSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
@@ -83,13 +87,7 @@ function App() {
     const loading = !data && !error && !success
     return (
         <BoxPage>
-            <BoxPageHeader className={loading ? 'animate-pulse' : undefined}>
-                <img className="w-32 mx-auto mb-5" src={logo} alt="i-on logo" />
-                <h1 className="text-4xl">Authorize your Login</h1>
-                <div className="w-1/2 mx-auto">
-                    { message }
-                </div>
-            </BoxPageHeader>
+            <BoxPageHeader className={loading ? 'animate-pulse' : undefined} title={title} message={message} />
             { data &&
                 <BoxPageItems>
                     <ScopeContainer>
@@ -112,7 +110,7 @@ function App() {
 
 const fetchData = async (authReqId: string, secretId: any): Promise<AuthData> => {
     if (typeof secretId !== 'string')
-        throw new Error('Invalid Secret Key')
+        throw new Error('Secret Key Not Found')
 
     const endpoint = `${AUTH_REQUEST_ENDPOINT}/${authReqId}`
     const response = await fetchEndpoint(endpoint)
@@ -132,21 +130,4 @@ const verifyRequest = (authData: AuthData, secret: string): Promise<any> => {
     })
 }
 
-const fetchEndpoint = async (endpoint: string, init?: RequestInit): Promise<Response> => {
-    const resp = await fetch(endpoint, init)
-        .catch(_ => Promise.reject(new Error('Unexpected Error')))
-
-    if (!resp.ok)
-        throw new Error('Invalid Request')
-
-    return resp
-}
-
-const parseJson = async <T,>(response: Response): Promise<T> => {
-    const json = await response.json()
-        .catch(_ => Promise.reject(new Error('Unexpected Error')))
-
-    return json as T
-}
-
-export default App;
+export default VerifyAuth;
