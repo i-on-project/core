@@ -16,10 +16,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-private const val SEND_GRID_ENDPOINT = "https://api.sendgrid.com/v3/mail/send"
-
-private val logger = LoggerFactory.getLogger(SendGridEmailService::class.java)
-
 class SendGridEmailService(
     private val httpClient: OkHttpClient,
     private val objectMapper: ObjectMapper,
@@ -27,6 +23,11 @@ class SendGridEmailService(
     senderEmail: String,
     senderName: String
 ) : EmailService(senderEmail, senderName) {
+
+    companion object {
+        private const val SEND_GRID_ENDPOINT = "https://api.sendgrid.com/v3/mail/send"
+        private val logger = LoggerFactory.getLogger(SendGridEmailService::class.java)
+    }
 
     override suspend fun sendEmail(
         recipientEmail: String,

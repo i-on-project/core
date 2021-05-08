@@ -1,5 +1,6 @@
 package org.ionproject.core.user.common.jwt
 
+import org.ionproject.core.common.customExceptions.InternalServerErrorException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.ResourceUtils
@@ -11,6 +12,7 @@ import java.lang.RuntimeException
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.util.concurrent.ConcurrentHashMap
+import java.util.regex.Pattern
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
@@ -24,13 +26,19 @@ class SecretKeyProvider {
         // https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyGenerator
         private const val KEY_ALGORITHM = "HmacSHA256"
         private const val KEYS_FOLDER = "keys"
+        private const val KEY_FILE_EXTENSION = "pfx"
+
+        private val filePattern = Pattern.compile("(?:[A-z]+:)?([\\w/]+)(?:.[A-z]+)?")
 
         private fun String.parsePath(): String {
             // ignore classpath: or file:, since these files must be loaded from the filesystem (aka file:)
-            val filePath = split(":", limit = 2).last()
+            val matcher = filePattern.matcher(this)
+            if (!matcher.find())
+                throw InternalServerErrorException("Invalid secret key file pattern")
 
-            // results in file:keys/path
-            return "file:$KEYS_FOLDER${File.separator}$filePath"
+            val filePath = matcher.group(1)
+            // results in file:keys/path.ext
+            return "file:$KEYS_FOLDER${File.separator}$filePath.$KEY_FILE_EXTENSION"
         }
     }
 
@@ -48,8 +56,9 @@ class SecretKeyProvider {
     private val keyCache = ConcurrentHashMap<String, SecretKey>()
 
     fun loadSecretKey(path: String): SecretKey {
-        return keyCache.computeIfAbsent(path) { _ ->
-            val file = ResourceUtils.getFile(path.parsePath())
+        val parsedPath = path.parsePath()
+        return keyCache.computeIfAbsent(parsedPath) { _ ->
+            val file = ResourceUtils.getFile(parsedPath)
             if (!file.exists()) {
                 val folder = File(KEYS_FOLDER)
                 if (!folder.mkdirs() || !file.createNewFile())

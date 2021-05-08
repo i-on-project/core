@@ -3,7 +3,7 @@ package org.ionproject.core.user.auth.sql
 object AuthData {
 
     const val AUTH_REQUEST_ID = "authRequestId"
-    const val LOGIN_HINT = "loginHint"
+    const val EMAIL = "email"
     const val CLIENT_ID = "clientId"
     const val USER_AGENT = "userAgent"
     const val NOTIFICATION_METHOD = "notificationMethod"
@@ -23,9 +23,9 @@ object AuthData {
 
     const val INSERT_AUTH_REQUEST = """
         insert into dbo.AuthRequest 
-        (auth_req_id, secret_id, login_hint, user_agent, client_id, ntf_method, expires_on)
+        (auth_req_id, secret_id, email, user_agent, client_id, ntf_method, expires_on)
         values
-        (:$AUTH_REQUEST_ID, :$SECRET_ID, :$LOGIN_HINT, :$USER_AGENT, :$CLIENT_ID, :$NOTIFICATION_METHOD, :$EXPIRES_ON)
+        (:$AUTH_REQUEST_ID, :$SECRET_ID, :$EMAIL, :$USER_AGENT, :$CLIENT_ID, :$NOTIFICATION_METHOD, :$EXPIRES_ON)
     """
 
     const val GET_AUTH_REQUEST = """

@@ -27,11 +27,10 @@ class AuthMethodRegistry {
 abstract class AuthMethod(
     val type: String,
     @JsonProperty("can_verify")
-    val canVerify: Boolean = false
+    val create: Boolean = false
 ) {
 
-    // TODO: the return should be changed
-    abstract suspend fun solve(request: AuthRequestHelper): Boolean
+    abstract suspend fun solve(request: AuthRequestHelper)
 }
 
 data class EmailAuthMethod(
@@ -47,10 +46,8 @@ data class EmailAuthMethod(
             .asReversed()
     }
 
-    override suspend fun solve(request: AuthRequestHelper): Boolean {
-        val email = request.loginHint
-        email ?: throw BadRequestException("The email auth method requires an email to be provided!")
-
+    override suspend fun solve(request: AuthRequestHelper) {
+        val email = request.email
         if (!validateEmail(email))
             throw BadRequestException("The domain of the email is not allowed!")
 
@@ -77,8 +74,6 @@ data class EmailAuthMethod(
                 <p><a href="$verifyUrl">$verifyUrl</a></p>
             """.trimIndent()
         )
-
-        return true
     }
 
     private fun validateEmail(email: String): Boolean {

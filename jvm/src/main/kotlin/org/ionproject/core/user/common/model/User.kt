@@ -21,8 +21,6 @@ data class UserToken(
     val accessToken: String,
     @ColumnName("refresh_token")
     val refreshToken: String,
-    @ColumnName("id_token")
-    val idToken: String,
     @ColumnName("at_expires")
     val accessTokenExpires: Instant,
     @ColumnName("created_at")

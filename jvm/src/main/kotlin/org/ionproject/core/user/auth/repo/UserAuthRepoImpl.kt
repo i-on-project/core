@@ -59,7 +59,7 @@ class UserAuthRepoImpl(
 
     override fun addAuthRequest(userAgent: String, input: AuthMethodInput) =
         tm.run(TransactionIsolationLevel.SERIALIZABLE) {
-            // TODO: verify if there's any pending request for the same (clientId, loginHint) combination and rate limit
+            // TODO: verify if there's any pending request for the same (clientId, email) combination and rate limit
             // get & check if the client is valid
             val client = getClientById(input.clientId, it)
 
@@ -77,7 +77,7 @@ class UserAuthRepoImpl(
                 client.clientName,
                 userAgent,
                 input.notificationMethod,
-                input.loginHint
+                input.email
             )
 
             it.createUpdate(AuthData.INSERT_AUTH_REQUEST)
@@ -95,9 +95,9 @@ class UserAuthRepoImpl(
 
             runBlocking {
                 val methodSolver = methodRegistry[input.type]
-                if (!methodSolver.canVerify) {
+                if (!methodSolver.create) {
                     it.createQuery(UserData.GET_USER_BY_EMAIL)
-                        .bind(UserData.EMAIL, input.loginHint)
+                        .bind(UserData.EMAIL, input.email)
                         .mapTo<User>()
                         .findOne()
                         .toNullable() ?: throw InvalidUserCreationMethodException()
@@ -136,8 +136,9 @@ class UserAuthRepoImpl(
             if (authReq.verified) {
                 removeAuthRequest(authRequestId, it)
 
-                val user = getOrCreateUser(authReq.loginHint, it)
+                val user = getOrCreateUser(authReq.email, it)
                 val userToken = createUserToken(user, authReq, it)
+                val idToken = generateIdToken(user, authReq)
 
                 val duration = Duration.between(Instant.now(), userToken.accessTokenExpires)
                 AuthSuccessfulResponse(
@@ -145,7 +146,7 @@ class UserAuthRepoImpl(
                     "Bearer",
                     userToken.refreshToken,
                     duration.seconds,
-                    userToken.idToken
+                    idToken
                 )
             } else {
                 if (authReq.hasExpired()) {
@@ -252,7 +253,6 @@ class UserAuthRepoImpl(
         // TODO: verify how many tokens this user has for this client
         val accessToken = generateSecretId()
         val refreshToken = generateSecretId()
-        val idToken = generateIdToken(user, authReq)
         val accessTokenDuration = Duration.ofDays(7)
         val accessTokenExpiration = Instant.now().plus(accessTokenDuration)
 
@@ -261,7 +261,6 @@ class UserAuthRepoImpl(
             authReq.clientId,
             accessToken,
             refreshToken,
-            idToken,
             accessTokenExpiration
         )
 

@@ -10,5 +10,5 @@ data class AuthMethodInput(
     @JsonProperty("notification_method")
     val notificationMethod: String,
     @JsonProperty("login_hint")
-    val loginHint: String?
+    val email: String
 )

@@ -5,6 +5,7 @@ import org.jdbi.v3.core.ConnectionException
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
+import org.jdbi.v3.core.transaction.SerializableTransactionRunner
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -16,6 +17,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      */
     private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
         installPlugin(KotlinPlugin())
+        transactionHandler = SerializableTransactionRunner()
         // setSqlLogger(SqlLogger()) // uncomment this line to see what request are being sent to the database
     }
 
@@ -31,25 +33,16 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      * to the database.
      */
     override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
-        var handle: Handle? = null
         try {
-            handle = jdbi.open() // Obtaining a handle wrapper to the datasource
-
-            handle.begin() // Initiates the transaction
-            handle.setTransactionIsolation(isolationLevel)
-            val result = transaction(handle) // Executing transaction code
-
-            handle.commit()
-            return result
+            return jdbi.inTransaction<R, Exception>(isolationLevel) {
+                transaction(it)
+            }
         } catch (e: ConnectionException) {
             logger.error(e.localizedMessage)
             throw InternalServerErrorException("Was not possible to establish a database connection")
         } catch (e: Exception) {
-            handle?.rollback()
             logger.error(e.localizedMessage)
-            throw e // propagate
-        } finally {
-            handle?.close()
+            throw e
         }
     }
 }

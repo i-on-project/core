@@ -14,7 +14,7 @@ data class AuthRequestHelper(
     val clientName: String,
     val userAgent: String,
     val notificationMethod: String,
-    val loginHint: String? = null,
+    val email: String,
     val time: Instant = Instant.now(),
     val expiresIn: Long = AUTH_DEFAULT_EXPIRATION,
     val expiration: Instant = time.plusSeconds(expiresIn)
@@ -25,8 +25,8 @@ data class AuthRequest(
     val authRequestId: String,
     @ColumnName("secret_id")
     val secretId: String,
-    @ColumnName("login_hint")
-    val loginHint: String,
+    @ColumnName("email")
+    val email: String,
     @ColumnName("user_agent")
     val userAgent: String,
     @ColumnName("client_id")

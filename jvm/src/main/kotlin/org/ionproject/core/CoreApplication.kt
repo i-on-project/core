@@ -22,7 +22,9 @@ import org.ionproject.core.user.auth.registry.AuthMethodRegistry
 import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.user.auth.registry.EmailAuthMethod
 import org.ionproject.core.user.common.email.EmailService
+import org.ionproject.core.user.common.email.MockEmailService
 import org.ionproject.core.user.common.email.SendGridEmailService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -39,16 +41,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
 import java.security.KeyStore
 
-private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
-private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
-private const val EMAIL_SENDER_NAME = "EMAIL_SENDER_NAME"
-
 @SpringBootApplication
 class CoreApplication
 
 @Configuration
 // @EnableWebMvc
 class CoreSerializationConfig : WebMvcConfigurer {
+
+    companion object {
+        private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
+        private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
+        private const val EMAIL_SENDER_NAME = "EMAIL_SENDER_NAME"
+        private val logger = LoggerFactory.getLogger(CoreApplication::class.java)
+    }
 
     @Value("\${react.resources-locations}")
     lateinit var resourceLocations: String
@@ -132,10 +137,26 @@ class CoreSerializationConfig : WebMvcConfigurer {
         val objectMapper = jacksonObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
 
-        // TODO: Introduce MockEmailService if any of these variables is not specified
-        val apiKey = System.getenv(SENDGRID_API_KEY) ?: ""
-        val senderEmail = System.getenv(EMAIL_SENDER_EMAIL) ?: ""
-        val senderName = System.getenv(EMAIL_SENDER_NAME) ?: ""
+        val apiKey = System.getenv(SENDGRID_API_KEY)
+        val senderEmail = System.getenv(EMAIL_SENDER_EMAIL)
+        val senderName = System.getenv(EMAIL_SENDER_NAME)
+
+        if (apiKey == null || senderEmail == null || senderName == null) {
+            logger.warn(
+                """
+                    
+                    ---------------------------------------------------------
+                    Using an email mock service because the one or more of
+                    the following environment variables were not configured:
+                    - $SENDGRID_API_KEY
+                    - $EMAIL_SENDER_EMAIL
+                    - $EMAIL_SENDER_NAME
+                    ---------------------------------------------------------
+                """.trimIndent()
+            )
+
+            return MockEmailService()
+        }
 
         return SendGridEmailService(
             httpClient,

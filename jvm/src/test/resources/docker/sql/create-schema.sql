@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS dbo.AuthUserScope(
 CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
     auth_req_id    CHAR(36) PRIMARY KEY,
     secret_id      VARCHAR(100) UNIQUE,
-    login_hint     VARCHAR(200) NULL,
+    email          VARCHAR(200) UNIQUE,
     user_agent     VARCHAR(200),
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
     ntf_method     VARCHAR(20),
@@ -232,7 +232,6 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
     id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     access_token   VARCHAR(100),
     refresh_token  VARCHAR(100),
-    id_token       VARCHAR(500),
     user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id),
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id),
     at_expires     TIMESTAMP,

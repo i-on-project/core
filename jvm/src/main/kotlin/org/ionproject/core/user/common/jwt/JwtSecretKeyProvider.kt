@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 class JwtSecretKeyProvider(val secretKeyProvider: SecretKeyProvider): ReadOnlyProperty<Any?, SecretKey> {
 
     companion object {
-        private const val KEYSTORE_FILE_NAME = "sym_jwt.pfx"
+        private const val KEYSTORE_FILE_NAME = "sym_jwt"
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) =

@@ -6,7 +6,6 @@ object UserData {
     const val EMAIL = "email"
     const val ACCESS_TOKEN = "accessToken"
     const val REFRESH_TOKEN = "refreshToken"
-    const val ID_TOKEN = "idToken"
     const val CLIENT_ID = "clientId"
     const val AT_EXPIRES = "accessTokenExpires"
     const val ID = "id"
@@ -24,9 +23,9 @@ object UserData {
 
     const val INSERT_USER_TOKEN = """
         insert into dbo.UserAccountToken 
-        (access_token, refresh_token, id_token, user_id, client_id, at_expires)
+        (access_token, refresh_token, user_id, client_id, at_expires)
         values
-        (:$ACCESS_TOKEN, :$REFRESH_TOKEN, :$ID_TOKEN, :$USER_ID, :$CLIENT_ID, :$AT_EXPIRES)
+        (:$ACCESS_TOKEN, :$REFRESH_TOKEN, :$USER_ID, :$CLIENT_ID, :$AT_EXPIRES)
     """
 
     const val INSERT_USER_TOKEN_SCOPE = """
