@@ -6,7 +6,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 @Component
-class JwtSecretKeyProvider(val secretKeyProvider: SecretKeyProvider): ReadOnlyProperty<Any?, SecretKey> {
+class JwtSecretKeyProvider(val secretKeyProvider: SecretKeyProvider) : ReadOnlyProperty<Any?, SecretKey> {
 
     companion object {
         private const val KEYSTORE_FILE_NAME = "sym_jwt"
@@ -14,5 +14,4 @@ class JwtSecretKeyProvider(val secretKeyProvider: SecretKeyProvider): ReadOnlyPr
 
     override fun getValue(thisRef: Any?, property: KProperty<*>) =
         secretKeyProvider.loadSecretKey(KEYSTORE_FILE_NAME)
-
 }

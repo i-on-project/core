@@ -33,6 +33,11 @@ object AuthData {
         where auth_req_id = :$AUTH_REQUEST_ID
     """
 
+    const val GET_AUTH_REQUEST_BY_CLIENT_AND_EMAIL = """
+        select * from dbo.AuthRequest
+        where client_id = :$CLIENT_ID and email = :$EMAIL
+    """
+
     const val REMOVE_AUTH_REQUEST = """
         delete from dbo.AuthRequest
         where auth_req_id = :$AUTH_REQUEST_ID

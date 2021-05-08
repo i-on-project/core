@@ -1,5 +1,6 @@
 package org.ionproject.core.user.common.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.jdbi.v3.core.mapper.reflect.ColumnName
 import java.time.Instant
 
@@ -25,6 +26,8 @@ data class UserToken(
     val accessTokenExpires: Instant,
     @ColumnName("created_at")
     val createdAt: Instant = Instant.now(),
+    @ColumnName("updated_at")
+    val updatedAt: Instant = Instant.now(),
     val id: Int? = null
 )
 
@@ -32,4 +35,11 @@ data class UserTokenScope(
     val id: Int,
     @ColumnName("scope_id")
     val scope: String
+)
+
+data class UserTokenInput(
+    @JsonProperty("access_token")
+    val accessToken: String,
+    @JsonProperty("refresh_token")
+    val refreshToken: String
 )

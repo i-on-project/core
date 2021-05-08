@@ -15,6 +15,10 @@ object UserData {
         select * from dbo.UserAccount where email = :$EMAIL
     """
 
+    const val GET_USER_BY_ID = """
+        select * from dbo.UserAccount where user_id = :$USER_ID
+    """
+
     const val INSERT_USER = """
         insert into dbo.UserAccount (user_id, email)
         values
@@ -32,5 +36,30 @@ object UserData {
         insert into dbo.UserAccountTokenScope (id, scope_id)
         values
         (:$ID, :$SCOPE_ID)
+    """
+
+    const val GET_USER_TOKEN_BY_CLIENT = """
+        select * from dbo.UserAccountToken
+        where client_id = :$CLIENT_ID and user_id = :$USER_ID
+    """
+
+    const val GET_USER_TOKEN = """
+        select * from dbo.UserAccountToken
+        where access_token = :$ACCESS_TOKEN and refresh_token = :$REFRESH_TOKEN
+    """
+
+    const val REVOKE_USER_TOKEN = """
+        delete from dbo.UserAccountToken
+        where id = :$ID
+    """
+
+    const val REFRESH_USER_TOKEN = """
+        update dbo.UserAccountToken
+        set 
+        access_token = :$ACCESS_TOKEN and 
+        refresh_token = :$REFRESH_TOKEN and 
+        at_expires = :$AT_EXPIRES and
+        updated_at = now()
+        where id = :$ID
     """
 }

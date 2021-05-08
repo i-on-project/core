@@ -235,7 +235,9 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
     user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id),
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id),
     at_expires     TIMESTAMP,
-    created_at     TIMESTAMP DEFAULT NOW()
+    created_at     TIMESTAMP DEFAULT NOW(),
+    UNIQUE (access_token, refresh_token),
+    UNIQUE (user_id, client_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(

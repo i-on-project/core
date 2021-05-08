@@ -39,7 +39,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
-import java.security.KeyStore
 
 @SpringBootApplication
 class CoreApplication
@@ -187,7 +186,6 @@ class CoreSerializationConfig : WebMvcConfigurer {
         notificationRegistry.register("POLL")
         return notificationRegistry
     }
-
 }
 
 fun main(args: Array<String>) {

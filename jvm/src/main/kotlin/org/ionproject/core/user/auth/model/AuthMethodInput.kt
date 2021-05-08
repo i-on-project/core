@@ -9,6 +9,6 @@ data class AuthMethodInput(
     val clientId: String,
     @JsonProperty("notification_method")
     val notificationMethod: String,
-    @JsonProperty("login_hint")
+    @JsonProperty("email")
     val email: String
 )

@@ -17,4 +17,8 @@ interface UserAuthRepo {
     fun checkAuthRequest(authRequestId: String): AuthSuccessfulResponse
 
     fun getAuthRequest(authRequestId: String): AuthRequestOutput
+
+    fun refreshAccessToken(accessToken: String, refreshToken: String): AuthSuccessfulResponse
+
+    fun revokeAccessToken(accessToken: String, refreshToken: String)
 }

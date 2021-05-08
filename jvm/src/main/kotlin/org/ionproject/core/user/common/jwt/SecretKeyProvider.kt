@@ -78,7 +78,7 @@ class SecretKeyProvider {
                     val password = secretKeyPassword.toCharArray()
                     keyStore.load(it, password)
                     val see = keyStore.getEntry(SECRET_KEY_ENTRY, KeyStore.PasswordProtection(password))
-                            as KeyStore.SecretKeyEntry
+                        as KeyStore.SecretKeyEntry
 
                     see.secretKey
                 }
@@ -99,5 +99,4 @@ class SecretKeyProvider {
             return key
         }
     }
-
 }

@@ -1,6 +1,6 @@
 package org.ionproject.core.user.auth.registry
 
-import org.ionproject.core.user.auth.InvalidNotificationMethodException
+import org.ionproject.core.user.auth.AuthRequestInvalidNotificationMethodException
 
 class AuthNotificationRegistry {
 
@@ -12,5 +12,5 @@ class AuthNotificationRegistry {
 
     fun findOrThrow(method: String) =
         registry.find { it == method.toLowerCase() }
-            ?: throw InvalidNotificationMethodException(registry)
+            ?: throw AuthRequestInvalidNotificationMethodException(registry)
 }

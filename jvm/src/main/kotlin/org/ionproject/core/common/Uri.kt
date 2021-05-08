@@ -165,6 +165,9 @@ object Uri {
     const val authRequestBase = "$authBase/request/{reqId}"
     const val authPoll = "$authRequestBase/poll"
 
+    const val authRefreshToken = "$authBase/refreshToken"
+    const val authRevokeToken = "$authBase/revokeToken"
+
     val authVerifyUri = URI("$baseUrl$authVerify")
 
     fun forAuthVerifyFrontend(reqId: String, secret: String) =
