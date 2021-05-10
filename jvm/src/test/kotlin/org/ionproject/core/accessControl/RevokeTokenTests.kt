@@ -214,7 +214,7 @@ internal class RevokeTokenTests : ControllerTester() {
             .andReturn()
 
         // Check if the father was not revoked
-        doGet(URI("/")) {
+        doGet(URI("/api")) {
             header("Authorization", "Bearer $fatherToken")
         }
             .andDo { print() }
