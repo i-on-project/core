@@ -2,7 +2,7 @@ version: '3'
 services:
     db:
       build:
-        context: ./src/res
+        context: ../jvm/src/test/resources
         dockerfile: ./dockerfile_db
       container_name: core-db-container
       ports:

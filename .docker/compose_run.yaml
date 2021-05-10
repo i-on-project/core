@@ -2,8 +2,8 @@ version: '3'
 services:
     core:
       build:
-        context: ./src
-        dockerfile: ./res/dockerfile_ci
+        context: ../jvm
+        dockerfile: ./src/test/resources/dockerfile_ci
       container_name: core-container
       depends_on: [ db ]
       # The entrypoint script will run the server if Argument 1 = "run"
@@ -16,7 +16,7 @@ services:
         - ION_CORE_BASE_URL="localhost:10023"
     db:
       build:
-        context: ./src/res
+        context: ../jvm/src/test/resources
         dockerfile: ./dockerfile_db
       container_name: core-db-container
       ports:
