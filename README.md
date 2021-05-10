@@ -1,4 +1,4 @@
-<div style="text-align: center; margin-bottom: 30px;">
+<div align="center" style="margin-bottom: 30px;">
     <div style="margin-bottom: 30px">
         <img src="./resources/graphics/core-logo.svg" height="200px" alt="i-on core logo" />
     </div>
