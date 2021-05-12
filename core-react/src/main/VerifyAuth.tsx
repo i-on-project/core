@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import { useParams } from 'react-router';
 import { StringParam, useQueryParam } from 'use-query-params';
 import BoxPage from './components/boxPage/BoxPage';
@@ -9,6 +9,7 @@ import Scope from './components/scope/Scope'
 import Form from './components/form/Form';
 import FormInputContainer from './components/form/FormInputContainer';
 import { fetchEndpoint, parseJson } from './Utils';
+import SuccessButton from './components/button/SuccessButton';
 
 const API_URI = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URI : 'http://localhost:8080/'
 const AUTH_REQUEST_ENDPOINT = `${API_URI}api/auth/request`
@@ -37,61 +38,116 @@ interface AuthData {
     verify_action: string
 }
 
-const VerifyAuth = () => {
-    const [success, setSuccess] = useState<Boolean>(false)
-    const [data, setData] = useState<AuthData | null>(null)
-    const [error, setError] = useState<Error | null>(null)
+enum AuthStateType {
+    LOADING,
+    ERROR,
+    NOT_COMPLETED,
+    COMPLETED
+}
 
+interface AuthStateAction {
+    type: AuthStateType,
+    error?: Error,
+    data?: AuthData
+}
+
+interface AuthState {
+    type: AuthStateType,
+    title: string,
+    message: string
+    scopesHtml?: JSX.Element[]
+    data?: AuthData
+}
+
+const initialState: AuthState = {
+    type: AuthStateType.LOADING,
+    title: 'Loading Data',
+    message: 'Please wait while we load your data'
+}
+
+const authStateReducer = (prevState: AuthState, action: AuthStateAction): AuthState => {
+    // Loading -> Not_Completed transition
+    if (prevState.type === AuthStateType.LOADING && action.type === AuthStateType.NOT_COMPLETED) {
+        const data = action.data!
+        const title = 'Authorize your Login'
+        const message = `${data.client.client_name} is requesting the following scopes:`
+        const scopesHtml = data.scopes.map(scope =>
+            <Scope key={scope.scope_id} name={scope.scope_name} description={scope.scope_description} />
+        )
+
+        return {
+            type: action.type,
+            title,
+            message,
+            scopesHtml,
+            data: action.data
+        }
+    }
+
+    // Not_Completed -> Completed transition
+    if (prevState.type === AuthStateType.NOT_COMPLETED && action.type === AuthStateType.COMPLETED) {
+        const title = 'Authorization Successful'
+        const message = 'You\'re authorized! You may now close this browser tab.'
+
+        return {
+            type: action.type,
+            title,
+            message
+        }
+    }
+
+    // Loading -> Error and Not_Completed -> Error transitions
+    if ((prevState.type === AuthStateType.LOADING || prevState.type === AuthStateType.NOT_COMPLETED) && action.type === AuthStateType.ERROR) {
+        const title = 'An error has occurred'
+        const message = action.error?.message || 'Unexpected Error'
+        return {
+            type: action.type,
+            title,
+            message
+        }
+    }
+
+    return prevState
+}
+
+const VerifyAuth = () => {
     const { authReqId } = useParams<PathParams>()
     const [secret] = useQueryParam('secret', StringParam)
 
+    const [state, dispatcher] = useReducer(authStateReducer, initialState)
+    const submitButton = useRef<HTMLButtonElement>(null)
+
     useEffect(() => {
         fetchData(authReqId, secret)
-            .then(data => setData(data))
-            .catch(error => setError(error))
+            .then(data => dispatcher({ type: AuthStateType.NOT_COMPLETED, data }))
+            .catch(error => dispatcher({ type: AuthStateType.ERROR, error }))
     }, [authReqId, secret])
-
-    let message = 'Loading...'
-    let title = 'Authorize your Login'
-    let scopesHtml
-
-    if (data) {
-        message = `${data.client.client_name} is requesting the following scopes:`
-        scopesHtml = data.scopes.map(scope =>
-            <Scope key={scope.scope_id} name={scope.scope_name} description={scope.scope_description} />
-        )
-    } else if (error) {
-        message = error.message
-        title = 'An error has occurred'
-    } else if (success) {
-        message = 'You\'re authorized! You may now close this browser tab.'
-        title = 'Authorization Successful'
-    }
 
     const onFormSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
         try {
             e.preventDefault()
-            const elem = document.getElementById('submitButton') as HTMLButtonElement
-            if (data && secret) {
+            console.log(submitButton.current)
+            const elem = submitButton.current!
+            if (state.type === AuthStateType.NOT_COMPLETED && secret) {
                 elem.disabled = true
-                await verifyRequest(data, secret)
-                setData(null)
-                setSuccess(true)
+                await verifyRequest(state.data!, secret)
+                dispatcher({ type: AuthStateType.COMPLETED })
             }
         } catch (e) {
-            setData(null)
-            setError(new Error('An error has occurred! Please try again later.'))
+            dispatcher({
+                type: AuthStateType.ERROR,
+                error: e
+            })
         }
     }
 
-    const loading = !data && !error && !success
     return (
         <BoxPage>
-            <BoxPageHeader className={loading ? 'animate-pulse' : undefined} title={title} message={message} />
-            { data &&
+            <BoxPageHeader className={state.type === AuthStateType.LOADING ? 'animate-pulse' : undefined} title={state.title} message={state.message} />
+            { state.type === AuthStateType.NOT_COMPLETED &&
                 <BoxPageItems>
                     <ScopeContainer>
-                        { scopesHtml }
+                        { state.scopesHtml }
                     </ScopeContainer>
                     <Form onSubmit={onFormSubmit} className="flex-initial mt-5 w-1/2 mx-auto">
                         <FormInputContainer>
@@ -99,7 +155,7 @@ const VerifyAuth = () => {
                             <label htmlFor="scopeCheck">I confirm that these scopes are going to be granted to the client app</label>
                         </FormInputContainer>
                         <FormInputContainer>
-                            <button type="submit" id="submitButton" className="px-10 py-3 bg-green-600 hover:bg-green-700 focus:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md rounded-md duration-200">Authorize</button>
+                            <SuccessButton type="submit" content="Authorize" ref={submitButton} />
                         </FormInputContainer>
                     </Form>
                 </BoxPageItems>
