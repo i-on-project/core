@@ -45,10 +45,6 @@ class SecretKeyProvider {
     @Value("\${core.secret-key-password}")
     lateinit var secretKeyPassword: String
 
-    private val keyStore: KeyStore by lazy {
-        KeyStore.getInstance(KEY_STORE_TYPE)
-    }
-
     private val keyGenerator: KeyGenerator by lazy {
         KeyGenerator.getInstance(KEY_ALGORITHM)
     }
@@ -74,6 +70,7 @@ class SecretKeyProvider {
                     throw ex
                 }
             } else {
+                val keyStore = createKeyStore()
                 FileInputStream(file).use {
                     val password = secretKeyPassword.toCharArray()
                     keyStore.load(it, password)
@@ -91,6 +88,7 @@ class SecretKeyProvider {
         val key = keyGenerator.generateKey()
 
         // store the key in a new keystore
+        val keyStore = createKeyStore()
         val password = secretKeyPassword.toCharArray()
         keyStore.load(null, null)
         keyStore.setEntry(SECRET_KEY_ENTRY, KeyStore.SecretKeyEntry(key), KeyStore.PasswordProtection(password))
@@ -99,4 +97,6 @@ class SecretKeyProvider {
             return key
         }
     }
+
+    private fun createKeyStore() = KeyStore.getInstance(KEY_STORE_TYPE)
 }
