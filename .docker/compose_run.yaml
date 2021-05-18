@@ -2,8 +2,8 @@ version: '3'
 services:
     core:
       build:
-        context: ../jvm
-        dockerfile: ./src/test/resources/dockerfile_ci
+        context: ..
+        dockerfile: ./jvm/src/test/resources/dockerfile_ci
       container_name: core-container
       depends_on: [ db ]
       # The entrypoint script will run the server if Argument 1 = "run"
@@ -13,7 +13,7 @@ services:
       environment:
         - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
         - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
-        - ION_CORE_BASE_URL="localhost:10023"
+        - ION_CORE_BASE_URL=http://localhost:10023
     db:
       build:
         context: ../jvm/src/test/resources
