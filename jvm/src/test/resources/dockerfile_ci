@@ -1,0 +1,16 @@
+FROM node:16-alpine3.11 AS node
+
+COPY ./core-react ./core-react
+COPY ./jvm ./jvm
+
+RUN cd core-react && yarn install && yarn build
+
+FROM adoptopenjdk/openjdk11:alpine AS jvm
+
+RUN apk add postgresql-client
+
+COPY --from=node ./jvm ./proj
+WORKDIR ./proj
+RUN mv ./src/test/resources/bin/poll_db_and_build .
+
+ENTRYPOINT [ "./poll_db_and_build" ]
