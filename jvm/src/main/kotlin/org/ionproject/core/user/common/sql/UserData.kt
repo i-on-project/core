@@ -10,6 +10,15 @@ object UserData {
     const val AT_EXPIRES = "accessTokenExpires"
     const val ID = "id"
     const val SCOPE_ID = "scopeId"
+    const val NAME = "name"
+    const val OFFSET = "offset"
+    const val LIMIT = "limit"
+
+    const val GET_USERS = """
+        select * from dbo.UserAccount
+        offset :$OFFSET
+        limit :$LIMIT
+    """
 
     const val GET_USER_BY_EMAIL = """
         select * from dbo.UserAccount where email = :$EMAIL
@@ -23,6 +32,17 @@ object UserData {
         insert into dbo.UserAccount (user_id, email)
         values
         (:$USER_ID, :$EMAIL)
+    """
+
+    const val EDIT_USER = """
+        update dbo.UserAccount
+        set name = :$NAME
+        where user_id = :$USER_ID
+    """
+
+    const val DELETE_USER = """
+        delete from dbo.UserAccount
+        where user_id = :$USER_ID
     """
 
     const val INSERT_USER_TOKEN = """

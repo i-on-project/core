@@ -13,6 +13,10 @@ data class User(
     val name: String? = null
 )
 
+data class UserEditInput(
+    val name: String
+)
+
 data class UserToken(
     @ColumnName("user_id")
     val userId: String,
