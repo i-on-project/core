@@ -2,7 +2,6 @@ package org.ionproject.core.userApi.user
 
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
-import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.userApi.common.accessControl.UserResource
 import org.ionproject.core.userApi.common.accessControl.UserResourceOwner
 import org.ionproject.core.userApi.common.accessControl.UserResourceScope
@@ -49,5 +48,4 @@ class UserController(val repo: UserRepo) {
         repo.deleteUser(userId)
         return ResponseEntity.noContent().build()
     }
-
 }

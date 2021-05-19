@@ -41,5 +41,4 @@ object UserKlassData {
         insert into dbo.UserClassSections (user_id, class_id, class_section_id)
         values (:$USER_ID, :$CLASS_ID, :$SECTION_ID)
     """
-
 }

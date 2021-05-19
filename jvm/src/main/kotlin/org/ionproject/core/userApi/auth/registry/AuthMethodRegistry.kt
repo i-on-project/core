@@ -3,9 +3,9 @@ package org.ionproject.core.userApi.auth.registry
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.customExceptions.BadRequestException
-import org.ionproject.core.userApi.auth.model.AuthRequestHelper
 import org.ionproject.core.common.email.EmailService
 import org.ionproject.core.common.email.EmailType
+import org.ionproject.core.userApi.auth.model.AuthRequestHelper
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

@@ -13,5 +13,4 @@ interface UserRepo {
     fun editUser(userId: String, input: UserEditInput)
 
     fun deleteUser(userId: String)
-
 }

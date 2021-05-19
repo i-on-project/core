@@ -30,8 +30,8 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
         if (resource != null) {
             val parameter = handler.methodParameters
                 .firstOrNull {
-                    it.hasParameterAnnotation(UserResourceOwner::class.java)
-                            && it.hasParameterAnnotation(PathVariable::class.java)
+                    it.hasParameterAnnotation(UserResourceOwner::class.java) &&
+                        it.hasParameterAnnotation(PathVariable::class.java)
                 }
 
             val pathVariableMap = request.getAttribute(SPRING_PATH_VARIABLE_MAP) as Map<*, *>
@@ -76,7 +76,6 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
 
     private fun findUserResource(handler: HandlerMethod): UserResource? =
         handler.getMethodAnnotation(UserResource::class.java)
-
 }
 
 class ResourceOwnerParameterNotFound : RuntimeException("A UserResource handler must receive one UserResourceOwner that is a path variable")

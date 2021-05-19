@@ -22,5 +22,4 @@ interface UserKlassRepo {
     fun subscribeToClassSection(userId: String, classId: Int, sectionId: String)
 
     fun unsubscribeFromClassSection(userId: String, classId: Int, sectionId: String)
-
 }

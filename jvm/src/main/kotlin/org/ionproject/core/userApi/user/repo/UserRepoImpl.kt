@@ -56,5 +56,4 @@ class UserRepoImpl(val tm: TransactionManager) : UserRepo {
             .findOne()
             .toNullable() ?: throw ResourceNotFoundException("Couldn't find a user with id $userId")
     }
-
 }

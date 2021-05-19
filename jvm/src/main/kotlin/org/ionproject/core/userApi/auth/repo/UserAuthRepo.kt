@@ -6,7 +6,6 @@ import org.ionproject.core.userApi.auth.model.AuthRequestOutput
 import org.ionproject.core.userApi.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.userApi.auth.registry.AuthMethod
 import org.ionproject.core.userApi.user.model.UserTokenInfo
-import org.ionproject.core.userApi.user.model.UserTokenScope
 
 interface UserAuthRepo {
 

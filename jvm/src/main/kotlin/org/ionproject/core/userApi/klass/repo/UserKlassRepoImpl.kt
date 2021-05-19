@@ -94,5 +94,4 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
             .findOne()
             .toNullable()
     }
-
 }

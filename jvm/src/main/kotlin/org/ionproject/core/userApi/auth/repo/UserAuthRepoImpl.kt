@@ -3,6 +3,7 @@ package org.ionproject.core.userApi.auth.repo
 import io.jsonwebtoken.Jwts
 import kotlinx.coroutines.runBlocking
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.jwt.JwtSecretKeyProvider
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.toNullable
 import org.ionproject.core.userApi.auth.AuthRequestAlreadyExistsException
@@ -14,6 +15,7 @@ import org.ionproject.core.userApi.auth.AuthRequestInvalidSecretException
 import org.ionproject.core.userApi.auth.AuthRequestNotFoundException
 import org.ionproject.core.userApi.auth.AuthRequestPendingException
 import org.ionproject.core.userApi.auth.AuthRequestUserCreationException
+import org.ionproject.core.userApi.auth.InvalidRefreshToken
 import org.ionproject.core.userApi.auth.RefreshTokenRateLimitException
 import org.ionproject.core.userApi.auth.UserTokenNotFoundException
 import org.ionproject.core.userApi.auth.model.AuthClient
@@ -28,8 +30,6 @@ import org.ionproject.core.userApi.auth.model.AuthSuccessfulResponse
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.userApi.auth.sql.AuthData
-import org.ionproject.core.common.jwt.JwtSecretKeyProvider
-import org.ionproject.core.userApi.auth.InvalidRefreshToken
 import org.ionproject.core.userApi.user.model.User
 import org.ionproject.core.userApi.user.model.UserToken
 import org.ionproject.core.userApi.user.model.UserTokenInfo
