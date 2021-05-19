@@ -8,6 +8,7 @@ import org.ionproject.core.userApi.auth.repo.UserAuthRepo
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.method.HandlerMethod
+import org.springframework.web.servlet.HandlerMapping
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import java.lang.RuntimeException
 import java.time.Instant
@@ -19,7 +20,6 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
 
     companion object {
         private const val AUTH_HEADER_TYPE = "bearer"
-        private const val SPRING_PATH_VARIABLE_MAP = "org.springframework.web.servlet.HandlerMapping.uriTemplateVariables"
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -34,7 +34,7 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
                         it.hasParameterAnnotation(PathVariable::class.java)
                 }
 
-            val pathVariableMap = request.getAttribute(SPRING_PATH_VARIABLE_MAP) as Map<*, *>
+            val pathVariableMap = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<*, *>
             val userId = pathVariableMap[parameter?.parameter?.name] as String?
                 ?: throw ResourceOwnerParameterNotFound()
 
