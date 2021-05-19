@@ -174,20 +174,25 @@ object Uri {
         UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 
     // User API
-    const val users = "$apiBase/user"
-    const val user = "$users/{userId}"
-    const val userClasses = "$user/classes"
+    const val userBase = "$apiBase/user"
+    const val user = "$userBase/{userId}"
+    const val userClasses = "$user/class"
     const val userClass = "$userClasses/{classId}"
     const val userClassSection = "$userClasses/{classId}/{sectionId}"
 
+    val userTemplate = UriTemplate("$baseUrl$user")
+
     fun forUser(userId: String) =
-        UriTemplate("$baseUrl$user").expand(userId)
+        userTemplate.expand(userId)
 
     fun forUserClasses(userId: String) =
         UriTemplate("$baseUrl$userClasses").expand(userId)
 
-    fun forPagingUsers(page: Int, limit: Int) =
-        UriTemplate("$baseUrl$users$springWebPagingQuery").expand(page, limit)
+    fun forPagingUserClasses(userId: String, page: Int, limit: Int) =
+        UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(userId, page, limit)
+
+    fun forUserClass(userId: String, classId: Int) =
+        UriTemplate("$baseUrl$userClass").expand(userId, classId)
 
     // custom link rel
     const val relClass = "/rel/class"

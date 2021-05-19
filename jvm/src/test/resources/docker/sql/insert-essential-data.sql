@@ -287,11 +287,7 @@ INSERT INTO dbo.policies(scope_id, method, version, resource) VALUES
 (3, 'GET,POST', '*', 'error')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO dbo.authclient (client_id, client_name, client_url) VALUES
-('22dd1551-db23-481b-acde-d286440388a5', 'i-on Web', 'https://i-on-web.herokuapp.com/'),
-('14633a07-30d8-41f9-aa4d-d55341d7c7f3', 'i-on Android', null)
-ON CONFLICT DO NOTHING;
-
 INSERT INTO dbo.authuserscope (scope_id, scope_name, scope_description) VALUES
-('profile', 'Access to profile', 'Grants the client app access to basic profile information such as name and email.')
+('profile', 'Access to profile', 'Grants the client app access to basic profile information such as name and email.'),
+('classes', 'Class Subscriptions', 'Grants access to your class subscriptions')
 ON CONFLICT DO NOTHING;

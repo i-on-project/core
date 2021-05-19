@@ -229,21 +229,19 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccount(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
-    id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    access_token   VARCHAR(100),
+    access_token   VARCHAR(100) PRIMARY KEY,
     refresh_token  VARCHAR(100),
     user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
     at_expires     TIMESTAMP,
     created_at     TIMESTAMP DEFAULT NOW(),
-    UNIQUE (access_token, refresh_token),
     UNIQUE (user_id, client_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
-    id            INT REFERENCES dbo.UserAccountToken(id) ON DELETE CASCADE,
+    access_token  VARCHAR(100) REFERENCES dbo.UserAccountToken(access_token) ON DELETE CASCADE,
     scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id) ON DELETE CASCADE,
-    PRIMARY KEY (id, scope_id)
+    PRIMARY KEY (access_token, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserClasses(
