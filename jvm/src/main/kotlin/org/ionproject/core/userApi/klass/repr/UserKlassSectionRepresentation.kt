@@ -19,8 +19,9 @@ private fun UserKlassSection.toProps() = UserKlassSectionProps(
 )
 
 // TODO: add link to class section actions
-fun UserKlassSection.toSirenRepresentation(userId: String, classId: Int) =
+fun UserKlassSection.toSirenRepresentation(classId: Int) =
     SirenBuilder(toProps())
-        .link("self", href = Uri.forUserClassSection(userId, classId, id))
+        .link("self", href = Uri.forUserClassSection(classId, id))
         .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, id))
+        .link(Uri.relUserClassSectionActions, href = Uri.forUserClassSectionActions(classId, id))
         .toSiren()

@@ -3,15 +3,14 @@ package org.ionproject.core.userApi.user
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.userApi.common.accessControl.UserResource
-import org.ionproject.core.userApi.common.accessControl.UserResourceOwner
 import org.ionproject.core.userApi.common.accessControl.UserResourceScope
+import org.ionproject.core.userApi.user.model.User
 import org.ionproject.core.userApi.user.model.UserEditInput
 import org.ionproject.core.userApi.user.repo.UserRepo
 import org.ionproject.core.userApi.user.repr.toSirenRepresentation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -21,31 +20,30 @@ class UserController(val repo: UserRepo) {
 
     // TODO: add user home resource
 
-    @GetMapping(Uri.user)
+    @GetMapping(Uri.userBase)
     @UserResource(requiredScopes = [UserResourceScope.PROFILE])
     fun getUser(
-        @PathVariable @UserResourceOwner userId: String
+        user: User
     ): ResponseEntity<Siren> {
-        val user = repo.getUser(userId)
         return ResponseEntity.ok(user.toSirenRepresentation())
     }
 
-    @PutMapping(Uri.user)
+    @PutMapping(Uri.userBase)
     @UserResource(requiredScopes = [UserResourceScope.PROFILE])
     fun editUser(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @RequestBody input: UserEditInput
     ): ResponseEntity<Unit> {
-        repo.editUser(userId, input)
+        repo.editUser(user.userId, input)
         return ResponseEntity.noContent().build()
     }
 
-    @DeleteMapping(Uri.user)
+    @DeleteMapping(Uri.userBase)
     @UserResource(requiredScopes = [UserResourceScope.PROFILE])
     fun deleteUser(
-        @PathVariable @UserResourceOwner userId: String
+        user: User
     ): ResponseEntity<Siren> {
-        repo.deleteUser(userId)
+        repo.deleteUser(user.userId)
         return ResponseEntity.noContent().build()
     }
 }

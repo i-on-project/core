@@ -48,7 +48,7 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
     override fun unsubscribeFromClass(userId: String, classId: Int) {
         tm.run {
             // the user needs to be subscribed
-            if (!isSubscribedToClass(userId, classId))
+            if (!isSubscribedToClass(userId, classId, it))
                 throw BadRequestException("The user $userId is not subscribed to the class $classId")
 
             it.createUpdate(UserKlassData.DELETE_USER_CLASS)
@@ -69,14 +69,12 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
 
     override fun subscribeToClassSection(userId: String, classId: Int, sectionId: String) =
         tm.run {
-            checkClassSection(classId, sectionId, it)
-
-            // subscribe the user to the class if not subscribed already
-            subscribeToClass(userId, classId, it)
-
-            if (isSubscribedToClassSection(userId, classId, sectionId)) {
+            if (isSubscribedToClassSection(userId, classId, sectionId, it)) {
                 false
             } else {
+                // subscribe the user to the class if not subscribed already
+                subscribeToClass(userId, classId, it)
+
                 it.createUpdate(UserKlassData.INSERT_USER_CLASS_SECTION)
                     .bind(UserKlassData.USER_ID, userId)
                     .bind(UserKlassData.CLASS_ID, classId)
@@ -111,7 +109,6 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
     }
 
     private fun subscribeToClass(userId: String, classId: Int, handle: Handle): Boolean {
-        checkClass(classId, handle)
         return if (isSubscribedToClass(userId, classId, handle)) {
             false
         } else {
@@ -124,8 +121,10 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
         }
     }
 
-    private fun isSubscribedToClass(userId: String, classId: Int, handle: Handle) =
-        findSubscribedClass(userId, classId, handle) != null
+    private fun isSubscribedToClass(userId: String, classId: Int, handle: Handle): Boolean {
+        checkClass(classId, handle)
+        return findSubscribedClass(userId, classId, handle) != null
+    }
 
     private fun findSubscribedClass(userId: String, classId: Int, handle: Handle): UserKlass? {
         return handle.createQuery(UserKlassData.GET_USER_CLASS)
@@ -148,8 +147,10 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
             throw BadRequestException("Invalid class section: $sectionId")
     }
 
-    private fun isSubscribedToClassSection(userId: String, classId: Int, sectionId: String, handle: Handle) =
-        findSubscribedClassSection(userId, classId, sectionId, handle) != null
+    private fun isSubscribedToClassSection(userId: String, classId: Int, sectionId: String, handle: Handle): Boolean {
+        checkClassSection(classId, sectionId, handle)
+        return findSubscribedClassSection(userId, classId, sectionId, handle) != null
+    }
 
     private fun findSubscribedClassSection(userId: String, classId: Int, sectionId: String, handle: Handle): UserKlassSection? {
         return handle.createQuery(UserKlassData.GET_USER_CLASS_SECTION)

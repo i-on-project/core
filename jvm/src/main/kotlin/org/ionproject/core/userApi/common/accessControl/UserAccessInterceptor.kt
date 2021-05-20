@@ -5,12 +5,10 @@ import org.ionproject.core.common.customExceptions.ForbiddenActionException
 import org.ionproject.core.common.customExceptions.UnauthenticatedUserException
 import org.ionproject.core.userApi.auth.UserTokenNotFoundException
 import org.ionproject.core.userApi.auth.repo.UserAuthRepo
+import org.ionproject.core.userApi.user.model.User
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.method.HandlerMethod
-import org.springframework.web.servlet.HandlerMapping
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
-import java.lang.RuntimeException
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -20,6 +18,7 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
 
     companion object {
         private const val AUTH_HEADER_TYPE = "bearer"
+        const val USER_INFO = "USER_INFO"
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -28,16 +27,6 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
 
         val resource = findUserResource(handler)
         if (resource != null) {
-            val parameter = handler.methodParameters
-                .firstOrNull {
-                    it.hasParameterAnnotation(UserResourceOwner::class.java) &&
-                        it.hasParameterAnnotation(PathVariable::class.java)
-                }
-
-            val pathVariableMap = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<*, *>
-            val userId = pathVariableMap[parameter?.parameter?.name] as String?
-                ?: throw ResourceOwnerParameterNotFound()
-
             val authHeader = request.getHeader("Authorization")
                 ?: throw UnauthenticatedUserException("The resource you're trying to access is protected and requires authentication")
 
@@ -48,16 +37,24 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
             if (headerValue[0].toLowerCase() != AUTH_HEADER_TYPE)
                 throw BadRequestException("The authorization header type must be ${AUTH_HEADER_TYPE.toUpperCase()}")
 
-            checkAccessToResource(headerValue[1], userId, resource.requiredScopes)
+            val token = headerValue[1]
+            val user = repo.getUserByToken(token)
+
+            if (user != null)
+                request.setAttribute(USER_INFO, user)
+
+            checkAccessToResource(token, user, resource.requiredScopes)
         }
 
         return true
     }
 
-    private fun checkAccessToResource(token: String, userId: String, requiredScopes: Array<UserResourceScope>) {
+    private fun checkAccessToResource(token: String, user: User?, requiredScopes: Array<UserResourceScope>) {
         try {
+            user ?: throw UserTokenNotFoundException()
             val info = repo.getTokenInfo(token)
-            if (info.token.userId != userId)
+
+            if (info.token.userId != user.userId)
                 throw ForbiddenActionException("The specified access token does not have access to the user resources")
 
             if (info.token.accessTokenExpires.isBefore(Instant.now()))
@@ -77,5 +74,3 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
     private fun findUserResource(handler: HandlerMethod): UserResource? =
         handler.getMethodAnnotation(UserResource::class.java)
 }
-
-class ResourceOwnerParameterNotFound : RuntimeException("A UserResource handler must receive one UserResourceOwner that is a path variable")

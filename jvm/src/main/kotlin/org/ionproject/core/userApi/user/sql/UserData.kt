@@ -66,6 +66,12 @@ object UserData {
         where client_id = :$CLIENT_ID and user_id = :$USER_ID
     """
 
+    const val GET_USER_BY_TOKEN = """
+        select u.* 
+        from (dbo.UserAccount u join dbo.UserAccountToken ut on u.user_id = ut.user_id)
+        where access_token = :$ACCESS_TOKEN
+    """
+
     const val GET_USER_TOKEN = """
         select * from dbo.UserAccountToken
         where access_token = :$ACCESS_TOKEN

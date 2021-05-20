@@ -5,6 +5,7 @@ import org.ionproject.core.classSection.sql.ClassSectionData.ACR
 import org.ionproject.core.classSection.sql.ClassSectionData.CAL_TERM
 import org.ionproject.core.classSection.sql.ClassSectionData.CID
 import org.ionproject.core.classSection.sql.ClassSectionData.ID
+import org.ionproject.core.classSection.sql.ClassSectionData.PARENT_CLASS_ID
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.springframework.stereotype.Component
@@ -17,7 +18,8 @@ class ClassSectionMapper : RowMapper<ClassSection> {
             rs.getInt(CID),
             rs.getString(ACR),
             rs.getString(CAL_TERM),
-            rs.getString(ID)
+            rs.getString(ID),
+            rs.getInt(PARENT_CLASS_ID)
         )
     }
 }

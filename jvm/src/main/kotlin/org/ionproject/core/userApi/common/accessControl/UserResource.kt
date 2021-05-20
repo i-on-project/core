@@ -14,6 +14,3 @@ enum class UserResourceScope(val scope: String) {
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class UserResource(val requiredScopes: Array<UserResourceScope>)
-
-@Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class UserResourceOwner

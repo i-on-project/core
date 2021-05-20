@@ -19,11 +19,11 @@ private fun UserKlass.toShortProps() = ShortUserKlassProps(
     calendarTerm
 )
 
-private fun UserKlass.toEmbedRepresentation(userId: String) =
+private fun UserKlass.toEmbedRepresentation() =
     SirenBuilder(toShortProps())
         .klass("user", "class")
         .rel("item")
-        .link("self", href = Uri.forUserClass(userId, id))
+        .link("self", href = Uri.forUserClass(id))
         .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .toEmbed()
 
@@ -31,11 +31,11 @@ private fun UserKlass.toEmbedRepresentation(userId: String) =
 fun List<UserKlass>.toSirenRepresentation(userId: String, pagination: Pagination) =
     SirenBuilder(pagination)
         .klass("user", "class", "collection")
-        .entities(map { it.toEmbedRepresentation(userId) })
-        .link("self", href = Uri.forPagingUserClasses(userId, pagination.page, pagination.limit))
-        .link("next", href = Uri.forPagingUserClasses(userId, pagination.page + 1, pagination.limit))
+        .entities(map { it.toEmbedRepresentation() })
+        .link("self", href = Uri.forPagingUserClasses(pagination.page, pagination.limit))
+        .link("next", href = Uri.forPagingUserClasses(pagination.page + 1, pagination.limit))
         .apply {
             if (pagination.page > 0)
-                link("previous", href = Uri.forPagingUserClasses(userId, pagination.page - 1, pagination.limit))
+                link("previous", href = Uri.forPagingUserClasses(pagination.page - 1, pagination.limit))
         }
         .toSiren()
