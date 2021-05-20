@@ -4,7 +4,6 @@ import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.common.customExceptions.BadRequestException
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.count
 import org.ionproject.core.toNullable
 import org.ionproject.core.userApi.klass.model.UserKlass
 import org.ionproject.core.userApi.klass.model.UserKlassSection
@@ -102,9 +101,10 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
     }
 
     private fun checkClass(classId: Int, handle: Handle) {
-        val count = handle.createQuery(UserKlassData.GET_CLASS_BY_ID)
+        val count = handle.createQuery(UserKlassData.GET_CLASS_COUNT_BY_ID)
             .bind(UserKlassData.CLASS_ID, classId)
-            .count()
+            .mapTo<Int>()
+            .one() ?: 0
 
         if (count != 1)
             throw BadRequestException("Invalid class: $classId")
@@ -138,10 +138,11 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
 
     private fun checkClassSection(classId: Int, sectionId: String, handle: Handle) {
         checkClass(classId, handle)
-        val count = handle.createQuery(UserKlassData.GET_CLASS_SECTION_BY_ID)
+        val count = handle.createQuery(UserKlassData.GET_CLASS_SECTION_COUNT_BY_ID)
             .bind(UserKlassData.CLASS_ID, classId)
             .bind(UserKlassData.SECTION_ID, sectionId)
-            .count()
+            .mapTo<Int>()
+            .one() ?: 0
 
         if (count != 1)
             throw BadRequestException("Invalid class section: $sectionId")

@@ -85,13 +85,3 @@ fun PGobject.split(): List<String> {
 fun JsonNode.asSanitizedText() = this.asText().removeWhitespace().replace("/", "-")
 
 fun <T> Optional<T>.toNullable() = orElse(null)
-
-fun Query.count(): Int =
-    execute { statementSupplier, _ ->
-        val rs = statementSupplier.get()
-            .executeQuery()
-
-        var i = 0
-        while (rs.next()) ++i
-        i
-    }

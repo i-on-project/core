@@ -57,13 +57,13 @@ object UserKlassData {
         where user_id = :$USER_ID and class_id = :$CLASS_ID and class_section_id = :$SECTION_ID
     """
 
-    const val GET_CLASS_BY_ID = """
-        select * from dbo.Class
+    const val GET_CLASS_COUNT_BY_ID = """
+        select count(*) from dbo.Class
         where id = :$CLASS_ID
     """
 
-    const val GET_CLASS_SECTION_BY_ID = """
-        select * from dbo.ClassSection
+    const val GET_CLASS_SECTION_COUNT_BY_ID = """
+        select count(*) from dbo.ClassSection
         where classId = :$CLASS_ID and id = :$SECTION_ID
     """
 }
