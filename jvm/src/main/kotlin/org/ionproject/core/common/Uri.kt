@@ -194,6 +194,9 @@ object Uri {
     fun forUserClass(userId: String, classId: Int) =
         UriTemplate("$baseUrl$userClass").expand(userId, classId)
 
+    fun forUserClassSection(userId: String, classId: Int, sectionId: String) =
+        UriTemplate("$baseUrl$userClassSection").expand(userId, classId, sectionId)
+
     // custom link rel
     const val relClass = "/rel/class"
     const val relClassSection = "/rel/class-section"

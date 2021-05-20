@@ -24,6 +24,7 @@ private fun UserKlass.toEmbedRepresentation(userId: String) =
         .klass("user", "class")
         .rel("item")
         .link("self", href = Uri.forUserClass(userId, id))
+        .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .toEmbed()
 
 // TODO: add user actions link

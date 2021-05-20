@@ -12,6 +12,7 @@ import java.sql.ResultSet
 class KlassReducedMapper : RowMapper<Klass> {
     override fun map(rs: ResultSet, ctx: StatementContext?): Klass {
         return Klass(
+            rs.getInt(KlassData.ID),
             rs.getInt(CID),
             null,
             rs.getString(CAL_TERM)

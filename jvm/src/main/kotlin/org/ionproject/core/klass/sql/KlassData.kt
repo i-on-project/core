@@ -38,7 +38,7 @@ internal object KlassData {
     """
 
     const val GET_CLASS_QUERY = """
-        select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM
+        select C.$ID, CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM
         from $SCHEMA.$CLASS as C
         join $SCHEMA.$COURSE as CR on C.$CID=CR.$COURSE_ID
         where CR.$COURSE_ID=:$CID and C.$CAL_TERM=:$CAL_TERM
@@ -54,7 +54,7 @@ internal object KlassData {
     """
 
     const val GET_CLASSES_QUERY = """
-        select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM
+        select C.$ID, CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM
         from $SCHEMA.$CLASS as C
         join $SCHEMA.$COURSE as CR on C.$CID=CR.$COURSE_ID
         where C.$CID=:$CID order by C.$CAL_TERM offset :$OFFSET limit :$LIMIT

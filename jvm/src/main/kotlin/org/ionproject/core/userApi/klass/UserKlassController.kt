@@ -35,7 +35,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable classId: Int
     ): ResponseEntity<Siren> {
         val klass = repo.getSubscribedClass(userId, classId)
-        TODO()
+        return ResponseEntity.ok(klass.toSirenRepresentation(userId))
     }
 
     @PutMapping(Uri.userClass)
@@ -69,7 +69,8 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Siren> {
-        TODO()
+        val klassSection = repo.getSubscribedClassSection(userId, classId, sectionId)
+        return ResponseEntity.ok(klassSection.toSirenRepresentation(userId, classId))
     }
 
     @PutMapping(Uri.userClassSection)
@@ -78,8 +79,13 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable @UserResourceOwner userId: String,
         @PathVariable classId: Int,
         @PathVariable sectionId: String
-    ): ResponseEntity<Siren> {
-        TODO()
+    ): ResponseEntity<Unit> {
+        val alreadySubscribed = repo.subscribeToClassSection(userId, classId, sectionId)
+
+        return if (alreadySubscribed)
+            ResponseEntity.created(Uri.forUserClassSection(userId, classId, sectionId)).build()
+        else
+            ResponseEntity.noContent().build()
     }
 
     @DeleteMapping(Uri.userClassSection)
@@ -88,7 +94,8 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable @UserResourceOwner userId: String,
         @PathVariable classId: Int,
         @PathVariable sectionId: String
-    ): ResponseEntity<Siren> {
-        TODO()
+    ): ResponseEntity<Unit> {
+        repo.unsubscribeFromClassSection(userId, classId, sectionId)
+        return ResponseEntity.noContent().build()
     }
 }

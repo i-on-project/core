@@ -17,23 +17,23 @@ val klassClasses = arrayOf("class")
 /**
  * Output models
  */
-private data class KlassOutputModel(val courseId: Int, val courseAcr: String?, val calendarTerm: String) {
+private data class KlassOutputModel(val id: Int, val courseId: Int, val courseAcr: String?, val calendarTerm: String) {
     companion object {
         fun of(klass: Klass): KlassOutputModel =
-            KlassOutputModel(klass.courseId, klass.courseAcr, klass.calendarTerm)
+            KlassOutputModel(klass.id, klass.courseId, klass.courseAcr, klass.calendarTerm)
     }
 }
 
-private data class KlassCollectionOutputModel(val cid: Int)
+private data class KlassCollectionOutputModel(val courseId: Int)
 
-private data class KlassItemOutputModel(val calendarTerm: String)
+private data class KlassItemOutputModel(val id: Int, val calendarTerm: String)
 
 /**
  * Class item representation.
  * Is used as an embedded siren object in a Class Collection.
  */
 fun Klass.toSiren(): EmbeddedRepresentation {
-    return SirenBuilder(KlassItemOutputModel(this.calendarTerm))
+    return SirenBuilder(KlassItemOutputModel(id, calendarTerm))
         .klass(*klassClasses)
         .rel("item")
         .link("self", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
