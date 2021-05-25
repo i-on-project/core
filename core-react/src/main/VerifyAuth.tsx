@@ -143,9 +143,8 @@ const VerifyAuth = () => {
             if (secret) {
                 const request = verifyRequest(state.data!, secret)
                 request.request()
-                    .then(_ => {
-                        dispatcher({ type: AuthStateType.COMPLETED })
-                    }).catch(error => {
+                    .then(_ => dispatcher({ type: AuthStateType.COMPLETED }))
+                    .catch(error => {
                         if (!request.isCancelled()) {
                             dispatcher({
                                 type: AuthStateType.ERROR,
