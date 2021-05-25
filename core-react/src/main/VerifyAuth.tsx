@@ -133,7 +133,10 @@ const VerifyAuth = () => {
         request.request()
             .then(data => parseJson<AuthData>(data))
             .then(data => dispatcher({ type: AuthStateType.NOT_COMPLETED, data }))
-            .catch(error => dispatcher({ type: AuthStateType.ERROR, error }))
+            .catch(error => {
+                if (!request.isCancelled())
+                    dispatcher({ type: AuthStateType.ERROR, error })
+            })
         
         return request.cancel
     }, [authReqId, secret])
