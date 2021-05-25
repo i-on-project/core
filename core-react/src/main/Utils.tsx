@@ -6,30 +6,34 @@ export interface CancellableRequest {
 
 export const newCancellableRequest = (endpoint: string, init: RequestInit = {}): CancellableRequest => {
     const abortController = new AbortController()
-    init.signal = abortController.signal
+    const signal = abortController.signal
+    init.signal = signal
 
     let futureResponse: Promise<Response> | undefined
-    let cancelled = false
 
     return {
-        isCancelled: () => cancelled,
+        isCancelled: () => signal.aborted,
         request: () => {
             if (futureResponse)
                 return futureResponse
 
             const request = fetchEndpoint(endpoint, init)
             futureResponse = request.then(resp => {
-                if (cancelled)
-                    throw new Error('The request has been cancelled')
+                if (signal.aborted)
+                    throw new Error()
 
                 return resp
+            }).catch(err => {
+                if (signal.aborted)
+                    throw new Error('The request has been cancelled')
+
+                throw err
             })
 
             return futureResponse
         },
         cancel: () => {
-            if (!cancelled && futureResponse) {
-                cancelled = true
+            if (!signal.aborted && futureResponse) {
                 abortController.abort()
             }
         }
