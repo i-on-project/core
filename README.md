@@ -41,7 +41,22 @@ docker-compose -f .docker/compose_ci.yaml up --abort-on-container-exit core
 # Remove docker images and clean resources
 docker-compose -f .docker/compose_ci.yaml down
 ```
+
 The process is similar to any other file on the `.docker` folder (e.g. `.docker/compose_deploy.yaml`).
+
+## Warning to Windows Users
+
+Since Windows uses CRLF (carriage-return line-feed) line endings you can encounter problems while trying to run the application using Docker and Docker Compose. 
+
+To solve the problem you must choose the `Checkout as-is, commit Unix-style line endings` option during the Git installation process. This option guarantees that every file is converted to LF once you commit, and when checking out (e.g pull) there are no line-ending conversions, thus the line-endings will be LF.
+
+If you have already installed Git on your machine you can change the `core.autocrlf` configuration key as shown below:
+
+```sh
+git config --global core.autocrlf input
+```
+
+More information about this topic is covered in [this stackoverflow answer](https://stackoverflow.com/a/20653073).
 
 ## Running with Docker
 

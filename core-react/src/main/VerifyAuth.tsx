@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useParams } from 'react-router';
 import { StringParam, useQueryParam } from 'use-query-params';
 import BoxPage from './components/boxPage/BoxPage';
@@ -8,7 +8,7 @@ import ScopeContainer from './components/scope/ScopeContainer';
 import Scope from './components/scope/Scope'
 import Form from './components/form/Form';
 import FormInputContainer from './components/form/FormInputContainer';
-import { fetchEndpoint, parseJson } from './Utils';
+import { CancellableRequest, newCancellableRequest, parseJson } from './Utils';
 import SuccessButton from './components/button/SuccessButton';
 
 const API_URI = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URI : 'http://localhost:8080/'
@@ -42,6 +42,7 @@ enum AuthStateType {
     LOADING,
     ERROR,
     NOT_COMPLETED,
+    VERIFYING,
     COMPLETED
 }
 
@@ -84,7 +85,18 @@ const authStateReducer = (prevState: AuthState, action: AuthStateAction): AuthSt
         }
     }
 
-    // Not_Completed -> Completed transition
+    // Not_Completed -> Verifying transition
+    if (prevState.type === AuthStateType.NOT_COMPLETED && action.type === AuthStateType.VERIFYING) {
+        return {
+            type: action.type,
+            title: prevState.title,
+            message: prevState.message,
+            scopesHtml: prevState.scopesHtml,
+            data: prevState.data
+        }
+    }
+
+    // Verifying -> Completed transition
     if (prevState.type === AuthStateType.NOT_COMPLETED && action.type === AuthStateType.COMPLETED) {
         const title = 'Authorization Successful'
         const message = 'You\'re authorized! You may now close this browser tab.'
@@ -96,8 +108,8 @@ const authStateReducer = (prevState: AuthState, action: AuthStateAction): AuthSt
         }
     }
 
-    // Loading -> Error and Not_Completed -> Error transitions
-    if ((prevState.type === AuthStateType.LOADING || prevState.type === AuthStateType.NOT_COMPLETED) && action.type === AuthStateType.ERROR) {
+    // Loading -> Error and Verifying -> Error transitions
+    if ((prevState.type === AuthStateType.LOADING || prevState.type === AuthStateType.VERIFYING) && action.type === AuthStateType.ERROR) {
         const title = 'An error has occurred'
         const message = action.error?.message || 'Unexpected Error'
         return {
@@ -113,38 +125,53 @@ const authStateReducer = (prevState: AuthState, action: AuthStateAction): AuthSt
 const VerifyAuth = () => {
     const { authReqId } = useParams<PathParams>()
     const [secret] = useQueryParam('secret', StringParam)
-
     const [state, dispatcher] = useReducer(authStateReducer, initialState)
-    const submitButton = useRef<HTMLButtonElement>(null)
 
     useEffect(() => {
-        fetchData(authReqId, secret)
+        const endpoint = `${AUTH_REQUEST_ENDPOINT}/${authReqId}`
+        const request = newCancellableRequest(endpoint)
+        request.request()
+            .then(data => parseJson<AuthData>(data))
             .then(data => dispatcher({ type: AuthStateType.NOT_COMPLETED, data }))
-            .catch(error => dispatcher({ type: AuthStateType.ERROR, error }))
+            .catch(error => {
+                if (!request.isCancelled())
+                    dispatcher({ type: AuthStateType.ERROR, error })
+            })
+        
+        return request.cancel
     }, [authReqId, secret])
 
-    const onFormSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
-        try {
-            e.preventDefault()
-            console.log(submitButton.current)
-            const elem = submitButton.current!
-            if (state.type === AuthStateType.NOT_COMPLETED && secret) {
-                elem.disabled = true
-                await verifyRequest(state.data!, secret)
-                dispatcher({ type: AuthStateType.COMPLETED })
+    useEffect(() => {
+        if (state.type === AuthStateType.VERIFYING) {
+            if (secret) {
+                const request = verifyRequest(state.data!, secret)
+                request.request()
+                    .then(_ => dispatcher({ type: AuthStateType.COMPLETED }))
+                    .catch(error => {
+                        if (!request.isCancelled()) {
+                            dispatcher({
+                                type: AuthStateType.ERROR,
+                                error
+                            })
+                        }
+                    })
+    
+                return request.cancel
+            } else {
+                dispatcher({ type: AuthStateType.ERROR, error: new Error('A secret key was not provided') })
             }
-        } catch (e) {
-            dispatcher({
-                type: AuthStateType.ERROR,
-                error: e
-            })
         }
+    }, [secret, state])
+
+    const onFormSubmit: React.FormEventHandler<HTMLFormElement> = async e => {
+        e.preventDefault()
+        dispatcher({ type: AuthStateType.VERIFYING })
     }
 
     return (
         <BoxPage>
             <BoxPageHeader className={state.type === AuthStateType.LOADING ? 'animate-pulse' : undefined} title={state.title} message={state.message} />
-            { state.type === AuthStateType.NOT_COMPLETED &&
+            { (state.type === AuthStateType.NOT_COMPLETED || state.type === AuthStateType.VERIFYING) &&
                 <BoxPageItems>
                     <ScopeContainer>
                         { state.scopesHtml }
@@ -155,7 +182,7 @@ const VerifyAuth = () => {
                             <label htmlFor="scopeCheck">I confirm that these scopes are going to be granted to the client app</label>
                         </FormInputContainer>
                         <FormInputContainer>
-                            <SuccessButton type="submit" content="Authorize" ref={submitButton} />
+                            <SuccessButton type="submit" content="Authorize" disabled={state.type === AuthStateType.VERIFYING} />
                         </FormInputContainer>
                     </Form>
                 </BoxPageItems>
@@ -164,17 +191,8 @@ const VerifyAuth = () => {
     );
 }
 
-const fetchData = async (authReqId: string, secretId: any): Promise<AuthData> => {
-    if (typeof secretId !== 'string')
-        throw new Error('Secret Key Not Found')
-
-    const endpoint = `${AUTH_REQUEST_ENDPOINT}/${authReqId}`
-    const response = await fetchEndpoint(endpoint)
-    return parseJson(response)
-}
-
-const verifyRequest = (authData: AuthData, secret: string): Promise<any> => {
-    return fetchEndpoint(authData.verify_action, {
+const verifyRequest = (authData: AuthData, secret?: string | null): CancellableRequest => {
+    return newCancellableRequest(authData.verify_action, {
         method: 'POST',
         body: JSON.stringify({
             auth_req_id: authData.auth_req_id,
