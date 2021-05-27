@@ -31,7 +31,7 @@ class UserAuthExceptionHandler {
     fun handleAuthRequestPending(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 AuthErrorResponse(
                     AuthError.AUTHORIZATION_PENDING,
@@ -70,7 +70,7 @@ class UserAuthExceptionHandler {
     fun handleUserNotFound(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 AuthErrorResponse(
                     AuthError.INVALID_REQUEST,
