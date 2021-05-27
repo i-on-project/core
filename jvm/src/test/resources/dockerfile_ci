@@ -1,9 +1,17 @@
 FROM node:16-alpine3.11 AS node
 
-COPY ./core-react ./core-react
-COPY ./jvm ./jvm
+WORKDIR ./core-react
+COPY ./core-react/package.json package.json
+COPY ./core-react/yarn.lock yarn.lock
 
-RUN cd core-react && yarn install && yarn build
+RUN yarn install
+
+COPY ./core-react .
+COPY ./jvm ../jvm
+
+RUN yarn build
+
+WORKDIR ..
 
 FROM adoptopenjdk/openjdk11:alpine AS jvm
 
