@@ -174,14 +174,14 @@ object Uri {
         UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 
     // User API
-    const val userBase = "$apiBase/user"
-    const val userClasses = "$userBase/class"
+    const val userBase = "$apiBase/users"
+    const val userClasses = "$userBase/classes"
     const val userClass = "$userClasses/{classId}"
     const val userClassSection = "$userClasses/{classId}/{sectionId}"
 
-    private const val actionsBase = "$userBase/action"
-    const val userClassActions = "$actionsBase/class/{classId}"
-    const val userClassSectionActions = "$actionsBase/class/{classId}/{sectionId}"
+    private const val actionsBase = "$userBase/actions"
+    const val userClassActions = "$actionsBase/classes/{classId}"
+    const val userClassSectionActions = "$userClassActions/{sectionId}"
 
     val userTemplate = UriTemplate("$baseUrl$userBase")
 
