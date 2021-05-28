@@ -1,13 +1,9 @@
 package org.ionproject.core.userApi.user.repo
 
-import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.toNullable
 import org.ionproject.core.userApi.user.model.User
 import org.ionproject.core.userApi.user.model.UserEditInput
 import org.ionproject.core.userApi.user.sql.UserData
-import org.jdbi.v3.core.Handle
-import org.jdbi.v3.core.kotlin.mapTo
 import org.springframework.stereotype.Repository
 
 @Repository
