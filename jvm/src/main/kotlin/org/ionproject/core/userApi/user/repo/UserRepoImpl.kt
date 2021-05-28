@@ -1,6 +1,5 @@
 package org.ionproject.core.userApi.user.repo
 
-import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.common.customExceptions.ResourceNotFoundException
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.toNullable
@@ -14,46 +13,21 @@ import org.springframework.stereotype.Repository
 @Repository
 class UserRepoImpl(val tm: TransactionManager) : UserRepo {
 
-    override fun getUsers(pagination: Pagination): List<User> =
+    override fun editUser(user: User, input: UserEditInput) {
         tm.run {
-            it.createQuery(UserData.GET_USERS)
-                .bind(UserData.OFFSET, pagination.offset)
-                .bind(UserData.LIMIT, pagination.limit)
-                .mapTo<User>()
-                .list()
-        }
-
-    override fun getUser(userId: String): User =
-        tm.run { getUserById(userId, it) }
-
-    override fun editUser(userId: String, input: UserEditInput) {
-        tm.run {
-            // check if the user exists
-            getUserById(userId, it)
-
             it.createUpdate(UserData.EDIT_USER)
                 .bind(UserData.NAME, input.name)
-                .bind(UserData.USER_ID, userId)
+                .bind(UserData.USER_ID, user.userId)
                 .execute()
         }
     }
 
-    override fun deleteUser(userId: String) {
+    override fun deleteUser(user: User) {
         tm.run {
-            // check if the user exists
-            getUserById(userId, it)
 
             it.createUpdate(UserData.DELETE_USER)
-                .bind(UserData.USER_ID, userId)
+                .bind(UserData.USER_ID, user.userId)
                 .execute()
         }
-    }
-
-    private fun getUserById(userId: String, handle: Handle): User {
-        return handle.createQuery(UserData.GET_USER_BY_ID)
-            .bind(UserData.USER_ID, userId)
-            .mapTo<User>()
-            .findOne()
-            .toNullable() ?: throw ResourceNotFoundException("Couldn't find a user with id $userId")
     }
 }

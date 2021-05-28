@@ -21,5 +21,5 @@ class UserArgumentResolver(val repo: UserAuthRepo) : HandlerMethodArgumentResolv
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ) = webRequest.getAttribute(UserAccessInterceptor.USER_INFO, RequestAttributes.SCOPE_REQUEST) as User?
+    ) = webRequest.getAttribute(UserAccessInterceptor.USER_INFO, RequestAttributes.SCOPE_REQUEST) as User
 }
