@@ -97,7 +97,7 @@ const authStateReducer = (prevState: AuthState, action: AuthStateAction): AuthSt
     }
 
     // Verifying -> Completed transition
-    if (prevState.type === AuthStateType.NOT_COMPLETED && action.type === AuthStateType.COMPLETED) {
+    if (prevState.type === AuthStateType.VERIFYING && action.type === AuthStateType.COMPLETED) {
         const title = 'Authorization Successful'
         const message = 'You\'re authorized! You may now close this browser tab.'
 
