@@ -31,7 +31,7 @@ class UserAuthExceptionHandler {
     fun handleAuthRequestPending(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.AUTHORIZATION_PENDING,
@@ -57,7 +57,7 @@ class UserAuthExceptionHandler {
     fun handleRefreshTokenRateLimit(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.SLOW_DOWN,
@@ -70,7 +70,7 @@ class UserAuthExceptionHandler {
     fun handleUserNotFound(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.INVALID_REQUEST,

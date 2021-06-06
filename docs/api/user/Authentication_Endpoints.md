@@ -71,12 +71,12 @@ The response for this request should be:
 
 ## Detecting Request Completion
 
-To detect the request completion the user should use the notification methods that were provided. Since only `"POLL"` is supported at the moment the user should send multiple `GET` requests to a special URI that will inform if the authentication procedure was completed, returning the necessary tokens for access control.
+To detect the request completion the user should use the notification methods that were provided. Since only `"POLL"` is supported at the moment the user should send multiple `POST` requests to a special URI that will inform if the authentication procedure was completed, returning the necessary tokens for access control.
 
 ### Using POLL
 
 ```
-Method: GET
+Method: POST
 Endpoint: /api/auth/request/bff43137-95a6-4ef0-afbf-906652695e1b/poll
 ```
 

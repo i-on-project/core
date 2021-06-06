@@ -16,10 +16,10 @@ This diagram presents a similar behaviour to the [OpenID Connect Client Initiate
 4 |  U <- C  | ----------- | Presents the Methods
 5 |  U -> C  | ----------- | Responds to the Authentication Method
 6 |  C -> S  |     POST    | Sends [Method Response](#method-response)<br>(in the context of the example it would be a student email: `AXXXXX@alunos.isel.pt`)
-7 |  U -> S  |     GET     | Polling for the authentication to be completed
+7 |  U -> S  |     POST    | Polling for the authentication to be completed
 8 |  U <- S  | ----------- | Polling Response
 ..|   ...    |     ...     | ...
-9 |  U -> S  |     GET     | Polling for the authentication to be completed
+9 |  U -> S  |     POST    | Polling for the authentication to be completed
 10|  U <- S  | ----------- | Authentication Completed or Denied
 
 After the POST request to the server, the user will serve as an actor between the third-party and the server in order to provide proof of possession (proof that the user possesses a specified email address, for instance).

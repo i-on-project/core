@@ -50,7 +50,7 @@ class UserAuthController(val repo: UserAuthRepo) {
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping(Uri.authPoll, produces = ["application/json"])
+    @PostMapping(Uri.authPoll, produces = ["application/json"])
     fun pollForUserAuth(
         @PathVariable reqId: String
     ): ResponseEntity<AuthSuccessfulResponse> {
