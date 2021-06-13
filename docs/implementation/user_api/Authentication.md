@@ -1,7 +1,5 @@
 # Authentication
 
-The user authentication flow is based on authentication methods that upon completion lead to the obtention of the `code` which implements the [`OAuth 2.0 Authorization Code Grant`](https://auth0.com/docs/flows/authorization-code-flow).
-
 ## Authentication Flow
 
 The following diagram represents an example of the authentication procedure where `C` is the client application (for example, `i-on Android`), `S` is the i-on Core Authentication Server and `U` is the user.
