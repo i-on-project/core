@@ -4,7 +4,6 @@ import org.ionproject.core.userApi.auth.model.AuthError
 import org.ionproject.core.userApi.auth.model.AuthErrorResponse
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -31,7 +30,7 @@ class UserAuthExceptionHandler {
     fun handleAuthRequestPending(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.AUTHORIZATION_PENDING,
@@ -57,7 +56,7 @@ class UserAuthExceptionHandler {
     fun handleRefreshTokenRateLimit(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.SLOW_DOWN,
@@ -70,7 +69,7 @@ class UserAuthExceptionHandler {
     fun handleUserNotFound(
         ex: Exception
     ): ResponseEntity<AuthErrorResponse> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.badRequest()
             .body(
                 AuthErrorResponse(
                     AuthError.INVALID_REQUEST,
