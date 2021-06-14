@@ -4,10 +4,10 @@ import org.ionproject.core.common.Siren
 import org.ionproject.core.common.Uri
 import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.userApi.common.accessControl.UserResource
-import org.ionproject.core.userApi.common.accessControl.UserResourceOwner
 import org.ionproject.core.userApi.common.accessControl.UserResourceScope
 import org.ionproject.core.userApi.klass.repo.UserKlassRepo
 import org.ionproject.core.userApi.klass.repr.toSirenRepresentation
+import org.ionproject.core.userApi.user.model.User
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,33 +21,33 @@ class UserKlassController(val repo: UserKlassRepo) {
     @GetMapping(Uri.userClasses)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun getSubscribedClasses(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         pagination: Pagination
     ): ResponseEntity<Siren> {
-        val classes = repo.getSubscribedClasses(userId, pagination)
-        return ResponseEntity.ok(classes.toSirenRepresentation(userId, pagination))
+        val classes = repo.getSubscribedClasses(user.userId, pagination)
+        return ResponseEntity.ok(classes.toSirenRepresentation(user.userId, pagination))
     }
 
     @GetMapping(Uri.userClass)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun getSubscribedClass(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Siren> {
-        val klass = repo.getSubscribedClass(userId, classId)
-        return ResponseEntity.ok(klass.toSirenRepresentation(userId))
+        val klass = repo.getSubscribedClass(user.userId, classId)
+        return ResponseEntity.ok(klass.toSirenRepresentation())
     }
 
     @PutMapping(Uri.userClass)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun subscribeToClass(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Unit> {
-        val alreadySubscribed = repo.subscribeToClass(userId, classId)
+        val alreadySubscribed = repo.subscribeToClass(user.userId, classId)
 
         return if (alreadySubscribed)
-            ResponseEntity.created(Uri.forUserClass(userId, classId)).build()
+            ResponseEntity.created(Uri.forUserClass(classId)).build()
         else
             ResponseEntity.noContent().build()
     }
@@ -55,35 +55,35 @@ class UserKlassController(val repo: UserKlassRepo) {
     @DeleteMapping(Uri.userClass)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun unsubscribeFromClass(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Unit> {
-        repo.unsubscribeFromClass(userId, classId)
+        repo.unsubscribeFromClass(user.userId, classId)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping(Uri.userClassSection)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun getSubscribedClassSection(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Siren> {
-        val klassSection = repo.getSubscribedClassSection(userId, classId, sectionId)
-        return ResponseEntity.ok(klassSection.toSirenRepresentation(userId, classId))
+        val klassSection = repo.getSubscribedClassSection(user.userId, classId, sectionId)
+        return ResponseEntity.ok(klassSection.toSirenRepresentation(classId))
     }
 
     @PutMapping(Uri.userClassSection)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun subscribeToClassSection(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Unit> {
-        val alreadySubscribed = repo.subscribeToClassSection(userId, classId, sectionId)
+        val alreadySubscribed = repo.subscribeToClassSection(user.userId, classId, sectionId)
 
         return if (alreadySubscribed)
-            ResponseEntity.created(Uri.forUserClassSection(userId, classId, sectionId)).build()
+            ResponseEntity.created(Uri.forUserClassSection(classId, sectionId)).build()
         else
             ResponseEntity.noContent().build()
     }
@@ -91,11 +91,11 @@ class UserKlassController(val repo: UserKlassRepo) {
     @DeleteMapping(Uri.userClassSection)
     @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
     fun unsubscribeFromClassSection(
-        @PathVariable @UserResourceOwner userId: String,
+        user: User,
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Unit> {
-        repo.unsubscribeFromClassSection(userId, classId, sectionId)
+        repo.unsubscribeFromClassSection(user.userId, classId, sectionId)
         return ResponseEntity.noContent().build()
     }
 }

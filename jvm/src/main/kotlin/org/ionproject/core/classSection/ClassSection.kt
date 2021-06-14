@@ -4,5 +4,6 @@ class ClassSection(
     val courseId: Int,
     val courseAcr: String?,
     val calendarTerm: String,
-    val id: String
+    val id: String,
+    val classId: Int
 )

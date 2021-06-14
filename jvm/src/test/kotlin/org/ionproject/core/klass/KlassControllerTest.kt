@@ -31,9 +31,9 @@ internal class KlassControllerTest : ControllerTester() {
                 cacr,
                 calTerm,
                 sections = listOf(
-                    ClassSection(cid, cacr, calTerm, "1D"),
-                    ClassSection(cid, cacr, calTerm, "1N"),
-                    ClassSection(cid, cacr, calTerm, "2D")
+                    ClassSection(cid, cacr, calTerm, "1D", classId),
+                    ClassSection(cid, cacr, calTerm, "1N", classId),
+                    ClassSection(cid, cacr, calTerm, "2D", classId)
                 )
             )
         }

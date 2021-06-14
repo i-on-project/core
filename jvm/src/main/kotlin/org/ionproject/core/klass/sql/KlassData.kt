@@ -45,7 +45,7 @@ internal object KlassData {
     """
 
     const val GET_CLASS_SECTIONS_QUERY = """
-        select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM, CS.$CLASS_SECTION_ID as $SID
+        select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM, CS.$CLASS_SECTION_ID as $SID, C.$ID as $CLASS_SECTION_CLASS_ID
         from $SCHEMA.$CLASS as C
         join $SCHEMA.$CLASS_SECTION as CS on C.$ID=CS.$CLASS_SECTION_CLASS_ID
         join $SCHEMA.$COURSE as CR on CR.$COURSE_ID=C.$CID

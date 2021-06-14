@@ -28,8 +28,8 @@ internal class KlassModelTest {
         val calendarTerm = "1920v"
         val cs1Id = "1d"
         val cs2Id = "2d"
-        val cs1 = ClassSection(cid, null, calendarTerm, cs1Id)
-        val cs2 = ClassSection(cid, null, calendarTerm, cs2Id)
+        val cs1 = ClassSection(cid, null, calendarTerm, cs1Id, 1)
+        val cs2 = ClassSection(cid, null, calendarTerm, cs2Id, 1)
 
         val klass = FullKlass(1, cid, acr, calendarTerm, listOf(cs1, cs2))
         val klass2 = FullKlass(1, cid, null, calendarTerm, listOf(cs1, cs2))

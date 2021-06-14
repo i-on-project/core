@@ -102,5 +102,6 @@ fun FullKlass.toSiren(): Siren {
         .entities(buildSubEntities(sections))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlasses(courseId))
+        .link(Uri.relUserClassActions, href = Uri.forUserClassActions(id))
         .toSiren()
 }

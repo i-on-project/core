@@ -174,13 +174,16 @@ object Uri {
         UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 
     // User API
-    const val userBase = "$apiBase/user"
-    const val user = "$userBase/{userId}"
-    const val userClasses = "$user/class"
+    const val userBase = "$apiBase/users"
+    const val userClasses = "$userBase/classes"
     const val userClass = "$userClasses/{classId}"
     const val userClassSection = "$userClasses/{classId}/{sectionId}"
 
-    val userTemplate = UriTemplate("$baseUrl$user")
+    private const val actionsBase = "$userBase/actions"
+    const val userClassActions = "$actionsBase/classes/{classId}"
+    const val userClassSectionActions = "$userClassActions/{sectionId}"
+
+    val userTemplate = UriTemplate("$baseUrl$userBase")
 
     fun forUser(userId: String) =
         userTemplate.expand(userId)
@@ -188,22 +191,30 @@ object Uri {
     fun forUserClasses(userId: String) =
         UriTemplate("$baseUrl$userClasses").expand(userId)
 
-    fun forPagingUserClasses(userId: String, page: Int, limit: Int) =
-        UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(userId, page, limit)
+    fun forPagingUserClasses(page: Int, limit: Int) =
+        UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(page, limit)
 
-    fun forUserClass(userId: String, classId: Int) =
-        UriTemplate("$baseUrl$userClass").expand(userId, classId)
+    fun forUserClass(classId: Int) =
+        UriTemplate("$baseUrl$userClass").expand(classId)
 
-    fun forUserClassSection(userId: String, classId: Int, sectionId: String) =
-        UriTemplate("$baseUrl$userClassSection").expand(userId, classId, sectionId)
+    fun forUserClassSection(classId: Int, sectionId: String) =
+        UriTemplate("$baseUrl$userClassSection").expand(classId, sectionId)
+
+    fun forUserClassActions(classId: Int) =
+        UriTemplate("$baseUrl$userClassActions").expand(classId)
+
+    fun forUserClassSectionActions(classId: Int, sectionId: String) =
+        UriTemplate("$baseUrl$userClassSectionActions").expand(classId, sectionId)
 
     // custom link rel
     const val relClass = "/rel/class"
-    const val relClassSection = "/rel/class-section"
+    const val relClassSection = "/rel/classSection"
     const val relProgrammeOffer = "/rel/programmeOffer"
     const val relCourse = "/rel/course"
     const val relCalendar = "/rel/calendar"
     const val relProgramme = "/rel/programme"
     const val relProgrammes = "/rel/programmes"
     const val relOffers = "/rel/offers"
+    const val relUserClassActions = "/rel/userClassActions"
+    const val relUserClassSectionActions = "/rel/userClassSectionActions"
 }

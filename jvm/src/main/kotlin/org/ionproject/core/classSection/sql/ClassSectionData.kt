@@ -36,7 +36,7 @@ internal object ClassSectionData {
     """
 
     const val CLASS_SECTION_QUERY = """
-       select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM, CS.$ID
+       select CR.$COURSE_ID as $CID, CR.$COURSE_ACR, C.$CAL_TERM, CS.$ID, CS.$PARENT_CLASS_ID
        from $SCHEMA.$CLASS_SECTION as CS
        join $SCHEMA.$CLASS as C on C.$CLASS_ID=CS.$PARENT_CLASS_ID
        join $SCHEMA.$COURSE as CR on C.$CID=CR.$COURSE_ID

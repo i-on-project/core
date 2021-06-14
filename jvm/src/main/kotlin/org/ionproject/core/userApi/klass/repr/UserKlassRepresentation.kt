@@ -19,20 +19,21 @@ private fun UserKlass.toProps() = UserKlassProps(
 )
 
 // TODO: add link to user actions
-fun UserKlass.toSirenRepresentation(userId: String) =
+fun UserKlass.toSirenRepresentation() =
     SirenBuilder(toProps())
         .klass("user", "class")
-        .entities(getEmbedEntities(userId, id))
-        .link("self", href = Uri.forUserClass(userId, id))
+        .entities(getEmbedEntities(id))
+        .link("self", href = Uri.forUserClass(id))
         .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
+        .link(Uri.relUserClassActions, href = Uri.forUserClassActions(id))
         .toSiren()
 
-private fun UserKlass.getEmbedEntities(userId: String, classId: Int) =
+private fun UserKlass.getEmbedEntities(classId: Int) =
     sections?.map {
         SirenBuilder(mapOf("sectionId" to it))
             .klass("user", "class", "section")
             .rel("item")
-            .link("self", href = Uri.forUserClassSection(userId, classId, it))
+            .link("self", href = Uri.forUserClassSection(classId, it))
             .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, it))
             .toEmbed()
     }

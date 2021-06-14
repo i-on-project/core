@@ -10,7 +10,7 @@ internal class ClassSectionControllerTest : ControllerTester() {
 
     companion object {
         fun getClassSection(): ClassSection =
-            ClassSection(1, "SL", "1718v", "1D")
+            ClassSection(1, "SL", "1718v", "1D", 1)
     }
 
     /**

@@ -25,6 +25,7 @@ import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
+import org.ionproject.core.userApi.common.accessControl.UserArgumentResolver
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -100,6 +101,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
         resolvers.add(PaginationResolver())
+        resolvers.add(userArgumentResolver)
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
@@ -124,6 +126,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     @Autowired
     lateinit var userAccessInterceptor: UserAccessInterceptor
+
+    @Autowired
+    lateinit var userArgumentResolver: UserArgumentResolver
 
     @Bean
     fun controlAccessInterceptor(): ControlAccessInterceptor {

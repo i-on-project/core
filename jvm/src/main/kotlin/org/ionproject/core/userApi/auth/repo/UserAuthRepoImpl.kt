@@ -177,6 +177,15 @@ class UserAuthRepoImpl(
             )
         }
 
+    override fun getUserByToken(accessToken: String): User? =
+        tm.run {
+            it.createQuery(UserData.GET_USER_BY_TOKEN)
+                .bind(UserData.ACCESS_TOKEN, accessToken)
+                .mapTo<User>()
+                .findOne()
+                .toNullable()
+        }
+
     override fun getTokenInfo(accessToken: String) =
         tm.run {
             // checks if the specified token exists

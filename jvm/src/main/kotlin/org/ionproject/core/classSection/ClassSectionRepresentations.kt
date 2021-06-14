@@ -13,6 +13,7 @@ fun ClassSection.toSiren(): Siren {
         .entities(buildSubEntities(courseId, calendarTerm, id))
         .link("self", href = selfHref)
         .link("collection", href = Uri.forKlassByCalTerm(courseId, calendarTerm))
+        .link(Uri.relUserClassSectionActions, href = Uri.forUserClassSectionActions(classId, id))
         .toSiren()
 }
 
