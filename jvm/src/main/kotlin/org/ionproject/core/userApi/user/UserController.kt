@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class UserController(val repo: UserRepo) {
 
-    // TODO: add user home resource
-
     @GetMapping(Uri.userBase)
     @UserResource(requiredScopes = [UserResourceScope.PROFILE])
     fun getUser(
@@ -34,7 +32,7 @@ class UserController(val repo: UserRepo) {
         user: User,
         @RequestBody input: UserEditInput
     ): ResponseEntity<Unit> {
-        repo.editUser(user.userId, input)
+        repo.editUser(user, input)
         return ResponseEntity.noContent().build()
     }
 
@@ -43,7 +41,7 @@ class UserController(val repo: UserRepo) {
     fun deleteUser(
         user: User
     ): ResponseEntity<Siren> {
-        repo.deleteUser(user.userId)
+        repo.deleteUser(user)
         return ResponseEntity.noContent().build()
     }
 }

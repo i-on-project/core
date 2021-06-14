@@ -17,7 +17,7 @@ object UserKlassSectionActions {
                         Action(
                             name = "unsubscribe",
                             href = UriTemplate(Uri.forUserClassSection(classId, sectionId).toString()),
-                            title = "Unsubscribe From Class",
+                            title = "Unsubscribe From Class Section",
                             method = HttpMethod.DELETE
                         )
                     )

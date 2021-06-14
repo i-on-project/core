@@ -37,38 +37,35 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
             if (headerValue[0].toLowerCase() != AUTH_HEADER_TYPE)
                 throw BadRequestException("The authorization header type must be ${AUTH_HEADER_TYPE.toUpperCase()}")
 
-            val token = headerValue[1]
-            val user = repo.getUserByToken(token)
+            try {
+                val token = headerValue[1]
+                val user = repo.getUserByToken(token)
+                    ?: throw UserTokenNotFoundException()
 
-            if (user != null)
+                checkAccessToResource(token, user, resource.requiredScopes)
                 request.setAttribute(USER_INFO, user)
-
-            checkAccessToResource(token, user, resource.requiredScopes)
+            } catch (ex: UserTokenNotFoundException) {
+                throw UnauthenticatedUserException("The specified access token is invalid")
+            }
         }
 
         return true
     }
 
-    private fun checkAccessToResource(token: String, user: User?, requiredScopes: Array<UserResourceScope>) {
-        try {
-            user ?: throw UserTokenNotFoundException()
-            val info = repo.getTokenInfo(token)
+    private fun checkAccessToResource(token: String, user: User, requiredScopes: Array<UserResourceScope>) {
+        val info = repo.getTokenInfo(token)
+        if (info.token.userId != user.userId)
+            throw ForbiddenActionException("The specified access token does not have access to the user resources")
 
-            if (info.token.userId != user.userId)
-                throw ForbiddenActionException("The specified access token does not have access to the user resources")
+        if (info.token.accessTokenExpires.isBefore(Instant.now()))
+            throw ForbiddenActionException("The provided access token has expired")
 
-            if (info.token.accessTokenExpires.isBefore(Instant.now()))
-                throw ForbiddenActionException("The provided access token has expired")
+        val hasScopes = info.scopes
+            .map { UserResourceScope.fromUserTokenScope(it) }
+            .containsAll(requiredScopes.toSet())
 
-            val hasScopes = info.scopes
-                .map { UserResourceScope.fromUserTokenScope(it) }
-                .containsAll(requiredScopes.toSet())
-
-            if (!hasScopes)
-                throw ForbiddenActionException("The specified access token does not have access to this resource")
-        } catch (ex: UserTokenNotFoundException) {
-            throw UnauthenticatedUserException("The specified access token is invalid")
-        }
+        if (!hasScopes)
+            throw ForbiddenActionException("The specified access token does not have access to this resource")
     }
 
     private fun findUserResource(handler: HandlerMethod): UserResource? =
