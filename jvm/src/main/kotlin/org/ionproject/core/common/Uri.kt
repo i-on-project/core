@@ -173,6 +173,30 @@ object Uri {
     fun forAuthVerifyFrontend(reqId: String, secret: String) =
         UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 
+    // User API
+    const val userBase = "$apiBase/user"
+    const val user = "$userBase/{userId}"
+    const val userClasses = "$user/class"
+    const val userClass = "$userClasses/{classId}"
+    const val userClassSection = "$userClasses/{classId}/{sectionId}"
+
+    val userTemplate = UriTemplate("$baseUrl$user")
+
+    fun forUser(userId: String) =
+        userTemplate.expand(userId)
+
+    fun forUserClasses(userId: String) =
+        UriTemplate("$baseUrl$userClasses").expand(userId)
+
+    fun forPagingUserClasses(userId: String, page: Int, limit: Int) =
+        UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(userId, page, limit)
+
+    fun forUserClass(userId: String, classId: Int) =
+        UriTemplate("$baseUrl$userClass").expand(userId, classId)
+
+    fun forUserClassSection(userId: String, classId: Int, sectionId: String) =
+        UriTemplate("$baseUrl$userClassSection").expand(userId, classId, sectionId)
+
     // custom link rel
     const val relClass = "/rel/class"
     const val relClassSection = "/rel/class-section"

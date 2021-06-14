@@ -4,7 +4,7 @@ CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 CREATE TABLE dbo.Programme(
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	acronym         VARCHAR(10) UNIQUE,				
-	name            VARCHAR(100) UNIQUE,			-- It may be NULL in this phase
+	name            VARCHAR(100) UNIQUE,
 	termSize        INT,
 	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
@@ -16,7 +16,7 @@ CREATE TABLE dbo.Calendar (
 CREATE TABLE dbo.Course (
 	id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	acronym         VARCHAR(10) UNIQUE,	
-	name            VARCHAR(100) UNIQUE,				-- It may be NULL in this phase
+	name            VARCHAR(100) UNIQUE,
 	document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
 
@@ -229,21 +229,43 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccount(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
-    id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    access_token   VARCHAR(100),
+    access_token   VARCHAR(100) PRIMARY KEY,
     refresh_token  VARCHAR(100),
-    user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id),
-    client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id),
+    user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
+    client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
     at_expires     TIMESTAMP,
     created_at     TIMESTAMP DEFAULT NOW(),
-    UNIQUE (access_token, refresh_token),
     UNIQUE (user_id, client_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
-    id            INT REFERENCES dbo.UserAccountToken(id),
-    scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id),
-    PRIMARY KEY (id, scope_id)
+    access_token  VARCHAR(100) REFERENCES dbo.UserAccountToken(access_token) ON DELETE CASCADE,
+    scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id) ON DELETE CASCADE,
+    PRIMARY KEY (access_token, scope_id)
+);
+
+CREATE TABLE IF NOT EXISTS dbo.UserClasses(
+    user_id       CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
+    class_id      INT REFERENCES dbo.Class(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, class_id)
+);
+
+CREATE TABLE IF NOT EXISTS dbo.UserClassSections(
+    user_id          CHAR(36),
+    class_id         INT,
+    class_section_id VARCHAR(20),
+
+    PRIMARY KEY (user_id, class_id, class_section_id),
+
+    CONSTRAINT fk_user_classes
+        FOREIGN KEY (user_id, class_id)
+        REFERENCES dbo.UserClasses(user_id, class_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_class_section
+        FOREIGN KEY (class_id, class_section_id)
+        REFERENCES dbo.ClassSection(classId, id)
+        ON DELETE CASCADE
 );
 
 ------- VIEWS --------

@@ -12,8 +12,8 @@ internal class KlassModelTest {
         val cid = 1
         val acr = "acr"
         val calendarTerm = "1920v"
-        val klass = Klass(cid, acr, calendarTerm)
-        val klass2 = Klass(cid, null, calendarTerm)
+        val klass = Klass(1, cid, acr, calendarTerm)
+        val klass2 = Klass(1, cid, null, calendarTerm)
 
         Assertions.assertEquals(cid, klass.courseId)
         Assertions.assertEquals(acr, klass.courseAcr)
@@ -31,8 +31,8 @@ internal class KlassModelTest {
         val cs1 = ClassSection(cid, null, calendarTerm, cs1Id)
         val cs2 = ClassSection(cid, null, calendarTerm, cs2Id)
 
-        val klass = FullKlass(cid, acr, calendarTerm, listOf(cs1, cs2))
-        val klass2 = FullKlass(cid, null, calendarTerm, listOf(cs1, cs2))
+        val klass = FullKlass(1, cid, acr, calendarTerm, listOf(cs1, cs2))
+        val klass2 = FullKlass(1, cid, null, calendarTerm, listOf(cs1, cs2))
 
         Assertions.assertEquals(cid, klass.courseId)
         Assertions.assertEquals(acr, klass.courseAcr)

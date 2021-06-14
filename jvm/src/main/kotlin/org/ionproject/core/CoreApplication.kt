@@ -14,16 +14,17 @@ import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.argumentResolvers.PaginationResolver
+import org.ionproject.core.common.email.EmailService
+import org.ionproject.core.common.email.MockEmailService
+import org.ionproject.core.common.email.SendGridEmailService
 import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
-import org.ionproject.core.user.auth.registry.AuthMethodRegistry
-import org.ionproject.core.user.auth.registry.AuthNotificationRegistry
-import org.ionproject.core.user.auth.registry.EmailAuthMethod
-import org.ionproject.core.user.common.email.EmailService
-import org.ionproject.core.user.common.email.MockEmailService
-import org.ionproject.core.user.common.email.SendGridEmailService
+import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
+import org.ionproject.core.userApi.auth.registry.AuthNotificationRegistry
+import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
+import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -94,6 +95,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(controlAccessInterceptor())
+        registry.addInterceptor(userAccessInterceptor)
     }
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
@@ -119,6 +121,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
 
     @Autowired
     lateinit var cache: AccessControlCache
+
+    @Autowired
+    lateinit var userAccessInterceptor: UserAccessInterceptor
 
     @Bean
     fun controlAccessInterceptor(): ControlAccessInterceptor {

@@ -21,10 +21,12 @@ internal class KlassControllerTest : ControllerTester() {
 
     companion object {
         fun getFullKlass(): FullKlass {
+            val classId = 1
             val cid = 1
             val cacr = "SL"
             val calTerm = "1718v"
             return FullKlass(
+                classId,
                 cid,
                 cacr,
                 calTerm,
@@ -39,8 +41,8 @@ internal class KlassControllerTest : ControllerTester() {
         fun getClassCollection(): List<Klass> {
             val cid = 1
             val cacr = "SL"
-            val klass1 = Klass(cid, cacr, "1718i")
-            val klass2 = Klass(cid, cacr, "1718v")
+            val klass1 = Klass(1, cid, cacr, "1718i")
+            val klass2 = Klass(2, cid, cacr, "1718v")
             return listOf(klass1, klass2)
         }
     }

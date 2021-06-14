@@ -1,3 +1,8 @@
+INSERT INTO dbo.authclient (client_id, client_name, client_url) VALUES
+('22dd1551-db23-481b-acde-d286440388a5', 'i-on Web', 'https://i-on-web.herokuapp.com/'),
+('14633a07-30d8-41f9-aa4d-d55341d7c7f3', 'i-on Android', null)
+ON CONFLICT DO NOTHING;
+
 INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('LEIC', 'licenciatura eng. inf.', 6),
 ('MEIC', 'mestrado eng. inf.',     4);

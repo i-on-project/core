@@ -47,6 +47,7 @@ class KlassRepoImplementation(
                 .list()
 
             FullKlass(
+                klassObj.id,
                 klassObj.courseId,
                 klassObj.courseAcr,
                 klassObj.calendarTerm,

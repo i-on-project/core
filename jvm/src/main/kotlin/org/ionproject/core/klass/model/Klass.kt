@@ -7,6 +7,7 @@ import org.ionproject.core.classSection.ClassSection
  * This contains only enough information to uniquely identify the Class
  */
 open class Klass(
+    val id: Int,
     val courseId: Int,
     val courseAcr: String?, // optional
     val calendarTerm: String
@@ -16,8 +17,9 @@ open class Klass(
  * Fully detailed representation of a Class.
  */
 class FullKlass(
+    id: Int,
     courseId: Int,
     courseAcr: String?, // optional
     calendarTerm: String,
     val sections: List<ClassSection>
-) : Klass(courseId, courseAcr, calendarTerm)
+) : Klass(id, courseId, courseAcr, calendarTerm)
