@@ -160,13 +160,12 @@ object Uri {
     // User Authentication
     private const val authBase = "$apiBase/auth"
     const val authMethods = "$authBase/methods"
+    const val authRequest = "$authBase/request/{reqId}"
     const val authVerify = "$authBase/verify"
 
-    const val authRequestBase = "$authBase/request/{reqId}"
-    const val authPoll = "$authRequestBase/poll"
-
-    const val authRefreshToken = "$authBase/refreshToken"
-    const val authRevokeToken = "$authBase/revokeToken"
+    const val authBackchannel = "$authBase/backchannel"
+    const val authToken = "$authBase/token"
+    const val authRevokeToken = "$authBase/revoke"
 
     val authVerifyUri = URI("$baseUrl$authVerify")
 

@@ -5,7 +5,6 @@ import org.ionproject.core.userApi.user.model.UserToken
 import java.net.URI
 import java.time.Duration
 import java.time.Instant
-
 enum class AuthError {
     @JsonProperty("invalid_request")
     INVALID_REQUEST,
@@ -18,7 +17,15 @@ enum class AuthError {
     @JsonProperty("access_denied")
     ACCESS_DENIED,
     @JsonProperty("invalid_scope")
-    INVALID_SCOPE
+    INVALID_SCOPE,
+    @JsonProperty("invalid_client")
+    INVALID_CLIENT,
+    @JsonProperty("invalid_grant")
+    INVALID_GRANT,
+    @JsonProperty("unauthorized_client")
+    UNAUTHORIZED_CLIENT,
+    @JsonProperty("unsupported_grant_type")
+    UNSUPPORTED_GRANT_TYPE
 }
 
 data class AuthErrorResponse(

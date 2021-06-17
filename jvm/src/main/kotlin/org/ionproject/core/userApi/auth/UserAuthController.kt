@@ -1,14 +1,15 @@
 package org.ionproject.core.userApi.auth
 
 import org.ionproject.core.common.Uri
-import org.ionproject.core.userApi.auth.model.AuthMethodInput
 import org.ionproject.core.userApi.auth.model.AuthRequestAcknowledgement
+import org.ionproject.core.userApi.auth.model.AuthRequestInput
 import org.ionproject.core.userApi.auth.model.AuthRequestOutput
 import org.ionproject.core.userApi.auth.model.AuthSuccessfulResponse
+import org.ionproject.core.userApi.auth.model.AuthTokenInput
 import org.ionproject.core.userApi.auth.model.AuthVerification
 import org.ionproject.core.userApi.auth.registry.AuthMethod
 import org.ionproject.core.userApi.auth.repo.UserAuthRepo
-import org.ionproject.core.userApi.user.model.UserTokenInput
+import org.ionproject.core.userApi.user.model.UserRevokeTokenInput
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
 
+private const val CIBA_GRANT_TYPE = "urn:openid:params:grant-type:ciba"
+private const val REFRESH_GRANT_TYPE = "refresh_token"
+
 @RestController
 class UserAuthController(val repo: UserAuthRepo) {
 
@@ -26,16 +30,16 @@ class UserAuthController(val repo: UserAuthRepo) {
         return ResponseEntity.ok(repo.getAuthMethods())
     }
 
-    @PostMapping(Uri.authMethods, produces = ["application/json"])
-    fun selectAuthMethod(
+    @PostMapping(Uri.authBackchannel, produces = ["application/json"])
+    fun initiateBackChannelAuth(
         webRequest: WebRequest,
-        @RequestBody methodInput: AuthMethodInput
+        @RequestBody requestInput: AuthRequestInput
     ): ResponseEntity<AuthRequestAcknowledgement> {
         val userAgent = webRequest.getHeader("User-Agent") ?: "Unknown"
-        return ResponseEntity.ok(repo.addAuthRequest(userAgent, methodInput))
+        return ResponseEntity.ok(repo.addAuthRequest(userAgent, requestInput))
     }
 
-    @GetMapping(Uri.authRequestBase, produces = ["application/json"])
+    @GetMapping(Uri.authRequest, produces = ["application/json"])
     fun getAuthRequest(
         @PathVariable reqId: String
     ): ResponseEntity<AuthRequestOutput> {
@@ -50,25 +54,25 @@ class UserAuthController(val repo: UserAuthRepo) {
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping(Uri.authPoll, produces = ["application/json"])
-    fun pollForUserAuth(
-        @PathVariable reqId: String
+    @PostMapping(Uri.authToken, produces = ["application/json"])
+    fun handleTokenEndpoint(
+        @RequestBody tokenBody: AuthTokenInput
     ): ResponseEntity<AuthSuccessfulResponse> {
-        return ResponseEntity.ok(repo.checkAuthRequest(reqId))
-    }
+        // verify grant type
+        if (tokenBody.grantType == CIBA_GRANT_TYPE) {
+            return ResponseEntity.ok(repo.checkAuthRequest(tokenBody))
+        } else if (tokenBody.grantType == REFRESH_GRANT_TYPE) {
+            return ResponseEntity.ok(repo.refreshAccessToken(tokenBody))
+        }
 
-    @PostMapping(Uri.authRefreshToken, produces = ["application/json"])
-    fun refreshAccessToken(
-        @RequestBody input: UserTokenInput
-    ): ResponseEntity<AuthSuccessfulResponse> {
-        return ResponseEntity.ok(repo.refreshAccessToken(input.accessToken, input.refreshToken))
+        throw UnsupportedGrantTypeException()
     }
 
     @DeleteMapping(Uri.authRevokeToken)
     fun revokeAccessToken(
-        @RequestBody input: UserTokenInput
+        @RequestBody input: UserRevokeTokenInput
     ): ResponseEntity<Unit> {
-        repo.revokeAccessToken(input.accessToken, input.refreshToken)
+        repo.revokeAccessToken(input)
         return ResponseEntity.noContent().build()
     }
 }

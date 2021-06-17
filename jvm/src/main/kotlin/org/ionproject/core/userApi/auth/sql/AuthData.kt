@@ -3,10 +3,9 @@ package org.ionproject.core.userApi.auth.sql
 object AuthData {
 
     const val AUTH_REQUEST_ID = "authRequestId"
-    const val EMAIL = "email"
+    const val LOGIN_HINT = "loginHint"
     const val CLIENT_ID = "clientId"
     const val USER_AGENT = "userAgent"
-    const val NOTIFICATION_METHOD = "notificationMethod"
     const val EXPIRES_ON = "expiration"
     const val SECRET_ID = "secretId"
     const val SCOPE = "scope"
@@ -16,16 +15,11 @@ object AuthData {
         where client_id = :$CLIENT_ID
     """
 
-    const val GET_NOTIFICATION_METHOD = """
-        select * from dbo.AuthNotificationMethod
-        where method = :$NOTIFICATION_METHOD
-    """
-
     const val INSERT_AUTH_REQUEST = """
         insert into dbo.AuthRequest 
-        (auth_req_id, secret_id, email, user_agent, client_id, ntf_method, expires_on)
+        (auth_req_id, secret_id, login_hint, user_agent, client_id, expires_on)
         values
-        (:$AUTH_REQUEST_ID, :$SECRET_ID, :$EMAIL, :$USER_AGENT, :$CLIENT_ID, :$NOTIFICATION_METHOD, :$EXPIRES_ON)
+        (:$AUTH_REQUEST_ID, :$SECRET_ID, :$LOGIN_HINT, :$USER_AGENT, :$CLIENT_ID, :$EXPIRES_ON)
     """
 
     const val GET_AUTH_REQUEST = """
@@ -33,9 +27,9 @@ object AuthData {
         where auth_req_id = :$AUTH_REQUEST_ID
     """
 
-    const val GET_AUTH_REQUEST_BY_CLIENT_AND_EMAIL = """
+    const val GET_AUTH_REQUEST_BY_CLIENT_AND_HINT = """
         select * from dbo.AuthRequest
-        where client_id = :$CLIENT_ID and email = :$EMAIL
+        where client_id = :$CLIENT_ID and login_hint = :$LOGIN_HINT
     """
 
     const val REMOVE_AUTH_REQUEST = """

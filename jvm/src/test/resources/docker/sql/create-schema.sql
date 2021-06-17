@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS dbo.Location (
 
 CREATE TABLE IF NOT EXISTS dbo.AuthClient(
     client_id      CHAR(36) PRIMARY KEY,
+    client_secret  VARCHAR(100) NULL,
     client_name    VARCHAR(100) UNIQUE,
     client_url     VARCHAR(200) NULL
 );
@@ -207,10 +208,9 @@ CREATE TABLE IF NOT EXISTS dbo.AuthUserScope(
 CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
     auth_req_id    CHAR(36) PRIMARY KEY,
     secret_id      VARCHAR(100) UNIQUE,
-    email          VARCHAR(200) UNIQUE,
+    login_hint     VARCHAR(200) UNIQUE,
     user_agent     VARCHAR(200),
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
-    ntf_method     VARCHAR(20),
     expires_on     TIMESTAMP DEFAULT NOW(),
     verified       BOOLEAN DEFAULT FALSE
 );
@@ -229,19 +229,21 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccount(
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
-    access_token   VARCHAR(100) PRIMARY KEY,
-    refresh_token  VARCHAR(100),
+    token_id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    access_token   VARCHAR(100) UNIQUE,
+    refresh_token  VARCHAR(100) UNIQUE,
     user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
     client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
     at_expires     TIMESTAMP,
     created_at     TIMESTAMP DEFAULT NOW(),
+    updated_at     TIMESTAMP DEFAULT NOW(),
     UNIQUE (user_id, client_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
-    access_token  VARCHAR(100) REFERENCES dbo.UserAccountToken(access_token) ON DELETE CASCADE,
+    token_id      INT REFERENCES dbo.UserAccountToken(token_id) ON DELETE CASCADE,
     scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id) ON DELETE CASCADE,
-    PRIMARY KEY (access_token, scope_id)
+    PRIMARY KEY (token_id, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserClasses(

@@ -18,6 +18,8 @@ data class UserEditInput(
 )
 
 data class UserToken(
+    @ColumnName("token_id")
+    val tokenId: Int,
     @ColumnName("user_id")
     val userId: String,
     @ColumnName("client_id")
@@ -35,17 +37,19 @@ data class UserToken(
 )
 
 data class UserTokenScope(
-    @ColumnName("access_token")
-    val accessToken: String,
+    @ColumnName("token_id")
+    val tokenId: Int,
     @ColumnName("scope_id")
     val scopeId: String
 )
 
-data class UserTokenInput(
+data class UserRevokeTokenInput(
     @JsonProperty("access_token")
     val accessToken: String,
-    @JsonProperty("refresh_token")
-    val refreshToken: String
+    @JsonProperty("client_id")
+    val clientId: String,
+    @JsonProperty("client_secret")
+    val clientSecret: String?
 )
 
 data class UserTokenInfo(

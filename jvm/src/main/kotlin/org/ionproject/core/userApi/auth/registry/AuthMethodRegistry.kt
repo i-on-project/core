@@ -20,14 +20,11 @@ class AuthMethodRegistry {
         registry[method.type] = method
     }
 
-    operator fun get(type: String) =
-        registry[type] ?: throw BadRequestException("Invalid auth method type!")
+    operator fun get(type: String) = registry[type]
 }
 
 abstract class AuthMethod(
-    val type: String,
-    @JsonProperty("can_verify")
-    val create: Boolean = false
+    val type: String
 ) {
 
     abstract suspend fun solve(request: AuthRequestHelper)
@@ -37,7 +34,7 @@ data class EmailAuthMethod(
     @JsonProperty("allowed_domains")
     val allowedDomains: List<String>,
     private val emailService: EmailService
-) : AuthMethod("email", true) {
+) : AuthMethod("email") {
 
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
 
@@ -47,7 +44,7 @@ data class EmailAuthMethod(
     }
 
     override suspend fun solve(request: AuthRequestHelper) {
-        val email = request.email
+        val email = request.loginHint
         if (!validateEmail(email))
             throw BadRequestException("The domain of the email is not allowed!")
 
@@ -65,7 +62,7 @@ data class EmailAuthMethod(
             EmailType.HTML,
             "ion - Verify your login attempt",
             """
-                <h1>New Login Attempt from ${request.clientName}</h1>
+                <h1>New Login Attempt from ${request.client.clientName}</h1>
                 <h3>$time $zoneId with ${request.userAgent}</h3>
                 <b>If this was not you please ignore and delete this email!</b>
                 <br>
