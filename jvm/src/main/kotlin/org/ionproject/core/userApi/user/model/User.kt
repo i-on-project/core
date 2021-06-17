@@ -44,7 +44,7 @@ data class UserTokenScope(
 )
 
 data class UserRevokeTokenInput(
-    @JsonProperty("access_token")
+    @JsonProperty("token")
     val accessToken: String,
     @JsonProperty("client_id")
     val clientId: String,

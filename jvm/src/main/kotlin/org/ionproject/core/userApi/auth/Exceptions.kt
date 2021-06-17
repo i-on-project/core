@@ -55,10 +55,9 @@ class AuthRequestPendingException : AuthErrorException(
 )
 
 // invalid_scope
-class AuthRequestInvalidScopesException(invalid: Iterable<String>) : AuthErrorException(
-    "The scopes ${invalid.joinToString()} are invalid",
-    AuthError.INVALID_SCOPE
-)
+open class AuthRequestInvalidScope(message: String) : AuthErrorException(message, AuthError.INVALID_SCOPE)
+class AuthRequestMissingOpenIdScopeException : AuthRequestInvalidScope("The openid scope is mandatory")
+class AuthRequestInvalidScopesException(invalid: Iterable<String>) : AuthRequestInvalidScope("The scopes ${invalid.joinToString()} are invalid")
 
 // slow_down
 class RefreshTokenRateLimitException(rateMinutes: Long) : AuthErrorException(

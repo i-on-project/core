@@ -13,6 +13,7 @@ import org.ionproject.core.userApi.auth.AuthRequestInvalidClientException
 import org.ionproject.core.userApi.auth.AuthRequestInvalidException
 import org.ionproject.core.userApi.auth.AuthRequestInvalidScopesException
 import org.ionproject.core.userApi.auth.AuthRequestInvalidSecretException
+import org.ionproject.core.userApi.auth.AuthRequestMissingOpenIdScopeException
 import org.ionproject.core.userApi.auth.AuthRequestNotFoundException
 import org.ionproject.core.userApi.auth.AuthRequestPendingException
 import org.ionproject.core.userApi.auth.AuthRequestUnauthorizedClientException
@@ -58,6 +59,7 @@ class UserAuthRepoImpl(
 ) : UserAuthRepo {
 
     companion object {
+        private const val OPENID_SCOPE = "openid"
         private const val TOKEN_REFRESH_RATE = 60
 
         private val base64Encoder = Base64.getUrlEncoder()
@@ -261,7 +263,13 @@ class UserAuthRepoImpl(
         }
 
     private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
-        val scopeList = scopes.split(" ")
+        var scopeList = scopes.split(" ")
+            .map { it.toLowerCase() }
+
+        if (!scopeList.contains(OPENID_SCOPE))
+            throw AuthRequestMissingOpenIdScopeException()
+
+        scopeList = scopeList.filter { it != OPENID_SCOPE }
         val availableScopes = handle.createQuery(AuthData.GET_AVAILABLE_SCOPES)
             .mapTo<AuthScope>()
             .map { it.scope }
