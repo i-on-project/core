@@ -97,13 +97,18 @@ class UserAuthRepoImpl(
 
             val acrValues = input.acrValues.split(" ")
             runBlocking {
+                var found = false
                 acrValues.forEach { value ->
                     val methodSolver = methodRegistry[value]
                     if (methodSolver != null) {
+                        found = true
                         methodSolver.solve(helper)
                         return@forEach
                     }
                 }
+
+                if (!found)
+                    throw AuthRequestInvalidException("No valid authentication method was provided")
             }
 
             AuthRequestAcknowledgement(authRequestId, helper.expiresIn)
@@ -202,7 +207,7 @@ class UserAuthRepoImpl(
                 ?: throw UserTokenNotFoundException()
 
             val scopes = it.createQuery(UserData.GET_USER_TOKEN_SCOPES)
-                .bind(UserData.ACCESS_TOKEN, accessToken)
+                .bind(UserData.TOKEN_ID, token.tokenId)
                 .mapTo<UserTokenScope>()
                 .toSet()
 
