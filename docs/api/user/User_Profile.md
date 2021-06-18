@@ -6,17 +6,10 @@
 
 ## Get User
 
-- Method: GET
-- Endpoint: /api/users
-- Required Scopes: profile
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-
-### Example Request
 
 ```http
 GET /api/users
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -65,17 +58,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Edit User
 
-- Method: PUT
-- Endpoint: /api/users
-- Required Scopes: profile
-- Requires Authorization header with type Bearer
-- Possible Responses: 204, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
 PUT /api/users
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+Authorization: Bearer {accessToken}
 ```
 
 ```json
@@ -90,17 +75,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Delete User
 
-- Method: DELETE
-- Endpoint: /api/users
-- Required Scopes: profile
-- Requires Authorization header with type Bearer
-- Possible Responses: 204, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
 DELETE /api/users
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response

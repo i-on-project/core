@@ -12,18 +12,9 @@
 
 ## Get Subscribed Classes
 
-- Method: GET
-- Endpoint: /api/users/classes
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-- Includes pagination
-
-### Example Request
-
 ```http
 GET /api/users/classes
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -72,17 +63,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Get Subscribed Class
 
-- Method: GET
-- Endpoint: /api/users/classes/{classId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
-GET /api/users/classes/16
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+GET /api/users/classes/{classId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -134,17 +117,10 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Subscribe to Class
 
-- Method: PUT
-- Endpoint: /api/users/classes/{classId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 201, 204, 400, 401, 403, 5XX
-
-### Example Request
 
 ```http
-PUT /api/users/classes/16
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+PUT /api/users/classes/{classId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -153,17 +129,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Unsubscribe from Class
 
-- Method: DELETE
-- Endpoint: /api/users/{classId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
-DELETE /api/users/classes/16
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+DELETE /api/users/classes/{classId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -172,17 +140,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Get Subscribed Class Section
 
-- Method: GET
-- Endpoint: /api/users/classes/{classId}/{sectionId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
-GET /api/users/classes/16/1D
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+GET /api/users/classes/{classId}/{classSectionId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -214,17 +174,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Subscribe to Class Section
 
-- Method: PUT
-- Endpoint: /api/users/classes/{classId}/{sectionId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 201, 204, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
-PUT /api/users/classes/16/1D
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+PUT /api/users/classes/{classID}/{classSectionId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
@@ -233,17 +185,9 @@ Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3
 
 ## Unsubscribe from Class Section
 
-- Method: DELETE
-- Endpoint: /api/users/classes/{classId}/{sectionId}
-- Required Scopes: classes
-- Requires Authorization header with type Bearer
-- Possible Responses: 200, 400, 401, 403, 5XX
-
-### Example Request
-
 ```http
-DELETE /api/users/classes/16/1D
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+DELETE /api/users/classes/{classId}/{classSectionId}
+Authorization: Bearer {accessToken}
 ```
 
 ### Example Response
