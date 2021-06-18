@@ -59,7 +59,7 @@ object UserData {
     """
 
     const val GET_USER_TOKEN_SCOPES = """
-        select * from dbo.UserAccountTokenScope where access_token = :$ACCESS_TOKEN
+        select * from dbo.UserAccountTokenScope where token_id = :$TOKEN_ID
     """
 
     const val GET_USER_TOKEN_BY_CLIENT = """

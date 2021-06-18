@@ -207,7 +207,7 @@ class UserAuthRepoImpl(
                 ?: throw UserTokenNotFoundException()
 
             val scopes = it.createQuery(UserData.GET_USER_TOKEN_SCOPES)
-                .bind(UserData.ACCESS_TOKEN, accessToken)
+                .bind(UserData.TOKEN_ID, token.tokenId)
                 .mapTo<UserTokenScope>()
                 .toSet()
 
