@@ -60,7 +60,7 @@ class UserAuthRepoImpl(
 
     companion object {
         private const val OPENID_SCOPE = "openid"
-        private const val TOKEN_REFRESH_RATE = 60
+        private const val TOKEN_REFRESH_RATE = 2
 
         private val base64Encoder = Base64.getUrlEncoder()
             .withoutPadding()
