@@ -5,11 +5,11 @@
 ### Class Actions
 
 ```http
-GET /api/users/actions/classes/16
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+GET /api/users/actions/classes/{classId}
+Authorization: Bearer {accessToken}
 ```
 
-### Response
+#### Example Response
 
 ```json
 {
@@ -56,11 +56,11 @@ Or if already subscribed:
 ### Class Section Actions
 
 ```http
-GET /api/users/actions/classes/16/1D
-Authorization: Bearer q-My3nteC0GOC1N90OeMHKNzrwO5ZdiuAGb8K9x7fG5hezHkDSBRzilna3IgaTXzz7fqTRsdUkKl9ith3TsVEQ
+GET /api/users/actions/classes/{classId}/{classSectionId}
+Authorization: Bearer {accessToken}
 ```
 
-### Response
+#### Example Response
 
 ```json
 {
