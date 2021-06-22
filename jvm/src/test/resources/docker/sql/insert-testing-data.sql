@@ -1,6 +1,6 @@
-INSERT INTO dbo.authclient (client_id, client_name, client_url) VALUES
-('22dd1551-db23-481b-acde-d286440388a5', 'i-on Web', 'https://i-on-web.herokuapp.com/'),
-('14633a07-30d8-41f9-aa4d-d55341d7c7f3', 'i-on Android', null)
+INSERT INTO dbo.authclient (client_id, client_secret, client_name, client_url) VALUES
+('22dd1551-db23-481b-acde-d286440388a5', 'gntBY4mjX8PH4_5_i_H54fMFLl2x15Q0O4jWXodQ4aPmofF4i6VBf39tXi5vhdjA2WZ-5hwaOXAL11oibnZ8og', 'i-on Web', 'https://i-on-web.herokuapp.com/'),
+('14633a07-30d8-41f9-aa4d-d55341d7c7f3', null, 'i-on Android', null)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.Programme(acronym, name, termSize) VALUES

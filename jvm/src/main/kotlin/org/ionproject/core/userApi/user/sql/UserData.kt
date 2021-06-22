@@ -2,6 +2,7 @@ package org.ionproject.core.userApi.user.sql
 
 object UserData {
 
+    const val TOKEN_ID = "tokenId"
     const val USER_ID = "userId"
     const val EMAIL = "email"
     const val ACCESS_TOKEN = "accessToken"
@@ -52,13 +53,13 @@ object UserData {
     """
 
     const val INSERT_USER_TOKEN_SCOPE = """
-        insert into dbo.UserAccountTokenScope (access_token, scope_id)
+        insert into dbo.UserAccountTokenScope (token_id, scope_id)
         values
-        (:$ACCESS_TOKEN, :$SCOPE_ID)
+        (:$TOKEN_ID, :$SCOPE_ID)
     """
 
     const val GET_USER_TOKEN_SCOPES = """
-        select * from dbo.UserAccountTokenScope where access_token = :$ACCESS_TOKEN
+        select * from dbo.UserAccountTokenScope where token_id = :$TOKEN_ID
     """
 
     const val GET_USER_TOKEN_BY_CLIENT = """
@@ -77,18 +78,22 @@ object UserData {
         where access_token = :$ACCESS_TOKEN
     """
 
+    const val GET_USER_TOKEN_BY_REFRESH = """
+        select * from dbo.UserAccountToken
+        where refresh_token = :$REFRESH_TOKEN
+    """
+
     const val REVOKE_USER_TOKEN = """
         delete from dbo.UserAccountToken
         where access_token = :$ACCESS_TOKEN
     """
 
     const val REFRESH_USER_TOKEN = """
-        update dbo.UserAccountToken
-        set 
-        access_token = :$ACCESS_TOKEN and 
-        refresh_token = :$REFRESH_TOKEN and 
-        at_expires = :$AT_EXPIRES and
+        update dbo.UserAccountToken set 
+        access_token = :$ACCESS_TOKEN,
+        refresh_token = :$REFRESH_TOKEN,
+        at_expires = :$AT_EXPIRES,
         updated_at = now()
-        where access_token = :$ACCESS_TOKEN
+        where token_id = :$TOKEN_ID
     """
 }

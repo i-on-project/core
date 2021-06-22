@@ -22,7 +22,6 @@ import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
-import org.ionproject.core.userApi.auth.registry.AuthNotificationRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
 import org.ionproject.core.userApi.common.accessControl.UserArgumentResolver
@@ -188,13 +187,6 @@ class CoreSerializationConfig : WebMvcConfigurer {
         )
 
         return registry
-    }
-
-    @Bean
-    fun getAuthNotificationRegistry(): AuthNotificationRegistry {
-        val notificationRegistry = AuthNotificationRegistry()
-        notificationRegistry.register("POLL")
-        return notificationRegistry
     }
 }
 
