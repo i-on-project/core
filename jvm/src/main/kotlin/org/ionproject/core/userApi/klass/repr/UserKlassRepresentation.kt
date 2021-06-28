@@ -3,12 +3,17 @@ package org.ionproject.core.userApi.klass.repr
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
 import org.ionproject.core.userApi.klass.model.UserKlass
+import org.ionproject.core.userApi.klass.model.UserKlassSection
 
 private data class UserKlassProps(
     val id: Int,
     val courseId: Int,
     val courseAcr: String,
     val calendarTerm: String
+)
+
+private data class UserKlassSectionShortProps(
+    val sectionId: String
 )
 
 private fun UserKlass.toProps() = UserKlassProps(
@@ -18,7 +23,8 @@ private fun UserKlass.toProps() = UserKlassProps(
     calendarTerm
 )
 
-// TODO: add link to user actions
+private fun UserKlassSection.toProps() = UserKlassSectionShortProps(id)
+
 fun UserKlass.toSirenRepresentation() =
     SirenBuilder(toProps())
         .klass("user", "class")
@@ -30,10 +36,10 @@ fun UserKlass.toSirenRepresentation() =
 
 private fun UserKlass.getEmbedEntities(classId: Int) =
     sections?.map {
-        SirenBuilder(mapOf("sectionId" to it))
+        SirenBuilder(it.toProps())
             .klass("user", "class", "section")
             .rel("item")
-            .link("self", href = Uri.forUserClassSection(classId, it))
-            .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, it))
+            .link("self", href = Uri.forUserClassSection(classId, it.id))
+            .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, it.id))
             .toEmbed()
     }

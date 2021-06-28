@@ -6,6 +6,7 @@ import org.ionproject.core.userApi.klass.model.UserKlassSection
 
 private data class UserKlassSectionProps(
     val id: String,
+    val classId: Int,
     val courseId: Int,
     val courseAcr: String,
     val calendarTerm: String
@@ -13,14 +14,15 @@ private data class UserKlassSectionProps(
 
 private fun UserKlassSection.toProps() = UserKlassSectionProps(
     id,
+    classId,
     courseId,
     courseAcr,
     calendarTerm
 )
 
-// TODO: add link to class section actions
 fun UserKlassSection.toSirenRepresentation(classId: Int) =
     SirenBuilder(toProps())
+        .klass("user", "class", "section")
         .link("self", href = Uri.forUserClassSection(classId, id))
         .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, id))
         .link(Uri.relUserClassSectionActions, href = Uri.forUserClassSectionActions(classId, id))

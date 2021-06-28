@@ -26,7 +26,7 @@ fun User.toSirenRepresentation() =
     SirenBuilder(toSirenProps())
         .klass("user")
         .link("self", href = Uri.forUser(userId))
-        .link("user", "class", href = Uri.forUserClasses(userId))
+        .link("user", "class", href = Uri.forUserClasses())
         .action(
             Action(
                 "edit-user",

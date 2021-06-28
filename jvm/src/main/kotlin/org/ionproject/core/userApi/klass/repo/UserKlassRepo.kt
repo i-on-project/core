@@ -8,6 +8,8 @@ interface UserKlassRepo {
 
     fun getSubscribedClasses(userId: String, pagination: Pagination): List<UserKlass>
 
+    fun getSubscribedClassSections(userId: String, pagination: Pagination): List<UserKlassSection>
+
     fun getSubscribedClass(userId: String, classId: Int): UserKlass
 
     fun isSubscribedToClass(userId: String, classId: Int): Boolean
