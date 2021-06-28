@@ -1,8 +1,10 @@
 package org.ionproject.core
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.OkHttpClient
 import org.ionproject.core.accessControl.AccessControlCache
@@ -21,6 +23,14 @@ import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
+import org.ionproject.core.common.transaction.TransactionManager
+import org.ionproject.core.ingestion.model.AcademicCalendar
+import org.ionproject.core.ingestion.model.ExamSchedule
+import org.ionproject.core.ingestion.model.Timetable
+import org.ionproject.core.ingestion.processor.CalendarIngestionProcessor
+import org.ionproject.core.ingestion.processor.ExamScheduleIngestionProcessor
+import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
+import org.ionproject.core.ingestion.processor.TimetableIngestionProcessor
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
@@ -34,6 +44,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -45,6 +56,7 @@ import org.springframework.web.util.UriTemplate
 class CoreApplication
 
 @Configuration
+@EnableScheduling
 // @EnableWebMvc
 class CoreSerializationConfig : WebMvcConfigurer {
 
@@ -52,6 +64,10 @@ class CoreSerializationConfig : WebMvcConfigurer {
         private const val SENDGRID_API_KEY = "SENDGRID_API_KEY"
         private const val EMAIL_SENDER_EMAIL = "EMAIL_SENDER_EMAIL"
         private const val EMAIL_SENDER_NAME = "EMAIL_SENDER_NAME"
+        private const val CALENDAR_FILE_NAME = "calendar.json"
+        private const val EXAM_SCHEDULE_FILE_NAME = "exam_schedule.json"
+        private const val TIMETABLE_FILE_NAME = "timetable.json"
+
         private val logger = LoggerFactory.getLogger(CoreApplication::class.java)
     }
 
@@ -186,6 +202,18 @@ class CoreSerializationConfig : WebMvcConfigurer {
             )
         )
 
+        return registry
+    }
+
+    @Bean
+    fun getIngestionProcessorRegistry(@Autowired tm: TransactionManager): IngestionProcessorRegistry {
+        val mapper = jacksonObjectMapper()
+        mapper.registerModule(JavaTimeModule())
+
+        val registry = IngestionProcessorRegistry(mapper)
+        // TODO: registry.register(EXAM_SCHEDULE_FILE_NAME, ExamScheduleIngestionProcessor(tm))
+        // TODO: registry.register(TIMETABLE_FILE_NAME, TimetableIngestionProcessor(tm))
+        registry.register(CALENDAR_FILE_NAME, CalendarIngestionProcessor(tm))
         return registry
     }
 }

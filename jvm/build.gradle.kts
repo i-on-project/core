@@ -29,7 +29,7 @@ dependencies {
     implementation("com.networknt:json-schema-validator:1.0.38")
     implementation("org.json:json:20171018")
     implementation("org.postgresql:postgresql:42.+")
-    implementation("com.google.cloud:google-cloud-logging-logback:0.118.0-alpha")
+    implementation("org.eclipse.jgit:org.eclipse.jgit:5.12.0.202106070339-r")
 
     implementation("org.jdbi:jdbi3-kotlin-sqlobject:3.20.0")
 
@@ -59,7 +59,6 @@ tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is alr
 tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist
 tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
 tasks.register<PgInsertReadToken>("pgInsertReadToken")
-tasks.register<PgInsertWriteToken>("pgInsertWriteToken")
 tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
 tasks.register<PgInsertRevokeToken>("pgInsertRevokeToken")
 
