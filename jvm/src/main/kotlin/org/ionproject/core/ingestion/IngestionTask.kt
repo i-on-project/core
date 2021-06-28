@@ -108,5 +108,4 @@ class IngestionTask(
                 registry[it.name]?.process(it)
             }
     }
-
 }

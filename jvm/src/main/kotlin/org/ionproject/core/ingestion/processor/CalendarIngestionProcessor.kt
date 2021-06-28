@@ -8,7 +8,6 @@ import org.ionproject.core.ingestion.processor.sql.model.CalendarInstant
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTermInput
 import org.jdbi.v3.sqlobject.kotlin.attach
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -93,7 +92,6 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         // TODO: Delete old instants
         // TODO: Add new events or edit already existent ones
     }
-
 }
 
 private data class ParsedCalendarTerms(val latest: ParsedCalendarTerm, val terms: List<ParsedCalendarTerm>)

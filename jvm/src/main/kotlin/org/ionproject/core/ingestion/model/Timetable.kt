@@ -89,5 +89,4 @@ private class StringToDurationConverter : StdConverter<String, Duration>() {
         return Duration.ofHours(hours)
             .plusMinutes(minutes)
     }
-
 }

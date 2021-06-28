@@ -1,7 +1,6 @@
 package org.ionproject.core.ingestion.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.Instant
 import java.time.LocalDate
 
 data class AcademicCalendarSchool(

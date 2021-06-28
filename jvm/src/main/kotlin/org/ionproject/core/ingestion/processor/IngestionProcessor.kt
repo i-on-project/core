@@ -10,7 +10,6 @@ private val log = LoggerFactory.getLogger("IngestionProcessor")
 interface IngestionProcessor<T> {
 
     fun process(data: T)
-
 }
 
 class ProcessorWrapper<T : Any>(
@@ -25,7 +24,6 @@ class ProcessorWrapper<T : Any>(
         processor.process(obj)
         log.info("Processed data: $obj")
     }
-
 }
 
 class IngestionProcessorRegistry(val mapper: ObjectMapper) {
@@ -37,5 +35,4 @@ class IngestionProcessorRegistry(val mapper: ObjectMapper) {
     }
 
     operator fun get(fileName: String) = processors[fileName]
-
 }

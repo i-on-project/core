@@ -14,5 +14,4 @@ class IngestionController(val ingestionTask: IngestionTask) {
         ingestionTask.processTask()
         return ResponseEntity.noContent().build()
     }
-
 }

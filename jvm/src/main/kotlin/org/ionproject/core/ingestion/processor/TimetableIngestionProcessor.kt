@@ -11,7 +11,5 @@ class TimetableIngestionProcessor(val tm: TransactionManager) : IngestionProcess
     }
 
     override fun process(data: Timetable) {
-
     }
-
 }

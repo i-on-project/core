@@ -1,7 +1,6 @@
 package org.ionproject.core
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -24,13 +23,8 @@ import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.ingestion.model.AcademicCalendar
-import org.ionproject.core.ingestion.model.ExamSchedule
-import org.ionproject.core.ingestion.model.Timetable
 import org.ionproject.core.ingestion.processor.CalendarIngestionProcessor
-import org.ionproject.core.ingestion.processor.ExamScheduleIngestionProcessor
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
-import org.ionproject.core.ingestion.processor.TimetableIngestionProcessor
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor

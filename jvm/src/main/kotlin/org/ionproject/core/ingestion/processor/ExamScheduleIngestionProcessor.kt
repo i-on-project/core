@@ -11,7 +11,5 @@ class ExamScheduleIngestionProcessor(val tm: TransactionManager) : IngestionProc
     }
 
     override fun process(data: ExamSchedule) {
-
     }
-
 }
