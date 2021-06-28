@@ -8,17 +8,18 @@ import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
 import org.ionproject.core.klass.model.Klass
 import org.springframework.http.HttpMethod
+import java.time.LocalDateTime
 
 /**
  * Output models
  */
-data class CalendarTermOutputModel(val name: String)
+data class CalendarTermOutputModel(val name: String, val startDate: LocalDateTime, val endDate: LocalDateTime)
 
 /**
  * Siren representation generators
  */
 fun CalendarTerm.toCalendarTermDetailRepr(page: Int, limit: Int) =
-    SirenBuilder(CalendarTermOutputModel(calTermId))
+    SirenBuilder(CalendarTermOutputModel(calTermId, startDate, endDate))
         .klass("calendar-term")
         .entities(classes.map { klass -> klass.toEmbed() })
         .action(

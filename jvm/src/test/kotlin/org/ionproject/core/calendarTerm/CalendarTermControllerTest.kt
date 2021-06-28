@@ -14,7 +14,10 @@ import java.time.OffsetDateTime.now
 
 internal class CalendarTermControllerTest : ControllerTester() {
     companion object {
-        fun getCalendarTerm_Mock(): CalendarTerm = CalendarTerm("1920i", now(), now())
+        fun getCalendarTerm_Mock(): CalendarTerm {
+            val dateTime = now().toLocalDateTime()
+            return CalendarTerm("1920i", dateTime, dateTime)
+        }
     }
 
     @Test
