@@ -27,8 +27,7 @@ private fun UserKlass.toEmbedRepresentation() =
         .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .toEmbed()
 
-// TODO: add user actions link
-fun List<UserKlass>.toSirenRepresentation(userId: String, pagination: Pagination) =
+fun List<UserKlass>.toSirenRepresentation(pagination: Pagination) =
     SirenBuilder(pagination)
         .klass("user", "class", "collection")
         .entities(map { it.toEmbedRepresentation() })

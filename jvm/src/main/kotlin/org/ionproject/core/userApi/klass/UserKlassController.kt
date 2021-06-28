@@ -25,7 +25,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         pagination: Pagination
     ): ResponseEntity<Siren> {
         val classes = repo.getSubscribedClasses(user.userId, pagination)
-        return ResponseEntity.ok(classes.toSirenRepresentation(user.userId, pagination))
+        return ResponseEntity.ok(classes.toSirenRepresentation(pagination))
     }
 
     @GetMapping(Uri.userClass)
@@ -60,6 +60,16 @@ class UserKlassController(val repo: UserKlassRepo) {
     ): ResponseEntity<Unit> {
         repo.unsubscribeFromClass(user.userId, classId)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping(Uri.userSections)
+    @UserResource(requiredScopes = [UserResourceScope.CLASS_SUBSCRIPTIONS])
+    fun getSubscribedClassSections(
+        user: User,
+        pagination: Pagination
+    ): ResponseEntity<Siren> {
+        val sections = repo.getSubscribedClassSections(user.userId, pagination)
+        return ResponseEntity.ok(sections.toSirenRepresentation(pagination))
     }
 
     @GetMapping(Uri.userClassSection)

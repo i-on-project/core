@@ -35,13 +35,23 @@ object UserKlassData {
     """
 
     const val GET_USER_CLASS_SECTIONS = """
-        select class_section_id as id
-        from dbo.UserClassSections
+        select ucs.class_section_id as id, ucs.class_id as classId, cl.courseId, cr.acronym as courseAcr, cl.calendarTerm
+        from (dbo.UserClassSections ucs join dbo.Class cl on ucs.class_id = cl.id)
+        join dbo.Course cr on cl.courseId = cr.id
         where user_id = :$USER_ID and class_id = :$CLASS_ID
     """
 
+    const val GET_USER_CLASS_SECTIONS_PAGINATED = """
+        select ucs.class_section_id as id, ucs.class_id as classId, cl.courseId, cr.acronym as courseAcr, cl.calendarTerm
+        from (dbo.UserClassSections ucs join dbo.Class cl on ucs.class_id = cl.id)
+        join dbo.Course cr on cl.courseId = cr.id
+        where user_id = :$USER_ID
+        offset :$OFFSET
+        limit :$LIMIT
+    """
+
     const val GET_USER_CLASS_SECTION = """
-        select ucs.class_section_id as id, cl.courseId, cr.acronym as courseAcr, cl.calendarTerm
+        select ucs.class_section_id as id, ucs.class_id as classId, cl.courseId, cr.acronym as courseAcr, cl.calendarTerm
         from (dbo.UserClassSections ucs join dbo.Class cl on ucs.class_id = cl.id)
         join dbo.Course cr on cl.courseId = cr.id
         where user_id = :$USER_ID and class_id = :$CLASS_ID and class_section_id = :$SECTION_ID

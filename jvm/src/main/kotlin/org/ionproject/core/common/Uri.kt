@@ -175,6 +175,7 @@ object Uri {
     // User API
     const val userBase = "$apiBase/users"
     const val userClasses = "$userBase/classes"
+    const val userSections = "$userBase/sections"
     const val userClass = "$userClasses/{classId}"
     const val userClassSection = "$userClasses/{classId}/{sectionId}"
 
@@ -187,11 +188,14 @@ object Uri {
     fun forUser(userId: String) =
         userTemplate.expand(userId)
 
-    fun forUserClasses(userId: String) =
-        UriTemplate("$baseUrl$userClasses").expand(userId)
+    fun forUserClasses() =
+        URI("$baseUrl$userClasses")
 
     fun forPagingUserClasses(page: Int, limit: Int) =
         UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(page, limit)
+
+    fun forPagingUserClassSections(page: Int, limit: Int) =
+        UriTemplate("$baseUrl$userSections$springWebPagingQuery").expand(page, limit)
 
     fun forUserClass(classId: Int) =
         UriTemplate("$baseUrl$userClass").expand(classId)
@@ -214,6 +218,7 @@ object Uri {
     const val relProgramme = "/rel/programme"
     const val relProgrammes = "/rel/programmes"
     const val relOffers = "/rel/offers"
+    const val relUserClassSections = "/rel/userSections"
     const val relUserClassActions = "/rel/userClassActions"
     const val relUserClassSectionActions = "/rel/userClassSectionActions"
 }
