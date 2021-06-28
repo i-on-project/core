@@ -8,7 +8,7 @@ import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.springframework.stereotype.Component
 import java.sql.ResultSet
-import java.time.OffsetDateTime
+import java.time.LocalDateTime
 
 @Component
 class CalendarTermMapper : RowMapper<CalendarTerm> {
@@ -19,8 +19,8 @@ class CalendarTermMapper : RowMapper<CalendarTerm> {
          */
         return CalendarTerm(
             rs.getString(ID),
-            rs.getObject(START_DATE, OffsetDateTime::class.java),
-            rs.getObject(END_DATE, OffsetDateTime::class.java)
+            rs.getObject(START_DATE, LocalDateTime::class.java),
+            rs.getObject(END_DATE, LocalDateTime::class.java)
         )
     }
 }

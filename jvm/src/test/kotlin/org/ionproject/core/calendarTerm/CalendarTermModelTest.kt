@@ -10,7 +10,7 @@ internal class CalendarTermModelTest {
     @Test
     fun createCalendarTerm() {
         val calTermId = "1920i"
-        val time = now()
+        val time = now().toLocalDateTime()
         val calObject = CalendarTerm("1920i", time, time)
         val classList = mutableListOf<Klass>()
 
