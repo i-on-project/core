@@ -31,6 +31,7 @@ internal object CalendarTermData {
     const val CALENDAR_TERMS_QUERY = """
         select $ID, $START_DATE, $END_DATE
         from $SCHEMA.$CALENDAR_TERM
+        order by $START_DATE desc
         offset :$OFFSET limit :$LIMIT
     """
 

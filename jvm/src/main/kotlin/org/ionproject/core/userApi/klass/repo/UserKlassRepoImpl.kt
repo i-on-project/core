@@ -25,6 +25,16 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
                 .toList()
         }
 
+    override fun getSubscribedClassSections(userId: String, pagination: Pagination) =
+        tm.run {
+            it.createQuery(UserKlassData.GET_USER_CLASS_SECTIONS_PAGINATED)
+                .bind(UserKlassData.USER_ID, userId)
+                .bind(UserKlassData.OFFSET, pagination.offset)
+                .bind(UserKlassData.LIMIT, pagination.limit)
+                .mapTo<UserKlassSection>()
+                .toList()
+        }
+
     override fun getSubscribedClass(userId: String, classId: Int) =
         tm.run {
             val klass = findSubscribedClass(userId, classId, it)
@@ -33,7 +43,7 @@ class UserKlassRepoImpl(val tm: TransactionManager) : UserKlassRepo {
             val subscribedClassSections = it.createQuery(UserKlassData.GET_USER_CLASS_SECTIONS)
                 .bind(UserKlassData.USER_ID, userId)
                 .bind(UserKlassData.CLASS_ID, classId)
-                .mapTo<String>()
+                .mapTo<UserKlassSection>()
                 .toSet()
 
             klass + subscribedClassSections

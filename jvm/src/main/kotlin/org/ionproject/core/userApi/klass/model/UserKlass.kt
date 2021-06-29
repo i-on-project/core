@@ -5,9 +5,9 @@ data class UserKlass(
     val courseId: Int,
     val courseAcr: String,
     val calendarTerm: String,
-    val sections: Set<String>? = null
+    val sections: Set<UserKlassSection>? = null
 ) {
-    operator fun plus(newSections: Set<String>): UserKlass {
+    operator fun plus(newSections: Set<UserKlassSection>): UserKlass {
         val combined = if (sections == null) {
             newSections
         } else {
