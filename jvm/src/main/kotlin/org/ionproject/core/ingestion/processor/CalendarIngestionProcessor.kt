@@ -9,6 +9,7 @@ import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTermInput
 import org.jdbi.v3.sqlobject.kotlin.attach
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcessor<AcademicCalendar> {
@@ -83,6 +84,11 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
     }
 
     private fun editTerm(parsedTerm: ParsedCalendarTerm, term: CalendarTerm, dao: CalendarIngestionDao) {
+        val start = LocalDateTime.of(parsedTerm.startDate, LocalTime.MIDNIGHT)
+        val end = LocalDateTime.of(parsedTerm.endDate, LocalTime.MIDNIGHT)
+        if (start == term.startDate && end == term.endDate)
+            return
+
         val instantsList = parsedTerm.toCalendarInstants()
         val instantsIds = dao.insertCalendarInstants(instantsList)
 

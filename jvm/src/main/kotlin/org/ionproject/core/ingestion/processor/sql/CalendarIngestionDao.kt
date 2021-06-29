@@ -52,7 +52,7 @@ interface CalendarIngestionDao {
         where id = :term.id
     """
     )
-    fun updateCalendarTerm(term: CalendarTermInput)
+    fun updateCalendarTerm(@BindBean("term") term: CalendarTermInput)
 
     @SqlUpdate(
         """
