@@ -30,6 +30,7 @@ fun UserKlass.toSirenRepresentation() =
         .klass("user", "class")
         .entities(getEmbedEntities(id))
         .link("self", href = Uri.forUserClass(id))
+        .link("collection", href = Uri.forUserClasses())
         .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .link(Uri.relUserClassActions, href = Uri.forUserClassActions(id))
         .toSiren()

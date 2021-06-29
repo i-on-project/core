@@ -24,6 +24,7 @@ fun UserKlassSection.toSirenRepresentation(classId: Int) =
     SirenBuilder(toProps())
         .klass("user", "class", "section")
         .link("self", href = Uri.forUserClassSection(classId, id))
+        .link("collection", href = Uri.forPagingUserClassSections(0, 0))
         .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, id))
         .link(Uri.relUserClassSectionActions, href = Uri.forUserClassSectionActions(classId, id))
         .toSiren()
