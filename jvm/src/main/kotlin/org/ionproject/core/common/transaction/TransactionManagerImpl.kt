@@ -7,6 +7,7 @@ import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.jdbi.v3.core.transaction.SerializableTransactionRunner
 import org.jdbi.v3.core.transaction.TransactionIsolationLevel
+import org.jdbi.v3.sqlobject.SqlObjectPlugin
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -17,6 +18,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
      */
     private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
         installPlugin(KotlinPlugin())
+        installPlugin(SqlObjectPlugin())
         transactionHandler = SerializableTransactionRunner()
         // setSqlLogger(SqlLogger()) // uncomment this line to see what request are being sent to the database
     }

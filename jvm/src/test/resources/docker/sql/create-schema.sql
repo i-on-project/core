@@ -63,6 +63,7 @@ CREATE VIEW dbo.CalendarTerm AS
         start_instant.date IS NOT NULL
         AND
         end_instant.date IS NOT NULL
+    ORDER BY start_instant.date desc, start_instant.time desc
     ;
 
 

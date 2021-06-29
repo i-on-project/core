@@ -37,3 +37,6 @@ src/main/resources/static
 
 ## Ignore the keys folder
 keys/
+
+## Ignore the ingestion data folders
+ingestion-data

@@ -15,6 +15,9 @@ object Uri {
     const val rfcPagingQuery = "{?page,limit}"
     const val springWebPagingQuery = "?page={page}&limit={limit}"
 
+    // Ingestion
+    const val ingestionWebhook = "$apiBase/ingestion"
+
     // Calendar Terms
     const val calendarTerms = "$apiBase/calendar-terms"
     const val calendarTermById = "$apiBase/calendar-terms/{calterm}"

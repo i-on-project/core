@@ -4,3 +4,5 @@
 gradlew.bat
 Dockerfile
 build
+ingestion-data
+keys

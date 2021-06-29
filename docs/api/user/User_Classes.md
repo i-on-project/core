@@ -6,6 +6,7 @@
     - [Subscribe to Class](#subscribe-to-class)
     - [Unsubscribe from Class](#unsubscribe-from-class)
 - Class Sections
+    - [Get Subscribed Class Sections](#get-subscribed-class-sections)
     - [Get Subscribed Class Section](#get-subscribed-class-section)
     - [Subscribe to Class Section](#subscribe-to-class-section)
     - [Unsubscribe from Class Section](#unsubscribe-from-class-section)
@@ -137,6 +138,58 @@ Authorization: Bearer {accessToken}
 ### Example Response
 
 (No Content)
+
+## Get Subscribed Class Sections
+
+```http
+GET /api/users/sections
+Authorization: Bearer {accessToken}
+```
+
+### Example Response
+
+```json
+{
+    "class": ["user", "class", "section", "collection"],
+    "properties": {
+        "page": 0,
+        "limit": 10
+    },
+    "entities": [
+        {
+            "rel": ["item"],
+            "class": ["user", "class", "section"],
+            "properties": {
+                "id": "1D",
+                "classId": 16,
+                "courseId": 1,
+                "courseAcr": "SL",
+                "calendarTerm": "1920i"
+            },
+            "links": [
+                {
+                    "rel": ["self"],
+                    "href": "http://localhost:8080/api/users/classes/16/1D"
+                },
+                {
+                    "rel": ["/rel/classSection"],
+                    "href": "http://localhost:8080/api/courses/1/classes/1920i/1D"
+                }
+            ]
+        }
+    ],
+    "links": [
+        {
+            "rel": ["self"],
+            "href": "http://localhost:8080/api/users/sections?page=0&limit=10"
+        },
+        {
+            "rel": ["next"],
+            "href": "http://localhost:8080/api/users/sections?page=1&limit=10"
+        }
+    ]
+}
+```
 
 ## Get Subscribed Class Section
 
