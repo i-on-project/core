@@ -22,6 +22,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -32,6 +34,8 @@ dependencies {
     implementation("org.eclipse.jgit:org.eclipse.jgit:5.12.0.202106070339-r")
 
     implementation("org.jdbi:jdbi3-kotlin-sqlobject:3.20.0")
+
+    implementation("org.flywaydb:flyway-core:6.5.7")
 
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
@@ -72,4 +76,12 @@ tasks.register("pgReset") {
 
     dependsOn(setupTask, stopTask)
     tasks[setupTask].mustRunAfter(stopTask)
+}
+
+tasks.register<Copy>("extractUberJar") {
+    dependsOn("build")
+    dependsOn("test")
+    dependsOn("ktlintCheck")
+    from(zipTree("$buildDir/libs/${rootProject.name}-$version.jar"))
+    into("$buildDir/dependency")
 }

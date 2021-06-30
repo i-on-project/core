@@ -18,7 +18,8 @@ FROM adoptopenjdk/openjdk11:alpine AS jvm
 RUN apk add postgresql-client
 
 COPY --from=node ./jvm ./proj
+COPY ./.docker ./proj/.docker
 WORKDIR ./proj
-RUN mv ./src/test/resources/bin/poll_db_and_build .
+RUN mv ./.docker/dockerfiles/bin/poll_db_and_build .
 
 ENTRYPOINT [ "./poll_db_and_build" ]

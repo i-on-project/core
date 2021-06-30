@@ -9,27 +9,22 @@ interface LanguageRepo {
 }
 
 @Repository
-class LanguagaRepoImpl(
+class LanguageRepoImpl(
     private val transactionManager: TransactionManager,
     private val languageMapper: LanguageData.LanguageMapper
 ) : LanguageRepo {
 
-    private val languages = hashMapOf<Int, Language>()
-
-    init {
-        populateLanguageMap()
-    }
-
-    private fun populateLanguageMap() {
-        val languages = transactionManager.run {
+    private val languages: HashMap<Int, Language> by lazy {
+        val l = transactionManager.run {
             it.createQuery(LanguageData.ALL_LANGUAGES_QUERY)
                 .map(languageMapper)
                 .list()
         }
 
-        languages?.forEach {
-            this.languages += it
-        }
+        val map = hashMapOf<Int, Language>()
+        l?.forEach { map += it }
+
+        map
     }
 
     override fun byId(id: Int): Language? =

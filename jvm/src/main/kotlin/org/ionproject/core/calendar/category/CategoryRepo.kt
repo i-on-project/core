@@ -15,23 +15,20 @@ class CategoryRepoImpl(
     private val categoryMapper: CategoryData.CategoryMapper
 ) : CategoryRepo {
 
-    private val categories = hashMapOf<Int, MutableList<Category>>()
-
-    init {
-        populateCategoryMap()
-    }
-
-    private fun populateCategoryMap() {
+    private val categories: HashMap<Int, MutableList<Category>> by lazy {
+        val map = hashMapOf<Int, MutableList<Category>>()
         transactionManager.run {
             it
                 .createQuery(ALL_CATEGORIES_QUERY)
                 .map(categoryMapper)
                 .list()
         }?.forEach {
-            categories.computeIfAbsent(it.first) {
+            map.computeIfAbsent(it.first) {
                 mutableListOf()
             }.add(it.second)
         }
+
+        map
     }
 
     override fun byId(id: Int): List<Category>? =

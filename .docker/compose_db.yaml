@@ -1,9 +1,7 @@
 version: '3'
 services:
     db:
-      build:
-        context: ../jvm/src/test/resources
-        dockerfile: ./dockerfile_db
+      image: postgres:13-alpine
       container_name: core-db-container
       ports:
         - 10021:5432

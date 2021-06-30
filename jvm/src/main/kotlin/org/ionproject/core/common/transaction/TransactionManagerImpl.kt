@@ -16,7 +16,7 @@ class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
     /**
      * Jdbi instance wraps a JDBC DataSource
      */
-    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource).apply {
+    private val jdbi: Jdbi = Jdbi.create(dsh.getDataSource()).apply {
         installPlugin(KotlinPlugin())
         installPlugin(SqlObjectPlugin())
         transactionHandler = SerializableTransactionRunner()
