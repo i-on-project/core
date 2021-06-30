@@ -3,7 +3,7 @@ services:
     core:
       build:
         context: ..
-        dockerfile: ./jvm/src/test/resources/dockerfile_ci
+        dockerfile: ./.docker/dockerfiles/dockerfile_ci
       container_name: core-container
       depends_on: [ db ]
       # The entrypoint script will run the server if Argument 1 = "run"
@@ -15,9 +15,7 @@ services:
         - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
         - ION_CORE_BASE_URL=http://localhost:10023
     db:
-      build:
-        context: ../jvm/src/test/resources
-        dockerfile: ./dockerfile_db
+      image: postgres:13-alpine
       container_name: core-db-container
       ports:
         - 10021:5432

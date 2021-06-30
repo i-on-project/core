@@ -3,7 +3,7 @@ services:
     core:
       build:
         context: ..
-        dockerfile: ./jvm/src/test/resources/dockerfile_ci
+        dockerfile: ./.docker/dockerfiles/dockerfile_ci
       container_name: core-ci-container
       depends_on: [ db ]
       ports:
@@ -12,9 +12,7 @@ services:
         - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
         - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
     db:
-      build:
-        context: ../jvm/src/test/resources
-        dockerfile: ./dockerfile_db
+      image: postgres:13-alpine
       container_name: core-db-container
       ports:
         - 10021:5432

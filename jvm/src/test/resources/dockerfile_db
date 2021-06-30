@@ -1,9 +1,0 @@
-FROM postgres:13-alpine
-
-USER postgres
-COPY ./docker/sql/create-schema.sql /docker-entrypoint-initdb.d/1_create.sql
-COPY ./docker/sql/insert-essential-data.sql /docker-entrypoint-initdb.d/2_insert-essentials.sql
-COPY ./docker/sql/insert-testing-data.sql /docker-entrypoint-initdb.d/3_insert-testing-data.sql
-
-EXPOSE 5432
-

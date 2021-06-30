@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eu
+
+core_image_tag="ghcr.io/i-on-project/core:latest"
+
+# Start the database container
+docker-compose -f .docker/compose_db.yaml up -d db
+
+jdbc_database_url="jdbc:postgresql://localhost:10021/core?user=bob&password=changeit"
+ion_core_secret_key="t8abumA3JBJrd7q0LuN3nSzKGBfslOYb"
+
+# Build core image
+docker build -f ./.docker/dockerfiles/dockerfile_assemble \
+  --network host \
+  --build-arg "JDBC_DATABASE_URL=${jdbc_database_url}" \
+  --build-arg "ION_CORE_SECRET_KEY=${ion_core_secret_key}" \
+  -t "${core_image_tag}" .
+
+# Stop the database container
+docker stop core-ci-database 2>/dev/null | true
+docker rm core-ci-database 2>/dev/null | true
+
+# Try to push both images to GitHub Container Registry
+if [ -z "${GITHUB_ACTOR:-}" ] ||\
+    [ -z "${GITHUB_TOKEN:-}" ]; then
+  printf "Set the GITHUB_ACTOR and GITHUB_TOKEN environment variables to push the image to the registry!\n"
+  exit 0
+fi
+
+echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+docker push "${core_image_tag}"

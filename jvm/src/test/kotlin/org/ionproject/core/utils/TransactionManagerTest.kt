@@ -8,7 +8,7 @@ import org.jdbi.v3.core.transaction.TransactionIsolationLevel
 
 class TransactionManagerImpl(dsh: DataSourceHolder) : TransactionManager {
 
-    private val jdbi: Jdbi = Jdbi.create(dsh.dataSource)
+    private val jdbi: Jdbi = Jdbi.create(dsh.getDataSource())
 
     override fun <R> run(isolationLevel: TransactionIsolationLevel, transaction: (Handle) -> R): R {
         jdbi.open().use {

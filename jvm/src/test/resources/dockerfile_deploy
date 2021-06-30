@@ -1,4 +1,0 @@
-FROM gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-
-COPY . .
-ENTRYPOINT [ "./project/res/bin/deploy" ]
