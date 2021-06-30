@@ -4,6 +4,9 @@ services:
       build:
         context: ..
         dockerfile: .docker/dockerfiles/dockerfile_deploy
+      network_mode: host
+      working_dir: "${PWD}"
       container_name: core-deploy-container
       volumes:
+        - "${PWD}:${PWD}"
         - "/var/run/docker.sock:/var/run/docker.sock"
