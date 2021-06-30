@@ -5,6 +5,7 @@ services:
         context: ..
         dockerfile: .docker/dockerfiles/dockerfile_deploy
       network_mode: host
+      env_file: ./env_deploy
       working_dir: "${PWD}"
       container_name: core-deploy-container
       volumes:
