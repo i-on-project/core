@@ -36,11 +36,11 @@ class IngestionTask(
     private val threadPool = Executors.newSingleThreadExecutor()
 
     private val academicYearsDir: File by lazy {
-        File(REPOSITORY_DIR_NAME + File.separator + institutionFolder + File.separator + ACADEMIC_YEARS)
+        File(repositoryDir.absolutePath + File.separator + institutionFolder + File.separator + ACADEMIC_YEARS)
     }
 
     private val programmesDir: File by lazy {
-        File(REPOSITORY_DIR_NAME + File.separator + institutionFolder + File.separator + PROGRAMMES)
+        File(repositoryDir.absolutePath + File.separator + institutionFolder + File.separator + PROGRAMMES)
     }
 
     @Scheduled(fixedRate = INGESTION_RATE)
