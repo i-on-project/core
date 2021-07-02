@@ -103,12 +103,9 @@ class IngestionTask(
                 Files.list(latestYear)
                     .use {
                         it.toList()
+                            .map { path -> path.toFile() }
+                            .mapNotNull { calendar -> registry[calendar.name] }
                             .firstOrNull()
-                            ?.toFile()
-                            ?.let { calendar ->
-                                log.info("Calendar found: ${calendar.name}")
-                                registry[calendar.name]?.process(calendar)
-                            }
                             ?: throw Exception("Cannot process data because the calendar data was not found")
                     }
             }
@@ -130,10 +127,7 @@ class IngestionTask(
                         Files.list(latestYear)
                             .use {
                                 it.map { path -> path.toFile() }
-                                    .forEach { file ->
-                                        log.info("File found: ${file.name}")
-                                        registry[file.name]?.process(file)
-                                    }
+                                    .forEach { file -> registry[file.name]?.process(file) }
                             }
                     }
                 }
