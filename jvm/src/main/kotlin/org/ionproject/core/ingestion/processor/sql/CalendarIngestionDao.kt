@@ -2,8 +2,9 @@ package org.ionproject.core.ingestion.processor.sql
 
 import org.ionproject.core.ingestion.processor.sql.model.CalendarInstant
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
-import org.ionproject.core.ingestion.processor.sql.model.CalendarTermInput
+import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
 import org.jdbi.v3.sqlobject.customizer.BindBean
+import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlBatch
 import org.jdbi.v3.sqlobject.statement.SqlQuery
@@ -28,6 +29,14 @@ interface CalendarIngestionDao {
     )
     fun getTermById(id: String): CalendarTerm?
 
+    @SqlQuery(
+        """
+            select id, start_date, end_date from dbo._CalendarTerm
+            where id = :id
+        """
+    )
+    fun getRealTermById(id: String): RealCalendarTerm?
+
     @SqlBatch(
         """
         insert into dbo.Instant (date, time)
@@ -43,7 +52,7 @@ interface CalendarIngestionDao {
         values (:term.id, :term.startDate, :term.endDate)
     """
     )
-    fun insertCalendarTerms(@BindBean("term") terms: List<CalendarTermInput>)
+    fun insertCalendarTerms(@BindBean("term") terms: List<RealCalendarTerm>)
 
     @SqlUpdate(
         """
@@ -52,7 +61,7 @@ interface CalendarIngestionDao {
         where id = :term.id
     """
     )
-    fun updateCalendarTerm(@BindBean("term") term: CalendarTermInput)
+    fun updateCalendarTerm(@BindBean("term") term: RealCalendarTerm)
 
     @SqlUpdate(
         """
@@ -60,5 +69,5 @@ interface CalendarIngestionDao {
         where id in (<instants>)
     """
     )
-    fun deleteInstants(instants: List<Int>)
+    fun deleteInstants(@BindList("instants") instants: List<Int>)
 }

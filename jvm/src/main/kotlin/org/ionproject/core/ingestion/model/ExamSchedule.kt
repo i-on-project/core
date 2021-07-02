@@ -1,6 +1,7 @@
 package org.ionproject.core.ingestion.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.Instant
 import java.time.LocalDateTime
 
 enum class ExamCategory {
@@ -31,8 +32,8 @@ data class Exam(
 )
 
 data class ExamSchedule(
-    val creationDateTime: String, // TODO: change to Instant
-    val retrievalDateTime: String, // TODO: change to Instant
+    val creationDateTime: Instant,
+    val retrievalDateTime: Instant,
     val school: ExamScheduleSchool,
     val programme: ExamScheduleProgramme,
     val calendarTerm: String,

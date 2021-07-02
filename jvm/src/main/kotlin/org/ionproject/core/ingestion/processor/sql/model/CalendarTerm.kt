@@ -11,7 +11,7 @@ data class CalendarTerm(
     val endDate: LocalDateTime
 )
 
-data class CalendarTermInput(
+data class RealCalendarTerm(
     val id: String,
     @ColumnName("start_date")
     val startDate: Int,
