@@ -159,9 +159,8 @@ This section describes endpoints that should only be used internally, with no pr
 
 Validates the specified authentication request with the associated secret id.
 
-```
-Method: POST
-Endpoint: /api/auth/verify
+```http
+POST /api/auth/verify
 ```
 
 With the body being:
@@ -179,9 +178,8 @@ If successful a `204 No Content` status code is returned.
 
 Provides in depth information about the authentication request with the specified id.
 
-```
-Method: GET
-Endpoint: /api/auth/request/85b594fa-6ab4-4e7d-98e3-cfe7789b974b
+```http
+GET /api/auth/request/{{ auth_req_id }}
 ```
 
 With the following response:
