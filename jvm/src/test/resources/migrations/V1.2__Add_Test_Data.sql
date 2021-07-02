@@ -3,6 +3,21 @@ INSERT INTO dbo.authclient (client_id, client_secret, client_name, client_url) V
 ('14633a07-30d8-41f9-aa4d-d55341d7c7f3', null, 'i-on Android', null)
 ON CONFLICT DO NOTHING;
 
+INSERT INTO dbo.useraccount (user_id, name, email) VALUES ('c55d85d9-61b4-4cdf-aa10-88d2da750b49', null, 'dummy@alunos.isel.pt')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO dbo.useraccounttoken (access_token, refresh_token, user_id, client_id, at_expires) VALUES (
+    'VaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
+    '4XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
+    'c55d85d9-61b4-4cdf-aa10-88d2da750b49',
+    '22dd1551-db23-481b-acde-d286440388a5',
+    '2200-07-02 14:41:30.278774')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO dbo.useraccounttokenscope (token_id, scope_id) VALUES
+(1, 'profile'), (1, 'classes')
+ON CONFLICT DO NOTHING;
+
 INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('LEIC', 'licenciatura eng. inf.', 6),
 ('MEIC', 'mestrado eng. inf.',     4);

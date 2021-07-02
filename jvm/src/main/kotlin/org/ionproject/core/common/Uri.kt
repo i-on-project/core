@@ -194,6 +194,9 @@ object Uri {
     fun forUserClasses() =
         URI("$baseUrl$userClasses")
 
+    fun forUserSections() =
+        URI("$baseUrl$userSections")
+
     fun forPagingUserClasses(page: Int, limit: Int) =
         UriTemplate("$baseUrl$userClasses$springWebPagingQuery").expand(page, limit)
 

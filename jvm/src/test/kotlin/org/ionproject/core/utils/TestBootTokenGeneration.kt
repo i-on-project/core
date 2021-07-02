@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component
  * client_id -1 represents tokens created in test mode
  */
 @Component
-internal class TestBootTokenGeneration(private val authRepo: AuthRepo, private val tokenGenerator: TokenGenerator) {
+internal class TestBootTokenGeneration(
+    private val authRepo: AuthRepo,
+    private val tokenGenerator: TokenGenerator
+) {
     val readScope = "urn:org:ionproject:scopes:api:read"
     val issueScope = "urn:org:ionproject:scopes:token:issue"
     val revokeScope = "urn:org:ionproject:scopes:api:revoke"
