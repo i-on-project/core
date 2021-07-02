@@ -143,7 +143,7 @@ with the following body:
 
 ```json
 {
-    "access_token": "The access token to be revoked",
+    "token": "The access token to be revoked",
     "client_id": "The client id of the application",
     "client_secret": "Is optional and only used if the application is confidential"
 }
