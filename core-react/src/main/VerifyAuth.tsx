@@ -21,7 +21,8 @@ interface PathParams {
 interface AuthClient {
     client_id: string,
     client_name: string,
-    client_url: string
+    client_url: string,
+    confidential: boolean
 }
 
 interface AuthScope {
@@ -171,6 +172,9 @@ const VerifyAuth = () => {
     return (
         <BoxPage>
             <BoxPageHeader className={state.type === AuthStateType.LOADING ? 'animate-pulse' : undefined} title={state.title} message={state.message} />
+            { state.data && !state.data.client.confidential && 
+                <span className="text-white w-2/3 mx-auto font-bold mt-5">The client that requested authentication is not confidential, which means it could be a malicious user.</span>
+            }
             { (state.type === AuthStateType.NOT_COMPLETED || state.type === AuthStateType.VERIFYING) &&
                 <BoxPageItems>
                     <ScopeContainer>
