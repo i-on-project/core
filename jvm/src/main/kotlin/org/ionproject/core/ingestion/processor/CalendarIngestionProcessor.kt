@@ -6,7 +6,7 @@ import org.ionproject.core.ingestion.model.AcademicCalendarTerm
 import org.ionproject.core.ingestion.processor.sql.CalendarIngestionDao
 import org.ionproject.core.ingestion.processor.sql.model.CalendarInstant
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
-import org.ionproject.core.ingestion.processor.sql.model.CalendarTermInput
+import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
 import org.jdbi.v3.sqlobject.kotlin.attach
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -60,9 +60,8 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
             term
         }.sortedBy { it.startDate }
 
-        // TODO: change exception
         return ParsedCalendarTerms(
-            latestTerm ?: throw Exception(),
+            latestTerm ?: throw Exception("No terms found to be processed"),
             parsedTerms
         )
     }
@@ -78,8 +77,6 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
             parsedTerm.toCalendarTermInput(start, end)
         }
 
-        // TODO: Add events
-
         dao.insertCalendarTerms(calendarTerms)
     }
 
@@ -89,14 +86,15 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         if (start == term.startDate && end == term.endDate)
             return
 
+        val oldTerm = dao.getRealTermById(term.id)!!
+
         val instantsList = parsedTerm.toCalendarInstants()
         val instantsIds = dao.insertCalendarInstants(instantsList)
 
         val newTerm = parsedTerm.toCalendarTermInput(instantsIds[0], instantsIds[1])
-        dao.updateCalendarTerm(newTerm)
 
-        // TODO: Delete old instants
-        // TODO: Add new events or edit already existent ones
+        dao.updateCalendarTerm(newTerm)
+        dao.deleteInstants(listOf(oldTerm.startDate, oldTerm.endDate))
     }
 }
 
@@ -109,7 +107,7 @@ private data class ParsedCalendarTerm(
     val data: AcademicCalendarTerm
 )
 
-private fun ParsedCalendarTerm.toCalendarTermInput(start: Int, end: Int) = CalendarTermInput(
+private fun ParsedCalendarTerm.toCalendarTermInput(start: Int, end: Int) = RealCalendarTerm(
     term,
     start,
     end
@@ -124,7 +122,7 @@ private fun AcademicCalendarTerm.parse(): ParsedCalendarTerm {
     var startDate: LocalDate? = null
     var endDate: LocalDate? = null
 
-    details.forEach {
+    lectures.forEach {
         if (startDate == null || it.startDate < startDate)
             startDate = it.startDate
 
@@ -137,11 +135,10 @@ private fun AcademicCalendarTerm.parse(): ParsedCalendarTerm {
             endDate = it.endDate
     }
 
-    // TODO: change exception
     return ParsedCalendarTerm(
         calendarTerm,
-        startDate ?: throw Exception(),
-        endDate ?: throw Exception(),
+        startDate ?: throw Exception("Start date not found for calendar term"),
+        endDate ?: throw Exception("End date not found for calendar term"),
         this
     )
 }

@@ -1,6 +1,7 @@
 package org.ionproject.core.ingestion.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.Instant
 import java.time.LocalDate
 
 data class AcademicCalendarSchool(
@@ -43,14 +44,14 @@ data class AcademicCalendarTerm(
     val calendarTerm: String,
     val interruptions: List<AcademicInterruption> = emptyList(),
     val evaluations: List<AcademicEvaluation> = emptyList(),
-    val details: List<AcademicDetail> = emptyList(),
+    val lectures: List<AcademicDetail> = emptyList(),
     val otherEvents: List<AcademicEvent> = emptyList()
 )
 
 data class AcademicCalendar(
-    val creationDateTime: String, // TODO: change to Instant
-    val retrievalDateTime: String, // TODO: change to Instant
+    val creationDateTime: Instant,
+    val retrievalDateTime: Instant,
     val school: AcademicCalendarSchool,
-    val language: String?, // TODO: This shouldn't be nullable
+    val language: String,
     val terms: List<AcademicCalendarTerm> = emptyList()
 )

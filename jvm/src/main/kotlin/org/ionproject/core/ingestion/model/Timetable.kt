@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.util.StdConverter
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalTime
 
 enum class TimetableEventCategory {
@@ -70,8 +71,8 @@ data class TimetableClass(
 )
 
 data class Timetable(
-    val creationDateTime: String, // TODO: change to Instant
-    val retrievalDateTime: String, // TODO: change to Instant
+    val creationDateTime: Instant,
+    val retrievalDateTime: Instant,
     val school: TimetableSchool,
     val programme: TimetableProgramme,
     val calendarTerm: String,
