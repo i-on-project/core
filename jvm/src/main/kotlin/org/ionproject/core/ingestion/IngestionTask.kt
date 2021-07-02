@@ -104,8 +104,8 @@ class IngestionTask(
                     .use {
                         it.toList()
                             .map { path -> path.toFile() }
-                            .mapNotNull { calendar -> registry[calendar.name] }
-                            .firstOrNull()
+                            .find { calendar -> registry[calendar.name] != null }
+                            ?.let { calendar -> registry[calendar.name]!!.process(calendar) }
                             ?: throw Exception("Cannot process data because the calendar data was not found")
                     }
             }
