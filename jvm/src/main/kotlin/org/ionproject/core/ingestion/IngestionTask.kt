@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.concurrent.Executors
+import kotlin.io.path.name
+import kotlin.streams.toList
 
 @Component
 class IngestionTask(
@@ -35,12 +40,12 @@ class IngestionTask(
 
     private val threadPool = Executors.newSingleThreadExecutor()
 
-    private val academicYearsDir: File by lazy {
-        File(repositoryDir.absolutePath + File.separator + institutionFolder + File.separator + ACADEMIC_YEARS)
+    private val academicYearsDir: Path by lazy {
+        Paths.get(repositoryDir.absolutePath, institutionFolder, ACADEMIC_YEARS)
     }
 
-    private val programmesDir: File by lazy {
-        File(repositoryDir.absolutePath + File.separator + institutionFolder + File.separator + PROGRAMMES)
+    private val programmesDir: Path by lazy {
+        Paths.get(repositoryDir.absolutePath, institutionFolder, PROGRAMMES)
     }
 
     @Scheduled(fixedRate = INGESTION_RATE)
@@ -89,23 +94,43 @@ class IngestionTask(
     }
 
     private fun processFiles() {
-        academicYearsDir.listFiles()
-            ?.sortedDescending()
-            ?.get(0)
-            ?.listFiles()
-            ?.first()
-            ?.let { calendar -> registry[calendar.name]?.process(calendar) }
-            ?: throw Exception("Cannot process data because the calendar data was not found")
+        Files.list(academicYearsDir)
+            .use { academicYears ->
+                val latestYear = academicYears.toList()
+                    .maxOrNull()
+                    ?: throw Exception("No calendar years found for processing")
 
-        programmesDir.listFiles()
-            ?.mapNotNull {
-                it.listFiles()
-                    ?.sortedDescending()
-                    ?.get(0)
-            }?.map {
-                it.listFiles()?.toList() ?: emptyList()
-            }?.flatten()?.forEach {
-                registry[it.name]?.process(it)
+                Files.list(latestYear)
+                    .use {
+                        it.toList()
+                            .firstOrNull()
+                            ?.toFile()
+                            ?.let { calendar -> registry[calendar.name]?.process(calendar) }
+                            ?: throw Exception("Cannot process data because the calendar data was not found")
+                    }
+            }
+
+        Files.list(programmesDir)
+            .use { programmes ->
+                // for each programme
+                programmes.forEach { programme ->
+                    // find the latest year of this programme
+                    val latestYear = Files.list(programme)
+                        .use {
+                            it.toList()
+                                .sortedDescending()
+                                .getOrNull(0)
+                        }
+
+                    // parse the latest year
+                    if (latestYear != null) {
+                        Files.list(latestYear)
+                            .use {
+                                it.map { path -> path.toFile() }
+                                    .forEach { file -> registry[file.name]?.process(file) }
+                            }
+                    }
+                }
             }
     }
 }
