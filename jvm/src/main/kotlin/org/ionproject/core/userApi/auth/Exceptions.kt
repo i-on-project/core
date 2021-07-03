@@ -14,7 +14,7 @@ abstract class AuthErrorException(message: String, val error: AuthError) : Runti
 // invalid_client
 class AuthRequestInvalidClientException : AuthErrorException(
     "The specified client_id/client_secret is invalid!",
-    AuthError.INVALID_GRANT
+    AuthError.INVALID_CLIENT
 )
 
 // unauthorized_client
