@@ -15,8 +15,8 @@ import org.ionproject.core.calendar.representations.CalendarSerializer
 import org.ionproject.core.common.Media
 import org.ionproject.core.common.UriTemplateSerializer
 import org.ionproject.core.common.argumentResolvers.PaginationResolver
+import org.ionproject.core.common.email.ConsoleEmailService
 import org.ionproject.core.common.email.EmailService
-import org.ionproject.core.common.email.MockEmailService
 import org.ionproject.core.common.email.SendGridEmailService
 import org.ionproject.core.common.interceptors.ControlAccessInterceptor
 import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
@@ -173,7 +173,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
                 """.trimIndent()
             )
 
-            return MockEmailService()
+            return ConsoleEmailService()
         }
 
         return SendGridEmailService(

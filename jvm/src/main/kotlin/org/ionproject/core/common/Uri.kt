@@ -172,6 +172,18 @@ object Uri {
 
     val authVerifyUri = URI("$baseUrl$authVerify")
 
+    fun forAuthBackChannel() =
+        URI(authBackchannel)
+
+    fun forAuthVerify() =
+        URI(authVerify)
+
+    fun forAuthToken() =
+        URI(authToken)
+
+    fun forTokenRevoke() =
+        URI(authRevokeToken)
+
     fun forAuthVerifyFrontend(reqId: String, secret: String) =
         UriTemplate("$baseUrl/auth/request/{reqId}/verify?secret={secret}").expand(reqId, secret)
 

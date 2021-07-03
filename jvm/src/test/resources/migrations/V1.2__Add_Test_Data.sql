@@ -3,24 +3,52 @@ INSERT INTO dbo.authclient (client_id, client_secret, client_name, client_url) V
 ('14633a07-30d8-41f9-aa4d-d55341d7c7f3', null, 'i-on Android', null)
 ON CONFLICT DO NOTHING;
 
-INSERT INTO dbo.useraccount (user_id, name, email) VALUES ('c55d85d9-61b4-4cdf-aa10-88d2da750b49', null, 'dummy@alunos.isel.pt')
+INSERT INTO dbo.useraccount (user_id, name, email) VALUES
+('c55d85d9-61b4-4cdf-aa10-88d2da750b49', null, 'dummy@invalid.com'),
+('c56d85d9-61b4-4cdf-aa10-88d2da750b49', null, 'dummy2@invalid.com')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO dbo.useraccounttoken (access_token, refresh_token, user_id, client_id, at_expires) VALUES (
-    'VaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
+INSERT INTO dbo.useraccounttoken (access_token, refresh_token, user_id, client_id, at_expires, created_at, updated_at) VALUES
+    ('VaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
     '4XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
     'c55d85d9-61b4-4cdf-aa10-88d2da750b49',
     '22dd1551-db23-481b-acde-d286440388a5',
-    '2200-07-02 14:41:30.278774')
+    '2200-07-02 14:41:30.278774',
+    '2019-07-02 14:41:30.278774',
+    '2019-07-02 14:41:30.278774'),
+    ('LaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
+     '5XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
+     'c56d85d9-61b4-4cdf-aa10-88d2da750b49',
+     '22dd1551-db23-481b-acde-d286440388a5',
+     '2200-07-02 14:41:30.278774',
+     '2019-07-02 14:41:30.278774',
+     '2019-07-02 14:41:30.278774')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.useraccounttokenscope (token_id, scope_id) VALUES
-(1, 'profile'), (1, 'classes')
+(1, 'profile'), (1, 'classes'),
+(2, 'profile'), (2, 'classes')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO dbo.authrequest (auth_req_id, secret_id, login_hint, user_agent, client_id, expires_on, verified) VALUES (
+    '400d1ef0-3e20-46de-9452-8c21a5039ba5',
+    '6TdbtIAHwxA4_yEQQDhBd7tZHYZBIDJfbjJdzfYF69ZHiesUg_Y_UfMlsxOSXHGQMNjWRI9IxiSfUTENCp_Jvw',
+    'hello@hello.com',
+    'Hello',
+    '22dd1551-db23-481b-acde-d286440388a5',
+    '2200-07-02 14:41:30.278774',
+    false
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO dbo.authrequestscope (auth_req_id, scope_id) VALUES
+('400d1ef0-3e20-46de-9452-8c21a5039ba5', 'profile')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('LEIC', 'licenciatura eng. inf.', 6),
-('MEIC', 'mestrado eng. inf.',     4);
+('MEIC', 'mestrado eng. inf.',     4)
+ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.Instant(date, time) VALUES
 (DATE '2017-02-01', null),

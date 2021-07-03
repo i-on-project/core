@@ -42,6 +42,8 @@ dependencies {
 
     // test dependencies
     testImplementation("org.mnode.ical4j:ical4j:3.0.+")
+    testImplementation("io.mockk:mockk:1.10.6")
+    testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
