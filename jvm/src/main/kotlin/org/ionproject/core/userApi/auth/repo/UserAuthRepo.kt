@@ -26,7 +26,11 @@ interface UserAuthRepo {
 
     fun getTokenInfo(accessToken: String): UserTokenInfo
 
+    fun updateTokenUsedAt(accessToken: String)
+
     fun refreshAccessToken(tokenInput: AuthTokenInput): AuthSuccessfulResponse
 
     fun revokeAccessToken(revokeInput: UserRevokeTokenInput)
+
+    fun revokeOlderTokens()
 }

@@ -60,6 +60,8 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
         if (info.token.accessTokenExpires.isBefore(Instant.now()))
             throw ForbiddenActionException("The provided access token has expired")
 
+        repo.updateTokenUsedAt(token)
+
         val hasScopes = info.scopes
             .map { UserResourceScope.fromUserTokenScope(it) }
             .containsAll(requiredScopes.toSet())

@@ -11,9 +11,10 @@ data class AuthClient(
     @ColumnName("client_name")
     val clientName: String,
     @ColumnName("client_url")
-    val clientUrl: String?
+    val clientUrl: String?,
+    val confidential: Boolean = clientSecret != null
 ) {
-    fun toOutput() = AuthClientOutput(clientName, clientUrl, clientSecret != null)
+    fun toOutput() = AuthClientOutput(clientName, clientUrl, confidential)
 }
 
 data class AuthClientOutput(

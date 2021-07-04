@@ -93,7 +93,19 @@ object UserData {
         access_token = :$ACCESS_TOKEN,
         refresh_token = :$REFRESH_TOKEN,
         at_expires = :$AT_EXPIRES,
-        updated_at = now()
+        updated_at = now(),
+        used_at = now()
         where token_id = :$TOKEN_ID
+    """
+
+    const val UPDATE_TOKEN_USED_AT = """
+        update dbo.UserAccountToken set
+        used_at = now()
+        where token_id = :$TOKEN_ID
+    """
+
+    const val REVOKE_OLDER_TOKENS = """
+        delete from dbo.UserAccountToken 
+        where trunc(date_part('day', now() - used_at) / 7) >= 1;
     """
 }
