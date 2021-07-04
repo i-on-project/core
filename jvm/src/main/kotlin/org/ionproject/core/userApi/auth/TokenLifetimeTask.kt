@@ -17,5 +17,4 @@ class TokenLifetimeTask(val repo: UserAuthRepo) {
         log.info("Revoking older access tokens")
         repo.revokeOlderTokens()
     }
-
 }
