@@ -54,6 +54,6 @@ class SearchController(
     ): ResponseEntity<Any> {
         val searchQuery = SearchQuery(query, types, pagination.limit, pagination.page)
         val searchResults = searchRepo.search(searchQuery)
-        return ResponseEntity.ok(searchResults.toSearchResultListRepr())
+        return ResponseEntity.ok(searchResults.toSearchResultListRepr(pagination))
     }
 }

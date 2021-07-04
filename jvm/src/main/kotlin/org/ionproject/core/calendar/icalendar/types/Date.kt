@@ -37,39 +37,33 @@ class Date private constructor(
         return "$year$month$day"
     }
 
-    private class Year(
+    class Year(
         val value: Int
     ) {
         init {
             if (value < 0 || value > 9999) throw IllegalArgumentException("A year must be between 0 and 9999.")
         }
 
-        override fun toString(): String {
-            return String.format("%04d", value)
-        }
+        override fun toString() = String.format("%04d", value)
     }
 
-    private class Month(
+    class Month(
         private val value: Int
     ) {
         init {
             if (value < 0 || value > 12) throw IllegalArgumentException("Months must be between 0 and 12.")
         }
 
-        override fun toString(): String {
-            return String.format("%02d", value)
-        }
+        override fun toString() = String.format("%02d", value)
     }
 
-    private class MonthDay(
+    class MonthDay(
         private val value: Int
     ) {
         init {
             if (value < 0 || value > 31) throw IllegalArgumentException("Month days must be between 0 and 31.")
         }
 
-        override fun toString(): String {
-            return String.format("%02d", value)
-        }
+        override fun toString() = String.format("%02d", value)
     }
 }

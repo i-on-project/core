@@ -4,13 +4,8 @@ class DateTime(
     val date: Date,
     val time: Time
 ) : ICalendarDataType {
-    override val value: Any
-        get() = toString()
-
-    override val name: String
-        get() = iCalName
-
     companion object {
+        private const val iCalName = "DATE-TIME"
         private const val SEPARATOR = 'T'
 
         fun parse(s: CharSequence): DateTime {
@@ -22,9 +17,13 @@ class DateTime(
                 Time.parse(timeComp)
             )
         }
-
-        private const val iCalName = "DATE-TIME"
     }
+
+    override val value: Any
+        get() = toString()
+
+    override val name: String
+        get() = iCalName
 
     override fun toString(): String {
         return "${date}$SEPARATOR$time"

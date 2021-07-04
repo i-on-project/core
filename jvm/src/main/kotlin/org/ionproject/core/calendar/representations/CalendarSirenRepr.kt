@@ -105,10 +105,7 @@ private val CalendarComponent.asSubComponentSirenProperties: Map<String, Any>
     )
 
 private fun Iterable<Property>.toMap(): Map<String, Any> =
-    this
-        .groupBy {
-            it.name
-        }
+    this.groupBy { it.name }
         .mapEntries {
             val propName = it.key.toLowerCase()
             val list = it.value

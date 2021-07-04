@@ -25,8 +25,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     fun getInvalidClassSectionByWrongCID() {
         doGet(notFoundUriByWrongCID) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isNotFound }
             }.andReturn()
@@ -40,8 +39,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     fun getInvalidClassSectionByWrongCalTerm() {
         doGet(notFoundUriByWrongCalTerm) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isNotFound }
             }.andReturn()
@@ -55,8 +53,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     fun getInvalidClassSectionByWrongSID() {
         doGet(notFoundUriByWrongSID) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isNotFound }
             }.andReturn()
@@ -71,8 +68,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isNotAcceptable } }
             .andReturn()
     }
@@ -84,8 +80,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
     fun getClassSectionWithBadRequest() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isBadRequest } }
             .andReturn()
     }

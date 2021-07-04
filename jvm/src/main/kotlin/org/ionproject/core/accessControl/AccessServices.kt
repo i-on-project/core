@@ -82,7 +82,6 @@ class AccessServices(
         query: MultiValueMap<String, String>,
         tokenHash: String
     ): String {
-
         val calendar = calRepo.getClassSectionCalendar(cid, calterm, sid, query)
 
         if (calendar != null)

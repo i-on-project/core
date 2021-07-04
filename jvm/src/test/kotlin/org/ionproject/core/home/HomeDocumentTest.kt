@@ -81,8 +81,7 @@ internal class HomeDocumentTest : ControllerTester() {
     fun getHomeDocument() {
         doGet(URI.create(Uri.apiBase)) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isOk }
                 content { contentType("application/json-home") }

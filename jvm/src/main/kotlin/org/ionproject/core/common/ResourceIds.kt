@@ -6,8 +6,6 @@ package org.ionproject.core.common
  *
  * The resource identifiers here must match with the resource id in the policies table
  *
- * TODO(IMPORT THOSE FROM DATABASE INSTEAD OF HAVING TO ALTER BOTH SIDES)
- * TODO(OVERRIDE ERROR ENDPOINT AS THIS CURRENT METHOD WONT ALLOW ACCESS TO IT)
  */
 object ResourceIds {
     const val VERSION_0 = "v0"

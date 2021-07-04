@@ -52,7 +52,7 @@ class TokenGenerator {
         val digest = md.digest(tokenBytes)
 
         // Print bytes in hexadecimal format with padding in case of insufficient chars (used to index the token table)
-        return digest.fold("", { str, it -> str + "%02x".format(it) })
+        return digest.fold("") { str, it -> str + "%02x".format(it) }
     }
 
     /**

@@ -53,8 +53,7 @@ internal class CalendarErrorTest : ControllerTester() {
         for (link in invalidLinks) {
             doGet(link) {
                 header("Authorization", readTokenTest)
-            }
-                .andDo { print() }
+            }.andDo { println() }
                 .andExpect {
                     status { isNotFound }
                 }.andReturn()
@@ -71,8 +70,7 @@ internal class CalendarErrorTest : ControllerTester() {
             doGet(link) {
                 accept = Media.MEDIA_HOME
                 header("Authorization", readTokenTest)
-            }
-                .andDo { print() }
+            }.andDo { println() }
                 .andExpect { status { isNotAcceptable } }
                 .andReturn()
         }

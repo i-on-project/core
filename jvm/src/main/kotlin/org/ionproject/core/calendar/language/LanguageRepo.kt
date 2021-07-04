@@ -14,17 +14,12 @@ class LanguageRepoImpl(
     private val languageMapper: LanguageData.LanguageMapper
 ) : LanguageRepo {
 
-    private val languages: HashMap<Int, Language> by lazy {
-        val l = transactionManager.run {
+    private val languages: Map<Int, Language> by lazy {
+        transactionManager.run {
             it.createQuery(LanguageData.ALL_LANGUAGES_QUERY)
                 .map(languageMapper)
-                .list()
+                .toMap()
         }
-
-        val map = hashMapOf<Int, Language>()
-        l?.forEach { map += it }
-
-        map
     }
 
     override fun byId(id: Int): Language? =

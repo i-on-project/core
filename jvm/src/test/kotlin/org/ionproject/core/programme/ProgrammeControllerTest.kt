@@ -61,7 +61,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
@@ -87,7 +87,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
@@ -116,7 +116,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
@@ -141,7 +141,7 @@ internal class ProgrammeControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }

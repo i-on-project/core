@@ -25,8 +25,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     fun getInvalidProgramme() {
         doGet(notFoundUri) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isNotFound }
             }.andReturn()
@@ -41,8 +40,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
         doGet(validUri) {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isNotAcceptable } }
             .andReturn()
     }
@@ -54,8 +52,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     fun getProgrammeWithBadRequest() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isBadRequest } }
             .andReturn()
     }
@@ -67,8 +64,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     fun getInvalidProgrammeOffer() {
         doGet(notFoundProgrammeOffer) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect {
                 status { isNotFound }
             }.andReturn()
@@ -81,8 +77,7 @@ internal class ProgrammeErrorTest : ControllerTester() {
     fun getProgrammeOfferWithBadRequest() {
         doGet(badRequestProgrammeOffer) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isBadRequest } }
             .andReturn()
     }

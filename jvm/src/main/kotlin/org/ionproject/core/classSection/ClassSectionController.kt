@@ -19,7 +19,6 @@ class ClassSectionController(private val repo: ClassSectionRepo) {
         @PathVariable calterm: String,
         @PathVariable sid: String
     ): ResponseEntity<Siren> {
-
         val cs = repo.get(cid, calterm, sid)
 
         cs?.let { return ResponseEntity.ok(it.toSiren()) }

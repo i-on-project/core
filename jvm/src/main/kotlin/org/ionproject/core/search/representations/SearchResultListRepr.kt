@@ -1,38 +1,35 @@
 package org.ionproject.core.search.representations
 
-import org.ionproject.core.common.EmbeddedRepresentation
-import org.ionproject.core.common.Siren
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.search.model.SearchResultCollection
 
-private const val COLLECTION = "collection"
-private const val ITEM = "item"
-private const val SELF = "self"
-private const val SEARCH = "search"
-private const val RESULT = "result"
-private const val ID = "id"
-private const val NAME = "name"
+data class SearchItemProperties(
+    val id: String,
+    val name: String
+)
 
-fun SearchResultCollection.toSearchResultListRepr(): Siren =
+fun SearchResult.toProperties() = SearchItemProperties(id, name)
+
+fun SearchResultCollection.toSearchResultListRepr(pagination: Pagination) =
     SirenBuilder()
-        .klass(SEARCH, RESULT, COLLECTION)
+        .klass("search", "result", "collection")
         .entities(
             map { it.toSearchResultListItemRepr() }
         )
-        .link(SELF, href = Uri.forSearch(resultOf))
-        // TODO("Next and previous relations")
+        .link("self", href = Uri.forSearch(resultOf))
+        .link("next", href = Uri.forSearch(resultOf.next()))
+        .apply {
+            if (pagination.page > 0)
+                link("previous", href = Uri.forSearch(resultOf.prev()))
+        }
         .toSiren()
 
-fun SearchResult.toSearchResultListItemRepr(): EmbeddedRepresentation =
-    SirenBuilder(
-        mapOf(
-            ID to id,
-            NAME to name
-        )
-    )
+fun SearchResult.toSearchResultListItemRepr() =
+    SirenBuilder(toProperties())
         .klass(type)
-        .rel(ITEM)
-        .link(SELF, href = href)
+        .rel("item")
+        .link("self", href = href)
         .toEmbed()

@@ -17,6 +17,9 @@ class SearchQuery private constructor(
             )
         }
     }
+
+    fun next() = SearchQuery(query, types, limit, page + 1)
+    fun prev() = SearchQuery(query, types, limit, page - 1)
 }
 
 class InvalidSearchTypeException(val type: String) : IllegalArgumentException("An unsupported type was used.")
