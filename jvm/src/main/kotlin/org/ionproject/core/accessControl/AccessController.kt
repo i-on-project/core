@@ -130,8 +130,7 @@ class AccessController(private val services: AccessServices, private val tokenGe
         @RequestParam query: MultiValueMap<String, String>,
         @RequestAttribute("token") tokenFather: TokenEntity
     ): ResponseEntity<Any> {
-
-        var parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
+        val parameterPath = Uri.forCalendarByClassSection(cid, calterm, sid).toString()
 
         val token = services.generateImportClassSectionCalendar(sid, calterm, cid, query, tokenFather.hash)
 
@@ -141,10 +140,10 @@ class AccessController(private val services: AccessServices, private val tokenGe
 
     private fun buildUrl(query: MultiValueMap<String, String>, parameterPath: String, derivedToken: String): String {
         var queryParams = "?"
-        if (query.size == 0)
-            queryParams += derivedToken
+        queryParams += if (query.size == 0)
+            derivedToken
         else
-            queryParams += addQueryParams(query) + "&$derivedToken"
+            addQueryParams(query) + "&$derivedToken"
 
         return parameterPath + queryParams
     }
@@ -155,7 +154,6 @@ class AccessController(private val services: AccessServices, private val tokenGe
     private fun addQueryParams(
         query: MultiValueMap<String, String>
     ): String {
-
         var queryString = ""
         var listParams: String
         for (key in query.keys) {
@@ -166,7 +164,7 @@ class AccessController(private val services: AccessServices, private val tokenGe
             else if (list.size == 1)
                 list[0]
             else
-                query[key]?.fold(query[key]?.get(0), { str, it -> "$str,$it" }) ?: ""
+                query[key]?.fold(query[key]?.get(0)) { str, it -> "$str,$it" } ?: ""
 
             queryString += "$key=$listParams&"
         }

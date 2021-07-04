@@ -3,21 +3,15 @@ package org.ionproject.core.search
 import org.ionproject.core.common.Siren
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
+import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.search.model.SearchQuery
 import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.search.model.SearchResultCollection
+import org.ionproject.core.search.representations.toProperties
 import org.ionproject.core.search.representations.toSearchResultListRepr
 import org.ionproject.core.utils.assertSiren
 import org.junit.jupiter.api.Test
 import java.net.URI
-
-const val COLLECTION = "collection"
-const val ITEM = "item"
-const val SELF = "self"
-const val SEARCH = "search"
-const val RESULT = "result"
-const val ID = "id"
-const val NAME = "name"
 
 class SearchSirenTest {
 
@@ -48,28 +42,28 @@ class SearchSirenTest {
 
         val noResultsSiren = buildSiren(noResultsQuery, noResultsResults)
 
-        fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>): Siren {
+        private fun buildSiren(searchQuery: SearchQuery, results: List<SearchResult>): Siren {
             return buildSiren(searchQuery.query, searchQuery.limit, searchQuery.page, searchQuery.types.map { it.toString() }, results)
         }
 
         fun buildSiren(search: String, limit: Int, page: Int, types: List<String>, results: List<SearchResult>): Siren =
             SirenBuilder()
-                .klass(SEARCH, RESULT, COLLECTION)
+                .klass("search", "result", "collection")
                 .entities(
                     results.map {
-                        SirenBuilder(
-                            mapOf(
-                                ID to it.id,
-                                NAME to it.name
-                            )
-                        )
+                        SirenBuilder(it.toProperties())
                             .klass(it.type)
-                            .rel(ITEM)
-                            .link(SELF, href = it.href)
+                            .rel("item")
+                            .link("self", href = it.href)
                             .toEmbed()
                     }
                 )
-                .link(SELF, href = URI.create("${Uri.baseUrl}/api/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
+                .link("self", href = URI.create("${Uri.baseUrl}/api/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=$page"))
+                .link("next", href = URI.create("${Uri.baseUrl}/api/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=${page + 1}"))
+                .apply {
+                    if (page > 0)
+                        link("previous", href = URI.create("${Uri.baseUrl}/api/search?query=$search&types=${types.joinToString(",")}&limit=$limit&page=${page - 1}"))
+                }
                 .toSiren()
     }
 
@@ -80,7 +74,8 @@ class SearchSirenTest {
             genericResults
         )
 
-        assertSiren(collection.toSearchResultListRepr(), genericSiren)
+        val pagination = Pagination(1, 3)
+        assertSiren(collection.toSearchResultListRepr(pagination), genericSiren)
     }
 
     @Test
@@ -90,6 +85,7 @@ class SearchSirenTest {
             noResultsResults
         )
 
-        assertSiren(collection.toSearchResultListRepr(), noResultsSiren)
+        val pagination = Pagination(1, 3)
+        assertSiren(collection.toSearchResultListRepr(pagination), noResultsSiren)
     }
 }

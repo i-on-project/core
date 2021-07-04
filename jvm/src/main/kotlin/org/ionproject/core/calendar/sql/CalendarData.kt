@@ -180,12 +180,10 @@ object CalendarData {
                 LOCATION
             ).build()
 
-        val query = handle.createQuery(queryString)
+        return handle.createQuery(queryString)
             .bind(COURSE_ID, courseId)
             .bind(CAL_TERM, calendarTerm)
             .bind(QUERY_FILTERS, filters)
-
-        return query
     }
 
     fun calendarFromClassSectionQuery(

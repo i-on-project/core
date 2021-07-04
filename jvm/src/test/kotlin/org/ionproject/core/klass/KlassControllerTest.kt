@@ -87,7 +87,7 @@ internal class KlassControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
@@ -132,7 +132,7 @@ internal class KlassControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHrefPage, true)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }

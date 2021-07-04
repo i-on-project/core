@@ -17,12 +17,7 @@ class SearchModelTest {
         val page = 0
 
         try {
-            SearchQuery(
-                query,
-                types,
-                limit,
-                page
-            )
+            SearchQuery(query, types, limit, page)
             fail("The invalid type was accepted.")
         } catch (e: Exception) {
             assertEquals(InvalidSearchTypeException::class.java, e.javaClass, "The exception was not of type [InvalidSearchTypeException]")
@@ -36,13 +31,7 @@ class SearchModelTest {
         val limit = 0
         val page = 0
 
-        SearchQuery(
-            query,
-            types,
-            limit,
-            page
-        )
-
+        SearchQuery(query, types, limit, page)
         assertTrue(true)
     }
 }

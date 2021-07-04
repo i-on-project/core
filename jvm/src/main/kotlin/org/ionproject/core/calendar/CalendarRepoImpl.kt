@@ -120,8 +120,7 @@ class CalendarRepoImpl(
     }
 
     private fun checkIfClassIsValid(handle: Handle, courseId: Int, calendarTerm: String) {
-        val count = handle
-            .createQuery(CalendarData.CHECK_IF_CLASS_EXISTS)
+        val count = handle.createQuery(CalendarData.CHECK_IF_CLASS_EXISTS)
             .bind(CalendarData.CAL_TERM, calendarTerm)
             .bind(CalendarData.ID, courseId)
             .mapTo(Integer::class.java)

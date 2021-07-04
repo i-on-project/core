@@ -48,9 +48,7 @@ class Time private constructor(
             if (value < 0 || value > 23) throw IllegalArgumentException("Hour values can only go from 0-23.")
         }
 
-        override fun toString(): String {
-            return String.format("%02d", value)
-        }
+        override fun toString() = String.format("%02d", value)
     }
 
     class Minute(
@@ -60,9 +58,7 @@ class Time private constructor(
             if (value < 0 || value > 59) throw IllegalArgumentException("Minute values can only go from 0-59.")
         }
 
-        override fun toString(): String {
-            return String.format("%02d", value)
-        }
+        override fun toString() = String.format("%02d", value)
     }
 
     class Second(
@@ -72,8 +68,6 @@ class Time private constructor(
             if (value < 0 || value > 60) throw IllegalArgumentException("Second values can only go from 0-60.")
         }
 
-        override fun toString(): String {
-            return String.format("%02d", value)
-        }
+        override fun toString() = String.format("%02d", value)
     }
 }

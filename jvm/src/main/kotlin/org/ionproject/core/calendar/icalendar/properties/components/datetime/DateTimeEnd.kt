@@ -10,8 +10,8 @@ import org.ionproject.core.calendar.icalendar.types.ICalendarDataType
 
 class DateTimeEnd private constructor(
     override val value: ICalendarDataType,
-    val valueDataType: ValueDataType?,
-    val timeZoneIdentifier: TimeZoneIdentifier?
+    private val valueDataType: ValueDataType?,
+    private val timeZoneIdentifier: TimeZoneIdentifier?
 ) : ParameterizedProperty {
 
     constructor(dateTime: DateTime, timeZoneIdentifier: TimeZoneIdentifier? = null) : this(

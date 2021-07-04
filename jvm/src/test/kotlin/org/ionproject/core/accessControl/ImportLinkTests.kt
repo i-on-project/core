@@ -27,8 +27,7 @@ internal class ImportLinkTests : ControllerTester() {
     fun generateClassCalendarImportUrl() {
         val linkResult = doGet(importClassCalendarUrl) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
             .response
@@ -39,9 +38,8 @@ internal class ImportLinkTests : ControllerTester() {
         // Spring boot delivers the requests directly to a Servlet
         // Host:Port will not be considered
         val link = jsonLink.url.dropWhile { c -> c != '/' }
-        doGet(URI(link)) {
-        }
-            .andDo { print() }
+        doGet(URI(link))
+            .andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -53,8 +51,7 @@ internal class ImportLinkTests : ControllerTester() {
     fun generateClassSectionCalendarImportUrl() {
         val linkResult = doGet(importClassSectionCalendarUrl) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
             .response
@@ -65,9 +62,8 @@ internal class ImportLinkTests : ControllerTester() {
         // Spring boot delivers the requests directly to a Servlet
         // Host:Port will not be considered
         val link = jsonLink.url.dropWhile { c -> c != '/' }
-        doGet(URI(link)) {
-        }
-            .andDo { print() }
+        doGet(URI(link))
+            .andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -80,8 +76,7 @@ internal class ImportLinkTests : ControllerTester() {
     fun generateInexistentResourceImportUrl() {
         doGet(importClassCalendarNotFoundUrl) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isNotFound } }
             .andReturn()
     }
@@ -94,8 +89,7 @@ internal class ImportLinkTests : ControllerTester() {
     fun generateImportUrlDuplicate() {
         val result1 = doGet(importClassSectionCalendarDuplicate) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andReturn()
             .response
             .contentAsString
@@ -104,8 +98,7 @@ internal class ImportLinkTests : ControllerTester() {
 
         val result2 = doGet(importClassSectionCalendarDuplicate) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andReturn()
             .response
             .contentAsString

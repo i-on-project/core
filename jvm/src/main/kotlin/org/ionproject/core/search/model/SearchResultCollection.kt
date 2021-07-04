@@ -9,5 +9,5 @@ class SearchResultCollection(
         results.iterator()
 }
 
-fun searchResultsOf(searchQuery: SearchQuery, vararg results: SearchResult): SearchResultCollection =
+fun searchResultsOf(searchQuery: SearchQuery, vararg results: SearchResult) =
     SearchResultCollection(searchQuery, results.toList())

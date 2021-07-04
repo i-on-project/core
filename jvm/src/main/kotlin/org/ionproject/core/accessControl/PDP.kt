@@ -25,7 +25,6 @@ class PDP(private val cache: AccessControlCache) {
         requestDescriptor: Request,
         scope: String
     ): TokenEntity {
-
         // Check if the token is revoked
         if (!token.isValid) {
             logger.info(
@@ -71,7 +70,6 @@ class PDP(private val cache: AccessControlCache) {
         scope: String,
         requestDescriptor: Request
     ): Boolean {
-
         val policies = cache.getPolicies(scope, requestDescriptor.resourceIdentifier.version)
 
         val policy = matchResources(requestDescriptor.resourceIdentifier, policies)

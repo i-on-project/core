@@ -40,7 +40,7 @@ internal class ClassSectionControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }

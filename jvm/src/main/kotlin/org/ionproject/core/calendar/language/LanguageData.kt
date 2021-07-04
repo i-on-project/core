@@ -18,9 +18,7 @@ object LanguageData {
     private const val NAME = "$LANGUAGE_ABBR.$NAME_COLUMN"
 
     private const val SELECT = """
-        SELECT
-            $ID,
-            $NAME
+        SELECT $ID, $NAME
     """
 
     const val ALL_LANGUAGES_QUERY = """

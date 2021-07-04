@@ -1,11 +1,8 @@
 package org.ionproject.core.search
 
-import org.ionproject.core.common.Media
 import org.ionproject.core.search.model.SearchResult
 import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.matchMvc
-import org.ionproject.core.utils.readTokenTest
-import org.springframework.test.web.servlet.get
 import java.net.URI
 
 internal abstract class SearchControllerTest : ControllerTester() {
@@ -32,20 +29,9 @@ internal abstract class SearchControllerTest : ControllerTester() {
     ) {
         val expected = SearchSirenTest.buildSiren(search, limit, page, types, expectedResults)
 
-        mocker.get(uriBuilder(search, limit, page, types)) {
-            accept = Media.MEDIA_SIREN
-            header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
-            .andExpect {
-                status { isOk }
-                header {
-                    val contentType = "content-type"
-                    exists(contentType)
-                    stringValues(contentType, Media.SIREN_TYPE)
-                }
-                expected.matchMvc(this)
-            }
+        isValidSiren(uriBuilder(search, limit, page, types))
+            .andDo { println() }
+            .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
 }

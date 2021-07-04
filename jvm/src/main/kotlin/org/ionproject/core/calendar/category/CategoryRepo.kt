@@ -18,14 +18,13 @@ class CategoryRepoImpl(
     private val categories: HashMap<Int, MutableList<Category>> by lazy {
         val map = hashMapOf<Int, MutableList<Category>>()
         transactionManager.run {
-            it
-                .createQuery(ALL_CATEGORIES_QUERY)
+            it.createQuery(ALL_CATEGORIES_QUERY)
                 .map(categoryMapper)
-                .list()
-        }?.forEach {
-            map.computeIfAbsent(it.first) {
-                mutableListOf()
-            }.add(it.second)
+                .forEach { pair ->
+                    map.computeIfAbsent(pair.first) {
+                        mutableListOf()
+                    }.add(pair.second)
+                }
         }
 
         map

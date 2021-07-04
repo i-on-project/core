@@ -32,7 +32,8 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     @Test
     fun defaultSearch() {
         test(
-            "Lab", expectedResults = results.take(4),
+            "Lab",
+            expectedResults = results.take(4),
             uriBuilder = { search, _, _, _ ->
                 URI.create("/api/search?query=$search")
             }
@@ -50,7 +51,9 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     @Test
     fun searchWithDifferentPage() {
         test(
-            "Lab", page = 1, expectedResults = emptyList(),
+            "Lab",
+            page = 1,
+            expectedResults = emptyList(),
             uriBuilder = { search, _, page, _ ->
                 URI.create("/api/search?query=$search&page=$page")
             }
@@ -59,7 +62,10 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     @Test
     fun searchWithDifferentLimitAndPage() {
         test(
-            "Lab", 1, 1, expectedResults = results.drop(1).take(1),
+            "Lab",
+            1,
+            1,
+            expectedResults = results.drop(1).take(1),
             uriBuilder = { search, limit, page, _ ->
                 URI.create("/api/search?query=$search&page=$page&limit=$limit")
             }
@@ -68,7 +74,9 @@ internal class CourseSearchControllerTest : SearchControllerTest() {
     @Test
     fun searchWithDifferentTypes() {
         test(
-            "Lab", expectedResults = results.take(1), types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION),
+            "Lab",
+            expectedResults = results.take(1),
+            types = listOf(SearchableEntities.PROGRAMME, SearchableEntities.COURSE, SearchableEntities.CLASS_SECTION),
             uriBuilder = { search, _, _, types ->
                 URI.create("/api/search?query=$search&types=${types.joinToString(",")}")
             }

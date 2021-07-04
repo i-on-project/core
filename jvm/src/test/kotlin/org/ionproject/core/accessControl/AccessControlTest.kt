@@ -49,8 +49,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getNotFoundPage() {
         doGet(notFoundUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isNotFound } }
             .andReturn()
     }
@@ -64,8 +63,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getHomeDocument() {
         doGet(homeDocumentUri) {
             header("Authorization", readTokenTest)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -79,8 +77,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getProgrammes() {
         doGet(programmesUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -89,8 +86,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getProgrammesDetail() {
         doGet(programmesDetailUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -99,8 +95,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getProgrammesQueryParameter() {
         doGet(programmesQueryParamsUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isOk } }
             .andReturn()
     }
@@ -113,8 +108,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getCourses() {
         doGet(coursesUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isForbidden } }
             .andReturn()
     }
@@ -126,8 +120,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getCoursesWithUnexistentToken() {
         doGet(coursesUri) {
             header("Authorization", unexistentToken)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isUnauthorized } }
             .andReturn()
     }
@@ -137,10 +130,9 @@ internal class AccessControlTest : ControllerTester() {
      */
     @Test
     fun getCoursesWithRevokedToken() {
-        doGet(AccessControlTest.coursesUri) {
+        doGet(coursesUri) {
             header("Authorization", AccessControlTest.revokedToken)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isUnauthorized } }
             .andReturn()
     }
@@ -152,8 +144,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getCoursesWithExpiredToken() {
         doGet(coursesUri) {
             header("Authorization", expiredToken)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isUnauthorized } }
             .andReturn()
     }
@@ -165,8 +156,7 @@ internal class AccessControlTest : ControllerTester() {
     fun postProgrammesWithReadToken() {
         doPost(programmesUri) {
             header("Authorization", tokenCorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isMethodNotAllowed } }
             .andReturn()
     }
@@ -179,8 +169,7 @@ internal class AccessControlTest : ControllerTester() {
     fun getProgrammesUnsupportedIncludeToken() {
         doGet(programmesUri) {
             header("Authorization", tokenIncorrect)
-        }
-            .andDo { print() }
+        }.andDo { println() }
             .andExpect { status { isBadRequest } }
             .andReturn()
     }

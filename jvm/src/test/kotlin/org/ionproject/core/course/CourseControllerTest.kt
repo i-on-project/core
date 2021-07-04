@@ -70,7 +70,7 @@ internal class CourseControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHref)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
@@ -124,7 +124,7 @@ internal class CourseControllerTest : ControllerTester() {
             .toSiren()
 
         isValidSiren(selfHrefPaged, true)
-            .andDo { print() }
+            .andDo { println() }
             .andExpect { expected.matchMvc(this) }
             .andReturn()
     }
