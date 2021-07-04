@@ -8,6 +8,7 @@ import org.ionproject.core.userApi.auth.model.AuthTokenInput
 import org.ionproject.core.userApi.auth.registry.AuthMethod
 import org.ionproject.core.userApi.user.model.User
 import org.ionproject.core.userApi.user.model.UserRevokeTokenInput
+import org.ionproject.core.userApi.user.model.UserToken
 import org.ionproject.core.userApi.user.model.UserTokenInfo
 
 interface UserAuthRepo {
@@ -26,7 +27,11 @@ interface UserAuthRepo {
 
     fun getTokenInfo(accessToken: String): UserTokenInfo
 
+    fun updateTokenUsedAt(accessToken: String)
+
     fun refreshAccessToken(tokenInput: AuthTokenInput): AuthSuccessfulResponse
 
     fun revokeAccessToken(revokeInput: UserRevokeTokenInput)
+
+    fun revokeOlderTokens()
 }

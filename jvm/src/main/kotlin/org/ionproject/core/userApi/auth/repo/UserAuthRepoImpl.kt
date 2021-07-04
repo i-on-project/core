@@ -147,7 +147,7 @@ class UserAuthRepoImpl(
 
         val authRequestId = tokenInput.authRequestId
         return tm.run {
-            checkClientSecret(tokenInput.clientId, tokenInput.clientSecret, it)
+            val client = checkClientSecret(tokenInput.clientId, tokenInput.clientSecret, it)
 
             val authReq = getAuthRequest(authRequestId, it)
                 ?: throw GrantInvalidAuthRequestException()
@@ -157,7 +157,7 @@ class UserAuthRepoImpl(
 
             if (authReq.verified) {
                 val user = getOrCreateUser(authReq.loginHint, it)
-                val userToken = createUserToken(user, authReq, it)
+                val userToken = createUserToken(user, authReq, client, it)
                 val idToken = generateIdToken(user, authReq.clientId)
 
                 removeAuthRequest(authRequestId, it)
@@ -217,6 +217,19 @@ class UserAuthRepoImpl(
             )
         }
 
+    override fun updateTokenUsedAt(accessToken: String) =
+        tm.run {
+            // checks if the specified token exists
+            val token = getUserToken(accessToken, it)
+                ?: throw UserTokenNotFoundException()
+
+            it.createUpdate(UserData.UPDATE_TOKEN_USED_AT)
+                .bind(UserData.TOKEN_ID, token.tokenId)
+                .execute()
+
+            Unit
+        }
+
     override fun refreshAccessToken(tokenInput: AuthTokenInput): AuthSuccessfulResponse {
         if (tokenInput.refreshToken == null)
             throw AuthRequestInvalidException("You need to specify a refresh token to perform this operation")
@@ -234,7 +247,6 @@ class UserAuthRepoImpl(
             val minutesSinceCreation = Duration.between(userToken.updatedAt, Instant.now())
                 .toMinutes()
 
-            println("updatedAt: ${userToken.updatedAt} now: ${Instant.now()} minutesSinceCreation: $minutesSinceCreation")
             if (minutesSinceCreation < tokenRefreshRateDuration)
                 throw RefreshTokenRateLimitException(tokenRefreshRateDuration)
 
@@ -265,6 +277,14 @@ class UserAuthRepoImpl(
                 throw AuthRequestUnauthorizedClientException()
 
             revokeUserToken(userToken, it)
+        }
+
+    override fun revokeOlderTokens() =
+        tm.run {
+            it.createUpdate(UserData.REVOKE_OLDER_TOKENS)
+                .execute()
+
+            Unit
         }
 
     private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
@@ -298,10 +318,12 @@ class UserAuthRepoImpl(
             .toNullable() ?: throw AuthRequestInvalidClientException()
     }
 
-    private fun checkClientSecret(clientId: String, clientSecret: String?, handle: Handle) {
+    private fun checkClientSecret(clientId: String, clientSecret: String?, handle: Handle): AuthClient {
         val client = getClientById(clientId, handle)
         if (client.clientSecret != clientSecret)
             throw AuthRequestInvalidClientException()
+
+        return client
     }
 
     private fun createAuthRequest(helper: AuthRequestHelper, scopes: List<String>, handle: Handle) {
@@ -402,10 +424,12 @@ class UserAuthRepoImpl(
             .execute()
     }
 
-    private fun createUserToken(user: User, authReq: AuthRequest, handle: Handle): UserToken {
-        val existingToken = getUserTokenByClient(user, authReq.clientId, handle)
-        if (existingToken != null)
-            revokeUserToken(existingToken, handle)
+    private fun createUserToken(user: User, authReq: AuthRequest, client: AuthClient, handle: Handle): UserToken {
+        if (!client.confidential) {
+            val existingToken = getUserTokenByClient(user, authReq.clientId, handle)
+            if (existingToken != null)
+                revokeUserToken(existingToken, handle)
+        }
 
         var userToken = generateUserToken(user.userId, authReq.clientId)
         handle.createUpdate(UserData.INSERT_USER_TOKEN)

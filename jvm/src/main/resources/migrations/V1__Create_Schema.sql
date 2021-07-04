@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
                                                    at_expires     TIMESTAMP,
                                                    created_at     TIMESTAMP DEFAULT NOW(),
                                                    updated_at     TIMESTAMP DEFAULT NOW(),
-                                                   UNIQUE (user_id, client_id)
+                                                   used_at        TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
