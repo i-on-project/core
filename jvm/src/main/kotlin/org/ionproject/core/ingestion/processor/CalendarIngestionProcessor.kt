@@ -1,5 +1,6 @@
 package org.ionproject.core.ingestion.processor
 
+import org.ionproject.core.calendarTerm.model.ExamSeason
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.ingestion.model.AcademicCalendar
 import org.ionproject.core.ingestion.model.AcademicCalendarTerm
@@ -7,12 +8,19 @@ import org.ionproject.core.ingestion.processor.sql.CalendarIngestionDao
 import org.ionproject.core.ingestion.processor.sql.model.CalendarInstant
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
+import org.ionproject.core.ingestion.processor.sql.model.toCalendarInstants
+import org.ionproject.core.ingestion.processor.sql.model.toExamSeasonInput
 import org.jdbi.v3.sqlobject.kotlin.attach
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcessor<AcademicCalendar> {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(CalendarIngestionProcessor::class.java)
+    }
 
     override fun process(data: AcademicCalendar) {
         tm.run {
@@ -20,30 +28,33 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
             val parsedTerms = processCalendarTerms(data)
             val termList = parsedTerms.terms
 
-            // TODO: In a worst-case scenario it will be a N+1 query - can we optimize it ???
             val latestCalendarTerm = dao.getLatestCalendarTerm()
             if (latestCalendarTerm == null) {
                 // there are no terms, therefore the new terms should be added
-                addNewTerms(termList, dao)
+                createCalendarTerms(termList, dao)
             } else {
                 val latestStartDate = latestCalendarTerm.startDate.toLocalDate()
-                val addList = termList.filter { parsed ->
-                    val term = dao.getTermById(parsed.term)
+                val createList = mutableListOf<ParsedCalendarTerm>()
+                val updateMap = mutableMapOf<ParsedCalendarTerm, CalendarTerm>()
+
+                val terms = dao.getTermsByIds(termList.map { t -> t.term })
+                termList.forEach { parsed ->
+                    val term = terms[parsed.term]
                     if (term == null && latestStartDate < parsed.startDate) {
-                        // insert new term
-                        true
+                        log.info("Calendar term ${parsed.term} does not exist. Creating new term.")
+                        createList.add(parsed)
                     } else if (term != null) {
+                        log.info("Calendar term ${parsed.term} already exists. Updating term.")
                         // edit term and check events
-                        editTerm(parsed, term, dao)
-                        false
-                    } else {
-                        // do nothing
-                        false
+                        updateMap[parsed] = term
                     }
                 }
 
-                if (addList.isNotEmpty())
-                    addNewTerms(addList, dao)
+                if (createList.isNotEmpty())
+                    createCalendarTerms(createList, dao)
+
+                if (updateMap.isNotEmpty())
+                    updateCalendarTerms(updateMap, dao)
             }
         }
     }
@@ -66,7 +77,7 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         )
     }
 
-    private fun addNewTerms(parsedTerms: List<ParsedCalendarTerm>, dao: CalendarIngestionDao) {
+    private fun createCalendarTerms(parsedTerms: List<ParsedCalendarTerm>, dao: CalendarIngestionDao) {
         val instantsList = parsedTerms.map { it.toCalendarInstants() }
             .flatten()
 
@@ -78,9 +89,43 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         }
 
         dao.insertCalendarTerms(calendarTerms)
+
+        val examSeasons = parsedTerms.map {
+            it.data.evaluations
+                .map { ev ->
+                    ExamSeason(
+                        calendarTerm = it.term,
+                        description = ev.name,
+                        startDate = ev.startDate,
+                        endDate = ev.endDate
+                    )
+                }
+        }.flatten()
+
+        createExamSeasons(examSeasons, dao)
     }
 
-    private fun editTerm(parsedTerm: ParsedCalendarTerm, term: CalendarTerm, dao: CalendarIngestionDao) {
+    private fun createExamSeasons(examSeasons: List<ExamSeason>, dao: CalendarIngestionDao) {
+        val instants = examSeasons.map { it.toCalendarInstants() }.flatten()
+        val instantIds = dao.insertCalendarInstants(instants)
+
+        val mappedSeasons = examSeasons.mapIndexed { index, input ->
+            val start = instantIds[index * 2]
+            val end = instantIds[index * 2 + 1]
+            input.toExamSeasonInput(start, end)
+        }
+
+        dao.insertExamSeasons(mappedSeasons)
+    }
+
+    private fun updateCalendarTerms(terms: Map<ParsedCalendarTerm, CalendarTerm>, dao: CalendarIngestionDao) {
+        terms.forEach { (k, v) ->
+            updateCalendarTermsDates(k, v, dao)
+            updateCalendarTermsExamSeasons(k, v, dao)
+        }
+    }
+
+    private fun updateCalendarTermsDates(parsedTerm: ParsedCalendarTerm, term: CalendarTerm, dao: CalendarIngestionDao) {
         val start = LocalDateTime.of(parsedTerm.startDate, LocalTime.MIDNIGHT)
         val end = LocalDateTime.of(parsedTerm.endDate, LocalTime.MIDNIGHT)
         if (start == term.startDate && end == term.endDate)
@@ -95,6 +140,54 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
 
         dao.updateCalendarTerm(newTerm)
         dao.deleteInstants(listOf(oldTerm.startDate, oldTerm.endDate))
+    }
+
+    private fun updateCalendarTermsExamSeasons(parsedTerm: ParsedCalendarTerm, term: CalendarTerm, dao: CalendarIngestionDao) {
+        val existingEvaluations = dao.getExamSeasonsForTerm(term.id)
+        val evaluations = parsedTerm.data.evaluations
+
+        val evaluationsMap = mutableMapOf<String, ExamSeason>()
+        existingEvaluations.forEach { evaluationsMap[it.description] = it }
+
+        val toCreate = mutableListOf<ExamSeason>()
+        val toUpdate = mutableListOf<ExamSeason>()
+
+        evaluations.forEach {
+            val ev = evaluationsMap[it.name]
+            if (ev == null) {
+                log.info("Creating new exam season: ${term.id} - ${it.name}")
+                toCreate.add(
+                    ExamSeason(
+                        calendarTerm = term.id,
+                        description = it.name,
+                        startDate = it.startDate,
+                        endDate = it.endDate
+                    )
+                )
+            } else if (it.startDate != ev.startDate || it.endDate != ev.endDate) {
+                log.info("Updating exam season: ${term.id} - ${it.name}")
+                toUpdate.add(
+                    ExamSeason(
+                        ev.id,
+                        ev.calendarTerm,
+                        ev.description,
+                        it.startDate,
+                        it.endDate
+                    )
+                )
+            }
+        }
+
+        createExamSeasons(toCreate, dao)
+
+        toUpdate.forEach { season ->
+            val realSeason = dao.getRealExamSeasonById(season.id)
+
+            val newInstants = dao.insertCalendarInstants(season.toCalendarInstants())
+            dao.updateExamSeason(season.toExamSeasonInput(newInstants[0], newInstants[1]))
+
+            dao.deleteInstants(listOf(realSeason.startDate, realSeason.endDate))
+        }
     }
 }
 
