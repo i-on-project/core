@@ -1,6 +1,7 @@
 package org.ionproject.core.calendarTerm.representations
 
 import org.ionproject.core.calendarTerm.model.CalendarTerm
+import org.ionproject.core.calendarTerm.model.ExamSeason
 import org.ionproject.core.common.Action
 import org.ionproject.core.common.Field
 import org.ionproject.core.common.Media
@@ -13,13 +14,13 @@ import java.time.LocalDateTime
 /**
  * Output models
  */
-data class CalendarTermOutputModel(val name: String, val startDate: LocalDateTime, val endDate: LocalDateTime)
+data class CalendarTermOutputModel(val name: String, val startDate: LocalDateTime, val endDate: LocalDateTime, val examSeasons: List<ExamSeason>)
 
 /**
  * Siren representation generators
  */
 fun CalendarTerm.toCalendarTermDetailRepr(page: Int, limit: Int) =
-    SirenBuilder(CalendarTermOutputModel(calTermId, startDate, endDate))
+    SirenBuilder(CalendarTermOutputModel(calTermId, startDate, endDate, examSeasons))
         .klass("calendar-term")
         .entities(classes.map { klass -> klass.toEmbed() })
         .action(
