@@ -7,6 +7,9 @@ import org.ionproject.core.common.Media
 import org.ionproject.core.common.SirenBuilder
 import org.ionproject.core.common.Uri
 import org.springframework.http.HttpMethod
+import java.time.LocalDateTime
+
+private data class CalendarTermShortProps(val name: String, val startDate: LocalDateTime, val endDate: LocalDateTime)
 
 /**
  * Siren representation generators
@@ -39,7 +42,7 @@ fun List<CalendarTerm>.toCalendarTermListRepr(page: Int, limit: Int) =
         }.toSiren()
 
 private fun CalendarTerm.toEmbed() =
-    SirenBuilder(CalendarTermOutputModel(calTermId, startDate, endDate))
+    SirenBuilder(CalendarTermShortProps(calTermId, startDate, endDate))
         .klass("term")
         .rel("item")
         .link("self", href = Uri.forCalTermById(calTermId))

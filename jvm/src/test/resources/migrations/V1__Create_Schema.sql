@@ -2,51 +2,50 @@ CREATE SCHEMA dbo; --POSTGRES ALREADY USES 'public' SCHEMA BY DEFAULT
 
 ------- PHY Model --------
 CREATE TABLE dbo.Programme(
-                              id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                              acronym         VARCHAR(10) UNIQUE,
-                              name            VARCHAR(100) UNIQUE,
-                              termSize        INT,
-                              document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    acronym VARCHAR(10) UNIQUE,
+    name VARCHAR(100) UNIQUE,
+    termSize INT,
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
 
 CREATE TABLE dbo.Calendar (
-    id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 );
 
 CREATE TABLE dbo.Course (
-                            id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                            acronym         VARCHAR(10) UNIQUE,
-                            name            VARCHAR(100) UNIQUE,
-                            document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    acronym VARCHAR(10) UNIQUE,
+    name VARCHAR(100) UNIQUE,
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
 );
 
 CREATE TABLE dbo.ProgrammeOffer(
-                                   id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                   programmeId     INT REFERENCES dbo.Programme(id),
-                                   courseId        INT REFERENCES dbo.Course(id),
-                                   optional        BOOLEAN,
-                                   UNIQUE(programmeId, courseId)
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    programmeId INT REFERENCES dbo.Programme(id),
+    courseId INT REFERENCES dbo.Course(id),
+    optional BOOLEAN,
+    UNIQUE(programmeId, courseId)
 );
 
 CREATE TABLE dbo.ProgrammeOfferTerm(
-                                       offerId         INT REFERENCES dbo.ProgrammeOffer(id),
-                                       termNumber      INT NOT NULL,
-                                       PRIMARY KEY(offerId, termNumber)
+    offerId INT REFERENCES dbo.ProgrammeOffer(id),
+    termNumber INT NOT NULL,
+    PRIMARY KEY(offerId, termNumber)
 );
 
 CREATE TABLE dbo.Instant (
-                             id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                             date            DATE,
-                             time            TIME
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    date DATE,
+    time TIME
 );
 
 CREATE TABLE dbo._CalendarTerm (
-                                   id         VARCHAR(20) PRIMARY KEY, -- e.g. "1920v"
-                                   start_date INT REFERENCES dbo.Instant(id),
-                                   end_date   INT REFERENCES dbo.Instant(id),
-    -- CHECK((SELECT value FROM dbo.Instant WHERE id=end_date) > (SELECT value FROM dbo.Instant WHERE id=start_date)), -- This check is no longer possible with the adittion of instants
-                                   document   TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
-                                   UNIQUE(start_date, end_date)
+    id VARCHAR(20) PRIMARY KEY, -- e.g. "1920v"
+    start_date INT REFERENCES dbo.Instant(id),
+    end_date   INT REFERENCES dbo.Instant(id),
+    document   TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
+    UNIQUE(start_date, end_date)
 );
 
 -- New view to maintain old functionality
@@ -57,53 +56,75 @@ SELECT
     end_instant.date + COALESCE(end_instant.time, TIME '00:00:00') as end_date,
     document
 FROM dbo._CalendarTerm
-         JOIN dbo.Instant start_instant ON start_date = start_instant.id
-         JOIN dbo.Instant end_instant ON end_date = end_instant.id
+    JOIN dbo.Instant start_instant ON start_date = start_instant.id
+    JOIN dbo.Instant end_instant ON end_date = end_instant.id
+WHERE
+    start_instant.date IS NOT NULL
+    AND
+    end_instant.date IS NOT NULL
+ORDER BY start_instant.date desc, start_instant.time desc;
+
+CREATE TABLE dbo._ExamSeason(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    calendarTerm VARCHAR(20) REFERENCES dbo._CalendarTerm(id),
+    description VARCHAR(40),
+    startDate INT REFERENCES dbo.Instant(id),
+    endDate INT REFERENCES dbo.Instant(id)
+);
+
+CREATE VIEW dbo.ExamSeason AS
+SELECT
+    _ExamSeason.id,
+    calendarTerm,
+    description,
+    start_instant.date + COALESCE(start_instant.time, TIME '00:00:00') as startDate,
+    end_instant.date + COALESCE(end_instant.time, TIME '00:00:00') as endDate
+FROM dbo._ExamSeason
+    JOIN dbo.Instant start_instant ON _ExamSeason.startDate = start_instant.id
+    JOIN dbo.Instant end_instant ON _ExamSeason.endDate = end_instant.id
 WHERE
     start_instant.date IS NOT NULL
   AND
     end_instant.date IS NOT NULL
-ORDER BY start_instant.date desc, start_instant.time desc
-;
-
+ORDER BY start_instant.date desc, start_instant.time desc;
 
 CREATE TABLE dbo.Class (
-                           id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           courseId        INT REFERENCES dbo.Course(id),
-                           calendarTerm    VARCHAR(20) REFERENCES dbo._CalendarTerm(id),
-                           calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
-                           document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', calendarTerm)) STORED,
-                           UNIQUE(courseId, calendarTerm)
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    courseId INT REFERENCES dbo.Course(id),
+    calendarTerm VARCHAR(20) REFERENCES dbo._CalendarTerm(id),
+    calendar INT REFERENCES dbo.Calendar(id) UNIQUE,
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', calendarTerm)) STORED,
+    UNIQUE(courseId, calendarTerm)
 );
 
 CREATE TABLE dbo.ClassSection (
-                                  id              VARCHAR(10),
-                                  classId         INT REFERENCES dbo.Class(id),
-                                  calendar        INT REFERENCES dbo.Calendar(id) UNIQUE,
-                                  document        TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
-                                  PRIMARY KEY(id, classId)
+    id VARCHAR(10),
+    classId INT REFERENCES dbo.Class(id),
+    calendar INT REFERENCES dbo.Calendar(id) UNIQUE,
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
+    PRIMARY KEY(id, classId)
 );
 
 -- CALENDAR
 CREATE TABLE dbo.CalendarComponent (
-                                       id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                       dtstamp         TIMESTAMP NOT NULL,
-                                       created         TIMESTAMP NOT NULL,
-                                       type            CHAR NOT NULL
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    dtstamp TIMESTAMP NOT NULL,
+    created TIMESTAMP NOT NULL,
+    type CHAR NOT NULL
 );
 
 CREATE TABLE dbo.CalendarComponents (
-                                        calendar_id     INT REFERENCES dbo.Calendar(id),
-                                        comp_id         INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                        PRIMARY KEY (calendar_id, comp_id)
+    calendar_id INT REFERENCES dbo.Calendar(id),
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    PRIMARY KEY (calendar_id, comp_id)
 );
 
 CREATE TABLE dbo._RecurrenceRule (
-                                     comp_id     	INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                     freq            VARCHAR(20),
-                                     byday           VARCHAR(20),
-                                     until           INT REFERENCES dbo.Instant(id),
-                                     PRIMARY KEY (comp_id, byday)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    freq VARCHAR(20),
+    byday VARCHAR(20),
+    until INT REFERENCES dbo.Instant(id),
+    PRIMARY KEY (comp_id, byday)
 );
 
 CREATE VIEW dbo.RecurrenceRule AS
@@ -114,161 +135,161 @@ SELECT
     date + COALESCE(time, TIME '00:00:00') as until
 FROM
     dbo._RecurrenceRule
-        JOIN
+    JOIN
     dbo.Instant ON id = until;
 
 CREATE TABLE IF NOT EXISTS dbo.ICalendarDataType (
-                                                     id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                                     name           VARCHAR(16) NOT NULL UNIQUE
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(16) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Language(
-                                           id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                           name           VARCHAR(64) NOT NULL UNIQUE
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(64) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Category(
-    id             INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS dbo.CategoryLanguage(
-                                                   category       INT REFERENCES dbo.Category(id),
-                                                   name           VARCHAR(64) NOT NULL,
-                                                   language       INT REFERENCES dbo.Language(id),
-                                                   PRIMARY KEY (category, language)
+    category INT REFERENCES dbo.Category(id),
+    name VARCHAR(64) NOT NULL,
+    language INT REFERENCES dbo.Language(id),
+    PRIMARY KEY (category, language)
 );
 
 -- some iCal property types
 CREATE TABLE IF NOT EXISTS dbo.Description (
-                                               comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                               value          VARCHAR(200),
-                                               language       INT REFERENCES dbo.Language(id),
-                                               PRIMARY KEY(comp_id, value, language)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value VARCHAR(200),
+    language INT REFERENCES dbo.Language(id),
+    PRIMARY KEY(comp_id, value, language)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Summary (
-                                           comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                           value          VARCHAR(50) NOT NULL,
-                                           language       INT REFERENCES dbo.Language(id),
-                                           PRIMARY KEY(comp_id, value, language)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value VARCHAR(50) NOT NULL,
+    language INT REFERENCES dbo.Language(id),
+    PRIMARY KEY(comp_id, value, language)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Attachment (
-                                              comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                              value          VARCHAR(128) NOT NULL,
-                                              PRIMARY KEY(comp_id, value)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value VARCHAR(128) NOT NULL,
+    PRIMARY KEY(comp_id, value)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Due (
-                                       comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                       type           INT REFERENCES dbo.ICalendarDataType(id),
-                                       value          TIMESTAMP,
-                                       PRIMARY KEY(comp_id)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    type INT REFERENCES dbo.ICalendarDataType(id),
+    value TIMESTAMP,
+    PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo._Dtend (
-                                          comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                          type           INT REFERENCES dbo.ICalendarDataType(id),
-                                          date           INT REFERENCES dbo.Instant(id),
-                                          time           TIME,
-                                          PRIMARY KEY(comp_id)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    type INT REFERENCES dbo.ICalendarDataType(id),
+    date INT REFERENCES dbo.Instant(id),
+    time TIME,
+    PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo._Dtstart (
-                                            comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                            type           INT REFERENCES dbo.ICalendarDataType(id),
-                                            date           INT REFERENCES dbo.Instant(id),
-                                            time           TIME,
-                                            PRIMARY KEY(comp_id)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    type INT REFERENCES dbo.ICalendarDataType(id),
+    date INT REFERENCES dbo.Instant(id),
+    time TIME,
+    PRIMARY KEY(comp_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Categories (
-                                              comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                              value          INT REFERENCES dbo.Category(id),
-                                              PRIMARY KEY(comp_id, value)
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value INT REFERENCES dbo.Category(id),
+    PRIMARY KEY(comp_id, value)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.Location (
-                                            comp_id        INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
-                                            value          VARCHAR(128) NOT NULL
+    comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
+    value VARCHAR(128) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthClient(
-                                             client_id      CHAR(36) PRIMARY KEY,
-                                             client_secret  VARCHAR(100) NULL,
-                                             client_name    VARCHAR(100) UNIQUE,
-                                             client_url     VARCHAR(200) NULL
+    client_id CHAR(36) PRIMARY KEY,
+    client_secret VARCHAR(100) NULL,
+    client_name VARCHAR(100) UNIQUE,
+    client_url VARCHAR(200) NULL
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthUserScope(
-                                                scope_id          VARCHAR(100) PRIMARY KEY,
-                                                scope_name        VARCHAR(50) NOT NULL,
-                                                scope_description VARCHAR(200) NULL
+    scope_id VARCHAR(100) PRIMARY KEY,
+    scope_name VARCHAR(50) NOT NULL,
+    scope_description VARCHAR(200) NULL
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthRequest(
-                                              auth_req_id    CHAR(36) PRIMARY KEY,
-                                              secret_id      VARCHAR(100) UNIQUE,
-                                              login_hint     VARCHAR(200) UNIQUE,
-                                              user_agent     VARCHAR(200),
-                                              client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
-                                              expires_on     TIMESTAMP DEFAULT NOW(),
-                                              verified       BOOLEAN DEFAULT FALSE
+    auth_req_id CHAR(36) PRIMARY KEY,
+    secret_id VARCHAR(100) UNIQUE,
+    login_hint VARCHAR(200) UNIQUE,
+    user_agent VARCHAR(200),
+    client_id CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
+    expires_on TIMESTAMP DEFAULT NOW(),
+    verified BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS dbo.AuthRequestScope(
-                                                   auth_req_id    CHAR(36) REFERENCES dbo.AuthRequest(auth_req_id) ON DELETE CASCADE,
-                                                   scope_id       VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id),
-                                                   PRIMARY KEY (auth_req_id, scope_id)
+    auth_req_id CHAR(36) REFERENCES dbo.AuthRequest(auth_req_id) ON DELETE CASCADE,
+    scope_id VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id),
+    PRIMARY KEY (auth_req_id, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccount(
-                                              user_id        CHAR(36) PRIMARY KEY,
-                                              name           VARCHAR(100) NULL,
-                                              email          VARCHAR(200) UNIQUE,
-                                              created_at     TIMESTAMP DEFAULT NOW()
+    user_id CHAR(36) PRIMARY KEY,
+    name VARCHAR(100) NULL,
+    email VARCHAR(200) UNIQUE,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountToken(
-                                                   token_id       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                                   access_token   VARCHAR(100) UNIQUE,
-                                                   refresh_token  VARCHAR(100) UNIQUE,
-                                                   user_id        CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
-                                                   client_id      CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
-                                                   at_expires     TIMESTAMP,
-                                                   created_at     TIMESTAMP DEFAULT NOW(),
-                                                   updated_at     TIMESTAMP DEFAULT NOW(),
-                                                   used_at        TIMESTAMP DEFAULT NOW()
+    token_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    access_token VARCHAR(100) UNIQUE,
+    refresh_token VARCHAR(100) UNIQUE,
+    user_id CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
+    client_id CHAR(36) REFERENCES dbo.AuthClient(client_id) ON DELETE CASCADE,
+    at_expires TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    used_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserAccountTokenScope(
-                                                        token_id      INT REFERENCES dbo.UserAccountToken(token_id) ON DELETE CASCADE,
-                                                        scope_id      VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id) ON DELETE CASCADE,
-                                                        PRIMARY KEY (token_id, scope_id)
+    token_id INT REFERENCES dbo.UserAccountToken(token_id) ON DELETE CASCADE,
+    scope_id VARCHAR(100) REFERENCES dbo.AuthUserScope(scope_id) ON DELETE CASCADE,
+    PRIMARY KEY (token_id, scope_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserClasses(
-                                              user_id       CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
-                                              class_id      INT REFERENCES dbo.Class(id) ON DELETE CASCADE,
-                                              PRIMARY KEY (user_id, class_id)
+    user_id CHAR(36) REFERENCES dbo.UserAccount(user_id) ON DELETE CASCADE,
+    class_id INT REFERENCES dbo.Class(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, class_id)
 );
 
 CREATE TABLE IF NOT EXISTS dbo.UserClassSections(
-                                                    user_id          CHAR(36),
-                                                    class_id         INT,
-                                                    class_section_id VARCHAR(20),
+    user_id CHAR(36),
+    class_id INT,
+    class_section_id VARCHAR(20),
 
-                                                    PRIMARY KEY (user_id, class_id, class_section_id),
+    PRIMARY KEY (user_id, class_id, class_section_id),
 
-                                                    CONSTRAINT fk_user_classes
-                                                        FOREIGN KEY (user_id, class_id)
-                                                            REFERENCES dbo.UserClasses(user_id, class_id)
-                                                            ON DELETE CASCADE,
+    CONSTRAINT fk_user_classes
+        FOREIGN KEY (user_id, class_id)
+        REFERENCES dbo.UserClasses(user_id, class_id)
+        ON DELETE CASCADE,
 
-                                                    CONSTRAINT fk_class_section
-                                                        FOREIGN KEY (class_id, class_section_id)
-                                                            REFERENCES dbo.ClassSection(classId, id)
-                                                            ON DELETE CASCADE
+    CONSTRAINT fk_class_section
+        FOREIGN KEY (class_id, class_section_id)
+        REFERENCES dbo.ClassSection(classId, id)
+        ON DELETE CASCADE
 );
 
 ------- VIEWS --------
@@ -278,8 +299,10 @@ SELECT
     comp_id,
     type,
     i.date + COALESCE(dt.time, i.time, TIME '00:00:00') as value
-FROM dbo._Dtend dt
-         JOIN dbo.Instant i ON dt.date = i.id
+FROM
+    dbo._Dtend dt
+    JOIN
+    dbo.Instant i ON dt.date = i.id
 WHERE i.date IS NOT NULL;
 
 CREATE OR REPLACE VIEW dbo.Dtstart AS
@@ -287,10 +310,11 @@ SELECT
     comp_id,
     type,
     i.date + COALESCE(dt.time, i.time, TIME '00:00:00') as value
-FROM dbo._Dtstart dt
-         JOIN dbo.Instant i ON dt.date = i.id
+FROM
+    dbo._Dtstart dt
+    JOIN
+    dbo.Instant i ON dt.date = i.id
 WHERE i.date IS NOT NULL;
-
 
 CREATE OR REPLACE VIEW dbo.v_ComponentsCommon AS
 SELECT DISTINCT
@@ -306,25 +330,23 @@ SELECT DISTINCT
     Cat.value AS categories
 FROM
     dbo.CalendarComponent AS Comp
-        JOIN
-    dbo.CalendarComponents AS CalComp ON CalComp.comp_id=Comp.id
-        JOIN
+    JOIN
+    dbo.CalendarComponents AS CalComp ON CalComp.comp_id = Comp.id
+    JOIN
     dbo.Summary AS Summ ON Comp.id = Summ.comp_id
-        JOIN
+    JOIN
     dbo.Description AS Descr ON Comp.id = Descr.comp_id
-        JOIN
+    JOIN
     dbo.Categories AS Cat ON Comp.id = Cat.comp_id
 WHERE
     NOT (  -- if is event and not a valid event don't include in the result
-                Comp.type = 'E'
-            AND
-                (
-                            Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
-                        OR
-                            Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd))
+        Comp.type = 'E' AND (
+            Comp.id NOT IN (SELECT comp_id FROM dbo.DtStart)
+            OR
+            Comp.id NOT IN (SELECT comp_id FROM dbo.DtEnd)
         )
-ORDER BY
-    uid;
+    )
+ORDER BY uid;
 
 -- Mashup of all component types
 CREATE OR REPLACE VIEW dbo.v_ComponentsAll AS
@@ -342,20 +364,19 @@ SELECT DISTINCT
     L.value AS location
 FROM
     dbo.v_ComponentsCommon AS Comp
-        LEFT JOIN
+    LEFT JOIN
     dbo.Attachment AS Att ON Comp.uid = Att.comp_id
-        LEFT JOIN
-    dbo.Due AS D ON Comp.uid=D.comp_id
-        LEFT JOIN
+    LEFT JOIN
+    dbo.Due AS D ON Comp.uid = D.comp_id
+    LEFT JOIN
     dbo.Dtstart as DS ON Comp.uid = DS.comp_id
-        LEFT JOIN
-    dbo.Dtend AS DE ON Comp.uid=DE.comp_id
-        LEFT JOIN
-    dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
-        LEFT JOIN
-    dbo.Location AS L ON Comp.uid=L.comp_id
-ORDER BY
-    uid;
+    LEFT JOIN
+    dbo.Dtend AS DE ON Comp.uid = DE.comp_id
+    LEFT JOIN
+    dbo.RecurrenceRule AS RR ON Comp.uid = RR.comp_id
+    LEFT JOIN
+    dbo.Location AS L ON Comp.uid = L.comp_id
+ORDER BY uid;
 
 
 ---- these views will retrieve all the relevant Calendar Property types for a given calendar component
@@ -368,14 +389,13 @@ SELECT DISTINCT
     D.type AS due_value_data_type
 FROM
     dbo.v_ComponentsCommon AS Comp
-        LEFT JOIN
+    LEFT JOIN
     dbo.Attachment AS Att ON Comp.uid = Att.comp_id
-        JOIN
-    dbo.Due AS D ON Comp.uid=D.comp_id
+    JOIN
+    dbo.Due AS D ON Comp.uid = D.comp_id
 WHERE
-        Comp.type = 'T'
-ORDER BY
-    uid;
+    Comp.type = 'T'
+ORDER BY uid;
 
 -- VEVENT
 CREATE OR REPLACE VIEW dbo.v_Event AS
@@ -390,18 +410,17 @@ SELECT DISTINCT
     L.value AS location
 FROM
     dbo.v_ComponentsCommon AS Comp
-        JOIN
+    JOIN
     dbo.Dtstart as DS ON Comp.uid = DS.comp_id
-        JOIN
-    dbo.Dtend AS DE ON Comp.uid=DE.comp_id
-        LEFT JOIN
-    dbo.RecurrenceRule AS RR ON Comp.uid=RR.comp_id
-        LEFT JOIN
-    dbo.Location AS L ON Comp.uid=L.comp_id
+    JOIN
+    dbo.Dtend AS DE ON Comp.uid = DE.comp_id
+    LEFT JOIN
+    dbo.RecurrenceRule AS RR ON Comp.uid = RR.comp_id
+    LEFT JOIN
+    dbo.Location AS L ON Comp.uid = L.comp_id
 WHERE
-        Comp.type = 'E'
-ORDER BY
-    uid;
+    Comp.type = 'E'
+ORDER BY uid;
 
 -- VJOURNAL
 CREATE OR REPLACE VIEW dbo.v_Journal AS
@@ -412,14 +431,13 @@ SELECT DISTINCT
     DS.type AS dtstart_value_data_type
 FROM
     dbo.v_ComponentsCommon AS Comp
-        JOIN
+    JOIN
     dbo.Attachment AS Att ON Comp.uid = Att.comp_id
-        JOIN
+    JOIN
     dbo.Dtstart as DS ON Comp.uid = DS.comp_id
 WHERE
-        Comp.type = 'J'
-ORDER BY
-    uid;
+    Comp.type = 'J'
+ORDER BY uid;
 
 ---- for creation of calendar components
 ---- these will verify constraints and insert in the appropriate tables
@@ -626,14 +644,16 @@ $$ LANGUAGE PLpgSQL;
 
 CREATE VIEW dbo.courseWithTerm AS
 SELECT co.*, cl.calendarterm
-FROM dbo.Course co
-         JOIN
-     (
-         SELECT DISTINCT ON (courseId) calendarTerm, courseId
-         FROM dbo.Class
-                  INNER JOIN dbo.CalendarTerm ON Class.calendarTerm = CalendarTerm.id
-         ORDER BY courseId, start_date DESC
-     ) cl ON co.id=cl.courseId;
+FROM
+    dbo.Course co
+    JOIN (
+        SELECT DISTINCT ON (courseId) calendarTerm, courseId
+        FROM
+             dbo.Class
+             INNER JOIN
+             dbo.CalendarTerm ON Class.calendarTerm = CalendarTerm.id
+        ORDER BY courseId, start_date DESC
+    ) cl ON co.id = cl.courseId;
 
 CREATE OR REPLACE FUNCTION dbo.f_classCalendarCreate (calterm VARCHAR(200), courseid INT)
     RETURNS INT
@@ -674,26 +694,26 @@ $$ LANGUAGE plpgsql;
 -- Access manager
 
 CREATE TABLE dbo.Token(
-                          id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                          hash CHAR(64) UNIQUE,	--64 hexa chars = 256 bits hash
-                          isValid BOOLEAN,
-                          issuedAt BIGINT,
-                          expiresAt BIGINT,
-                          derivedToken BOOLEAN DEFAULT FALSE,
-                          fatherHash CHAR(64) DEFAULT '', --used only if its a derived token
-                          claims JSONB
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    hash CHAR(64) UNIQUE,	--64 hexa chars = 256 bits hash
+    isValid BOOLEAN,
+    issuedAt BIGINT,
+    expiresAt BIGINT,
+    derivedToken BOOLEAN DEFAULT FALSE,
+    fatherHash CHAR(64) DEFAULT '', --used only if its a derived token
+    claims JSONB
 );
 
 CREATE TABLE dbo.scopes(
-                           id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           scope VARCHAR(100) UNIQUE --urn:org:ionproject:scopes:api:read
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    scope VARCHAR(100) UNIQUE --urn:org:ionproject:scopes:api:read
 );
 
 CREATE TABLE dbo.policies(
-                             id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                             scope_id INT REFERENCES dbo.scopes(id),
-                             method VARCHAR(50),		-- get, post...
-                             version VARCHAR(10),	--	v0, v1...
-                             resource VARCHAR(100),-- "getProgrammes", "getProgramme"
-                             UNIQUE(scope_id, method, version, resource)
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    scope_id INT REFERENCES dbo.scopes(id),
+    method VARCHAR(50),		-- get, post...
+    version VARCHAR(10),	--	v0, v1...
+    resource VARCHAR(100),-- "getProgrammes", "getProgramme"
+    UNIQUE(scope_id, method, version, resource)
 );

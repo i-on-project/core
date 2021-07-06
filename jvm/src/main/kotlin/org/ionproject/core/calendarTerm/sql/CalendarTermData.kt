@@ -14,6 +14,7 @@ internal object CalendarTermData {
     const val ID = "id"
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
+    const val EXAM_SEASON = "ExamSeason"
 
     const val CLASS_CAL_TERM = "calendarterm"
 
@@ -45,5 +46,11 @@ internal object CalendarTermData {
         select *
         from $SCHEMA.$CLASS
         where $CLASS_CAL_TERM=:$ID offset :$OFFSET limit :$LIMIT
+    """
+
+    const val EXAM_SEASONS_QUERY = """
+        select *
+        from $SCHEMA.$EXAM_SEASON
+        where $CALENDAR_TERM=:$CALENDAR_TERM
     """
 }
