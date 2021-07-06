@@ -1,8 +1,11 @@
 package org.ionproject.core.ingestion.processor.sql
 
+import org.ionproject.core.calendarTerm.model.ExamSeason
 import org.ionproject.core.ingestion.processor.sql.model.CalendarInstant
 import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
+import org.ionproject.core.ingestion.processor.sql.model.ExamSeasonInput
 import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
+import org.jdbi.v3.sqlobject.config.KeyColumn
 import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
@@ -28,6 +31,15 @@ interface CalendarIngestionDao {
     """
     )
     fun getTermById(id: String): CalendarTerm?
+
+    @SqlQuery(
+        """
+            select id, start_date, end_date from dbo.CalendarTerm
+            where id in (<ids>)
+        """
+    )
+    @KeyColumn("id")
+    fun getTermsByIds(@BindList("ids") ids: List<String>): Map<String, CalendarTerm>
 
     @SqlQuery(
         """
@@ -70,4 +82,37 @@ interface CalendarIngestionDao {
     """
     )
     fun deleteInstants(@BindList("instants") instants: List<Int>)
+
+    @SqlBatch(
+        """
+            insert into dbo._ExamSeason (calendarTerm, description, startDate, endDate)
+            values (:season.calendarTerm, :season.description, :season.startDate, :season.endDate)
+        """
+    )
+    fun insertExamSeasons(@BindBean("season") seasons: List<ExamSeasonInput>)
+
+    @SqlQuery(
+        """
+            select * from dbo.ExamSeason
+            where calendarTerm = :term
+        """
+    )
+    fun getExamSeasonsForTerm(term: String): List<ExamSeason>
+
+    @SqlQuery(
+        """
+            select * from dbo._ExamSeason
+            where id = :id
+        """
+    )
+    fun getRealExamSeasonById(id: Int): ExamSeasonInput
+
+    @SqlUpdate(
+        """
+            update dbo._ExamSeason
+            set startDate = :season.startDate, endDate = :season.endDate
+            where id = :season.id
+        """
+    )
+    fun updateExamSeason(@BindBean("season") season: ExamSeasonInput)
 }
