@@ -9,6 +9,7 @@ private data class UserKlassProps(
     val id: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String
 )
 
@@ -20,6 +21,7 @@ private fun UserKlass.toProps() = UserKlassProps(
     id,
     courseId,
     courseAcr,
+    courseName,
     calendarTerm
 )
 

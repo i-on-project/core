@@ -10,6 +10,7 @@ private data class ShortUserKlassSectionProps(
     val classId: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String
 )
 
@@ -18,6 +19,7 @@ private fun UserKlassSection.toShortProps() = ShortUserKlassSectionProps(
     classId,
     courseId,
     courseAcr,
+    courseName,
     calendarTerm
 )
 
@@ -29,7 +31,7 @@ private fun UserKlassSection.toEmbedRepresentation() =
         .link(Uri.relClassSection, href = Uri.forClassSectionById(courseId, calendarTerm, id))
         .toEmbed()
 
-fun List<UserKlassSection>.toSirenRepresentation(pagination: Pagination) =
+fun Iterable<UserKlassSection>.toSirenRepresentation(pagination: Pagination) =
     SirenBuilder(pagination)
         .klass("user", "class", "section", "collection")
         .entities(map { it.toEmbedRepresentation() })

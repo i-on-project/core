@@ -22,7 +22,7 @@ class UserKlassActionsController(val repo: UserKlassRepo) {
         user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Siren> {
-        val isSubscribed = repo.isSubscribedToClass(user.userId, classId)
+        val isSubscribed = repo.isSubscribedToClass(user, classId)
         return ResponseEntity.ok(UserKlassActions.toSirenRepresentation(classId, isSubscribed))
     }
 
@@ -33,7 +33,7 @@ class UserKlassActionsController(val repo: UserKlassRepo) {
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Siren> {
-        val isSubscribed = repo.isSubscribedToClassSection(user.userId, classId, sectionId)
+        val isSubscribed = repo.isSubscribedToClassSection(user, classId, sectionId)
         return ResponseEntity.ok(UserKlassSectionActions.toSirenRepresentation(classId, sectionId, isSubscribed))
     }
 }

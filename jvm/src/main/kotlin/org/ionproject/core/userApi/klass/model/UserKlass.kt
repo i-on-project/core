@@ -4,6 +4,7 @@ data class UserKlass(
     val id: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String,
     val sections: Set<UserKlassSection>? = null
 ) {
@@ -20,6 +21,7 @@ data class UserKlass(
             id,
             courseId,
             courseAcr,
+            courseName,
             calendarTerm,
             combined
         )
