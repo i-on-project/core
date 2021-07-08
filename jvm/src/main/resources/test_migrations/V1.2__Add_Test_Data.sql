@@ -8,16 +8,16 @@ INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('MEIC', 'mestrado eng. inf.',     4);
 
 INSERT INTO dbo.Instant(date, time) VALUES
-(DATE '2017-02-01', null),
-(DATE '2017-06-10', null),
-(DATE '2017-09-01', null),
-(DATE '2017-12-22', null),
 (DATE '2018-02-01', null),
 (DATE '2018-06-10', null),
-(DATE '2018-09-01', null),
-(DATE '2018-12-22', null),
+(DATE '2017-09-01', null),
+(DATE '2017-12-22', null),
 (DATE '2019-02-01', null),
 (DATE '2019-06-10', null),
+(DATE '2018-09-01', null),
+(DATE '2018-12-22', null),
+(DATE '2020-02-01', null),
+(DATE '2020-06-10', null),
 (DATE '2019-09-01', null),
 (DATE '2019-12-22', null);
 

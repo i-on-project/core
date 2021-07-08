@@ -113,10 +113,10 @@ internal class CalendarControllerTest : ControllerTester() {
                 CATEGORIES;LANGUAGE=pt-PT:Aula
                 CATEGORIES;LANGUAGE=en-US:Lecture
                 CATEGORIES;LANGUAGE=en-GB:Lecture
-                DTSTART:20190201T110000Z
-                DTEND:20190201T123000Z
+                DTSTART:20200201T110000Z
+                DTEND:20200201T123000Z
                 LOCATION:Room G.0.1
-                RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO
+                RRULE:FREQ=WEEKLY;UNTIL=20200610T000000Z;BYDAY=MO
                 END:VEVENT
                 BEGIN:VEVENT
                 UID:16
@@ -128,10 +128,10 @@ internal class CalendarControllerTest : ControllerTester() {
                 CATEGORIES;LANGUAGE=pt-PT:Aula
                 CATEGORIES;LANGUAGE=en-US:Lecture
                 CATEGORIES;LANGUAGE=en-GB:Lecture
-                DTSTART:20190201T110000Z
-                DTEND:20190201T140000Z
+                DTSTART:20200201T110000Z
+                DTEND:20200201T140000Z
                 LOCATION:Room G.0.11
-                RRULE:FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH
+                RRULE:FREQ=WEEKLY;UNTIL=20200610T000000Z;BYDAY=TH
                 END:VEVENT
                 END:VCALENDAR
             """
@@ -259,10 +259,10 @@ internal class CalendarControllerTest : ControllerTester() {
                     Categories(ptLang, "Aula"),
                     Categories(enLang, "Lecture"),
                     Categories(gbLang, "Lecture"),
-                    DtStart("20190201T110000Z"),
-                    DtEnd("20190201T123000Z"),
+                    DtStart("20200201T110000Z"),
+                    DtEnd("20200201T123000Z"),
                     Location("Room G.0.1"),
-                    RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=MO")
+                    RRule("FREQ=WEEKLY;UNTIL=20200610T000000Z;BYDAY=MO")
                 ) as PropertyList<Property>
             )
 
@@ -276,10 +276,10 @@ internal class CalendarControllerTest : ControllerTester() {
                     Categories(ptLang, "Aula"),
                     Categories(enLang, "Lecture"),
                     Categories(gbLang, "Lecture"),
-                    DtStart("20190201T110000Z"),
-                    DtEnd("20190201T140000Z"),
+                    DtStart("20200201T110000Z"),
+                    DtEnd("20200201T140000Z"),
                     Location("Room G.0.11"),
-                    RRule("FREQ=WEEKLY;UNTIL=20190610T000000Z;BYDAY=TH")
+                    RRule("FREQ=WEEKLY;UNTIL=20200610T000000Z;BYDAY=TH")
                 ) as PropertyList<Property>
             )
 
