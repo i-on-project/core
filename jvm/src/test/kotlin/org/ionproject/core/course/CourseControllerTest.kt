@@ -23,8 +23,8 @@ internal class CourseControllerTest : ControllerTester() {
             Course(c.id, c.acronym, c.name, "1920i")
 
         fun getCourseCollection() = listOf(
-            Course(1, "SL", "Software Laboratory", "test_value"),
-            Course(2, "WAD", "Web Applications Development", "test_value")
+            Course(1, "SL", "Software Laboratory", "1920i"),
+            Course(2, "WAD", "Web Applications Development", "1920v")
         )
     }
 
@@ -89,7 +89,6 @@ internal class CourseControllerTest : ControllerTester() {
             .klass("course", "collection")
             .entities(
                 list.map { course ->
-                    val current = getCurrentCourse(course)
                     SirenBuilder(OutputModel(course.id, course.acronym))
                         .klass("class")
                         .rel("item")
@@ -97,8 +96,8 @@ internal class CourseControllerTest : ControllerTester() {
                         .link(
                             "current",
                             href = Uri.forKlassByCalTerm(
-                                current.id,
-                                current.term
+                                course.id,
+                                course.term
                                     ?: throw AssertionError("The Calendar Term of the current course must not be null")
                             )
                         )
