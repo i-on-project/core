@@ -35,6 +35,7 @@ Authorization: Bearer {accessToken}
                 "id": 16,
                 "courseId": 1,
                 "courseAcr": "SL",
+                "courseName": "Software Laboratory",
                 "calendarTerm": "1920i"
             },
             "links": [
@@ -78,6 +79,7 @@ Authorization: Bearer {accessToken}
         "id": 16,
         "courseId": 1,
         "courseAcr": "SL",
+        "courseName": "Software Laboratory",
         "calendarTerm": "1920i"
     },
     "entities": [
@@ -164,6 +166,7 @@ Authorization: Bearer {accessToken}
                 "classId": 16,
                 "courseId": 1,
                 "courseAcr": "SL",
+                "courseName": "Software Laboratory",
                 "calendarTerm": "1920i"
             },
             "links": [
@@ -206,6 +209,7 @@ Authorization: Bearer {accessToken}
         "id": "1D",
         "courseId": 1,
         "courseAcr": "SL",
+        "courseName": "Software Laboratory",
         "calendarTerm": "1920i"
     },
     "links": [
