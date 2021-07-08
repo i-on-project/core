@@ -5,5 +5,6 @@ data class UserKlassSection(
     val classId: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String
 )

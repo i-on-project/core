@@ -9,6 +9,7 @@ private data class UserKlassSectionProps(
     val classId: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String
 )
 
@@ -17,6 +18,7 @@ private fun UserKlassSection.toProps() = UserKlassSectionProps(
     classId,
     courseId,
     courseAcr,
+    courseName,
     calendarTerm
 )
 

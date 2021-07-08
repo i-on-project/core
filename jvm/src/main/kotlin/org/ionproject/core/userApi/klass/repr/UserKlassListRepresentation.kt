@@ -9,6 +9,7 @@ private data class ShortUserKlassProps(
     val id: Int,
     val courseId: Int,
     val courseAcr: String,
+    val courseName: String,
     val calendarTerm: String
 )
 
@@ -16,6 +17,7 @@ private fun UserKlass.toShortProps() = ShortUserKlassProps(
     id,
     courseId,
     courseAcr,
+    courseName,
     calendarTerm
 )
 
@@ -27,7 +29,7 @@ private fun UserKlass.toEmbedRepresentation() =
         .link(Uri.relClass, href = Uri.forKlassByCalTerm(courseId, calendarTerm))
         .toEmbed()
 
-fun List<UserKlass>.toSirenRepresentation(pagination: Pagination) =
+fun Iterable<UserKlass>.toSirenRepresentation(pagination: Pagination) =
     SirenBuilder(pagination)
         .klass("user", "class", "collection")
         .entities(map { it.toEmbedRepresentation() })

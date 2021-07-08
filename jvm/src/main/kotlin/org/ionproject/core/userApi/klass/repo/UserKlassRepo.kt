@@ -3,26 +3,27 @@ package org.ionproject.core.userApi.klass.repo
 import org.ionproject.core.common.argumentResolvers.parameters.Pagination
 import org.ionproject.core.userApi.klass.model.UserKlass
 import org.ionproject.core.userApi.klass.model.UserKlassSection
+import org.ionproject.core.userApi.user.model.User
 
 interface UserKlassRepo {
 
-    fun getSubscribedClasses(userId: String, pagination: Pagination): List<UserKlass>
+    fun getSubscribedClasses(user: User, pagination: Pagination): Set<UserKlass>
 
-    fun getSubscribedClassSections(userId: String, pagination: Pagination): List<UserKlassSection>
+    fun getSubscribedClassSections(user: User, pagination: Pagination): Set<UserKlassSection>
 
-    fun getSubscribedClass(userId: String, classId: Int): UserKlass
+    fun getSubscribedClass(user: User, classId: Int): UserKlass
 
-    fun isSubscribedToClass(userId: String, classId: Int): Boolean
+    fun isSubscribedToClass(user: User, classId: Int): Boolean
 
-    fun subscribeToClass(userId: String, classId: Int): Boolean
+    fun subscribeToClass(user: User, classId: Int): Boolean
 
-    fun unsubscribeFromClass(userId: String, classId: Int)
+    fun unsubscribeFromClass(user: User, classId: Int)
 
-    fun getSubscribedClassSection(userId: String, classId: Int, sectionId: String): UserKlassSection
+    fun getSubscribedClassSection(user: User, classId: Int, sectionId: String): UserKlassSection
 
-    fun isSubscribedToClassSection(userId: String, classId: Int, sectionId: String): Boolean
+    fun isSubscribedToClassSection(user: User, classId: Int, sectionId: String): Boolean
 
-    fun subscribeToClassSection(userId: String, classId: Int, sectionId: String): Boolean
+    fun subscribeToClassSection(user: User, classId: Int, sectionId: String): Boolean
 
-    fun unsubscribeFromClassSection(userId: String, classId: Int, sectionId: String)
+    fun unsubscribeFromClassSection(user: User, classId: Int, sectionId: String)
 }

@@ -24,7 +24,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         user: User,
         pagination: Pagination
     ): ResponseEntity<Siren> {
-        val classes = repo.getSubscribedClasses(user.userId, pagination)
+        val classes = repo.getSubscribedClasses(user, pagination)
         return ResponseEntity.ok(classes.toSirenRepresentation(pagination))
     }
 
@@ -34,7 +34,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Siren> {
-        val klass = repo.getSubscribedClass(user.userId, classId)
+        val klass = repo.getSubscribedClass(user, classId)
         return ResponseEntity.ok(klass.toSirenRepresentation())
     }
 
@@ -44,7 +44,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Unit> {
-        val alreadySubscribed = repo.subscribeToClass(user.userId, classId)
+        val alreadySubscribed = repo.subscribeToClass(user, classId)
 
         return if (alreadySubscribed)
             ResponseEntity.created(Uri.forUserClass(classId)).build()
@@ -58,7 +58,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         user: User,
         @PathVariable classId: Int
     ): ResponseEntity<Unit> {
-        repo.unsubscribeFromClass(user.userId, classId)
+        repo.unsubscribeFromClass(user, classId)
         return ResponseEntity.noContent().build()
     }
 
@@ -68,7 +68,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         user: User,
         pagination: Pagination
     ): ResponseEntity<Siren> {
-        val sections = repo.getSubscribedClassSections(user.userId, pagination)
+        val sections = repo.getSubscribedClassSections(user, pagination)
         return ResponseEntity.ok(sections.toSirenRepresentation(pagination))
     }
 
@@ -79,7 +79,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Siren> {
-        val klassSection = repo.getSubscribedClassSection(user.userId, classId, sectionId)
+        val klassSection = repo.getSubscribedClassSection(user, classId, sectionId)
         return ResponseEntity.ok(klassSection.toSirenRepresentation(classId))
     }
 
@@ -90,7 +90,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Unit> {
-        val alreadySubscribed = repo.subscribeToClassSection(user.userId, classId, sectionId)
+        val alreadySubscribed = repo.subscribeToClassSection(user, classId, sectionId)
 
         return if (alreadySubscribed)
             ResponseEntity.created(Uri.forUserClassSection(classId, sectionId)).build()
@@ -105,7 +105,7 @@ class UserKlassController(val repo: UserKlassRepo) {
         @PathVariable classId: Int,
         @PathVariable sectionId: String
     ): ResponseEntity<Unit> {
-        repo.unsubscribeFromClassSection(user.userId, classId, sectionId)
+        repo.unsubscribeFromClassSection(user, classId, sectionId)
         return ResponseEntity.noContent().build()
     }
 }
