@@ -6,7 +6,6 @@ import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.ExamSeasonInput
 import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
 import org.jdbi.v3.sqlobject.config.KeyColumn
-import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlBatch
@@ -56,7 +55,7 @@ interface CalendarIngestionDao {
     """
     )
     @GetGeneratedKeys
-    fun insertCalendarInstants(@BindBean("instant") instants: List<CalendarInstant>): List<Int>
+    fun insertCalendarInstants(instant: List<CalendarInstant>): List<Int>
 
     @SqlBatch(
         """
@@ -64,7 +63,7 @@ interface CalendarIngestionDao {
         values (:term.id, :term.startDate, :term.endDate)
     """
     )
-    fun insertCalendarTerms(@BindBean("term") terms: List<RealCalendarTerm>)
+    fun insertCalendarTerms(term: List<RealCalendarTerm>)
 
     @SqlUpdate(
         """
@@ -73,7 +72,7 @@ interface CalendarIngestionDao {
         where id = :term.id
     """
     )
-    fun updateCalendarTerm(@BindBean("term") term: RealCalendarTerm)
+    fun updateCalendarTerm(term: RealCalendarTerm)
 
     @SqlUpdate(
         """
@@ -81,7 +80,7 @@ interface CalendarIngestionDao {
         where id in (<instants>)
     """
     )
-    fun deleteInstants(@BindList("instants") instants: List<Int>)
+    fun deleteInstants(instants: List<Int>)
 
     @SqlBatch(
         """
@@ -89,7 +88,7 @@ interface CalendarIngestionDao {
             values (:season.calendarTerm, :season.description, :season.startDate, :season.endDate)
         """
     )
-    fun insertExamSeasons(@BindBean("season") seasons: List<ExamSeasonInput>)
+    fun insertExamSeasons(season: List<ExamSeasonInput>)
 
     @SqlQuery(
         """
@@ -114,5 +113,5 @@ interface CalendarIngestionDao {
             where id = :season.id
         """
     )
-    fun updateExamSeason(@BindBean("season") season: ExamSeasonInput)
+    fun updateExamSeason(season: ExamSeasonInput)
 }
