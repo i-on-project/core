@@ -4,6 +4,7 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.ingestion.model.ExamSchedule
 import org.slf4j.LoggerFactory
 
+@FileIngestion("exam_schedule")
 class ExamScheduleIngestionProcessor(val tm: TransactionManager) : IngestionProcessor<ExamSchedule> {
 
     companion object {

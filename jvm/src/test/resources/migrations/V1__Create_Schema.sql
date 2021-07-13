@@ -5,8 +5,20 @@ CREATE TABLE dbo.Programme(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     acronym VARCHAR(10) UNIQUE,
     name VARCHAR(100) UNIQUE,
-    termSize INT,
-    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
+    termSize INT CHECK (termSize > 0),
+    department VARCHAR(10) NULL,
+    email VARCHAR(200) NULL,
+    uri VARCHAR(200) NULL,
+    description TEXT NULL,
+    available BOOLEAN DEFAULT TRUE,
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', acronym || ' ' || name || ' ' || coalesce(email, '') || ' ' || coalesce(uri, ''))) STORED
+);
+
+CREATE TABLE dbo.ProgrammeCoordinators(
+    id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    programmeId INT REFERENCES dbo.Programme(id),
+    name VARCHAR(100),
+    UNIQUE (name, programmeId)
 );
 
 CREATE TABLE dbo.Calendar (

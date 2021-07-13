@@ -4,6 +4,7 @@ import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.ingestion.model.Timetable
 import org.slf4j.LoggerFactory
 
+@FileIngestion("timetable")
 class TimetableIngestionProcessor(val tm: TransactionManager) : IngestionProcessor<Timetable> {
 
     companion object {
