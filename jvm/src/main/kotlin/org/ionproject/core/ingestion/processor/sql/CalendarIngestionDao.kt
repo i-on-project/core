@@ -6,7 +6,6 @@ import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.ExamSeasonInput
 import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
 import org.jdbi.v3.sqlobject.config.KeyColumn
-import org.jdbi.v3.sqlobject.customizer.BindBean
 import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlBatch

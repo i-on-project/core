@@ -15,13 +15,11 @@ annotation class FileIngestion(val name: String, val mandatory: Boolean = false)
 interface IngestionProcessor<T> {
 
     fun process(data: T)
-
 }
 
 interface IngestionObjectMapper {
 
     fun <T : Any> map(file: File, klass: KClass<T>): T
-
 }
 
 data class ProcessorWrapper<T : Any>(
@@ -69,7 +67,7 @@ class IngestionProcessorRegistry(private val fileExtension: String, private val 
                     val files = toProcess[k]
                     if (files != null) {
                         val processor = v.processor
-                        files.forEach{
+                        files.forEach {
                             try {
                                 log.info("Processing file: $it")
                                 val data = mapper.map(it, v.klass)
@@ -85,5 +83,4 @@ class IngestionProcessorRegistry(private val fileExtension: String, private val 
                 }
             }
     }
-
 }

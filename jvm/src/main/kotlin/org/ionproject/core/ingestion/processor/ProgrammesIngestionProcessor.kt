@@ -104,7 +104,6 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
                         i.id
                     }
             )
-
         }
 
         if (setAsAvailable.isNotEmpty())
@@ -128,5 +127,4 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
 
         dao.setProgrammeAvailable(ids, false)
     }
-
 }

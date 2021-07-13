@@ -23,15 +23,10 @@ import org.ionproject.core.common.messageConverters.JsonHomeMessageConverter
 import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
 import org.ionproject.core.common.transaction.TransactionManager
-import org.ionproject.core.ingestion.model.AcademicCalendar
-import org.ionproject.core.ingestion.model.SchoolProgrammes
 import org.ionproject.core.ingestion.processor.CalendarIngestionProcessor
-import org.ionproject.core.ingestion.processor.CoursesIngestionProcessor
-import org.ionproject.core.ingestion.processor.ExamScheduleIngestionProcessor
 import org.ionproject.core.ingestion.processor.IngestionObjectMapper
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.ionproject.core.ingestion.processor.ProgrammesIngestionProcessor
-import org.ionproject.core.ingestion.processor.TimetableIngestionProcessor
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
@@ -53,7 +48,6 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.util.UriTemplate
 import java.io.File
-import java.nio.file.Path
 import kotlin.reflect.KClass
 
 @SpringBootApplication
@@ -212,11 +206,14 @@ class CoreSerializationConfig : WebMvcConfigurer {
         val mapper = jacksonObjectMapper()
         mapper.registerModule(JavaTimeModule())
 
-        val registry = IngestionProcessorRegistry(INGESTION_FILE_FORMAT, object : IngestionObjectMapper {
-            override fun <T : Any> map(file: File, klass: KClass<T>): T {
-                return mapper.readValue(file, klass.java)
+        val registry = IngestionProcessorRegistry(
+            INGESTION_FILE_FORMAT,
+            object : IngestionObjectMapper {
+                override fun <T : Any> map(file: File, klass: KClass<T>): T {
+                    return mapper.readValue(file, klass.java)
+                }
             }
-        })
+        )
 
         // TODO: finish this
         // Order matters! The files are processed by the order they're specified here.

@@ -9,5 +9,4 @@ class CoursesIngestionProcessor(val tm: TransactionManager) : IngestionProcessor
     override fun process(data: SchoolCourses) {
         TODO("Not yet implemented")
     }
-
 }
