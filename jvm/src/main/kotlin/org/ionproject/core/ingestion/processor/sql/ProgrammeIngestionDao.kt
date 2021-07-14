@@ -6,7 +6,6 @@ import org.jdbi.v3.sqlobject.customizer.BindList
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
 import org.jdbi.v3.sqlobject.statement.SqlBatch
 import org.jdbi.v3.sqlobject.statement.SqlQuery
-import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 interface ProgrammeIngestionDao {
 
@@ -24,7 +23,7 @@ interface ProgrammeIngestionDao {
     """
     )
     @GetGeneratedKeys
-    fun insertProgrammes(p: List<RealSchoolProgramme>): List<Int>
+    fun insertProgrammes(p: List<RealSchoolProgramme>): List<RealSchoolProgramme>
 
     @SqlBatch(
         """
@@ -60,11 +59,11 @@ interface ProgrammeIngestionDao {
     )
     fun insertProgrammeCoordinators(coordinators: List<RealProgrammeCoordinator>)
 
-    @SqlUpdate(
+    @SqlBatch(
         """
         delete from dbo.ProgrammeCoordinators
-        where id in (<coordinators>)
+        where id = :coordinator
     """
     )
-    fun deleteProgrammeCoordinators(@BindList("coordinators") coordinators: List<Int>)
+    fun deleteProgrammeCoordinators(coordinator: List<Int>)
 }

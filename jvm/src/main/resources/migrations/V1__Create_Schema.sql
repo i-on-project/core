@@ -26,10 +26,19 @@ CREATE TABLE dbo.Calendar (
 );
 
 CREATE TABLE dbo.Course (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id INT PRIMARY KEY,
     acronym VARCHAR(10) UNIQUE,
     name VARCHAR(100) UNIQUE,
-    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', coalesce(acronym, '') || ' ' || coalesce(name,''))) STORED
+    credits REAL CHECK (credits > 0),
+    scientificArea VARCHAR(10) NOT NULL,
+    termDuration INT DEFAULT 1 CHECK (termDuration > 0),
+    document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', acronym || ' ' || name || ' ' || scientificArea)) STORED
+);
+
+CREATE TABLE dbo.AlternativeCourseAcronyms(
+    courseId INT REFERENCES dbo.Course(id),
+    acronym VARCHAR(10),
+    PRIMARY KEY (courseId, acronym)
 );
 
 CREATE TABLE dbo.ProgrammeOffer(
@@ -37,13 +46,13 @@ CREATE TABLE dbo.ProgrammeOffer(
     programmeId INT REFERENCES dbo.Programme(id),
     courseId INT REFERENCES dbo.Course(id),
     optional BOOLEAN,
-    UNIQUE(programmeId, courseId)
+    UNIQUE (programmeId, courseId)
 );
 
 CREATE TABLE dbo.ProgrammeOfferTerm(
-    offerId INT REFERENCES dbo.ProgrammeOffer(id),
-    termNumber INT NOT NULL,
-    PRIMARY KEY(offerId, termNumber)
+    offerId INT REFERENCES dbo.ProgrammeOffer(id) ON DELETE CASCADE,
+    termNumber INT NOT NULL CHECK (termNumber > 0),
+    PRIMARY KEY (offerId, termNumber)
 );
 
 CREATE TABLE dbo.Instant (

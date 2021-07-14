@@ -1,12 +1,21 @@
 package org.ionproject.core.ingestion
 
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.diff.DiffFormatter
+import org.eclipse.jgit.lib.Config
+import org.eclipse.jgit.lib.Repository
+import org.eclipse.jgit.revwalk.RevCommit
+import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.treewalk.CanonicalTreeParser
+import org.eclipse.jgit.treewalk.EmptyTreeIterator
+import org.eclipse.jgit.treewalk.FileTreeIterator
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.File
+import java.io.OutputStream
 import java.nio.file.Path
 import java.util.concurrent.Executors
 import kotlin.io.path.name
@@ -37,6 +46,8 @@ class IngestionTask(
 
     private val threadPool = Executors.newSingleThreadExecutor()
 
+    private var processedCommitHash: String? = null
+
     @Scheduled(fixedRate = INGESTION_RATE)
     fun scheduleIngestion() {
         processTask()
@@ -49,17 +60,60 @@ class IngestionTask(
                 val git = downloadGitRepository()
                 git.use {
                     val repo = git.repository
-                    val headObject = repo.exactRef("HEAD").objectId
-                    val commit = repo.parseCommit(headObject)
-                    val commitHash = commit.name
-                    val authorEmail = commit.authorIdent.emailAddress
-                    log.info("Parsing commit $commitHash by $authorEmail")
-
-                    registry.processDirectory(institutionPath)
+                    val changes = getChanges(repo)
+                    if (changes.isNotEmpty())
+                        registry.processDirectory(institutionPath, changes)
+                    else
+                        log.info("No changes were detected")
                 }
             } catch (e: Exception) {
                 log.error("An exception occurred while performing ingestion.", e)
             }
+        }
+    }
+
+    private fun getChanges(repo: Repository): Set<Path> {
+        val walk = RevWalk(repo)
+        val headObject = repo.exactRef("HEAD").objectId
+        val latestCommit = repo.parseCommit(headObject)
+        val latestTree = walk.parseTree(latestCommit.tree.id)
+
+        // create the commit tree iterator
+        val latestParser = CanonicalTreeParser()
+        repo.newObjectReader().use {
+            latestParser.reset(it, latestTree)
+        }
+
+        val latestCommitHash = latestCommit.name
+        val latestCommitAuthor = latestCommit.authorIdent.emailAddress
+        log.info("Processing commit $latestCommitHash by $latestCommitAuthor")
+
+        val currentParser = if (processedCommitHash == null) {
+            EmptyTreeIterator()
+        } else {
+            val processedCommitObject = repo.resolve(processedCommitHash).toObjectId()
+            val processedCommit = repo.parseCommit(processedCommitObject)
+            val processedTree = walk.parseTree(processedCommit)
+
+            log.info("Calculating difference: ${processedCommit.name} .. $latestCommitHash")
+
+            val processedParser = CanonicalTreeParser()
+            repo.newObjectReader().use {
+                processedParser.reset(it, processedTree)
+            }
+
+            processedParser
+        }
+
+        this.processedCommitHash = latestCommitHash
+
+        val formatter = DiffFormatter(OutputStream.nullOutputStream())
+        repo.newObjectReader().use {
+            formatter.setReader(it, Config())
+            val diffEntries = formatter.scan(currentParser, latestParser)
+            return diffEntries.map { f -> f.newPath }
+                .map { f -> Path.of(repositoryDir.absolutePath, f) }
+                .toSet()
         }
     }
 
