@@ -4,11 +4,9 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffFormatter
 import org.eclipse.jgit.lib.Config
 import org.eclipse.jgit.lib.Repository
-import org.eclipse.jgit.revwalk.RevCommit
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import org.eclipse.jgit.treewalk.EmptyTreeIterator
-import org.eclipse.jgit.treewalk.FileTreeIterator
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
