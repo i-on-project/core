@@ -9,6 +9,7 @@ import org.ionproject.core.ingestion.processor.sql.model.RealSchoolProgramme
 import org.ionproject.core.ingestion.processor.sql.model.isProgrammeInfoDifferent
 import org.ionproject.core.ingestion.processor.sql.model.toCoordinators
 import org.ionproject.core.ingestion.processor.sql.model.toRealProgramme
+import org.ionproject.core.ingestion.processor.util.Difference
 import org.jdbi.v3.sqlobject.kotlin.attach
 import org.slf4j.LoggerFactory
 
@@ -22,34 +23,25 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
     override fun process(data: SchoolProgrammes) {
         tm.run {
             val dao = it.attach<ProgrammeIngestionDao>()
-
             val existentProgrammes = dao.getProgrammes()
             val newProgrammes = data.programmes
 
-            val created = newProgrammes.filter { i -> existentProgrammes.none { k -> i.acronym == k.acronym } }
-
-            val updated = existentProgrammes.mapNotNull { i ->
-                val programme = newProgrammes.find { k -> i.acronym == k.acronym }
-                if (programme == null)
-                    null
-                else
-                    Pair(i, programme)
+            val diff = Difference(existentProgrammes, newProgrammes) { a, b ->
+                a.acronym == b.acronym
             }
 
-            val removed = existentProgrammes.filter { i -> newProgrammes.none { k -> i.acronym == k.acronym } }
+            if (diff.newElements.isNotEmpty())
+                processCreated(diff.newElements, dao)
 
-            if (created.isNotEmpty())
-                processCreated(created, dao)
+            if (diff.intersection.isNotEmpty())
+                processUpdated(diff.intersection, dao)
 
-            if (updated.isNotEmpty())
-                processUpdated(updated, dao)
-
-            if (removed.isNotEmpty())
-                processRemoved(removed, dao)
+            if (diff.removedElements.isNotEmpty())
+                processRemoved(diff.removedElements, dao)
         }
     }
 
-    private fun processCreated(created: List<SchoolProgramme>, dao: ProgrammeIngestionDao) {
+    private fun processCreated(created: Collection<SchoolProgramme>, dao: ProgrammeIngestionDao) {
         val programmes = created.map {
             log.info("Creating new programme: ${it.acronym}")
             it.toRealProgramme()
@@ -58,14 +50,14 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
         val generatedKeys = dao.insertProgrammes(programmes)
         val coordinators = created.mapIndexed { i, p ->
             log.info("Creating ${p.acronym} programme coordinators")
-            p.toCoordinators(generatedKeys[i])
+            p.toCoordinators(generatedKeys[i].id)
         }.flatten()
 
         if (coordinators.isNotEmpty())
             dao.insertProgrammeCoordinators(coordinators)
     }
 
-    private fun processUpdated(updated: List<Pair<RealSchoolProgramme, SchoolProgramme>>, dao: ProgrammeIngestionDao) {
+    private fun processUpdated(updated: Collection<Pair<RealSchoolProgramme, SchoolProgramme>>, dao: ProgrammeIngestionDao) {
         val coordinators = dao.getProgrammesCoordinators(updated.map { it.first.id })
 
         val setAsAvailable = mutableListOf<Int>()
@@ -89,20 +81,22 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
             }
 
             val programmeCoordinators = coordinators.filter { i -> i.programmeId == existent.id }
+            val coordinatorsDiff = Difference(programmeCoordinators, new.coordination) { a, b ->
+                a.name == b
+            }
+
             createdCoordinators.addAll(
-                new.coordination.filter { i -> programmeCoordinators.none { k -> i == k.name } }
-                    .map { name ->
-                        log.info("New ${existent.acronym} programme coordinator: $name")
-                        RealProgrammeCoordinator(programmeId = existent.id, name = name)
-                    }
+                coordinatorsDiff.newElements.map { name ->
+                    log.info("New ${existent.acronym} programme coordinator: $name")
+                    RealProgrammeCoordinator(programmeId = existent.id, name = name)
+                }
             )
 
             removedCoordinators.addAll(
-                programmeCoordinators.filter { i -> new.coordination.none { k -> i.name == k } }
-                    .map { i ->
-                        log.info("Removed ${existent.acronym} programme coordinator: ${i.name}")
-                        i.id
-                    }
+                coordinatorsDiff.removedElements.map { coordinator ->
+                    log.info("Removed ${existent.acronym} programme coordinator: ${coordinator.name}")
+                    coordinator.id
+                }
             )
         }
 
@@ -119,7 +113,7 @@ class ProgrammesIngestionProcessor(val tm: TransactionManager) : IngestionProces
             dao.deleteProgrammeCoordinators(removedCoordinators)
     }
 
-    private fun processRemoved(removed: List<RealSchoolProgramme>, dao: ProgrammeIngestionDao) {
+    private fun processRemoved(removed: Collection<RealSchoolProgramme>, dao: ProgrammeIngestionDao) {
         val ids = removed.map {
             log.info("Setting ${it.acronym} programme as unavailable")
             it.id

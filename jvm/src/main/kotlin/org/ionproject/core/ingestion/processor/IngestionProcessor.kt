@@ -2,7 +2,6 @@ package org.ionproject.core.ingestion.processor
 
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
@@ -10,7 +9,7 @@ import kotlin.reflect.full.findAnnotation
 private val log = LoggerFactory.getLogger("IngestionProcessor")
 
 @Target(AnnotationTarget.CLASS)
-annotation class FileIngestion(val name: String, val mandatory: Boolean = false)
+annotation class FileIngestion(val name: String, val throwOnError: Boolean = false)
 
 interface IngestionProcessor<T> {
 
@@ -25,7 +24,7 @@ interface IngestionObjectMapper {
 data class ProcessorWrapper<T : Any>(
     val processor: IngestionProcessor<T>,
     val klass: KClass<T>,
-    val isMandatory: Boolean
+    val throwOnError: Boolean
 )
 
 class IngestionProcessorRegistry(private val fileExtension: String, private val mapper: IngestionObjectMapper) {
@@ -40,47 +39,43 @@ class IngestionProcessorRegistry(private val fileExtension: String, private val 
         val fileAnnotation = processor::class.findAnnotation<FileIngestion>()
             ?: throw Exception("A processor must be annotated with ${FileIngestion::class.simpleName}")
 
-        wrappers[fileAnnotation.name] = ProcessorWrapper(processor, klass, fileAnnotation.mandatory)
+        wrappers[fileAnnotation.name] = ProcessorWrapper(processor, klass, fileAnnotation.throwOnError)
     }
 
     @Suppress("unchecked_cast")
-    fun processDirectory(path: Path) {
-        Files.walk(path)
-            .use { repo ->
-                val toProcess = mutableMapOf<String, MutableList<File>>()
+    fun processDirectory(path: Path, changes: Set<Path>) {
+        val toProcess = mutableMapOf<String, MutableList<File>>()
+        changes.forEach {
+            val file = it.toAbsolutePath()
+                .toFile()
 
-                repo.forEach {
-                    val file = it.toAbsolutePath()
-                        .toFile()
+            if (file.name.endsWith(fileExtension)) {
+                val filename = file.name.split(".")[0]
 
-                    if (file.name.endsWith(fileExtension)) {
-                        val filename = file.name.split(".")[0]
+                toProcess.computeIfAbsent(filename) { mutableListOf() }
+                    .add(file)
+            }
+        }
 
-                        toProcess.computeIfAbsent(filename) { mutableListOf() }
-                            .add(file)
-                    }
-                }
+        wrappers.forEach { (k, v) ->
+            v as ProcessorWrapper<Any>
 
-                wrappers.forEach { (k, v) ->
-                    v as ProcessorWrapper<Any>
+            val files = toProcess[k]
+            if (files != null) {
+                val processor = v.processor
+                files.forEach {
+                    try {
+                        log.info("Processing file: $it")
+                        val data = mapper.map(it, v.klass)
+                        processor.process(data)
+                    } catch (e: Exception) {
+                        if (v.throwOnError)
+                            throw e
 
-                    val files = toProcess[k]
-                    if (files != null) {
-                        val processor = v.processor
-                        files.forEach {
-                            try {
-                                log.info("Processing file: $it")
-                                val data = mapper.map(it, v.klass)
-                                processor.process(data)
-                            } catch (e: Exception) {
-                                if (v.isMandatory)
-                                    throw e
-                            }
-                        }
-                    } else if (v.isMandatory) {
-                        throw Exception("There must be at least one \"$k\" file to process")
+                        log.error("A non-fatal exception occurred: ", e)
                     }
                 }
             }
+        }
     }
 }

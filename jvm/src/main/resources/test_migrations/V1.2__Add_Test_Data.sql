@@ -29,12 +29,12 @@ INSERT INTO dbo._CalendarTerm(id, start_date, end_date) VALUES
 ('1920v', 9, 10),
 ('1920i', 11, 12);
 
-INSERT INTO dbo.Course(acronym, name) values
-('SL',  'Software Laboratory'),
-('WAD', 'Web Applications Development'),
-('DM',  'Discrete Mathematics'),
-('PS', 'Project and Seminary'),
-('CC', 'Cloud computing');
+INSERT INTO dbo.Course(id, acronym, name, credits, scientificArea) values
+(1, 'SL',  'Software Laboratory', 6, 'IF'),
+(2, 'WAD', 'Web Applications Development', 6, 'IF'),
+(3, 'DM',  'Discrete Mathematics', 6, 'IF'),
+(4, 'PS', 'Project and Seminary', 6, 'IF'),
+(5, 'CC', 'Cloud computing', 6, 'IF');
 
 -- Access Manager Mock Data for beta version
 --Notes:

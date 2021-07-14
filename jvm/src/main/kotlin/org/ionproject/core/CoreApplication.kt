@@ -24,6 +24,7 @@ import org.ionproject.core.common.messageConverters.ProblemJsonMessageConverter
 import org.ionproject.core.common.messageConverters.SirenMessageConverter
 import org.ionproject.core.common.transaction.TransactionManager
 import org.ionproject.core.ingestion.processor.CalendarIngestionProcessor
+import org.ionproject.core.ingestion.processor.CoursesIngestionProcessor
 import org.ionproject.core.ingestion.processor.IngestionObjectMapper
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.ionproject.core.ingestion.processor.ProgrammesIngestionProcessor
@@ -219,7 +220,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
         // Order matters! The files are processed by the order they're specified here.
         registry.register(CalendarIngestionProcessor(tm))
         registry.register(ProgrammesIngestionProcessor(tm))
-        // registry.register(CoursesIngestionProcessor(tm))
+        registry.register(CoursesIngestionProcessor(tm))
         // registry.register(TimetableIngestionProcessor(tm))
         // registry.register(ExamScheduleIngestionProcessor(tm))
 
