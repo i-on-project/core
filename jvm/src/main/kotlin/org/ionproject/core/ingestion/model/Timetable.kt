@@ -15,33 +15,14 @@ enum class TimetableEventCategory {
 }
 
 enum class TimetableEventWeekday {
-    @JsonProperty("MO")
-    MONDAY,
-    @JsonProperty("TU")
-    TUESDAY,
-    @JsonProperty("WE")
-    WEDNESDAY,
-    @JsonProperty("TH")
-    THURSDAY,
-    @JsonProperty("FR")
-    FRIDAY,
-    @JsonProperty("SA")
-    SATURDAY,
-    @JsonProperty("SU")
-    SUNDAY
+    MO,
+    TU,
+    WE,
+    TH,
+    FR,
+    SA,
+    SU
 }
-
-data class TimetableSchool(
-    val name: String,
-    @JsonProperty("acr")
-    val acronym: String
-)
-
-data class TimetableProgramme(
-    val name: String,
-    @JsonProperty("acr")
-    val acronym: String
-)
 
 data class TimetableEvent(
     val category: TimetableEventCategory,
@@ -59,6 +40,7 @@ data class TimetableInstructor(
 
 data class TimetableClassSection(
     val section: String,
+    val curricularTerm: Int,
     val events: List<TimetableEvent> = emptyList(),
     val instructors: List<TimetableInstructor> = emptyList()
 )
@@ -73,8 +55,8 @@ data class TimetableClass(
 data class Timetable(
     val creationDateTime: Instant,
     val retrievalDateTime: Instant,
-    val school: TimetableSchool,
-    val programme: TimetableProgramme,
+    val school: String,
+    val programme: String,
     val calendarTerm: String,
     val classes: List<TimetableClass> = emptyList()
 )

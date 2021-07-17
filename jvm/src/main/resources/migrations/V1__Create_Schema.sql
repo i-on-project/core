@@ -27,8 +27,8 @@ CREATE TABLE dbo.Calendar (
 
 CREATE TABLE dbo.Course (
     id INT PRIMARY KEY,
-    acronym VARCHAR(10) UNIQUE,
-    name VARCHAR(100) UNIQUE,
+    acronym VARCHAR(10) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     credits REAL CHECK (credits > 0),
     scientificArea VARCHAR(10) NOT NULL,
     termDuration INT DEFAULT 1 CHECK (termDuration > 0),
@@ -113,15 +113,15 @@ CREATE TABLE dbo.Class (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     courseId INT REFERENCES dbo.Course(id),
     calendarTerm VARCHAR(20) REFERENCES dbo._CalendarTerm(id),
-    calendar INT REFERENCES dbo.Calendar(id) UNIQUE,
+    calendar INT REFERENCES dbo.Calendar(id) ON DELETE CASCADE UNIQUE,
     document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', calendarTerm)) STORED,
     UNIQUE(courseId, calendarTerm)
 );
 
 CREATE TABLE dbo.ClassSection (
     id VARCHAR(10),
-    classId INT REFERENCES dbo.Class(id),
-    calendar INT REFERENCES dbo.Calendar(id) UNIQUE,
+    classId INT REFERENCES dbo.Class(id) ON DELETE CASCADE,
+    calendar INT REFERENCES dbo.Calendar(id) ON DELETE CASCADE UNIQUE,
     document TSVECTOR GENERATED ALWAYS AS (to_tsvector('english', id)) STORED,
     PRIMARY KEY(id, classId)
 );
@@ -135,7 +135,7 @@ CREATE TABLE dbo.CalendarComponent (
 );
 
 CREATE TABLE dbo.CalendarComponents (
-    calendar_id INT REFERENCES dbo.Calendar(id),
+    calendar_id INT REFERENCES dbo.Calendar(id) ON DELETE CASCADE,
     comp_id INT REFERENCES dbo.CalendarComponent(id) ON DELETE CASCADE,
     PRIMARY KEY (calendar_id, comp_id)
 );
