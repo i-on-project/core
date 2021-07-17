@@ -9,18 +9,15 @@ class Difference<T, K>(existent: List<T>, new: List<K>, comparator: EqualityComp
     private val removedList = mutableListOf<T>()
 
     init {
-        // O(n*m) time complexity, where n = size(existent) and m = size(new)
-        // This complexity could be reduced to an amortized O(n) if we performed a comparison
-        // over the same type (without a custom comparator)
         existent.forEach { a ->
-            val elem = newSet.find { b -> comparator(a, b) }
-            if (elem != null) {
-                intersectionList.add(Pair(a, elem))
+            val elements = newSet.filter { b -> comparator(a, b) }
+            if (elements.isNotEmpty()) {
+                intersectionList.addAll(elements.map { elem -> Pair(a, elem) })
             } else {
                 removedList.add(a)
             }
 
-            newSet.remove(elem)
+            newSet.removeAll(elements)
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockHttpServletRequestDsl
 import org.springframework.test.web.servlet.MockMvc
@@ -31,6 +32,7 @@ var revokeTokenTest = "" // used to test the revoke endpoint
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension::class)
+@ActiveProfiles("test")
 internal class ControllerTester {
     val jacksonMapper = jacksonObjectMapper()
 

@@ -28,6 +28,7 @@ import org.ionproject.core.ingestion.processor.CoursesIngestionProcessor
 import org.ionproject.core.ingestion.processor.IngestionObjectMapper
 import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.ionproject.core.ingestion.processor.ProgrammesIngestionProcessor
+import org.ionproject.core.ingestion.processor.TimetableIngestionProcessor
 import org.ionproject.core.userApi.auth.registry.AuthMethodRegistry
 import org.ionproject.core.userApi.auth.registry.EmailAuthMethod
 import org.ionproject.core.userApi.common.accessControl.UserAccessInterceptor
@@ -39,6 +40,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -56,7 +58,10 @@ class CoreApplication
 
 @Configuration
 @EnableScheduling
-// @EnableWebMvc
+@Profile("!test")
+class CoreSchedulingConfig
+
+@Configuration
 class CoreSerializationConfig : WebMvcConfigurer {
 
     companion object {
@@ -221,7 +226,7 @@ class CoreSerializationConfig : WebMvcConfigurer {
         registry.register(CalendarIngestionProcessor(tm))
         registry.register(ProgrammesIngestionProcessor(tm))
         registry.register(CoursesIngestionProcessor(tm))
-        // registry.register(TimetableIngestionProcessor(tm))
+        registry.register(TimetableIngestionProcessor(tm))
         // registry.register(ExamScheduleIngestionProcessor(tm))
 
         return registry
