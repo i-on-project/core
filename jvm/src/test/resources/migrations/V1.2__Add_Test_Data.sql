@@ -9,20 +9,20 @@ INSERT INTO dbo.useraccount (user_id, name, email) VALUES
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.useraccounttoken (access_token, refresh_token, user_id, client_id, at_expires, created_at, updated_at) VALUES
-    ('VaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
-    '4XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
-    'c55d85d9-61b4-4cdf-aa10-88d2da750b49',
-    '22dd1551-db23-481b-acde-d286440388a5',
-    '2200-07-02 14:41:30.278774',
-    '2019-07-02 14:41:30.278774',
-    '2019-07-02 14:41:30.278774'),
-    ('LaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
-     '5XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
-     'c56d85d9-61b4-4cdf-aa10-88d2da750b49',
-     '22dd1551-db23-481b-acde-d286440388a5',
-     '2200-07-02 14:41:30.278774',
-     '2019-07-02 14:41:30.278774',
-     '2019-07-02 14:41:30.278774')
+('VaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
+ '4XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
+ 'c55d85d9-61b4-4cdf-aa10-88d2da750b49',
+ '22dd1551-db23-481b-acde-d286440388a5',
+ '2200-07-02 14:41:30.278774',
+ '2019-07-02 14:41:30.278774',
+ '2019-07-02 14:41:30.278774'),
+('LaxiHhhn2HSsVBTlm7Ks3Lt5u7y9TUjIJ_3O1uyiuNG0RoQ7PECzqgQjnlOgZO2iMgJ7G76VU9MtOjcOYT9CYg',
+ '5XmRA2RJyVqEwVsYvRZjSvAZW-dykx-isixvBtwSjGUL87UpFunIIuZ1i9L6ywQcRmQF9u8ckgOGgyCXcL9wBg',
+ 'c56d85d9-61b4-4cdf-aa10-88d2da750b49',
+ '22dd1551-db23-481b-acde-d286440388a5',
+ '2200-07-02 14:41:30.278774',
+ '2019-07-02 14:41:30.278774',
+ '2019-07-02 14:41:30.278774')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.useraccounttokenscope (token_id, scope_id) VALUES
@@ -47,8 +47,7 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO dbo.Programme(acronym, name, termSize) VALUES
 ('LEIC', 'licenciatura eng. inf.', 6),
-('MEIC', 'mestrado eng. inf.',     4)
-ON CONFLICT DO NOTHING;
+('MEIC', 'mestrado eng. inf.',     4);
 
 INSERT INTO dbo.Instant(date, time) VALUES
 (DATE '2018-02-01', null),
@@ -72,12 +71,12 @@ INSERT INTO dbo._CalendarTerm(id, start_date, end_date) VALUES
 ('1920v', 9, 10),
 ('1920i', 11, 12);
 
-INSERT INTO dbo.Course(acronym, name) values
-('SL',  'Software Laboratory'),
-('WAD', 'Web Applications Development'),
-('DM',  'Discrete Mathematics'),
-('PS', 'Project and Seminary'),
-('CC', 'Cloud computing');
+INSERT INTO dbo.Course(id, acronym, name, credits, scientificArea) values
+(1, 'SL',  'Software Laboratory', 6, 'IF'),
+(2, 'WAD', 'Web Applications Development', 6, 'IF'),
+(3, 'DM',  'Discrete Mathematics', 6, 'IF'),
+(4, 'PS', 'Project and Seminary', 6, 'IF'),
+(5, 'CC', 'Cloud computing', 6, 'IF');
 
 -- Access Manager Mock Data for beta version
 --Notes:
