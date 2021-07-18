@@ -10,6 +10,7 @@ import org.ionproject.core.ingestion.processor.sql.model.CalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.RealCalendarTerm
 import org.ionproject.core.ingestion.processor.sql.model.toCalendarInstants
 import org.ionproject.core.ingestion.processor.sql.model.toExamSeasonInput
+import org.ionproject.core.ingestion.processor.util.Difference
 import org.jdbi.v3.sqlobject.kotlin.attach
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -27,58 +28,24 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         tm.run {
             val dao = it.attach<CalendarIngestionDao>()
             val parsedTerms = processCalendarTerms(data)
-            val termList = parsedTerms.terms
+            val existentTerms = dao.getCalendarTerms()
 
-            val latestCalendarTerm = dao.getLatestCalendarTerm()
-            if (latestCalendarTerm == null) {
-                // there are no terms, therefore the new terms should be added
-                createCalendarTerms(termList, dao)
-            } else {
-                val latestStartDate = latestCalendarTerm.startDate.toLocalDate()
-                val createList = mutableListOf<ParsedCalendarTerm>()
-                val updateMap = mutableMapOf<ParsedCalendarTerm, CalendarTerm>()
+            val diff = Difference(existentTerms, parsedTerms) { a, b -> a.id == b.term }
 
-                val terms = dao.getTermsByIds(termList.map { t -> t.term })
-                termList.forEach { parsed ->
-                    val term = terms[parsed.term]
-                    if (term == null && latestStartDate < parsed.startDate) {
-                        log.info("Calendar term ${parsed.term} does not exist. Creating new term.")
-                        createList.add(parsed)
-                    } else if (term != null) {
-                        log.info("Calendar term ${parsed.term} already exists. Updating term.")
-                        // edit term and check events
-                        updateMap[parsed] = term
-                    }
-                }
+            if (diff.newElements.isNotEmpty())
+                createCalendarTerms(diff.newElements, dao)
 
-                if (createList.isNotEmpty())
-                    createCalendarTerms(createList, dao)
-
-                if (updateMap.isNotEmpty())
-                    updateCalendarTerms(updateMap, dao)
-            }
+            if (diff.intersection.isNotEmpty())
+                updateCalendarTerms(diff.intersection, dao)
         }
     }
 
-    private fun processCalendarTerms(data: AcademicCalendar): ParsedCalendarTerms {
+    private fun processCalendarTerms(data: AcademicCalendar): List<ParsedCalendarTerm> {
         val terms = data.terms
-        var latestTerm: ParsedCalendarTerm? = null
-        val parsedTerms = terms.map {
-            val term = it.parse()
-            // it's greater or equal here because we want the latest term with the higher index
-            if (latestTerm == null || term.startDate >= latestTerm!!.startDate)
-                latestTerm = term
-
-            term
-        }.sortedBy { it.startDate }
-
-        return ParsedCalendarTerms(
-            latestTerm ?: throw Exception("No terms found to be processed"),
-            parsedTerms
-        )
+        return terms.map { it.parse() }
     }
 
-    private fun createCalendarTerms(parsedTerms: List<ParsedCalendarTerm>, dao: CalendarIngestionDao) {
+    private fun createCalendarTerms(parsedTerms: Collection<ParsedCalendarTerm>, dao: CalendarIngestionDao) {
         val instantsList = parsedTerms.map { it.toCalendarInstants() }
             .flatten()
 
@@ -86,6 +53,8 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         val calendarTerms = parsedTerms.mapIndexed { index, parsedTerm ->
             val start = instantIds[index * 2]
             val end = instantIds[index * 2 + 1]
+
+            log.info("Creating calendar term ${parsedTerm.term}")
             parsedTerm.toCalendarTermInput(start, end)
         }
 
@@ -103,7 +72,8 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
                 }
         }.flatten()
 
-        createExamSeasons(examSeasons, dao)
+        if (examSeasons.isNotEmpty())
+            createExamSeasons(examSeasons, dao)
     }
 
     private fun createExamSeasons(examSeasons: List<ExamSeason>, dao: CalendarIngestionDao) {
@@ -119,8 +89,12 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         dao.insertExamSeasons(mappedSeasons)
     }
 
-    private fun updateCalendarTerms(terms: Map<ParsedCalendarTerm, CalendarTerm>, dao: CalendarIngestionDao) {
-        terms.forEach { (k, v) ->
+    private fun updateCalendarTerms(terms: Collection<Pair<CalendarTerm, ParsedCalendarTerm>>, dao: CalendarIngestionDao) {
+        terms.forEach { t ->
+            val k = t.second
+            val v = t.first
+
+            log.info("Updating calendar term ${k.term}")
             updateCalendarTermsDates(k, v, dao)
             updateCalendarTermsExamSeasons(k, v, dao)
         }
@@ -179,7 +153,8 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
             }
         }
 
-        createExamSeasons(toCreate, dao)
+        if (toCreate.isNotEmpty())
+            createExamSeasons(toCreate, dao)
 
         toUpdate.forEach { season ->
             val realSeason = dao.getRealExamSeasonById(season.id)
@@ -191,8 +166,6 @@ class CalendarIngestionProcessor(val tm: TransactionManager) : IngestionProcesso
         }
     }
 }
-
-private data class ParsedCalendarTerms(val latest: ParsedCalendarTerm, val terms: List<ParsedCalendarTerm>)
 
 private data class ParsedCalendarTerm(
     val term: String,
@@ -220,11 +193,6 @@ private fun AcademicCalendarTerm.parse(): ParsedCalendarTerm {
         if (startDate == null || it.startDate < startDate)
             startDate = it.startDate
 
-        if (endDate == null || it.endDate > endDate)
-            endDate = it.endDate
-    }
-
-    evaluations.forEach {
         if (endDate == null || it.endDate > endDate)
             endDate = it.endDate
     }

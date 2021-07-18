@@ -17,11 +17,9 @@ interface CalendarIngestionDao {
     @SqlQuery(
         """
         select id, start_date, end_date from dbo.CalendarTerm 
-        order by start_date desc
-        limit 1
     """
     )
-    fun getLatestCalendarTerm(): CalendarTerm?
+    fun getCalendarTerms(): List<CalendarTerm>
 
     @SqlQuery(
         """
