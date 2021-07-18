@@ -1,0 +1,7 @@
+jvm/.gradle
+jvm/.gitignore
+jvm/gradlew.bat
+jvm/build/
+jvm/ingestion-data/
+jvm/keys/
+core_react/node_modules/

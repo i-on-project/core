@@ -52,11 +52,23 @@ data class TimetableClass(
     val sections: List<TimetableClassSection> = emptyList()
 )
 
+data class TimetableSchool(
+    val name: String,
+    @JsonProperty("acr")
+    val acronym: String
+)
+
+data class TimetableProgramme(
+    val name: String,
+    @JsonProperty("acr")
+    val acronym: String
+)
+
 data class Timetable(
     val creationDateTime: Instant,
     val retrievalDateTime: Instant,
-    val school: String,
-    val programme: String,
+    val school: TimetableSchool,
+    val programme: TimetableProgramme,
     val calendarTerm: String,
     val classes: List<TimetableClass> = emptyList()
 )
