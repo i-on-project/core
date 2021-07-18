@@ -23,7 +23,7 @@ class TimetableIngestionProcessor(val tm: TransactionManager) : IngestionProcess
     override fun process(data: Timetable) {
         tm.run {
             val dao = it.attach<TimetableIngestionDao>()
-            val programmeId = dao.getProgrammeIdFromAcronym(data.programme)
+            val programmeId = dao.getProgrammeIdFromAcronym(data.programme.acronym)
             if (programmeId != null) {
                 val existingClasses = dao.getClassesForProgrammeAndTerm(programmeId, data.calendarTerm)
                 val classesAcronyms = if (existingClasses.isNotEmpty())
@@ -46,7 +46,7 @@ class TimetableIngestionProcessor(val tm: TransactionManager) : IngestionProcess
                 if (diff.removedElements.isNotEmpty())
                     processRemoved(diff.removedElements, dao)
             } else {
-                log.info("No such programme: ${data.programme}")
+                log.info("No such programme: ${data.programme.acronym}")
             }
         }
     }

@@ -17,7 +17,6 @@ import java.io.File
 import java.io.OutputStream
 import java.nio.file.Path
 import java.util.concurrent.Executors
-import kotlin.io.path.name
 
 @Component
 class IngestionTask(
@@ -62,7 +61,7 @@ class IngestionTask(
                     val repo = git.repository
                     val changes = getChanges(repo)
                     if (changes.isNotEmpty())
-                        registry.processDirectory(institutionPath, changes)
+                        registry.processChanges(institutionPath, changes)
                     else
                         log.info("No changes were detected")
                 }

@@ -43,19 +43,20 @@ class IngestionProcessorRegistry(private val fileExtension: String, private val 
     }
 
     @Suppress("unchecked_cast")
-    fun processDirectory(path: Path, changes: Set<Path>) {
+    fun processChanges(path: Path, changes: Set<Path>) {
         val toProcess = mutableMapOf<String, MutableList<File>>()
-        changes.forEach {
-            val file = it.toAbsolutePath()
-                .toFile()
+        changes.filter { it.startsWith(path) }
+            .forEach {
+                val file = it.toAbsolutePath()
+                    .toFile()
 
-            if (file.name.endsWith(fileExtension)) {
-                val filename = file.name.split(".")[0]
+                if (file.name.endsWith(fileExtension)) {
+                    val filename = file.name.split(".")[0]
 
-                toProcess.computeIfAbsent(filename) { mutableListOf() }
-                    .add(file)
+                    toProcess.computeIfAbsent(filename) { mutableListOf() }
+                        .add(file)
+                }
             }
-        }
 
         wrappers.forEach { (k, v) ->
             v as ProcessorWrapper<Any>
