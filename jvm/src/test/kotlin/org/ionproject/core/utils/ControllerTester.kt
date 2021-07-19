@@ -49,7 +49,7 @@ internal class ControllerTester {
         accept = Media.MEDIA_SIREN
         header(HttpHeaders.AUTHORIZATION, authorization)
     }.andExpect {
-        status { isOk }
+        status { isOk() }
         content { contentType("application/vnd.siren+json") }
         jsonPath("$.links") { exists() }
 

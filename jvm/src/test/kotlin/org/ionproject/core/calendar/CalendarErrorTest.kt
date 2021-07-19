@@ -55,7 +55,7 @@ internal class CalendarErrorTest : ControllerTester() {
                 header("Authorization", readTokenTest)
             }.andDo { println() }
                 .andExpect {
-                    status { isNotFound }
+                    status { isNotFound() }
                 }.andReturn()
         }
     }
@@ -71,7 +71,7 @@ internal class CalendarErrorTest : ControllerTester() {
                 accept = Media.MEDIA_HOME
                 header("Authorization", readTokenTest)
             }.andDo { println() }
-                .andExpect { status { isNotAcceptable } }
+                .andExpect { status { isNotAcceptable() } }
                 .andReturn()
         }
     }

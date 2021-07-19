@@ -28,7 +28,7 @@ internal class ImportLinkTests : ControllerTester() {
         val linkResult = doGet(importClassCalendarUrl) {
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -40,7 +40,7 @@ internal class ImportLinkTests : ControllerTester() {
         val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
     }
 
@@ -52,7 +52,7 @@ internal class ImportLinkTests : ControllerTester() {
         val linkResult = doGet(importClassSectionCalendarUrl) {
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -64,7 +64,7 @@ internal class ImportLinkTests : ControllerTester() {
         val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
     }
 
@@ -77,7 +77,7 @@ internal class ImportLinkTests : ControllerTester() {
         doGet(importClassCalendarNotFoundUrl) {
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isNotFound } }
+            .andExpect { status { isNotFound() } }
             .andReturn()
     }
 

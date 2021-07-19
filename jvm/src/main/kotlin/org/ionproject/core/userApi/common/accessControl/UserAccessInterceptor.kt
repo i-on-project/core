@@ -8,13 +8,13 @@ import org.ionproject.core.userApi.auth.repo.UserAuthRepo
 import org.ionproject.core.userApi.user.model.User
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+import org.springframework.web.servlet.HandlerInterceptor
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter() {
+class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptor {
 
     companion object {
         private const val AUTH_HEADER_TYPE = "bearer"
@@ -34,8 +34,8 @@ class UserAccessInterceptor(val repo: UserAuthRepo) : HandlerInterceptorAdapter(
             if (headerValue.size < 2)
                 throw BadRequestException("Invalid authorization header format")
 
-            if (headerValue[0].toLowerCase() != AUTH_HEADER_TYPE)
-                throw BadRequestException("The authorization header type must be ${AUTH_HEADER_TYPE.toUpperCase()}")
+            if (headerValue[0].lowercase() != AUTH_HEADER_TYPE)
+                throw BadRequestException("The authorization header type must be ${AUTH_HEADER_TYPE.uppercase()}")
 
             try {
                 val token = headerValue[1]

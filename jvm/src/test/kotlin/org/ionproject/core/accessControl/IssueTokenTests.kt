@@ -24,7 +24,7 @@ internal class IssueTokenTests : ControllerTester() {
 
             content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
         }.andDo { println() }
-            .andExpect { status { isUnauthorized } }
+            .andExpect { status { isUnauthorized() } }
             .andReturn()
     }
 
@@ -39,7 +39,7 @@ internal class IssueTokenTests : ControllerTester() {
 
             content = "{\"scope\":\"whatkindofcrazyscopeisthis\"}"
         }.andDo { println() }
-            .andExpect { status { isBadRequest } }
+            .andExpect { status { isBadRequest() } }
             .andReturn()
     }
 
@@ -52,7 +52,7 @@ internal class IssueTokenTests : ControllerTester() {
             header("Authorization", "Bearer $issueTokenTest")
             header("Content-Type", "application/json")
         }.andDo { println() }
-            .andExpect { status { isBadRequest } }
+            .andExpect { status { isBadRequest() } }
             .andReturn()
     }
 
@@ -67,7 +67,7 @@ internal class IssueTokenTests : ControllerTester() {
 
             content = "{\"scope\":\"urn:org:ionproject:scopes:api:read\"}"
         }.andDo { println() }
-            .andExpect { status { isForbidden } }
+            .andExpect { status { isForbidden() } }
             .andReturn()
     }
 }

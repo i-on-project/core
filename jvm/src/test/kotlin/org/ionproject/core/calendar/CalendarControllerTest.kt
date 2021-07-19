@@ -30,6 +30,7 @@ import org.ionproject.core.utils.ControllerTester
 import org.ionproject.core.utils.readTokenTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpHeaders
 import org.springframework.test.web.servlet.get
 import java.net.URI
 import java.nio.charset.StandardCharsets
@@ -299,17 +300,24 @@ internal class CalendarControllerTest : ControllerTester() {
         }
     }
 
-    /**
-     * Checking the endpoints for valid siren composition
-     */
     @Test
     fun getCalendarByClass() {
-        isValidSiren(Uri.forCalendarByClass(courseID, calTerm)).andReturn()
+        doGet(Uri.forCalendarByClass(courseID, calTerm)) {
+            header(HttpHeaders.AUTHORIZATION, readTokenTest)
+        }.andExpect {
+            status { isOk() }
+            content { contentType(Media.MEDIA_TEXT_CALENDAR) }
+        }.andReturn()
     }
 
     @Test
     fun getCalendarByClassSection() {
-        isValidSiren(Uri.forCalendarByClassSection(courseID, calTerm, classSection)).andReturn()
+        doGet(Uri.forCalendarByClassSection(courseID, calTerm, classSection)) {
+            header(HttpHeaders.AUTHORIZATION, readTokenTest)
+        }.andExpect {
+            status { isOk() }
+            content { contentType(Media.MEDIA_TEXT_CALENDAR) }
+        }.andReturn()
     }
 
     @Test
@@ -318,7 +326,7 @@ internal class CalendarControllerTest : ControllerTester() {
             accept = Media.MEDIA_SIREN
             header("Authorization", readTokenTest)
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
         }
@@ -330,7 +338,7 @@ internal class CalendarControllerTest : ControllerTester() {
             accept = Media.MEDIA_SIREN
             header("Authorization", readTokenTest)
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
         }

@@ -24,7 +24,7 @@ internal class CalTermsErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isNotFound }
+                status { isNotFound() }
             }.andReturn()
     }
 
@@ -38,7 +38,7 @@ internal class CalTermsErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isNotAcceptable } }
+            .andExpect { status { isNotAcceptable() } }
             .andReturn()
     }
 
@@ -48,7 +48,7 @@ internal class CalTermsErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isNotAcceptable } }
+            .andExpect { status { isNotAcceptable() } }
             .andReturn()
     }
 }

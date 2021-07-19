@@ -71,7 +71,7 @@ fun buildImportUrl(identifier: Text): UriTemplate {
 
 fun CalendarComponent.toSiren(about: URI): Siren =
     SirenBuilder(sirenProperties)
-        .klass(this::class.java.simpleName.toLowerCase())
+        .klass(this::class.java.simpleName.lowercase())
         .link("self", href = URI.create("$about/calendar/${uid.value.value}"))
         .link("about", href = about)
         .toSiren()
@@ -100,14 +100,14 @@ private val CalendarComponent.sirenProperties: Map<String, Any>
 
 private val CalendarComponent.asSubComponentSirenProperties: Map<String, Any>
     get() = mapOf(
-        TYPE to this::class.java.simpleName.toLowerCase(),
+        TYPE to this::class.java.simpleName.lowercase(),
         PROPERTIES to properties.toMap()
     )
 
 private fun Iterable<Property>.toMap(): Map<String, Any> =
     this.groupBy { it.name }
         .mapEntries {
-            val propName = it.key.toLowerCase()
+            val propName = it.key.lowercase()
             val list = it.value
             if (list.size > 1) {
                 propName to list.map(Property::toSiren)
@@ -120,7 +120,7 @@ private fun Property.toSiren(): Any {
     val aux = this as? ParameterizedProperty
 
     val params = aux?.parameters?.associate {
-        it.name.toLowerCase() to it.toSiren()
+        it.name.lowercase() to it.toSiren()
     }
 
     val value = datatypeMapper.map(value)

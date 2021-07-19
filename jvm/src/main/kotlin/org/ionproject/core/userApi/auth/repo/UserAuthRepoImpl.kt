@@ -289,7 +289,7 @@ class UserAuthRepoImpl(
 
     private fun checkRequestedScopes(scopes: String, handle: Handle): List<String> {
         var scopeList = scopes.split(" ")
-            .map { it.toLowerCase() }
+            .map { it.lowercase() }
 
         if (!scopeList.contains(OPENID_SCOPE))
             throw AuthRequestMissingOpenIdScopeException()

@@ -26,14 +26,14 @@ class TimetableIngestionProcessor(val tm: TransactionManager) : IngestionProcess
             val programmeId = dao.getProgrammeIdFromAcronym(data.programme.acronym)
             if (programmeId != null) {
                 val existingClasses = dao.getClassesForProgrammeAndTerm(programmeId, data.calendarTerm)
-                val classesAcronyms = if (existingClasses.isNotEmpty())
+                val coursesAcronyms = if (existingClasses.isNotEmpty())
                     dao.getAcronymsForCourse(existingClasses.map { c -> c.courseId })
                 else
                     emptyMap()
 
                 val newClasses = data.classes
                 val diff = Difference(existingClasses, newClasses) { a, b ->
-                    classesAcronyms[a.courseId]?.contains(b.acronym) ?: false
+                    coursesAcronyms[a.courseId]?.contains(b.acronym) ?: false
                 }
 
                 val info = TimetableInfo(programmeId, data.calendarTerm)
