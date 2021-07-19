@@ -11,6 +11,7 @@ import org.ionproject.core.ingestion.processor.IngestionProcessorRegistry
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.File
 import java.io.OutputStream
@@ -45,7 +46,7 @@ class IngestionTask(
 
     private var processedCommitHash: String? = null
 
-    // @Scheduled(fixedRate = INGESTION_RATE)
+    @Scheduled(fixedRate = INGESTION_RATE)
     @Profile("!test")
     fun scheduleIngestion() {
         processTask()
