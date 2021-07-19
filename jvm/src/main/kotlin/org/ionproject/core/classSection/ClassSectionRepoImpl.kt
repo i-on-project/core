@@ -18,7 +18,7 @@ class ClassSectionRepoImplementation(
         tm.run(TransactionIsolationLevel.READ_COMMITTED) { handle ->
             handle.createQuery(CLASS_SECTION_QUERY)
                 .bind(CID, cid)
-                .bind(ID, id.toUpperCase())
+                .bind(ID, id.uppercase())
                 .bind(CAL_TERM, calendarTerm)
                 .map(classSectionMapper)
                 .firstOrNull()

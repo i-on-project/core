@@ -19,7 +19,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         val uri = Uri.forUserClasses()
         doGet(uri)
             .andExpect {
-                status { `is`(401) }
+                status { isUnauthorized() }
                 content {
                     contentType(MediaType.APPLICATION_PROBLEM_JSON)
                 }
@@ -32,7 +32,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         val uri = Uri.forUserSections()
         doGet(uri)
             .andExpect {
-                status { `is`(401) }
+                status { isUnauthorized() }
                 content {
                     contentType(MediaType.APPLICATION_PROBLEM_JSON)
                 }
@@ -48,7 +48,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(classSectionUri) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         val classUri = Uri.forUserClass(classId)
@@ -63,7 +63,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doDelete(classUri) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
     }
 
@@ -74,7 +74,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(userClass) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         isValidSiren(userClass, DUMMY_USER_ACCESS_TOKEN)
@@ -89,20 +89,20 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         val userClass = Uri.forUserClass(classId)
         doDelete(userClass) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         doGet(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { `is`(404) }
+            status { isNotFound() }
         }.andReturn()
     }
 
@@ -114,13 +114,13 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         doDelete(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         val userClass = Uri.forUserClass(classId)
@@ -130,7 +130,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doGet(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { `is`(404) }
+            status { isNotFound() }
         }.andReturn()
     }
 
@@ -167,7 +167,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(userClass) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         val entity = SirenBuilder()
@@ -223,7 +223,7 @@ internal class UserKlassControllerTest : ControllerTester() {
         doPut(userClassSection) {
             header(HttpHeaders.AUTHORIZATION, DUMMY_USER_ACCESS_TOKEN)
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         val entity = SirenBuilder()

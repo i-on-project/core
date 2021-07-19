@@ -27,7 +27,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isNotFound }
+                status { isNotFound() }
             }.andReturn()
     }
 
@@ -41,7 +41,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isNotFound }
+                status { isNotFound() }
             }.andReturn()
     }
 
@@ -55,7 +55,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isNotFound }
+                status { isNotFound() }
             }.andReturn()
     }
 
@@ -69,7 +69,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
             accept = Media.MEDIA_HOME
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isNotAcceptable } }
+            .andExpect { status { isNotAcceptable() } }
             .andReturn()
     }
 
@@ -81,7 +81,7 @@ internal class ClassSectionErrorTest : ControllerTester() {
         doGet(badRequestUri) {
             header("Authorization", readTokenTest)
         }.andDo { println() }
-            .andExpect { status { isBadRequest } }
+            .andExpect { status { isBadRequest() } }
             .andReturn()
     }
 }

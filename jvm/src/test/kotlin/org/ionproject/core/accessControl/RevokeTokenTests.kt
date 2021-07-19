@@ -31,7 +31,7 @@ internal class RevokeTokenTests : ControllerTester() {
 
             content = "{\"scope\":\"$scope\"}"
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -51,7 +51,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$tokenToRevoke"
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
     }
 
@@ -65,7 +65,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$readTokenTest"
         }.andDo { println() }
-            .andExpect { status { isForbidden } }
+            .andExpect { status { isForbidden() } }
             .andReturn()
     }
 
@@ -80,7 +80,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$token"
         }.andDo { println() }
-            .andExpect { status { isForbidden } }
+            .andExpect { status { isForbidden() } }
             .andReturn()
     }
 
@@ -93,7 +93,7 @@ internal class RevokeTokenTests : ControllerTester() {
             header("Authorization", issueTokenTest)
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
         }.andDo { println() }
-            .andExpect { status { isBadRequest } }
+            .andExpect { status { isBadRequest() } }
             .andReturn()
     }
 
@@ -109,7 +109,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$token&operation=3"
         }.andDo { println() }
-            .andExpect { status { isForbidden } }
+            .andExpect { status { isForbidden() } }
             .andReturn()
     }
 
@@ -125,7 +125,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val linkResult = doGet(importClassSectionCalendarUrl) {
             header("Authorization", "Bearer $fatherTokenToRevoke")
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -135,7 +135,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isOk() } } // If the child token is revoked it should answer with 401
             .andReturn()
 
         // Revoking father and child tokens
@@ -144,7 +144,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$fatherTokenToRevoke&operation=3"
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
 
         cache.clearCache()
@@ -152,14 +152,14 @@ internal class RevokeTokenTests : ControllerTester() {
         // Checking if son token is revoked
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isUnauthorized } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isUnauthorized() } } // If the child token is revoked it should answer with 401
             .andReturn()
 
         // Checking if father token is revoked by trying issue another token
         doGet(importClassSectionCalendarUrl) {
             header("Authorization", "Bearer $fatherTokenToRevoke")
         }.andDo { println() }
-            .andExpect { status { isUnauthorized } }
+            .andExpect { status { isUnauthorized() } }
             .andReturn()
     }
 
@@ -174,7 +174,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val linkResult = doGet(importClassSectionCalendarUrl) {
             header("Authorization", "Bearer $fatherToken")
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -185,7 +185,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val link = jsonLink.url
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isOk() } } // If the child token is revoked it should answer with 401
             .andReturn()
 
         // Revoking child no revoke father
@@ -194,7 +194,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$fatherToken&operation=1"
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
 
         cache.clearCache()
@@ -202,14 +202,14 @@ internal class RevokeTokenTests : ControllerTester() {
         // Check if child is revoked
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isUnauthorized } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isUnauthorized() } } // If the child token is revoked it should answer with 401
             .andReturn()
 
         // Check if the father was not revoked
         doGet(URI("/api")) {
             header("Authorization", "Bearer $fatherToken")
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
     }
 
@@ -224,7 +224,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val linkResult = doGet(importClassSectionCalendarUrl) {
             header("Authorization", "Bearer $fatherToken")
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
             .response
             .contentAsString
@@ -234,7 +234,7 @@ internal class RevokeTokenTests : ControllerTester() {
         val link = jsonLink.url.dropWhile { c -> c != '/' }
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isOk() } } // If the child token is revoked it should answer with 401
             .andReturn()
 
         // Revoking father no revoke child
@@ -243,7 +243,7 @@ internal class RevokeTokenTests : ControllerTester() {
             contentType = Media.MEDIA_FORM_URLENCODED_VALUE
             content = "token=$fatherToken&operation=2"
         }.andDo { println() }
-            .andExpect { status { isOk } }
+            .andExpect { status { isOk() } }
             .andReturn()
 
         cache.clearCache()
@@ -252,13 +252,13 @@ internal class RevokeTokenTests : ControllerTester() {
         doGet(URI(Uri.apiBase)) {
             header("Authorization", "Bearer $fatherToken")
         }.andDo { println() }
-            .andExpect { status { isUnauthorized } }
+            .andExpect { status { isUnauthorized() } }
             .andReturn()
 
         // Check if the issued import url is valid
         doGet(URI(link))
             .andDo { println() }
-            .andExpect { status { isOk } } // If the child token is revoked it should answer with 401
+            .andExpect { status { isOk() } } // If the child token is revoked it should answer with 401
             .andReturn()
     }
 

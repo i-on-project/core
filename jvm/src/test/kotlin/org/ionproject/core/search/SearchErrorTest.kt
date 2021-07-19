@@ -13,7 +13,7 @@ internal class SearchErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isBadRequest }
+                status { isBadRequest() }
             }
             .andReturn()
     }
@@ -24,7 +24,7 @@ internal class SearchErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isBadRequest }
+                status { isBadRequest() }
             }
             .andReturn()
     }
@@ -35,7 +35,7 @@ internal class SearchErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isBadRequest }
+                status { isBadRequest() }
             }
             .andReturn()
     }

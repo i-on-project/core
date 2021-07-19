@@ -82,7 +82,7 @@ internal class UserAuthTest : ControllerTester() {
             content = jacksonMapper.writeValueAsString(authRequestInput)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
             content { contentType(MediaType.APPLICATION_JSON) }
         }.andReturn()
 
@@ -124,7 +124,7 @@ internal class UserAuthTest : ControllerTester() {
         // poll the auth request
         val tokenPoll = AuthTokenInput(CIBA_GRANT_TYPE, WEB_CLIENT_ID, WEB_CLIENT_SECRET, SAMPLE_AUTH_REQUEST_ID, null)
         doTokenRequest(tokenPoll) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("authorization_pending") }
         }
 
@@ -133,26 +133,26 @@ internal class UserAuthTest : ControllerTester() {
             content = jacksonMapper.writeValueAsString(authVerification)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }.andReturn()
 
         // poll with invalid client
         val tokenInvalidPoll = AuthTokenInput(CIBA_GRANT_TYPE, ANDROID_CLIENT_ID, null, SAMPLE_AUTH_REQUEST_ID, null)
         doTokenRequest(tokenInvalidPoll) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("unauthorized_client") }
         }
 
         // poll without client_secret
         val tokenInvalidPollSecret = AuthTokenInput(CIBA_GRANT_TYPE, WEB_CLIENT_ID, null, SAMPLE_AUTH_REQUEST_ID, null)
         doTokenRequest(tokenInvalidPollSecret) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("invalid_client") }
         }
 
         // poll the auth request
         doTokenRequest(tokenPoll) {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
             jsonPath("$.access_token") { exists() }
             jsonPath("$.refresh_token") { exists() }
             jsonPath("$.token_type") { value("Bearer") }
@@ -160,7 +160,7 @@ internal class UserAuthTest : ControllerTester() {
         }
 
         doTokenRequest(tokenPoll) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("invalid_grant") }
         }
     }
@@ -170,21 +170,21 @@ internal class UserAuthTest : ControllerTester() {
         // refresh with invalid client
         val invalidTokenRefresh = AuthTokenInput(REFRESH_GRANT_TYPE, ANDROID_CLIENT_ID, null, null, REFRESH_TOKEN)
         doTokenRequest(invalidTokenRefresh) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("unauthorized_client") }
         }
 
         // refresh with invalid secret
         val invalidTokenRefreshSecret = AuthTokenInput(REFRESH_GRANT_TYPE, WEB_CLIENT_ID, null, null, REFRESH_TOKEN)
         doTokenRequest(invalidTokenRefreshSecret) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("invalid_client") }
         }
 
         // refresh
         val tokenRefresh = AuthTokenInput(REFRESH_GRANT_TYPE, WEB_CLIENT_ID, WEB_CLIENT_SECRET, null, REFRESH_TOKEN)
         val refreshRes = doTokenRequest(tokenRefresh) {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
             jsonPath("$.access_token") { exists() }
             jsonPath("$.refresh_token") { exists() }
             jsonPath("$.token_type") { value("Bearer") }
@@ -198,14 +198,14 @@ internal class UserAuthTest : ControllerTester() {
         // refresh slow down
         val tokenRefreshSlowDown = AuthTokenInput(REFRESH_GRANT_TYPE, WEB_CLIENT_ID, WEB_CLIENT_SECRET, null, refreshToken)
         doTokenRequest(tokenRefreshSlowDown) {
-            status { `is`(400) }
+            status { isBadRequest() }
             jsonPath("$.error") { value("slow_down") }
         }
 
         // revoke with invalid client
         val invalidTokenRevoke = UserRevokeTokenInput(accessToken, ANDROID_CLIENT_ID, null)
         doTokenRevoke(invalidTokenRevoke) {
-            status { `is`(400) }
+            status { isBadRequest() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.error") { value("unauthorized_client") }
         }
@@ -213,7 +213,7 @@ internal class UserAuthTest : ControllerTester() {
         // revoke with invalid secret
         val invalidTokenRevokeSecret = UserRevokeTokenInput(accessToken, WEB_CLIENT_ID, null)
         doTokenRevoke(invalidTokenRevokeSecret) {
-            status { `is`(400) }
+            status { isBadRequest() }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.error") { value("invalid_client") }
         }
@@ -221,7 +221,7 @@ internal class UserAuthTest : ControllerTester() {
         // revoke
         val tokenRevoke = UserRevokeTokenInput(accessToken, WEB_CLIENT_ID, WEB_CLIENT_SECRET)
         doTokenRevoke(tokenRevoke) {
-            status { is2xxSuccessful }
+            status { is2xxSuccessful() }
         }
     }
 }

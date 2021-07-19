@@ -24,7 +24,7 @@ internal class InterceptorsErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isNotFound }
+                status { isNotFound() }
             }.andReturn()
     }
 
@@ -34,7 +34,7 @@ internal class InterceptorsErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isOk }
+                status { isOk() }
             }.andReturn()
     }
 
@@ -44,7 +44,7 @@ internal class InterceptorsErrorTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isBadRequest }
+                status { isBadRequest() }
             }.andReturn()
     }
 }

@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.2.6.RELEASE"
-    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("org.springframework.boot") version "2.5.2"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
-    kotlin("jvm") version "1.4.30"
-    kotlin("plugin.spring") version "1.4.30"
+    kotlin("jvm") version "1.5.20"
+    kotlin("plugin.spring") version "1.5.20"
 }
 
 group = "org.ionproject"
@@ -35,7 +35,7 @@ dependencies {
 
     implementation("org.jdbi:jdbi3-kotlin-sqlobject:3.20.0")
 
-    implementation("org.flywaydb:flyway-core:6.5.7")
+    implementation("org.flywaydb:flyway-core")
 
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
@@ -61,24 +61,9 @@ tasks.withType<KotlinCompile> {
 }
 
 // DB automation
-tasks.register<PgStart>("pgStart") // doesn't do a thing if the container is already running
-tasks.register<PgStop>("pgStop") // doesn't do a thing if the container doesn't exist
-tasks.register<PgToggle>("pgToggle") // destroys the container if it exists, otherwise creates it
 tasks.register<PgInsertReadToken>("pgInsertReadToken")
 tasks.register<PgInsertIssueToken>("pgInsertIssueToken")
 tasks.register<PgInsertRevokeToken>("pgInsertRevokeToken")
-
-/**
- * Will destroy the container before setting the database (which will be done inside
- * a new container).
- */
-tasks.register("pgReset") {
-    val setupTask = "pgStart"
-    val stopTask = "pgStop"
-
-    dependsOn(setupTask, stopTask)
-    tasks[setupTask].mustRunAfter(stopTask)
-}
 
 tasks.register<Copy>("extractUberJar") {
     dependsOn("build")

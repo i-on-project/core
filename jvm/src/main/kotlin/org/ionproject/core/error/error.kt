@@ -116,10 +116,6 @@ class MyErrorController(val resourceLoader: ResourceLoader) : ErrorController {
         )
     }
 
-    override fun getErrorPath(): String {
-        return Uri.error
-    }
-
     private fun getNotFoundProblem(requestUri: String): ResponseEntity<Any> {
         logger.error(
             LogMessages.forException(

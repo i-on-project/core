@@ -13,11 +13,10 @@ class Difference<T, K>(existent: List<T>, new: List<K>, comparator: EqualityComp
             val elements = newSet.filter { b -> comparator(a, b) }
             if (elements.isNotEmpty()) {
                 intersectionList.addAll(elements.map { elem -> Pair(a, elem) })
+                newSet.removeAll(elements)
             } else {
                 removedList.add(a)
             }
-
-            newSet.removeAll(elements)
         }
     }
 

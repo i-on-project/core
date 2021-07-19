@@ -83,7 +83,7 @@ internal class HomeDocumentTest : ControllerTester() {
             header("Authorization", readTokenTest)
         }.andDo { println() }
             .andExpect {
-                status { isOk }
+                status { isOk() }
                 content { contentType("application/json-home") }
                 jsonPath("$.api") {
                     exists()

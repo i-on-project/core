@@ -144,7 +144,7 @@ internal class KlassControllerTest : ControllerTester() {
             accept = Media.MEDIA_SIREN
             header("Authorization", readTokenTest)
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
             jsonPath("$.actions") { exists() }
@@ -156,7 +156,7 @@ internal class KlassControllerTest : ControllerTester() {
             accept = Media.MEDIA_SIREN
             header("Authorization", readTokenTest)
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { contentType("application/vnd.siren+json") }
             jsonPath("$.links") { exists() }
             jsonPath("$.actions") { exists() }
