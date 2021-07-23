@@ -74,6 +74,19 @@ The following tokens will be inserted to the database container, for ease of use
 - Issue: `vUG-N_m_xVohFrnXcu2Jmt_KAeKfxQXV2LkLjJF4144`
 - Revoke: `5eN-N7muBGix6X0N8jfau7Ou-3KcNHPAGVZNGWQ6ryw`
 
+Moreover, there are the following client applications that are also inserted for the ease of use:
+
+```
+i-on Web (confidential application)
+------
+ID: 22dd1551-db23-481b-acde-d286440388a5
+Secret: gntBY4mjX8PH4_5_i_H54fMFLl2x15Q0O4jWXodQ4aPmofF4i6VBf39tXi5vhdjA2WZ-5hwaOXAL11oibnZ8og
+
+i-on Web (public application)
+------
+ID: 14633a07-30d8-41f9-aa4d-d55341d7c7f3
+```
+
 To clean up the core and database containers we can use docker compose again:
 
 ```sh
