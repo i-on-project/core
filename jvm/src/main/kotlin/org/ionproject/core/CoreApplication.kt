@@ -127,9 +127,9 @@ class CoreSerializationConfig : WebMvcConfigurer {
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
-        // adds cors allowance for react development purposes
         registry.addMapping("/api/**")
-            .allowedOrigins("http://localhost:3000")
+            .allowedOrigins("*")
+            .allowedMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
     }
 
     @Autowired
