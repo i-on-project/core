@@ -14,6 +14,7 @@ services:
         - JDBC_DATABASE_URL=jdbc:postgresql://db:5432/core?user=bob&password=changeit
         - ION_CORE_SECRET_KEY=t8abumA3JBJrd7q0LuN3nSzKGBfslOYb
         - ION_CORE_BASE_URL=http://localhost:10023
+        - FLYWAY_LOCATIONS=classpath:migrations,classpath:test_migrations
     db:
       image: postgres:13-alpine
       container_name: core-db-container
