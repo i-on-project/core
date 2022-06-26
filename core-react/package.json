@@ -13,7 +13,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router": "^5.1.13",
     "@types/react-router-dom": "^5.1.7",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "query-string": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
